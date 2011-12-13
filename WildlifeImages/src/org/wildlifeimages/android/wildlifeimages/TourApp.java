@@ -8,8 +8,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
 
-import org.wildlifeimages.android.wildlifeimages.MapView.MapThread;
-
 /**
  * This is a simple TourApp activity that houses a single MapView. It
  * demonstrates...
@@ -33,9 +31,6 @@ public class TourApp extends Activity {
     private static final int MENU_START = 6;
 
     private static final int MENU_STOP = 7;
-
-    /** A handle to the thread that's actually running the animation. */
-    private MapThread mMapThread;
 
     /** A handle to the View in which the game is running. */
     private MapView mMapView;
@@ -72,26 +67,18 @@ public class TourApp extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_START:
-                mMapThread.doStart();
                 return true;
             case MENU_STOP:
-                mMapThread.setState(MapThread.STATE_LOSE,
-                        getText(R.string.message_stopped));
                 return true;
             case MENU_PAUSE:
-                mMapThread.pause();
                 return true;
             case MENU_RESUME:
-                mMapThread.unpause();
                 return true;
             case MENU_EASY:
-                mMapThread.setDifficulty(MapThread.DIFFICULTY_EASY);
                 return true;
             case MENU_MEDIUM:
-                mMapThread.setDifficulty(MapThread.DIFFICULTY_MEDIUM);
                 return true;
             case MENU_HARD:
-                mMapThread.setDifficulty(MapThread.DIFFICULTY_HARD);
                 return true;
         }
 
@@ -114,20 +101,17 @@ public class TourApp extends Activity {
         // tell system to use the layout defined in our XML file
         setContentView(R.layout.tour_layout);
 
-        // get handles to the MapView from XML, and its MapThread
+        // get handles to the MapView from XML
         mMapView = (MapView) findViewById(R.id.map);
-        mMapThread = mMapView.getThread();
 
         // give the MapView a handle to the TextView used for messages
         mMapView.setTextView((TextView) findViewById(R.id.text));
 
         if (savedInstanceState == null) {
             // we were just launched: set up a new game
-            mMapThread.setState(MapThread.STATE_READY);
             Log.w(this.getClass().getName(), "SIS is null");
         } else {
             // we are being restored: resume a previous game
-            mMapThread.restoreState(savedInstanceState);
             Log.w(this.getClass().getName(), "SIS is nonnull");
         }
     }
@@ -138,7 +122,6 @@ public class TourApp extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        mMapView.getThread().pause(); // pause game when Activity pauses
     }
 
     /**
@@ -149,9 +132,7 @@ public class TourApp extends Activity {
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // just have the View's thread save its state into our Bundle
         super.onSaveInstanceState(outState);
-        mMapThread.saveState(outState);
         Log.w(this.getClass().getName(), "SIS called");
     }
 }
