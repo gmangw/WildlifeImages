@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is a simple TourApp activity that houses a single MapView. It
@@ -106,6 +109,13 @@ public class TourApp extends Activity {
 
         // give the MapView a handle to the TextView used for messages
         mMapView.setTextView((TextView) findViewById(R.id.text));
+    	
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Toast.makeText(v.getContext(), R.string.app_name, 1).show();
+            }
+        });
 
         if (savedInstanceState == null) {
             // we were just launched: set up a new game

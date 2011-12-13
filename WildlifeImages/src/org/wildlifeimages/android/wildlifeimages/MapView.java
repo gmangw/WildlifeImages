@@ -7,6 +7,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -32,6 +34,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
         
         this.setBackgroundDrawable( context.getResources().getDrawable(
                 R.drawable.facilitymap) );
+
         setFocusable(true); // make sure we get key events
     }
 
