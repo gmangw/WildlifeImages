@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,16 +28,17 @@ public class TourApp extends Activity {
 
     private static final int MENU_MEDIUM = 3;
 
-    private static final int MENU_PAUSE = 4;
+    private static final int MENU_SCAN = 4;
 
-    private static final int MENU_RESUME = 5;
+    private static final int MENU_CAMERA = 5;
 
-    private static final int MENU_START = 6;
+    private static final int MENU_HOME = 6;
 
-    private static final int MENU_STOP = 7;
+    private static final int MENU_MAP = 7;
 
-    /** A handle to the View in which the game is running. */
+    /** Handles to the Views in which the content sits. */
     private MapView mMapView;
+    private WebView mWebView;
 
     /**
      * Invoked during init to give the Activity a chance to set up its Menu.
@@ -48,10 +50,10 @@ public class TourApp extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        menu.add(0, MENU_START, 0, R.string.menu_start);
-        menu.add(0, MENU_STOP, 0, R.string.menu_stop);
-        menu.add(0, MENU_PAUSE, 0, R.string.menu_pause);
-        menu.add(0, MENU_RESUME, 0, R.string.menu_resume);
+        menu.add(0, MENU_HOME, 0, R.string.menu_home);
+        menu.add(0, MENU_MAP, 0, R.string.menu_map);
+        menu.add(0, MENU_SCAN, 0, R.string.menu_scan);
+        menu.add(0, MENU_CAMERA, 0, R.string.menu_camera);
         menu.add(0, MENU_EASY, 0, R.string.menu_easy);
         menu.add(0, MENU_MEDIUM, 0, R.string.menu_medium);
         menu.add(0, MENU_HARD, 0, R.string.menu_hard);
@@ -69,15 +71,23 @@ public class TourApp extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_START:
+            case MENU_HOME:
+            	setContentView(R.layout.intro_layout);
+            	mWebView = (WebView) findViewById(R.id.intro);
+                String summary = "<html><body>All about Wildlife Images!</body></html>";
+                mWebView.loadData(summary, "text/html", "US-ASCII");
                 return true;
-            case MENU_STOP:
+            case MENU_MAP:
+            	setContentView(R.layout.tour_layout);
                 return true;
-            case MENU_PAUSE:
+            case MENU_SCAN:
+            	Toast.makeText(this.getApplicationContext(), "Scan", 1).show(); //TODO
                 return true;
-            case MENU_RESUME:
+            case MENU_CAMERA:
+            	Toast.makeText(this.getApplicationContext(), "Camera", 1).show(); //TODO
                 return true;
             case MENU_EASY:
+            	Toast.makeText(this.getApplicationContext(), "USER\n\nWHY U PUSH THIS", 1).show(); //TODO
                 return true;
             case MENU_MEDIUM:
                 return true;
@@ -100,7 +110,7 @@ public class TourApp extends Activity {
 
         // turn off the window's title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+        
         // tell system to use the layout defined in our XML file
         setContentView(R.layout.tour_layout);
 
@@ -113,10 +123,10 @@ public class TourApp extends Activity {
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	Toast.makeText(v.getContext(), R.string.app_name, 1).show();
+            	Toast.makeText(v.getContext().getApplicationContext(), R.string.app_name, 1).show();
             }
         });
-
+        
         if (savedInstanceState == null) {
             // we were just launched: set up a new game
             Log.w(this.getClass().getName(), "SIS is null");
