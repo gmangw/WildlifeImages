@@ -36,10 +36,34 @@ public class TourApp extends Activity {
 
     private static final int MENU_MAP = 7;
 
-    /** Handles to the Views in which the content sits. */
-    private MapView mMapView;
-    private WebView mWebView;
 
+    private void mapInit() {
+    	// tell system to use the layout defined in our XML file
+        setContentView(R.layout.tour_layout);
+    	MapView mMapView;
+    	// get handles to the MapView from XML
+        mMapView = (MapView) findViewById(R.id.map);
+
+        // give the MapView a handle to the TextView used for messages
+        mMapView.setTextView((TextView) findViewById(R.id.text));
+    	Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Toast.makeText(v.getContext().getApplicationContext(), R.string.app_name, 1).show();
+            }
+        });
+        button.setVisibility(View.GONE);
+    }
+    
+    private void introInit() {
+    	// tell system to use the layout defined in our XML file
+        setContentView(R.layout.intro_layout);
+    	WebView mWebView;
+    	mWebView = (WebView) findViewById(R.id.intro);
+        String summary = "<html><body>All about Wildlife Images!</body></html>";
+        mWebView.loadData(summary, "text/html", "US-ASCII");
+    }
+    
     /**
      * Invoked during init to give the Activity a chance to set up its Menu.
      * 
@@ -72,13 +96,10 @@ public class TourApp extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_HOME:
-            	setContentView(R.layout.intro_layout);
-            	mWebView = (WebView) findViewById(R.id.intro);
-                String summary = "<html><body>All about Wildlife Images!</body></html>";
-                mWebView.loadData(summary, "text/html", "US-ASCII");
+            	introInit();
                 return true;
             case MENU_MAP:
-            	setContentView(R.layout.tour_layout);
+            	mapInit();
                 return true;
             case MENU_SCAN:
             	Toast.makeText(this.getApplicationContext(), "Scan", 1).show(); //TODO
@@ -110,22 +131,8 @@ public class TourApp extends Activity {
 
         // turn off the window's title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
-        // tell system to use the layout defined in our XML file
-        setContentView(R.layout.tour_layout);
 
-        // get handles to the MapView from XML
-        mMapView = (MapView) findViewById(R.id.map);
-
-        // give the MapView a handle to the TextView used for messages
-        mMapView.setTextView((TextView) findViewById(R.id.text));
-    	
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	Toast.makeText(v.getContext().getApplicationContext(), R.string.app_name, 1).show();
-            }
-        });
+        introInit();
         
         if (savedInstanceState == null) {
             // we were just launched: set up a new game

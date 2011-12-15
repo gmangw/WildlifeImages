@@ -1,13 +1,19 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -15,19 +21,34 @@ import android.widget.TextView;
  */
 class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
-
+	private final int gridCountX = 8;
+	private final int gridCountY = 8;
+	
     /** Pointer to the text view to display "Paused.." etc. */
     private TextView mStatusText;
-
+    private TextView mButton;
+    private MapView mMapView;
+    
+    private int mCurrentWidth;
+    private int mCurrentHeight;
+    
+    private int mCurrentGridWidth;
+    private int mCurrentGridHeight;
+    
     private GestureDetector gestures;
+    
+    private int selectedGridX = 0;
+    private int selectedGridY = 0;
     
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        
+        mMapView = this;
+        
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-
+        
         gestures = new GestureDetector(context, new GestureListener(this));
         
         this.setBackgroundDrawable( context.getResources().getDrawable(
@@ -35,7 +56,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
         setFocusable(true); // make sure we get key events
     }
-
+    
     @Override  
     public boolean onTouchEvent(MotionEvent event) { 
         return gestures.onTouchEvent(event);  
@@ -58,7 +79,14 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		//@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			return false;
+			mCurrentGridWidth = mCurrentWidth/gridCountX;
+			mCurrentGridHeight = mCurrentHeight/gridCountY;
+			
+			selectedGridX = (int)e.getX()/mCurrentGridWidth;
+			selectedGridY = (int)e.getY()/mCurrentGridHeight;
+
+			mMapView.invalidate();
+			return true;
 		}
 		//@Override
 		public boolean onDown(MotionEvent e) {
@@ -67,10 +95,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		//@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 				float velocityY) {
-			// X and Y grow from top left
-			if(e1.getY() > e2.getY()){
-			}
-			return true;
+			return false;
 		}
 		//@Override
 		public void onLongPress(MotionEvent e) {
@@ -89,6 +114,22 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		}  
 	} 
 
+    @Override
+    public void onDraw(Canvas canvas){
+    	super.onDraw(canvas);
+    	Paint p = new Paint();
+    	p.setARGB(127, 0, 0, 255);
+    	Rect r = new Rect(selectedGridX*mCurrentGridWidth, selectedGridY*mCurrentGridHeight, (selectedGridX+1)*mCurrentGridWidth, (selectedGridY+1)*mCurrentGridHeight);
+    	canvas.drawRect(r, p);
+    	
+    	for(int i=0; i<gridCountX; i++){
+    		canvas.drawLine(i*mCurrentGridWidth, 0, i*mCurrentGridWidth, mCurrentHeight, p);
+    	}
+    	for(int i=0; i<gridCountY; i++){
+    		canvas.drawLine(0, i*mCurrentGridHeight, mCurrentWidth, i*mCurrentGridHeight, p);
+    	}
+    }
+    
     /**
      * Standard override to get key-press events.
      */
@@ -121,9 +162,18 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
         mStatusText = textView;
     }
 
+    /**
+     * Installs a pointer to the text view used for messages.
+     */
+    public void setButton(Button button) {
+        mButton = button;
+    }
+    
     /* Callback invoked when the surface dimensions change. */
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
+    	mCurrentWidth = width;
+    	mCurrentHeight = height;
     }
 
     /*
