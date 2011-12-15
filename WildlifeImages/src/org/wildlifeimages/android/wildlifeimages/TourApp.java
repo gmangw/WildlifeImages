@@ -22,19 +22,14 @@ import android.widget.Toast;
  * </ul>
  */
 public class TourApp extends Activity {
-    private static final int MENU_EASY = 1;
 
-    private static final int MENU_HARD = 2;
+    private static final int MENU_SCAN = 1;
 
-    private static final int MENU_MEDIUM = 3;
+    private static final int MENU_CAMERA = 2;
 
-    private static final int MENU_SCAN = 4;
+    private static final int MENU_HOME = 3;
 
-    private static final int MENU_CAMERA = 5;
-
-    private static final int MENU_HOME = 6;
-
-    private static final int MENU_MAP = 7;
+    private static final int MENU_MAP = 4;
 
 
     private void mapInit() {
@@ -60,8 +55,15 @@ public class TourApp extends Activity {
         setContentView(R.layout.intro_layout);
     	WebView mWebView;
     	mWebView = (WebView) findViewById(R.id.intro);
-        String summary = "<html><body>All about Wildlife Images!</body></html>";
-        mWebView.loadData(summary, "text/html", "US-ASCII");
+        mWebView.loadUrl("file:///android_asset/intro.html");
+    }
+    
+    private void donationInit() {
+    	// tell system to use the layout defined in our XML file
+        setContentView(R.layout.intro_layout);
+    	WebView mWebView;
+    	mWebView = (WebView) findViewById(R.id.intro);
+        mWebView.loadUrl("file:///android_asset/donate.html");
     }
     
     /**
@@ -78,9 +80,6 @@ public class TourApp extends Activity {
         menu.add(0, MENU_MAP, 0, R.string.menu_map);
         menu.add(0, MENU_SCAN, 0, R.string.menu_scan);
         menu.add(0, MENU_CAMERA, 0, R.string.menu_camera);
-        menu.add(0, MENU_EASY, 0, R.string.menu_easy);
-        menu.add(0, MENU_MEDIUM, 0, R.string.menu_medium);
-        menu.add(0, MENU_HARD, 0, R.string.menu_hard);
 
         return true;
     }
@@ -106,13 +105,6 @@ public class TourApp extends Activity {
                 return true;
             case MENU_CAMERA:
             	Toast.makeText(this.getApplicationContext(), "Camera", 1).show(); //TODO
-                return true;
-            case MENU_EASY:
-            	Toast.makeText(this.getApplicationContext(), "USER\n\nWHY U PUSH THIS", 1).show(); //TODO
-                return true;
-            case MENU_MEDIUM:
-                return true;
-            case MENU_HARD:
                 return true;
         }
 
