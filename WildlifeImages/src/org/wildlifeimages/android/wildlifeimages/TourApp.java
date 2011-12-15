@@ -1,6 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.app.Activity;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +32,7 @@ public class TourApp extends Activity {
 
     private static final int MENU_MAP = 4;
 
+    private Camera mCamera;
 
     private void mapInit() {
     	// tell system to use the layout defined in our XML file
@@ -102,9 +104,15 @@ public class TourApp extends Activity {
                 return true;
             case MENU_SCAN:
             	Toast.makeText(this.getApplicationContext(), "Scan", 1).show(); //TODO
+            	mCamera.stopPreview();
+            	mCamera.release();
                 return true;
             case MENU_CAMERA:
-            	Toast.makeText(this.getApplicationContext(), "Camera", 1).show(); //TODO
+            	//Toast.makeText(this.getApplicationContext(), "Camera", 1).show(); //TODO
+            	//
+            	setContentView(R.layout.camera_layout);
+            	CameraDisplay mPreview = (CameraDisplay) findViewById(R.id.cam);
+            	//setContentView(new Preview(this));
                 return true;
         }
 
@@ -153,5 +161,9 @@ public class TourApp extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.w(this.getClass().getName(), "SIS called");
+    }
+    
+    public void takePicture(View view) {
+    	((CameraDisplay)findViewById(R.id.cam)).takePicture();
     }
 }
