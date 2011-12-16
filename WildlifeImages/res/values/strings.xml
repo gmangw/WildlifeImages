@@ -19,10 +19,6 @@
 	
     <string name="menu_home">Home</string>
     <string name="menu_map">Map</string>
-    <string name="menu_scan">Scan</string>
+    <string name="menu_scan">QR Scan</string>
     <string name="menu_camera">Camera</string>
-    
-    <string name="mode_ready">Tour Map\nPress Up To Play</string> 
-
-    <string name="tour_layout_text_text"></string>
 </resources>
