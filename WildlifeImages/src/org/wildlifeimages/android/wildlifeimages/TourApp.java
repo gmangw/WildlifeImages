@@ -3,12 +3,14 @@ package org.wildlifeimages.android.wildlifeimages;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +39,10 @@ public class TourApp extends Activity {
     private static final int MENU_HOME = 3;
 
     private static final int MENU_MAP = 4;
-
-    private Camera mCamera;
+    
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST = 1024;
+    
+    private static final int CODE_SCAN_ACTIVITY_REQUEST = 2048;
 
     private void mapInit() {
     	// tell system to use the layout defined in our XML file
@@ -112,26 +116,38 @@ public class TourApp extends Activity {
             	boolean scanAvailable = isIntentAvailable(this, "com.google.zxing.client.android.SCAN");
             	
             	if (scanAvailable){
-            		mapInit();
+            		//mapInit();
             		Intent intent = new Intent("com.google.zxing.client.android.SCAN");
             		intent.putExtra("com.google.zxing.client.android.SCAN.SCAN_MODE", "QR_CODE_MODE");
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, CODE_SCAN_ACTIVITY_REQUEST);
             	} else {
             		Toast.makeText(this.getApplicationContext(), "Install the Barcode Scanner app first.", 1).show();
             	}
                 return true;
             case MENU_CAMERA:
-            	//Toast.makeText(this.getApplicationContext(), "Camera", 1).show(); //TODO
-            	//
-            	setContentView(R.layout.camera_layout);
-            	CameraDisplay mPreview = (CameraDisplay) findViewById(R.id.cam);
-            	//setContentView(new Preview(this));
+            	/* http://achorniy.wordpress.com/2010/04/26/howto-launch-android-camera-using-intents/ */
+            	//define the file-name to save photo taken by Camera activity
+            	String fileName = "new-photo-name.jpg";
+            	Uri imageUri;
+            	//create parameters for Intent with filename
+            	ContentValues values = new ContentValues();
+            	values.put(MediaStore.Images.Media.TITLE, fileName);
+            	values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
+            	//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
+            	imageUri = getContentResolver().insert(
+            			MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            	//create new Intent
+            	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            	intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            	intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+            	startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST);
+            	
                 return true;
         }
 
         return false;
     }
-    
+
     /**
      * Invoked when the Activity is created.
      * 
@@ -176,10 +192,6 @@ public class TourApp extends Activity {
         Log.w(this.getClass().getName(), "SIS called");
     }
     
-    public void takePicture(View view) {
-    	((CameraDisplay)findViewById(R.id.cam)).takePicture();
-    }
-    
     /**
      * Indicates whether the specified action can be used as an intent. This
      * method queries the package manager for installed packages that can
@@ -207,7 +219,7 @@ public class TourApp extends Activity {
      * http://stackoverflow.com/questions/2050263/using-zxing-to-create-an-android-barcode-scanning-app
      */
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == 0) {
+        if (requestCode == CODE_SCAN_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 String contents = intent.getStringExtra("SCAN_RESULT");
                 String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
@@ -217,6 +229,15 @@ public class TourApp extends Activity {
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO
             }
-        }
+        } else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST) {
+    	    if (resultCode == RESULT_OK) {
+    	        //use imageUri here to access the image
+
+    	    } else if (resultCode == RESULT_CANCELED) {
+    	        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
+    	    } else {
+    	        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
+    	    }
+    	}
     }
 }
