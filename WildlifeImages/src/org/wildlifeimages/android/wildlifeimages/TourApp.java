@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,19 +32,11 @@ import android.widget.Toast;
  * </ul>
  */
 public class TourApp extends Activity {
-
-    private static final int MENU_SCAN = 1;
-
-    private static final int MENU_CAMERA = 2;
-
-    private static final int MENU_HOME = 3;
-
-    private static final int MENU_MAP = 4;
-    
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST = 1024;
-    
-    private static final int CODE_SCAN_ACTIVITY_REQUEST = 2048;
-
+	
+	private ExhibitList exhibitList = new ExhibitList();
+	
+	boolean isLandscape = false;
+	
     private void mapInit() {
     	// tell system to use the layout defined in our XML file
         setContentView(R.layout.tour_layout);
@@ -70,12 +63,13 @@ public class TourApp extends Activity {
         mWebView.loadUrl("file:///android_asset/intro.html");
     }
     
-    private void donationInit() {
+    private void exhibitInit(Exhibit e) {
     	// tell system to use the layout defined in our XML file
+    	exhibitList.setCurrent(e);
         setContentView(R.layout.intro_layout);
     	WebView mWebView;
     	mWebView = (WebView) findViewById(R.id.intro);
-        mWebView.loadUrl("file:///android_asset/donate.html");
+        mWebView.loadData(e.getContents(), "text/html", null);
     }
     
     /**
@@ -87,11 +81,17 @@ public class TourApp extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+
+        menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
+        menu.add(0, R.integer.MENU_MAP, 0, R.string.menu_map);
+        menu.add(0, R.integer.MENU_SCAN, 0, R.string.menu_scan);
+        menu.add(0, R.integer.MENU_CAMERA, 0, R.string.menu_camera);
+        menu.add(0, R.integer.MENU_PREVIOUS, 0, R.string.menu_previous);
+        menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
         
-        menu.add(0, MENU_HOME, 0, R.string.menu_home);
-        menu.add(0, MENU_MAP, 0, R.string.menu_map);
-        menu.add(0, MENU_SCAN, 0, R.string.menu_scan);
-        menu.add(0, MENU_CAMERA, 0, R.string.menu_camera);
+        //TODO
+        //menu.findItem(R.integer.MENU_NEXT).setEnabled( exhibitList.getCurrent().getNext() != null );
+        //menu.findItem(R.integer.MENU_PREVIOUS).setEnabled( exhibitList.getCurrent().getPrevious() != null );
         
         return true;
     }
@@ -105,26 +105,26 @@ public class TourApp extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_HOME:
+    	switch (item.getItemId()) {
+            case R.integer.MENU_HOME:
             	introInit();
                 return true;
-            case MENU_MAP:
+            case R.integer.MENU_MAP:
             	mapInit();
                 return true;
-            case MENU_SCAN:
+            case R.integer.MENU_SCAN:
             	boolean scanAvailable = isIntentAvailable(this, "com.google.zxing.client.android.SCAN");
             	
             	if (scanAvailable){
             		//mapInit();
             		Intent intent = new Intent("com.google.zxing.client.android.SCAN");
             		intent.putExtra("com.google.zxing.client.android.SCAN.SCAN_MODE", "QR_CODE_MODE");
-                    startActivityForResult(intent, CODE_SCAN_ACTIVITY_REQUEST);
+                    startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
             	} else {
             		Toast.makeText(this.getApplicationContext(), "Install the Barcode Scanner app first.", 1).show();
             	}
                 return true;
-            case MENU_CAMERA:
+            case R.integer.MENU_CAMERA:
             	/* http://achorniy.wordpress.com/2010/04/26/howto-launch-android-camera-using-intents/ */
             	//define the file-name to save photo taken by Camera activity
             	String fileName = "new-photo-name.jpg";
@@ -140,8 +140,22 @@ public class TourApp extends Activity {
             	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             	intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             	intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-            	startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST);
+            	startActivityForResult(intent, R.integer.CAPTURE_IMAGE_ACTIVITY_REQUEST);
             	
+                return true;
+            case R.integer.MENU_NEXT:
+            	Exhibit next = exhibitList.getCurrent().getNext();
+            	
+            	if(next != null){
+            		exhibitInit(next);
+            	}
+                return true;
+            case R.integer.MENU_PREVIOUS:
+            	Exhibit prev = exhibitList.getCurrent().getPrevious();
+            	
+            	if(prev != null){
+            		exhibitInit(prev);
+            	}
                 return true;
         }
 
@@ -215,29 +229,54 @@ public class TourApp extends Activity {
         return list.size() > 0;
     }
     
+    private boolean processResultQR(String textQR){
+    	String prefix = this.getResources().getString(R.string.qr_prefix);
+    	textQR.substring(0, prefix.length());
+    	if(textQR.substring(0, prefix.length()).equals(prefix)){
+    		String potential_key = textQR.substring(prefix.length());
+    		if (exhibitList.containsKey(potential_key)){
+    			Exhibit e = exhibitList.get(potential_key);
+    			exhibitInit(e);
+    			return true;
+    		}else{
+    			return false;
+    		}
+    	}else{
+    		return false;
+    	}
+    }
+    
     /**
      * http://stackoverflow.com/questions/2050263/using-zxing-to-create-an-android-barcode-scanning-app
      */
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == CODE_SCAN_ACTIVITY_REQUEST) {
+        if (requestCode == R.integer.CODE_SCAN_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 String contents = intent.getStringExtra("SCAN_RESULT");
                 String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
                 if (format.equals("QR_CODE")){
-                	Toast.makeText(this.getApplicationContext(), contents, 1).show();
+                	if (false == processResultQR(contents)){
+                		Toast.makeText(this.getApplicationContext(), "Code not recognized: " + contents, 1).show();
+                	}
                 }
             } else if (resultCode == RESULT_CANCELED) {
-                //TODO
             }
-        } else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST) {
+        } else if (requestCode == R.integer.CAPTURE_IMAGE_ACTIVITY_REQUEST) {
     	    if (resultCode == RESULT_OK) {
     	        //use imageUri here to access the image
-
+	    		//TODO
     	    } else if (resultCode == RESULT_CANCELED) {
     	        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
     	    } else {
     	        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
     	    }
     	}
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration config){
+    	super.onConfigurationChanged(config);
+    	
+    	isLandscape = config.orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 }

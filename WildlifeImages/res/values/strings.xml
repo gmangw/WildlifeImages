@@ -21,4 +21,7 @@
     <string name="menu_map">Map</string>
     <string name="menu_scan">QR Scan</string>
     <string name="menu_camera">Camera</string>
+    <string name="menu_next">Next</string><string name="menu_previous">Previous</string><string name="qr_prefix">Wildlife_Images_Exhibit:</string>
+    
+    
 </resources>

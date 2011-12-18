@@ -2,16 +2,17 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent" >
     
     <org.wildlifeimages.android.wildlifeimages.MapView
       android:id="@+id/map"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"/>
+      android:layout_height="fill_parent" />
     
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
+        
         <TextView
           android:id="@+id/text"
 		  android:visibility="visible"

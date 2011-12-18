@@ -1,19 +1,20 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
@@ -21,12 +22,11 @@ import android.widget.Toast;
  */
 class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
-	private final int gridCountX = 8;
-	private final int gridCountY = 8;
+	private final int gridCountX = 16;
+	private final int gridCountY = 16;
 	
     /** Pointer to the text view to display "Paused.." etc. */
     private TextView mStatusText;
-    private TextView mButton;
     private MapView mMapView;
     
     private int mCurrentWidth;
@@ -51,9 +51,8 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
         
         gestures = new GestureDetector(context, new GestureListener(this));
         
-        this.setBackgroundDrawable( context.getResources().getDrawable(
-                R.drawable.facilitymap) );
-
+        //this.setBackgroundDrawable( context.getResources().getDrawable( R.drawable.map) );
+        this.setBackgroundColor(Color.WHITE);
         setFocusable(true); // make sure we get key events
     }
     
@@ -90,7 +89,14 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		//@Override
 		public boolean onDown(MotionEvent e) {
-			return true;
+			mCurrentGridWidth = mCurrentWidth/gridCountX;
+			mCurrentGridHeight = mCurrentHeight/gridCountY;
+			
+			selectedGridX = (int)e.getX()/mCurrentGridWidth;
+			selectedGridY = (int)e.getY()/mCurrentGridHeight;
+
+			mMapView.invalidate();
+			return false;
 		}
 		//@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -117,6 +123,15 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void onDraw(Canvas canvas){
     	super.onDraw(canvas);
+    	
+    	try{
+	    	Drawable map = this.getResources().getDrawable(R.drawable.map);
+	    	map.setBounds(0, 0, 640, 480);
+	    	map.draw(canvas);
+    	}catch (NotFoundException e){
+    		//TODO
+    	}
+    	
     	Paint p = new Paint();
     	p.setARGB(127, 0, 0, 255);
     	Rect r = new Rect(selectedGridX*mCurrentGridWidth, selectedGridY*mCurrentGridHeight, (selectedGridX+1)*mCurrentGridWidth, (selectedGridY+1)*mCurrentGridHeight);
@@ -139,8 +154,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     /**
-     * Standard override for key-up. We actually care about these, so we can
-     * turn off the engine or stop rotating.
+     * Standard override for key-up. 
      */
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent msg) {
@@ -153,6 +167,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
      */
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
+    	//TODO
     }
 
     /**
@@ -160,13 +175,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void setTextView(TextView textView) {
         mStatusText = textView;
-    }
-
-    /**
-     * Installs a pointer to the text view used for messages.
-     */
-    public void setButton(Button button) {
-        mButton = button;
     }
     
     /* Callback invoked when the surface dimensions change. */
@@ -190,4 +198,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void surfaceDestroyed(SurfaceHolder holder) {
     }
+    
+    
 }
