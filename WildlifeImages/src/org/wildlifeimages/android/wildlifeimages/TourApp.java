@@ -33,7 +33,7 @@ import android.widget.Toast;
  */
 public class TourApp extends Activity {
 	
-	private ExhibitList exhibitList = new ExhibitList();
+	public ExhibitList exhibitList = new ExhibitList();
 	
 	boolean isLandscape = false;
 	
@@ -46,6 +46,8 @@ public class TourApp extends Activity {
 
         // give the MapView a handle to the TextView used for messages
         mMapView.setTextView((TextView) findViewById(R.id.text));
+        mMapView.setExhibitList(exhibitList);
+        mMapView.setParent(this);
     	Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -63,7 +65,7 @@ public class TourApp extends Activity {
         mWebView.loadUrl("file:///android_asset/intro.html");
     }
     
-    private void exhibitInit(Exhibit e) {
+    public void exhibitInit(Exhibit e) {
     	// tell system to use the layout defined in our XML file
     	exhibitList.setCurrent(e);
         setContentView(R.layout.intro_layout);

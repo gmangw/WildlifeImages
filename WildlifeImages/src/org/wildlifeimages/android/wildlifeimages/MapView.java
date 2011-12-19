@@ -1,5 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.Enumeration;
+
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Canvas;
@@ -7,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.sax.ElementListener;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -15,6 +18,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -22,23 +26,19 @@ import android.widget.TextView;
  */
 class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
-	private final int gridCountX = 16;
-	private final int gridCountY = 16;
+	private final int gridCountX = 20;
+	private final int gridCountY = 20;
 	
-    /** Pointer to the text view to display "Paused.." etc. */
     private TextView mStatusText;
     private MapView mMapView;
     
-    private int mCurrentWidth;
-    private int mCurrentHeight;
-    
-    private int mCurrentGridWidth;
-    private int mCurrentGridHeight;
+    private ExhibitList exhibitList;
+    private TourApp parent;
     
     private GestureDetector gestures;
     
-    private int selectedGridX = 0;
-    private int selectedGridY = 0;
+    private int originX = 0;
+    private int originY = 0;
     
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,6 +54,14 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
         //this.setBackgroundDrawable( context.getResources().getDrawable( R.drawable.map) );
         this.setBackgroundColor(Color.WHITE);
         setFocusable(true); // make sure we get key events
+    }
+    
+    public void setParent(TourApp app){
+    	parent = app;
+    }
+    
+    public void setExhibitList(ExhibitList list){
+    	exhibitList = list;
     }
     
     @Override  
@@ -78,25 +86,28 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		//@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			mCurrentGridWidth = mCurrentWidth/gridCountX;
+			/*mCurrentGridWidth = mCurrentWidth/gridCountX;
 			mCurrentGridHeight = mCurrentHeight/gridCountY;
 			
 			selectedGridX = (int)e.getX()/mCurrentGridWidth;
-			selectedGridY = (int)e.getY()/mCurrentGridHeight;
-
-			mMapView.invalidate();
+			selectedGridY = (int)e.getY()/mCurrentGridHeight;*/
+			
+			float percentHoriz = 100*(e.getX()/getWidth());
+			float percentVert = 100*(e.getY()/(3*getWidth()/4));
+			
+			//Toast.makeText(parent.getApplicationContext(), percentHoriz + ", " + percentVert, 1).show(); TODO
+			
+			Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
+			if(selectedExhibit != null){
+				parent.exhibitInit(selectedExhibit);
+			}
+			
+			//mMapView.invalidate();
 			return true;
 		}
 		//@Override
 		public boolean onDown(MotionEvent e) {
-			mCurrentGridWidth = mCurrentWidth/gridCountX;
-			mCurrentGridHeight = mCurrentHeight/gridCountY;
-			
-			selectedGridX = (int)e.getX()/mCurrentGridWidth;
-			selectedGridY = (int)e.getY()/mCurrentGridHeight;
-
-			mMapView.invalidate();
-			return false;
+			return true;
 		}
 		//@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -123,26 +134,26 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void onDraw(Canvas canvas){
     	super.onDraw(canvas);
-    	
+
     	try{
 	    	Drawable map = this.getResources().getDrawable(R.drawable.map);
-	    	map.setBounds(0, 0, 640, 480);
+	    	map.setBounds(originX, originY, this.getWidth(), 3*this.getWidth()/4);
 	    	map.draw(canvas);
     	}catch (NotFoundException e){
     		//TODO
     	}
     	
+    	/* TODO
     	Paint p = new Paint();
-    	p.setARGB(127, 0, 0, 255);
-    	Rect r = new Rect(selectedGridX*mCurrentGridWidth, selectedGridY*mCurrentGridHeight, (selectedGridX+1)*mCurrentGridWidth, (selectedGridY+1)*mCurrentGridHeight);
-    	canvas.drawRect(r, p);
+    	p.setARGB(255, 0, 0, 255);
     	
-    	for(int i=0; i<gridCountX; i++){
-    		canvas.drawLine(i*mCurrentGridWidth, 0, i*mCurrentGridWidth, mCurrentHeight, p);
-    	}
-    	for(int i=0; i<gridCountY; i++){
-    		canvas.drawLine(0, i*mCurrentGridHeight, mCurrentWidth, i*mCurrentGridHeight, p);
-    	}
+    	Enumeration<Exhibit> list = exhibitList.elements();
+    	
+    	while(list.hasMoreElements()){
+    		Exhibit e = list.nextElement();
+    		canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
+		}
+    	*/
     }
     
     /**
@@ -180,8 +191,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     /* Callback invoked when the surface dimensions change. */
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
-    	mCurrentWidth = width;
-    	mCurrentHeight = height;
     }
 
     /*

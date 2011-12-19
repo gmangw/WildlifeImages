@@ -56,6 +56,14 @@ public class Exhibit {
 	}
 	
 	public int getDistance(int x, int y){
-		return 0;
+		return (int)Math.sqrt(Math.pow(mapX - x, 2) + Math.pow(mapY - y, 2));
+	}
+	
+	public int getX(){
+		return mapX;
+	}
+	
+	public int getY(){
+		return mapY;
 	}
 }
