@@ -1,5 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import android.app.Activity;
@@ -18,7 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,9 +74,9 @@ public class TourApp extends Activity {
     public void exhibitInit(Exhibit e) {
     	// tell system to use the layout defined in our XML file
     	exhibitList.setCurrent(e);
-        setContentView(R.layout.intro_layout);
+        setContentView(R.layout.exhibit_layout);
     	WebView mWebView;
-    	mWebView = (WebView) findViewById(R.id.intro);
+    	mWebView = (WebView) findViewById(R.id.exhibit);
         mWebView.loadData(e.getContents(), "text/html", null);
     }
     
@@ -280,5 +286,48 @@ public class TourApp extends Activity {
     	super.onConfigurationChanged(config);
     	
     	isLandscape = config.orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+    
+    public void introProcessSidebar(View v){
+    	switch (v.getId()) {
+        case R.id.intro_sidebar_intro:
+        	introInit();
+            break;
+        case R.id.intro_sidebar_donations:
+        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
+            break;
+        case R.id.intro_sidebar_events:
+        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
+            break;
+        case R.id.intro_sidebar_photos:
+        	//TODO
+            break;
+        case R.id.intro_sidebar_app:
+        	//TODO
+            break;
+        case R.id.intro_sidebar_exhibitlist:
+        	ListView list = new ListView(this.getApplicationContext());
+        	ArrayList<String> tempList = new ArrayList<String>();
+        	Enumeration<Exhibit> placeEnum = exhibitList.elements();
+        	while(placeEnum.hasMoreElements()){
+        		Exhibit e = placeEnum.nextElement();
+        		tempList.add(e.getName());
+    		}
+        	String[] tempArray = tempList.toArray(new String[0]);
+        	Arrays.sort(tempArray);
+        	list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray));
+        	setContentView(list);
+            break;
+        case R.id.intro_sidebar_map:
+        	mapInit();
+            break;
+    	}
+    }
+    
+    
+    public void exhibitProcessSidebar(View v){
+    	if (v.getId() == R.id.intro_sidebar_app){
+    		mapInit();
+    	}
     }
 }

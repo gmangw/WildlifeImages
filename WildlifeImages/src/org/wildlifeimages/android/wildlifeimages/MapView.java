@@ -44,7 +44,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
         super(context, attrs);
         
         mMapView = this;
-        
+
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
