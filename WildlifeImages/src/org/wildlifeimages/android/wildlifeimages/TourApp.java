@@ -308,7 +308,11 @@ public class TourApp extends Activity {
 	        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/photos.html");
 	            break;
 	        case R.id.intro_sidebar_app:
-	        	((WebView) findViewById(R.id.intro)).loadData("About app", "text/html", null);
+	        	((WebView) findViewById(R.id.intro)).loadData("Keep the screen horizontal for now, " +
+	        			"the map won't work at all vertical and most pages will also look bad.<br><br>" +
+	        			"QR code scan requires that Barcode Scanner or Google Goggles be installed already.<br><br>" +
+	        			"The camera will generate duplicate photos, and leave garbage files if you cancel it.",
+	        			"text/html", null);
 	            break;
 	        case R.id.intro_sidebar_exhibitlist:
 	        	ListView list = new ListView(this.getApplicationContext());
@@ -356,6 +360,7 @@ public class TourApp extends Activity {
     	}
     }
     
+    /* http://stackoverflow.com/questions/2257963/android-how-to-show-dialog-to-confirm-user-wishes-to-exit-activity */
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
