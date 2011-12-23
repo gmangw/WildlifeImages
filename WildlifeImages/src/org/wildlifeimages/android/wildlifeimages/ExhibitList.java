@@ -4,16 +4,40 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class ExhibitList {
-	
+
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
 	
 	private Exhibit current = null;
 	
 	private final String EXHIBITS[][] = {
-			{"Alpha", "<html><body>Exhibit Alpha Contents</body></html>", "56", "59"},
-			{"Bravo", "<html><body>Exhibit Bravo Contents</body></html>", "38", "56"},
-			{"Charlie", "<html><body>Exhibit Charlie Contents</body></html>", "30", "44"},
-			{"Delta", "<html><body>Exhibit Delta Contents</body></html>", "46", "27"}
+			{"Alpha", "56", "59",
+				"file:///android_asset/ExhibitContents/alphaIntro.html", 
+				"file:///android_asset/ExhibitContents/alphaHistory.html",
+				"file:///android_asset/ExhibitContents/alphaPhotos.html",
+				"file:///android_asset/ExhibitContents/alphaVideos.html",
+				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
+				"file:///android_asset/ExhibitContents/alphaDiet.html"},
+			{"Bravo", "38", "56",
+				"file:///android_asset/ExhibitContents/bravoIntro.html", 
+				"file:///android_asset/ExhibitContents/alphaHistory.html",
+				"file:///android_asset/ExhibitContents/badger.jpg",
+				"file:///android_asset/ExhibitContents/alphaVideos.html",
+				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
+				"file:///android_asset/ExhibitContents/alphaDiet.html"},
+			{"Charlie", "30", "44",
+				"file:///android_asset/ExhibitContents/charlieIntro.html", 
+				"file:///android_asset/ExhibitContents/alphaHistory.html",
+				"file:///android_asset/ExhibitContents/wolf.jpg",
+				"file:///android_asset/ExhibitContents/alphaVideos.html",
+				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
+				"file:///android_asset/ExhibitContents/alphaDiet.html"},
+			{"Delta", "46", "27", 
+				"file:///android_asset/ExhibitContents/deltaIntro.html", 
+				"file:///android_asset/ExhibitContents/alphaHistory.html",
+				"file:///android_asset/ExhibitContents/bobcat.jpg",
+				"file:///android_asset/ExhibitContents/alphaVideos.html",
+				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
+				"file:///android_asset/ExhibitContents/alphaDiet.html"}
 	};
 	
 	private final String ORDER[][] = {
@@ -26,8 +50,13 @@ public class ExhibitList {
 		Exhibit e;
 
 		for (int i=0; i<EXHIBITS.length; i++){
-			e = new Exhibit(EXHIBITS[i][0], EXHIBITS[i][1]);
-			e.setCoords(Integer.decode(EXHIBITS[i][2]), Integer.decode(EXHIBITS[i][3]));
+			e = new Exhibit(EXHIBITS[i][0], EXHIBITS[i][3]);
+			e.setContent(Exhibit.HISTORY_TAG, EXHIBITS[i][4]);
+			e.setContent(Exhibit.PHOTOS_TAG, EXHIBITS[i][5]);
+			e.setContent(Exhibit.VIDEOS_TAG, EXHIBITS[i][6]);
+			e.setContent(Exhibit.FUNFACTS_TAG, EXHIBITS[i][7]);
+			e.setContent(Exhibit.DIET_TAG, EXHIBITS[i][8]);
+			e.setCoords(Integer.decode(EXHIBITS[i][1]), Integer.decode(EXHIBITS[i][2]));
 			exhibitList.put(e.getName(), e);
 		}
 		

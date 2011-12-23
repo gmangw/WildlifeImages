@@ -1,10 +1,26 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.Hashtable;
+
 public class Exhibit {
+	
+	public static final String INTRO_TAG = "Introduction";
+	
+	public static final String HISTORY_TAG = "History";
+	
+	public static final String PHOTOS_TAG = "Photos";
+	
+	public static final String VIDEOS_TAG = "Videos";
+	
+	public static final String FUNFACTS_TAG = "Fun Facts";
+	
+	public static final String DIET_TAG = "Diet";
+	
+	public static final String MAP_TAG = "Map";
 	
 	private String name;
 	
-	private String contents;
+	private Hashtable<String, String> contents = new Hashtable<String, String>();
 	
 	private Exhibit next = null;
 	
@@ -33,17 +49,22 @@ public class Exhibit {
 		this.previous = previous;
 	}
 
-	public String getContents() {
-		return contents;
+	public String getContent(String contentTag) {
+		String c = contents.get(contentTag);
+		if (c == null){
+			return "";
+		}else{
+			return c;
+		}
 	}
 
-	public void setContents(String contents) {
-		this.contents = contents;
+	public void setContent(String contentTag, String content) {
+		contents.put(contentTag, content);
 	}
 	
-	public Exhibit(String name, String contents){
+	public Exhibit(String name, String intro){
 		this.name = name;
-		this.contents = contents;
+		contents.put(Exhibit.INTRO_TAG, intro);
 	}
 
 	public String getName() {

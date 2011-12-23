@@ -6,8 +6,10 @@ import java.util.Enumeration;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -71,13 +74,15 @@ public class TourApp extends Activity {
         mWebView.loadUrl("file:///android_asset/intro.html");
     }
     
-    public void exhibitInit(Exhibit e) {
-    	// tell system to use the layout defined in our XML file
+    public void exhibitSwitch(Exhibit e, String contentTag) {
     	exhibitList.setCurrent(e);
-        setContentView(R.layout.exhibit_layout);
+    	if ((WebView) findViewById(R.id.exhibit) == null){
+    		setContentView(R.layout.exhibit_layout);
+    	}
     	WebView mWebView;
     	mWebView = (WebView) findViewById(R.id.exhibit);
-        mWebView.loadData(e.getContents(), "text/html", null);
+        //mWebView.loadData(e.getContent(contentTag), "text/html", null);
+    	mWebView.loadUrl(e.getContent(contentTag));
     }
     
     /**
@@ -155,14 +160,14 @@ public class TourApp extends Activity {
             	Exhibit next = exhibitList.getCurrent().getNext();
             	
             	if(next != null){
-            		exhibitInit(next);
+            		exhibitSwitch(next, Exhibit.INTRO_TAG);
             	}
                 return true;
             case R.integer.MENU_PREVIOUS:
             	Exhibit prev = exhibitList.getCurrent().getPrevious();
             	
             	if(prev != null){
-            		exhibitInit(prev);
+            		exhibitSwitch(prev, Exhibit.INTRO_TAG);
             	}
                 return true;
         }
@@ -244,7 +249,7 @@ public class TourApp extends Activity {
     		String potential_key = textQR.substring(prefix.length());
     		if (exhibitList.containsKey(potential_key)){
     			Exhibit e = exhibitList.get(potential_key);
-    			exhibitInit(e);
+    			exhibitSwitch(e, Exhibit.INTRO_TAG);
     			return true;
     		}else{
     			return false;
@@ -290,44 +295,94 @@ public class TourApp extends Activity {
     
     public void introProcessSidebar(View v){
     	switch (v.getId()) {
-        case R.id.intro_sidebar_intro:
-        	introInit();
-            break;
-        case R.id.intro_sidebar_donations:
-        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
-            break;
-        case R.id.intro_sidebar_events:
-        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
-            break;
-        case R.id.intro_sidebar_photos:
-        	//TODO
-            break;
-        case R.id.intro_sidebar_app:
-        	//TODO
-            break;
-        case R.id.intro_sidebar_exhibitlist:
-        	ListView list = new ListView(this.getApplicationContext());
-        	ArrayList<String> tempList = new ArrayList<String>();
-        	Enumeration<Exhibit> placeEnum = exhibitList.elements();
-        	while(placeEnum.hasMoreElements()){
-        		Exhibit e = placeEnum.nextElement();
-        		tempList.add(e.getName());
-    		}
-        	String[] tempArray = tempList.toArray(new String[0]);
-        	Arrays.sort(tempArray);
-        	list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray));
-        	setContentView(list);
-            break;
-        case R.id.intro_sidebar_map:
-        	mapInit();
-            break;
+	        case R.id.intro_sidebar_intro:
+	        	introInit();
+	            break;
+	        case R.id.intro_sidebar_donations:
+	        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
+	            break;
+	        case R.id.intro_sidebar_events:
+	        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
+	            break;
+	        case R.id.intro_sidebar_photos:
+	        	((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/photos.html");
+	            break;
+	        case R.id.intro_sidebar_app:
+	        	((WebView) findViewById(R.id.intro)).loadData("About app", "text/html", null);
+	            break;
+	        case R.id.intro_sidebar_exhibitlist:
+	        	ListView list = new ListView(this.getApplicationContext());
+	        	ArrayList<String> tempList = new ArrayList<String>();
+	        	Enumeration<Exhibit> placeEnum = exhibitList.elements();
+	        	while(placeEnum.hasMoreElements()){
+	        		Exhibit e = placeEnum.nextElement();
+	        		tempList.add(e.getName());
+	    		}
+	        	String[] tempArray = tempList.toArray(new String[0]);
+	        	Arrays.sort(tempArray);
+	        	list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray));
+	        	setContentView(list);
+	        	list.setOnItemClickListener(new ItemClickHandler());
+	            break;
+	        case R.id.intro_sidebar_map:
+	        	mapInit();
+	            break;
     	}
     }
     
-    
     public void exhibitProcessSidebar(View v){
-    	if (v.getId() == R.id.intro_sidebar_app){
-    		mapInit();
+    	switch (v.getId()) {
+	        case R.id.exhibit_sidebar_intro:
+	        	exhibitSwitch(exhibitList.getCurrent(), Exhibit.INTRO_TAG);
+	            break;
+	        case R.id.exhibit_sidebar_history:
+	        	exhibitSwitch(exhibitList.getCurrent(), Exhibit.HISTORY_TAG);
+	            break;
+	        case R.id.exhibit_sidebar_photos:
+	        	exhibitSwitch(exhibitList.getCurrent(), Exhibit.PHOTOS_TAG);
+	            break;
+	        case R.id.exhibit_sidebar_videos:
+	        	exhibitSwitch(exhibitList.getCurrent(), Exhibit.VIDEOS_TAG);
+	            break;
+	        case R.id.exhibit_sidebar_funfacts:
+	        	exhibitSwitch(exhibitList.getCurrent(), Exhibit.FUNFACTS_TAG);
+	            break;
+	        case R.id.exhibit_sidebar_diet:
+	        	exhibitSwitch(exhibitList.getCurrent(), Exhibit.DIET_TAG);
+	            break;
+	        case R.id.exhibit_sidebar_map:
+	        	mapInit();
+	            break;
     	}
+    }
+    
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final TourApp me = this;
+        builder.setMessage("Are you sure you want to exit?")
+               .setCancelable(false)
+               .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                        me.finish();
+                   }
+               })
+               .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                   }
+               });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+    
+    public class ItemClickHandler implements AdapterView.OnItemClickListener{
+
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			String exhibit = (String)parent.getItemAtPosition(position);
+			exhibitSwitch(exhibitList.get(exhibit), Exhibit.INTRO_TAG);
+		}
+    	
     }
 }
