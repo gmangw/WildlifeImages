@@ -20,6 +20,8 @@ public class Exhibit {
 	
 	private String name;
 	
+	private String currentTag = Exhibit.INTRO_TAG;
+	
 	private Hashtable<String, String> contents = new Hashtable<String, String>();
 	
 	private Exhibit next = null;
@@ -86,5 +88,13 @@ public class Exhibit {
 	
 	public int getY(){
 		return mapY;
+	}
+
+	public String getCurrentTag() {
+		return currentTag;
+	}
+
+	public void setCurrentTag(String contentTag) {
+		currentTag = contentTag;
 	}
 }

@@ -64,7 +64,7 @@ public class ExhibitList {
 			exhibitList.get(ORDER[i][0]).setNext(exhibitList.get(ORDER[i][1]));
 		}
 		
-		setCurrent(get("Alpha")); //TODO
+		setCurrent(exhibitList.elements().nextElement(), Exhibit.INTRO_TAG);
 	}
 
 	public Enumeration<String> keys(){
@@ -79,8 +79,19 @@ public class ExhibitList {
 		return exhibitList.get(potential_key);
 	}
 
-	public void setCurrent(Exhibit current) {
-		this.current = current;
+	public void setCurrent(Exhibit current, String contentTag) {
+		if (current != null){
+			this.current = current;
+			current.setCurrentTag(contentTag);
+		}
+	}
+	
+	public void setCurrent(String name, String contentTag) {
+		Exhibit e = this.get(name);
+		if (e != null){
+			current = e;
+			e.setCurrentTag(contentTag);
+		}
 	}
 
 	public Exhibit getCurrent() {

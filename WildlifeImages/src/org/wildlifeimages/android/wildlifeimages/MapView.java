@@ -143,7 +143,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     		//TODO
     	}
     	
-    	/* TODO
+    	/*
     	Paint p = new Paint();
     	p.setARGB(255, 0, 0, 255);
     	
@@ -152,8 +152,8 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     	while(list.hasMoreElements()){
     		Exhibit e = list.nextElement();
     		canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
-		}
-    	*/
+		}*/
+    	
     }
     
     /**
