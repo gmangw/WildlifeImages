@@ -1,22 +1,15 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class Exhibit {
 	
 	public static final String INTRO_TAG = "Introduction";
 	
-	public static final String HISTORY_TAG = "History";
+	public static final String MAP_TAG = "Map"; //TODO
 	
-	public static final String PHOTOS_TAG = "Photos";
-	
-	public static final String VIDEOS_TAG = "Videos";
-	
-	public static final String FUNFACTS_TAG = "Fun Facts";
-	
-	public static final String DIET_TAG = "Diet";
-	
-	public static final String MAP_TAG = "Map";
+	public static final String AUTO_TAG = "_auto";
 	
 	private String name;
 	
@@ -51,6 +44,10 @@ public class Exhibit {
 		this.previous = previous;
 	}
 
+	public Enumeration<String> getTags(){
+		return contents.keys();
+	}
+	
 	public String getContent(String contentTag) {
 		String c = contents.get(contentTag);
 		if (c == null){

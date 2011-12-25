@@ -27,51 +27,16 @@
       android:layout_weight="3"
       >
       <LinearLayout
+           	android:id="@+id/exhibit_sidebar_linear"
           	android:layout_width="fill_parent"
     		android:layout_height="fill_parent"
     		android:orientation="vertical">
 	      <Button
-			android:id="@+id/exhibit_sidebar_intro"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="Introduction" />
-	      <Button
-			android:id="@+id/exhibit_sidebar_history"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="History" />
-	      <Button
-			android:id="@+id/exhibit_sidebar_photos"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="Photos" />
-	      <Button
-			android:id="@+id/exhibit_sidebar_videos"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="Videos" />
-	      <Button
-			android:id="@+id/exhibit_sidebar_funfacts"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="Fun Facts" />
-	      <Button
-			android:id="@+id/exhibit_sidebar_diet"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="Diet" />
-	      <Button
 			android:id="@+id/exhibit_sidebar_map"
 			android:layout_height="fill_parent"
 			android:layout_width="fill_parent"
-			android:onClick="exhibitProcessSidebar"
-			android:text="Map" />
+			android:onClick="exhibitProcessSidebar" 
+			android:text="Map"/>
       </LinearLayout>
      </ScrollView>
 

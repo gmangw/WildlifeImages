@@ -21,10 +21,11 @@
     <string name="menu_map">Map</string>
     <string name="menu_scan">QR Scan</string>
     <string name="menu_camera">Camera</string>
-    <string name="menu_next">Next</string><string name="menu_previous">Previous</string><string name="qr_prefix">Wildlife_Images_Exhibit:</string>
+    <string name="menu_next">Next</string><string name="menu_previous">Previous</string><string name="qr_prefix">market://search?q=pname:org.xbmc.android.remote&amp;extra=Wildlife_Images_Exhibit_</string>
     <string name="save_current_exhibit">sce</string>
     <string name="save_current_exhibit_tag">scet</string>
     <string name="save_current_page">scp</string>
+    <string name="save_current_home_id">schi</string>
     
     
 </resources>

@@ -23,6 +23,8 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -45,11 +47,13 @@ import android.widget.Toast;
  */
 public class TourApp extends Activity {
 
-	public ExhibitList exhibitList = new ExhibitList();
+	public ExhibitList exhibitList;
 
 	private boolean isLandscape = false;
-	
+
 	private int activeId;
+	
+	private int activeHomeId = R.id.intro_sidebar_intro;
 
 	private void mapInit() {
 		// tell system to use the layout defined in our XML file
@@ -79,7 +83,7 @@ public class TourApp extends Activity {
 		mWebView = (WebView) findViewById(R.id.intro);
 		mWebView.loadUrl("file:///android_asset/intro.html");
 	}
-	
+
 	public void listInit(){
 		setActiveView(R.layout.list_layout);
 		ListView list = (ListView)findViewById(R.id.exhibitlist);
@@ -99,21 +103,33 @@ public class TourApp extends Activity {
 		setContentView(layoutResID);
 		activeId = layoutResID;
 	}
-	
+
 	public void exhibitSwitch(Exhibit e, String contentTag) {
 		exhibitList.setCurrent(e, contentTag);
 		if ((WebView) findViewById(R.id.exhibit) == null){
-
-			if (isLandscape){	
-				setActiveView(R.layout.exhibit_layout);;
+			if (isLandscape){
+				setActiveView(R.layout.exhibit_layout);
 			}else{
-				setActiveView(R.layout.exhibit_layout_vertical);;
+				setActiveView(R.layout.exhibit_layout_vertical);
+			}
+			Enumeration<String> tagList = e.getTags();
+			LinearLayout buttonList = (LinearLayout)findViewById(R.id.exhibit_sidebar_linear);
+				
+			while (tagList.hasMoreElements()){
+				Button button = new Button(buttonList.getContext());
+				String label = tagList.nextElement();
+				button.setText(label);
+				button.setOnClickListener(new OnClickListener(){
+					public void onClick(View v) {
+						exhibitProcessSidebar(v);
+					}});
+				buttonList.addView(button);
 			}
 		}
 		WebView mWebView;
 		mWebView = (WebView) findViewById(R.id.exhibit);
 		//mWebView.loadData(e.getContent(contentTag), "text/html", null);
-		mWebView.loadUrl(e.getContent(contentTag));
+		mWebView.loadUrl(e.getContent(e.getCurrentTag()));
 	}
 
 	/**
@@ -187,14 +203,14 @@ public class TourApp extends Activity {
 			Exhibit next = exhibitList.getCurrent().getNext();
 
 			if(next != null){
-				exhibitSwitch(next, Exhibit.INTRO_TAG);
+				exhibitSwitch(next, Exhibit.AUTO_TAG);
 			}
 			return true;
 		case R.integer.MENU_PREVIOUS:
 			Exhibit prev = exhibitList.getCurrent().getPrevious();
 
 			if(prev != null){
-				exhibitSwitch(prev, Exhibit.INTRO_TAG);
+				exhibitSwitch(prev, Exhibit.AUTO_TAG);
 			}
 			return true;
 		}
@@ -221,7 +237,9 @@ public class TourApp extends Activity {
 		}else{
 			isLandscape = false;
 		}		
-		
+
+		exhibitList = new ExhibitList();
+
 		if (savedState == null) {
 			// we were just launched: set up a new instance
 			Log.w(this.getClass().getName(), "SIS is null");
@@ -232,29 +250,31 @@ public class TourApp extends Activity {
 			Exhibit saved = exhibitList.get(savedState.getString(getResources().getString(R.string.save_current_exhibit)));
 			String savedTag = savedState.getString(getResources().getString(R.string.save_current_exhibit_tag));
 			
+			activeHomeId = savedState.getInt(getResources().getString(R.string.save_current_home_id));
 			activeId = savedState.getInt(getResources().getString(R.string.save_current_page));
 			switch(activeId){
 			case R.layout.list_layout:
 				listInit();
 				break;
-				
+
 			case R.layout.tour_layout:
 			case R.layout.tour_layout_vertical:
 				mapInit();
 				break;
-				
+
 			case R.layout.exhibit_layout:
 			case R.layout.exhibit_layout_vertical:
 				exhibitSwitch(saved, savedTag);
 				break;
-				
+
 			case R.layout.intro_layout:
 			case R.layout.intro_layout_vertical:
 			default:
 				introInit();
+				introProcessSidebar(activeHomeId);
 				break;
 			}
-			
+
 		}
 	}
 
@@ -264,6 +284,7 @@ public class TourApp extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		//TODO
 	}
 
 	/**
@@ -278,8 +299,9 @@ public class TourApp extends Activity {
 		Log.w(this.getClass().getName(), "SIS called");
 		outState.putString(getResources().getString(R.string.save_current_exhibit), exhibitList.getCurrent().getName());
 		outState.putString(getResources().getString(R.string.save_current_exhibit_tag), exhibitList.getCurrent().getCurrentTag());
-		
+
 		outState.putInt(getResources().getString(R.string.save_current_page), activeId);
+		outState.putInt(getResources().getString(R.string.save_current_home_id), activeHomeId);
 		//TODO
 	}
 
@@ -313,7 +335,7 @@ public class TourApp extends Activity {
 			String potential_key = textQR.substring(prefix.length());
 			if (exhibitList.containsKey(potential_key)){
 				Exhibit e = exhibitList.get(potential_key);
-				exhibitSwitch(e, Exhibit.INTRO_TAG);
+				exhibitSwitch(e, Exhibit.AUTO_TAG); //TODO add tag and app url to qr code
 				return true;
 			}else{
 				return false;
@@ -354,9 +376,14 @@ public class TourApp extends Activity {
 	public void onConfigurationChanged(Configuration config){
 		super.onConfigurationChanged(config);
 	}
-	
+
 	public void introProcessSidebar(View v){
-		switch (v.getId()) {
+		activeHomeId = v.getId();
+		introProcessSidebar(activeHomeId);
+	}
+	
+	public void introProcessSidebar(int viewId){
+		switch (viewId) {
 		case R.id.intro_sidebar_intro:
 			introInit();
 			break;
@@ -371,7 +398,6 @@ public class TourApp extends Activity {
 			break;
 		case R.id.intro_sidebar_app:
 			((WebView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
-					"Intro section doesn't remember the current page<br><br>" +
 					"QR code scan requires that Barcode Scanner or Google Goggles be installed already.<br><br>" +
 					"The camera will generate duplicate photos, and leave garbage files if you cancel it.",
 					"text/html", null);
@@ -384,29 +410,14 @@ public class TourApp extends Activity {
 			break;
 		}
 	}
-	
+
 	public void exhibitProcessSidebar(View v){
 		switch (v.getId()) {
-		case R.id.exhibit_sidebar_intro:
-			exhibitSwitch(exhibitList.getCurrent(), Exhibit.INTRO_TAG);
-			break;
-		case R.id.exhibit_sidebar_history:
-			exhibitSwitch(exhibitList.getCurrent(), Exhibit.HISTORY_TAG);
-			break;
-		case R.id.exhibit_sidebar_photos:
-			exhibitSwitch(exhibitList.getCurrent(), Exhibit.PHOTOS_TAG);
-			break;
-		case R.id.exhibit_sidebar_videos:
-			exhibitSwitch(exhibitList.getCurrent(), Exhibit.VIDEOS_TAG);
-			break;
-		case R.id.exhibit_sidebar_funfacts:
-			exhibitSwitch(exhibitList.getCurrent(), Exhibit.FUNFACTS_TAG);
-			break;
-		case R.id.exhibit_sidebar_diet:
-			exhibitSwitch(exhibitList.getCurrent(), Exhibit.DIET_TAG);
-			break;
 		case R.id.exhibit_sidebar_map:
 			mapInit();
+			break;
+		default:
+			exhibitSwitch(exhibitList.getCurrent(), ((Button)v).getText().toString());
 			break;
 		}
 	}
@@ -437,7 +448,7 @@ public class TourApp extends Activity {
 
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			String exhibit = (String)parent.getItemAtPosition(position);
-			exhibitSwitch(exhibitList.get(exhibit), Exhibit.INTRO_TAG);
+			exhibitSwitch(exhibitList.get(exhibit), Exhibit.AUTO_TAG);
 		}
 
 	}

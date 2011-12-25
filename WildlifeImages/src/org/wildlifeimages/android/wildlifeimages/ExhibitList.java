@@ -10,34 +10,34 @@ public class ExhibitList {
 	private Exhibit current = null;
 	
 	private final String EXHIBITS[][] = {
-			{"Alpha", "56", "59",
-				"file:///android_asset/ExhibitContents/alphaIntro.html", 
-				"file:///android_asset/ExhibitContents/alphaHistory.html",
-				"file:///android_asset/ExhibitContents/alphaPhotos.html",
-				"file:///android_asset/ExhibitContents/alphaVideos.html",
-				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
-				"file:///android_asset/ExhibitContents/alphaDiet.html"},
-			{"Bravo", "38", "56",
-				"file:///android_asset/ExhibitContents/bravoIntro.html", 
-				"file:///android_asset/ExhibitContents/alphaHistory.html",
-				"file:///android_asset/ExhibitContents/badger.jpg",
-				"file:///android_asset/ExhibitContents/alphaVideos.html",
-				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
-				"file:///android_asset/ExhibitContents/alphaDiet.html"},
-			{"Charlie", "30", "44",
-				"file:///android_asset/ExhibitContents/charlieIntro.html", 
-				"file:///android_asset/ExhibitContents/alphaHistory.html",
-				"file:///android_asset/ExhibitContents/wolf.jpg",
-				"file:///android_asset/ExhibitContents/alphaVideos.html",
-				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
-				"file:///android_asset/ExhibitContents/alphaDiet.html"},
-			{"Delta", "46", "27", 
-				"file:///android_asset/ExhibitContents/deltaIntro.html", 
-				"file:///android_asset/ExhibitContents/alphaHistory.html",
-				"file:///android_asset/ExhibitContents/bobcat.jpg",
-				"file:///android_asset/ExhibitContents/alphaVideos.html",
-				"file:///android_asset/ExhibitContents/alphaFunFacts.html",
-				"file:///android_asset/ExhibitContents/alphaDiet.html"}
+		{"Alpha", "56", "59",
+			"Introduction", "file:///android_asset/ExhibitContents/alphaIntro.html", 
+			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
+			"Photos", "file:///android_asset/ExhibitContents/alphaPhotos.html",
+			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
+			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+		{"Bravo", "38", "56",
+			"Introduction", "file:///android_asset/ExhibitContents/bravoIntro.html", 
+			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
+			"Photos", "file:///android_asset/ExhibitContents/badger.jpg",
+			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
+			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+		{"Charlie", "30", "44",
+			"Introduction", "file:///android_asset/ExhibitContents/charlieIntro.html", 
+			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
+			"Photos", "file:///android_asset/ExhibitContents/wolf.jpg",
+			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
+			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+		{"Delta", "46", "27", 
+			"Introduction", "file:///android_asset/ExhibitContents/deltaIntro.html", 
+			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
+			"Photos", "file:///android_asset/ExhibitContents/bobcat.jpg",
+			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
+			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
 	};
 	
 	private final String ORDER[][] = {
@@ -50,12 +50,10 @@ public class ExhibitList {
 		Exhibit e;
 
 		for (int i=0; i<EXHIBITS.length; i++){
-			e = new Exhibit(EXHIBITS[i][0], EXHIBITS[i][3]);
-			e.setContent(Exhibit.HISTORY_TAG, EXHIBITS[i][4]);
-			e.setContent(Exhibit.PHOTOS_TAG, EXHIBITS[i][5]);
-			e.setContent(Exhibit.VIDEOS_TAG, EXHIBITS[i][6]);
-			e.setContent(Exhibit.FUNFACTS_TAG, EXHIBITS[i][7]);
-			e.setContent(Exhibit.DIET_TAG, EXHIBITS[i][8]);
+			e = new Exhibit(EXHIBITS[i][0], EXHIBITS[i][4]);
+			for(int k=5; k<EXHIBITS[i].length; k+=2){
+				e.setContent(EXHIBITS[i][k], EXHIBITS[i][k+1]);
+			}
 			e.setCoords(Integer.decode(EXHIBITS[i][1]), Integer.decode(EXHIBITS[i][2]));
 			exhibitList.put(e.getName(), e);
 		}
@@ -82,16 +80,15 @@ public class ExhibitList {
 	public void setCurrent(Exhibit current, String contentTag) {
 		if (current != null){
 			this.current = current;
-			current.setCurrentTag(contentTag);
+			if (Exhibit.AUTO_TAG != contentTag){
+				current.setCurrentTag(contentTag);
+			}
 		}
 	}
 	
 	public void setCurrent(String name, String contentTag) {
 		Exhibit e = this.get(name);
-		if (e != null){
-			current = e;
-			e.setCurrentTag(contentTag);
-		}
+		setCurrent(e, contentTag);
 	}
 
 	public Exhibit getCurrent() {

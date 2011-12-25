@@ -27,6 +27,7 @@
       android:layout_weight="7"
       >
       <LinearLayout
+          	android:id="@+id/exhibit_sidebar_linear"
           	android:layout_width="fill_parent"
     		android:layout_height="fill_parent"
     		android:orientation="horizontal">

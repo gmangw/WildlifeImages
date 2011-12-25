@@ -99,7 +99,7 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
 			if(selectedExhibit != null){
-				parent.exhibitSwitch(selectedExhibit, Exhibit.INTRO_TAG);
+				parent.exhibitSwitch(selectedExhibit, Exhibit.AUTO_TAG);
 			}
 			
 			//mMapView.invalidate();
