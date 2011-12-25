@@ -14,9 +14,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -31,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TourApp extends Activity {
@@ -81,7 +85,12 @@ public class TourApp extends Activity {
 		}
 		String[] tempArray = tempList.toArray(new String[0]);
 		Arrays.sort(tempArray);
-		list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray));
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray);
+		/* http://www.coderanch.com/t/488673/Android/Mobile/styling-items-ListView */
+		list.setAdapter(adapter);
+		//TextView text = (TextView) list.getChildAt(0);
+		//Spannable str = (Spannable) text.getText();
+		//str.setSpan(new StyleSpan(Typeface.BOLD), 0, str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		list.setOnItemClickListener(new ItemClickHandler());
 	}
 
@@ -94,6 +103,7 @@ public class TourApp extends Activity {
 		Exhibit previous = exhibitList.getCurrent();
 		exhibitList.setCurrent(e, contentTag);
 		
+		/* If not viewing any exhibit or the exhibit is not the one currently open */
 		if ((WebView) findViewById(R.id.exhibit) == null || false == previous.equals(e)){
 			exhibitList.setCurrent(e, contentTag);
 			if (isLandscape){
@@ -157,7 +167,12 @@ public class TourApp extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.integer.MENU_HOME:
-			introInit();
+			if(activeId == R.layout.intro_layout || activeId == R.layout.intro_layout_vertical){
+				introProcessSidebar(R.id.intro_sidebar_intro);
+			}else{
+				introInit();
+				introProcessSidebar(activeHomeId);
+			}
 			return true;
 		case R.integer.MENU_MAP:
 			mapInit();
@@ -197,14 +212,16 @@ public class TourApp extends Activity {
 			Exhibit next = exhibitList.getNext();
 
 			if(next != null){
-				exhibitSwitch(next, Exhibit.AUTO_TAG);
+				exhibitSwitch(next, Exhibit.TAG_AUTO);
+			}else{
+				exhibitSwitch(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 			}
 			return true;
 		case R.integer.MENU_PREVIOUS:
 			Exhibit prev = exhibitList.getPrevious();
 
 			if(prev != null){
-				exhibitSwitch(prev, Exhibit.AUTO_TAG);
+				exhibitSwitch(prev, Exhibit.TAG_AUTO);
 			}
 			return true;
 		}
@@ -242,7 +259,19 @@ public class TourApp extends Activity {
 			// we are being restored: resume a previous instance
 			Log.w(this.getClass().getName(), "SIS is nonnull");
 			Exhibit saved = exhibitList.get(savedState.getString(getResources().getString(R.string.save_current_exhibit)));
-			String savedTag = savedState.getString(getResources().getString(R.string.save_current_exhibit_tag));
+			
+			exhibitList.setCurrent(saved, Exhibit.TAG_AUTO);
+			
+			ArrayList<String> activeTagList = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_tag));
+			ArrayList<String> exhibitNames = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_names));
+			
+			//while(nameList.hasNext()){
+			for(int i=0; i<exhibitNames.size(); i++){
+				Exhibit e = exhibitList.get(exhibitNames.get(i));
+				if (e != null){
+					e.setCurrentTag(activeTagList.get(i));
+				}
+			}
 			
 			activeHomeId = savedState.getInt(getResources().getString(R.string.save_current_home_id));
 			activeId = savedState.getInt(getResources().getString(R.string.save_current_page));
@@ -258,7 +287,7 @@ public class TourApp extends Activity {
 
 			case R.layout.exhibit_layout:
 			case R.layout.exhibit_layout_vertical:
-				exhibitSwitch(saved, savedTag);
+				exhibitSwitch(saved, Exhibit.TAG_AUTO);
 				break;
 
 			case R.layout.intro_layout:
@@ -292,11 +321,20 @@ public class TourApp extends Activity {
 		super.onSaveInstanceState(outState);
 		Log.w(this.getClass().getName(), "SIS called");
 		outState.putString(getResources().getString(R.string.save_current_exhibit), exhibitList.getCurrent().getName());
-		outState.putString(getResources().getString(R.string.save_current_exhibit_tag), exhibitList.getCurrent().getCurrentTag());
 
 		outState.putInt(getResources().getString(R.string.save_current_page), activeId);
 		outState.putInt(getResources().getString(R.string.save_current_home_id), activeHomeId);
-		//TODO
+		
+		Iterator<String> keyList = exhibitList.keys();
+		ArrayList<String> currentExhibitList = new ArrayList<String>();
+		ArrayList<String> currentTagList = new ArrayList<String>();
+		while(keyList.hasNext()){
+			String exhibitName = keyList.next();
+			currentExhibitList.add(exhibitName);
+			currentTagList.add(exhibitList.get(exhibitName).getCurrentTag());
+		}
+		outState.putStringArrayList(getResources().getString(R.string.save_current_exhibit_names), currentExhibitList);
+		outState.putStringArrayList(getResources().getString(R.string.save_current_exhibit_tag), currentTagList);
 	}
 
 	/**
@@ -329,7 +367,7 @@ public class TourApp extends Activity {
 			String potential_key = textQR.substring(prefix.length());
 			if (exhibitList.containsKey(potential_key)){
 				Exhibit e = exhibitList.get(potential_key);
-				exhibitSwitch(e, Exhibit.AUTO_TAG); //TODO add tag and app url to qr code
+				exhibitSwitch(e, Exhibit.TAG_AUTO); //TODO add tag and app url to qr code
 				return true;
 			}else{
 				return false;
@@ -372,29 +410,33 @@ public class TourApp extends Activity {
 	}
 
 	public void introProcessSidebar(View v){
-		activeHomeId = v.getId();
-		introProcessSidebar(activeHomeId);
+		introProcessSidebar(v.getId());
 	}
 	
 	public void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_intro:
 			introInit();
+			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
 			((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
+			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_events:
 			((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
+			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_photos:
 			((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/photos.html");
+			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
 			((WebView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that Barcode Scanner or Google Goggles be installed already.<br><br>" +
 					"The camera will generate duplicate photos, and leave garbage files if you cancel it.",
 					"text/html", null);
+			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_exhibitlist:
 			listInit();
@@ -442,7 +484,7 @@ public class TourApp extends Activity {
 
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			String exhibit = (String)parent.getItemAtPosition(position);
-			exhibitSwitch(exhibitList.get(exhibit), Exhibit.AUTO_TAG);
+			exhibitSwitch(exhibitList.get(exhibit), Exhibit.TAG_AUTO);
 		}
 
 	}

@@ -75,7 +75,7 @@ public class ExhibitList {
 	public void setCurrent(Exhibit current, String contentTag) {
 		if (current != null){
 			this.current = current;
-			if (Exhibit.AUTO_TAG != contentTag){
+			if (Exhibit.TAG_AUTO != contentTag){
 				current.setCurrentTag(contentTag);
 			}
 		}
@@ -125,5 +125,13 @@ public class ExhibitList {
 		}else{
 			return get(current.getPrevious());
 		}
+	}
+
+	public int getCount() {
+		return exhibitList.size();
+	}
+
+	public Exhibit getExhibitAt(int position) {
+		return get(keyList.get(position));
 	}
 }

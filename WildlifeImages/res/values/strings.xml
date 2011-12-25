@@ -26,6 +26,7 @@
     <string name="save_current_exhibit_tag">scet</string>
     <string name="save_current_page">scp</string>
     <string name="save_current_home_id">schi</string>
+    <string name="save_current_exhibit_names">scen</string>
     
     
 </resources>

@@ -6,15 +6,15 @@ import java.util.Iterator;
 
 public class Exhibit {
 	
-	public static final String INTRO_TAG = "Introduction";
+	public static final String TAG_INTRO = "Introduction";
 	
-	public static final String MAP_TAG = "Map"; //TODO
+	public static final String TAG_MAP = "Map"; //TODO
 	
-	public static final String AUTO_TAG = "_auto";
+	public static final String TAG_AUTO = "_auto";
 	
 	private String name;
 	
-	private String currentTag = Exhibit.INTRO_TAG;
+	private String currentTag = Exhibit.TAG_INTRO;
 	
 	private Hashtable<String, String> contents = new Hashtable<String, String>();
 	
@@ -51,7 +51,7 @@ public class Exhibit {
 	public String getContent(String contentTag) {
 		String c = contents.get(contentTag);
 		if (c == null){
-			return "";
+			return contents.get(Exhibit.TAG_INTRO);
 		}else{
 			return c;
 		}
@@ -64,8 +64,8 @@ public class Exhibit {
 	
 	public Exhibit(String name, String intro){
 		this.name = name;
-		tagList.add(Exhibit.INTRO_TAG);
-		contents.put(Exhibit.INTRO_TAG, intro);
+		tagList.add(Exhibit.TAG_INTRO);
+		contents.put(Exhibit.TAG_INTRO, intro);
 	}
 
 	public String getName() {
