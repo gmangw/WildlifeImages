@@ -1,72 +1,67 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 public class ExhibitList {
 
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
 	
+	private ArrayList<String> keyList = new ArrayList<String>();
+	
 	private Exhibit current = null;
 	
 	private final String EXHIBITS[][] = {
-		{"Alpha", "56", "59",
+		{"Alpha", "56", "59", "", "Bravo",
 			"Introduction", "file:///android_asset/ExhibitContents/alphaIntro.html", 
 			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
 			"Photos", "file:///android_asset/ExhibitContents/alphaPhotos.html",
 			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
 			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
-		{"Bravo", "38", "56",
+		{"Bravo", "38", "56", "Alpha", "Charlie",
 			"Introduction", "file:///android_asset/ExhibitContents/bravoIntro.html", 
 			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
 			"Photos", "file:///android_asset/ExhibitContents/badger.jpg",
-			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Streaming Video", "file:///android_asset/ExhibitContents/alphaVideos.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
-			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
-		{"Charlie", "30", "44",
+			"Habitat", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+		{"Charlie", "30", "44", "Bravo", "Delta",
 			"Introduction", "file:///android_asset/ExhibitContents/charlieIntro.html", 
-			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
+			"Family Tree", "file:///android_asset/ExhibitContents/alphaHistory.html",
 			"Photos", "file:///android_asset/ExhibitContents/wolf.jpg",
 			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
 			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
-		{"Delta", "46", "27", 
+		{"Delta", "46", "27", "Charlie", "",
 			"Introduction", "file:///android_asset/ExhibitContents/deltaIntro.html", 
 			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
 			"Photos", "file:///android_asset/ExhibitContents/bobcat.jpg",
-			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"New Home", "file:///android_asset/ExhibitContents/alphaVideos.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
-			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
-	};
-	
-	private final String ORDER[][] = {
-			{"Alpha", "Bravo"},
-			{"Bravo", "Charlie"},
-			{"Charlie", "Delta"}
+			"Behavior", "file:///android_asset/ExhibitContents/alphaDiet.html"},
 	};
 	
 	public ExhibitList(){
 		Exhibit e;
 
 		for (int i=0; i<EXHIBITS.length; i++){
-			e = new Exhibit(EXHIBITS[i][0], EXHIBITS[i][4]);
-			for(int k=5; k<EXHIBITS[i].length; k+=2){
+			e = new Exhibit(EXHIBITS[i][0], EXHIBITS[i][6]);
+			for(int k=7; k<EXHIBITS[i].length; k+=2){
 				e.setContent(EXHIBITS[i][k], EXHIBITS[i][k+1]);
 			}
 			e.setCoords(Integer.decode(EXHIBITS[i][1]), Integer.decode(EXHIBITS[i][2]));
+			e.setPrevious(EXHIBITS[i][3]);
+			e.setNext(EXHIBITS[i][4]);
 			exhibitList.put(e.getName(), e);
+			keyList.add(e.getName());
 		}
-		
-		for (int i=0; i<ORDER.length; i++){
-			exhibitList.get(ORDER[i][0]).setNext(exhibitList.get(ORDER[i][1]));
-		}
-		
-		setCurrent(exhibitList.elements().nextElement(), Exhibit.INTRO_TAG);
 	}
 
-	public Enumeration<String> keys(){
-		return exhibitList.keys();
+	public Iterator<String> keys(){
+		return keyList.iterator();
 	}
 	
 	public boolean containsKey(String potential_key) {
@@ -92,7 +87,11 @@ public class ExhibitList {
 	}
 
 	public Exhibit getCurrent() {
-		return current;
+		if (current == null){
+			return get(keyList.get(0));
+		}else{
+			return current;
+		}
 	}
 
 	public Exhibit findNearest(int percentHoriz, int percentVert) {
@@ -111,8 +110,20 @@ public class ExhibitList {
 		}
 		return closest;
 	}
+
+	public Exhibit getNext() {
+		if (current == null){
+			return get(keyList.get(0));
+		}else{
+			return get(current.getNext());
+		}
+	}
 	
-	public Enumeration<Exhibit> elements(){
-		return exhibitList.elements();
+	public Exhibit getPrevious() {
+		if (current == null){
+			return get(keyList.get(0));
+		}else{
+			return get(current.getPrevious());
+		}
 	}
 }

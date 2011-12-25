@@ -1,7 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 public class Exhibit {
 	
@@ -17,35 +18,34 @@ public class Exhibit {
 	
 	private Hashtable<String, String> contents = new Hashtable<String, String>();
 	
-	private Exhibit next = null;
+	private ArrayList<String> tagList = new ArrayList<String>();
 	
-	private Exhibit previous = null;
+	private String next = null;
+	
+	private String previous = null;
 	
 	private int mapX = -1;
 	
 	private int mapY = -1;
 	
-	public Exhibit getNext() {
-		return next;
+	public String getNext() {
+		return this.next;
 	}
 
-	public void setNext(Exhibit next) {
-		this.next = next;
-		if (next != null){
-			next.setPrevious(this);
-		}
+	public void setNext(String nextName) {
+		this.next = nextName;
 	}
 	
-	public Exhibit getPrevious() {
+	public String getPrevious() {
 		return previous;
 	}
 
-	private void setPrevious(Exhibit previous) {
+	public void setPrevious(String previous) {
 		this.previous = previous;
 	}
 
-	public Enumeration<String> getTags(){
-		return contents.keys();
+	public Iterator<String> getTags(){
+		return tagList.iterator();
 	}
 	
 	public String getContent(String contentTag) {
@@ -58,11 +58,13 @@ public class Exhibit {
 	}
 
 	public void setContent(String contentTag, String content) {
+		tagList.add(contentTag);
 		contents.put(contentTag, content);
 	}
 	
 	public Exhibit(String name, String intro){
 		this.name = name;
+		tagList.add(Exhibit.INTRO_TAG);
 		contents.put(Exhibit.INTRO_TAG, intro);
 	}
 

@@ -2,7 +2,7 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -31,20 +30,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * This is a simple TourApp activity that houses a single MapView. It
- * demonstrates...
- * <ul>
- * <li>animating by calling invalidate() from draw()
- * <li>loading and drawing resources
- * <li>handling onPause() in an animation
- * </ul>
- */
 public class TourApp extends Activity {
 
 	public ExhibitList exhibitList;
@@ -66,8 +54,6 @@ public class TourApp extends Activity {
 		// get handles to the MapView from XML
 		mMapView = (MapView) findViewById(R.id.map);
 
-		// give the MapView a handle to the TextView used for messages
-		mMapView.setTextView((TextView) findViewById(R.id.text));
 		mMapView.setExhibitList(exhibitList);
 		mMapView.setParent(this);
 	}
@@ -88,9 +74,9 @@ public class TourApp extends Activity {
 		setActiveView(R.layout.list_layout);
 		ListView list = (ListView)findViewById(R.id.exhibitlist);
 		ArrayList<String> tempList = new ArrayList<String>();
-		Enumeration<Exhibit> placeEnum = exhibitList.elements();
-		while(placeEnum.hasMoreElements()){
-			Exhibit e = placeEnum.nextElement();
+		Iterator<String> placeNameIter = exhibitList.keys();
+		while(placeNameIter.hasNext()){
+			Exhibit e = exhibitList.get(placeNameIter.next());
 			tempList.add(e.getName());
 		}
 		String[] tempArray = tempList.toArray(new String[0]);
@@ -105,19 +91,23 @@ public class TourApp extends Activity {
 	}
 
 	public void exhibitSwitch(Exhibit e, String contentTag) {
+		Exhibit previous = exhibitList.getCurrent();
 		exhibitList.setCurrent(e, contentTag);
-		if ((WebView) findViewById(R.id.exhibit) == null){
+		
+		if ((WebView) findViewById(R.id.exhibit) == null || false == previous.equals(e)){
+			exhibitList.setCurrent(e, contentTag);
 			if (isLandscape){
 				setActiveView(R.layout.exhibit_layout);
 			}else{
 				setActiveView(R.layout.exhibit_layout_vertical);
 			}
-			Enumeration<String> tagList = e.getTags();
+			Iterator<String> tagList = e.getTags();
 			LinearLayout buttonList = (LinearLayout)findViewById(R.id.exhibit_sidebar_linear);
-				
-			while (tagList.hasMoreElements()){
+			
+			int index = 0;
+			while (tagList.hasNext()){
 				Button button = new Button(buttonList.getContext());
-				String label = tagList.nextElement();
+				String label = tagList.next();
 				button.setText(label);
 				LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 				button.setLayoutParams(params);
@@ -125,7 +115,9 @@ public class TourApp extends Activity {
 					public void onClick(View v) {
 						exhibitProcessSidebar(v);
 					}});
-				buttonList.addView(button);
+				/* Add each button after the previous one, keeping map at the end */
+				buttonList.addView(button, index);
+				index++; 
 			}
 		}
 		WebView mWebView;
@@ -202,14 +194,14 @@ public class TourApp extends Activity {
 
 			return true;
 		case R.integer.MENU_NEXT:
-			Exhibit next = exhibitList.getCurrent().getNext();
+			Exhibit next = exhibitList.getNext();
 
 			if(next != null){
 				exhibitSwitch(next, Exhibit.AUTO_TAG);
 			}
 			return true;
 		case R.integer.MENU_PREVIOUS:
-			Exhibit prev = exhibitList.getCurrent().getPrevious();
+			Exhibit prev = exhibitList.getPrevious();
 
 			if(prev != null){
 				exhibitSwitch(prev, Exhibit.AUTO_TAG);

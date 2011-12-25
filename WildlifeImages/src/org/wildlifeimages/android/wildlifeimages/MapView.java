@@ -1,7 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.util.Enumeration;
-
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Canvas;
@@ -9,28 +7,19 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.sax.ElementListener;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
  *
  */
 class MapView extends SurfaceView implements SurfaceHolder.Callback {
-
-	private final int gridCountX = 20;
-	private final int gridCountY = 20;
-	
-    private TextView mStatusText;
-    private MapView mMapView;
     
     private ExhibitList exhibitList;
     private TourApp parent;
@@ -42,8 +31,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        
-        mMapView = this;
 
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
@@ -71,9 +58,8 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     
     private class GestureListener implements GestureDetector.OnGestureListener, 
     		GestureDetector.OnDoubleTapListener {  
-		MapView view;  
-		public GestureListener(MapView view) {  
-		    this.view = view;  
+  
+		public GestureListener(MapView view) {   
 		}
 		
 		//@Override
@@ -179,13 +165,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
     	//TODO
-    }
-
-    /**
-     * Installs a pointer to the text view used for messages.
-     */
-    public void setTextView(TextView textView) {
-        mStatusText = textView;
     }
     
     /* Callback invoked when the surface dimensions change. */
