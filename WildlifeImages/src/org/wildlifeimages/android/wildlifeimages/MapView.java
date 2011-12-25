@@ -72,23 +72,15 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		//@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			/*mCurrentGridWidth = mCurrentWidth/gridCountX;
-			mCurrentGridHeight = mCurrentHeight/gridCountY;
-			
-			selectedGridX = (int)e.getX()/mCurrentGridWidth;
-			selectedGridY = (int)e.getY()/mCurrentGridHeight;*/
 			
 			float percentHoriz = 100*(e.getX()/getWidth());
 			float percentVert = 100*(e.getY()/(3*getWidth()/4));
-			
-			//Toast.makeText(parent.getApplicationContext(), percentHoriz + ", " + percentVert, 1).show(); TODO
 			
 			Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
 			if(selectedExhibit != null){
 				parent.exhibitSwitch(selectedExhibit, Exhibit.TAG_AUTO);
 			}
 			
-			//mMapView.invalidate();
 			return true;
 		}
 		//@Override

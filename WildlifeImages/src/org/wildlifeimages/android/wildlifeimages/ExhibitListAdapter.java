@@ -1,12 +1,24 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.Iterator;
+
+import android.content.Context;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 public class ExhibitListAdapter extends BaseAdapter{
 	
 	ExhibitList backingList;
+	Context context;
+	
+	public ExhibitListAdapter(Context context, ExhibitList list){
+		backingList = list;
+		this.context = context;
+	}
 	
 	public int getCount() {
 		return backingList.getCount();
@@ -19,10 +31,35 @@ public class ExhibitListAdapter extends BaseAdapter{
 	public long getItemId(int position) {
 		return position;
 	}
+	
+	/* http://techdroid.kbeanie.com/2009/07/custom-listview-for-android.html */
+	public View getView(int position, View convertView, ViewGroup viewGroup) {
+        Exhibit entry = backingList.getExhibitAt(position);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item_layout, null);
+        }
+        
+        TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
+        itemLabel.setText(entry.getName());
+        
+        TextView itemInfo = (TextView) convertView.findViewById(R.id.listiteminfo);
+        Iterator<String> tagList = entry.getTags();
+        String info = "";
+        tagList.next();
+        while(tagList.hasNext()){
+        	info = info.concat(tagList.next());
+        	if (tagList.hasNext()){
+        		info = info.concat(", ");
+        	}
+        }
+        itemInfo.setText(info);
+        
+        if (backingList.getCurrent().equals(entry)){
+        	itemLabel.setTextColor(0xFF085FFF);
+        }
 
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        return convertView;
+    }
 
 }

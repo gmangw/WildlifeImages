@@ -86,11 +86,8 @@ public class TourApp extends Activity {
 		String[] tempArray = tempList.toArray(new String[0]);
 		Arrays.sort(tempArray);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray);
-		/* http://www.coderanch.com/t/488673/Android/Mobile/styling-items-ListView */
-		list.setAdapter(adapter);
-		//TextView text = (TextView) list.getChildAt(0);
-		//Spannable str = (Spannable) text.getText();
-		//str.setSpan(new StyleSpan(Typeface.BOLD), 0, str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		ExhibitListAdapter exhibitAdapter = new ExhibitListAdapter(this, exhibitList);
+		list.setAdapter(exhibitAdapter);
 		list.setOnItemClickListener(new ItemClickHandler());
 	}
 
@@ -483,8 +480,8 @@ public class TourApp extends Activity {
 	public class ItemClickHandler implements AdapterView.OnItemClickListener{
 
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			String exhibit = (String)parent.getItemAtPosition(position);
-			exhibitSwitch(exhibitList.get(exhibit), Exhibit.TAG_AUTO);
+			Exhibit e = (Exhibit)parent.getItemAtPosition(position);
+			exhibitSwitch(e, Exhibit.TAG_AUTO);
 		}
 
 	}
