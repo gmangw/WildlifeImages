@@ -119,6 +119,8 @@ public class TourApp extends Activity {
 				Button button = new Button(buttonList.getContext());
 				String label = tagList.nextElement();
 				button.setText(label);
+				LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+				button.setLayoutParams(params);
 				button.setOnClickListener(new OnClickListener(){
 					public void onClick(View v) {
 						exhibitProcessSidebar(v);
