@@ -3,7 +3,8 @@
     android:id="@+id/exhibitlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    style="@style/SharedBackground" >
 
     <FrameLayout 
         android:id="@+id/exhibitframe"
@@ -16,6 +17,7 @@
 	      android:id="@+id/exhibit"
 	      android:layout_height="fill_parent"
 	      android:layout_width="fill_parent"
+	      android:scrollbars="none"
 	      
 	      />
     </FrameLayout>

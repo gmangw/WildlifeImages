@@ -238,7 +238,7 @@ public class TourApp extends Activity {
 
 		// turn off the window's title bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+		
 		Display screen = this.getWindowManager().getDefaultDisplay();
 		if (screen.getWidth() > screen.getHeight()){
 			isLandscape = true;
