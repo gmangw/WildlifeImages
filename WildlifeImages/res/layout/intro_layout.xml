@@ -1,62 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SharedBackground"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal"
-    style="@style/SharedBackground">
+    android:orientation="horizontal" >
 
     <WebView
-      android:id="@+id/intro"
-      android:layout_height="fill_parent"
-      android:layout_width="fill_parent"
-      android:scrollbars="none"
-      android:layout_weight="1"
-      />
-    
+        android:id="@+id/intro"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:scrollbars="none" />
+
     <ScrollView
-      android:id="@+id/intro_sidebar"
-      android:layout_height="fill_parent"
-      android:layout_width="fill_parent"
-      android:layout_weight="3"
-      >
-      <LinearLayout
-          	android:layout_width="fill_parent"
-    		android:layout_height="fill_parent"
-    		android:orientation="vertical"
-    		>
-	      <Button
-			android:id="@+id/intro_sidebar_intro"
-			style="@style/IntroHorizontalButton"
-			android:text="About Us" />
-	      <Button
-			android:id="@+id/intro_sidebar_donations"
-			style="@style/IntroHorizontalButton"
-			android:text="Donate" />
-	      <Button
-			android:id="@+id/intro_sidebar_events"
-			style="@style/IntroHorizontalButton"
-			android:text="Events" />
-	      <Button
-			android:id="@+id/intro_sidebar_photos"
-			style="@style/IntroHorizontalButton"
-			android:text="Photos" />
-	      <Button
-			android:id="@+id/intro_sidebar_app"
-			style="@style/IntroHorizontalButton"
-			android:text="About This App" />
-	      <Button
-			android:id="@+id/intro_sidebar_exhibitlist"
-			style="@style/IntroHorizontalButton"
-			android:text="Exhibit List" />
-	      <Button
-			android:id="@+id/intro_sidebar_map"
-			style="@style/IntroHorizontalButton"
-			android:text="Map" />
-	      <Button
-			android:id="@+id/intro_sidebar_spare"
-			style="@style/IntroHorizontalButton"
-			android:text="Spare" />
-      </LinearLayout>
-     </ScrollView>
+        android:id="@+id/intro_sidebar"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="3" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/intro_sidebar_intro"
+                style="@style/IntroHorizontalButton"
+                android:text="About Us" />
+
+            <Button
+                android:id="@+id/intro_sidebar_donations"
+                style="@style/IntroHorizontalButton"
+                android:text="Donate" />
+
+            <Button
+                android:id="@+id/intro_sidebar_events"
+                style="@style/IntroHorizontalButton"
+                android:text="Events" />
+
+            <Button
+                android:id="@+id/intro_sidebar_photos"
+                style="@style/IntroHorizontalButton"
+                android:text="Photos" />
+
+            <Button
+                android:id="@+id/intro_sidebar_app"
+                style="@style/IntroHorizontalButton"
+                android:text="About This App" />
+
+            <Button
+                android:id="@+id/intro_sidebar_exhibitlist"
+                style="@style/IntroHorizontalButton"
+                android:text="Exhibit List" />
+
+            <Button
+                android:id="@+id/intro_sidebar_map"
+                style="@style/IntroHorizontalButton"
+                android:text="Map" />
+
+            <Button
+                android:id="@+id/intro_sidebar_spare"
+                style="@style/IntroHorizontalButton"
+                android:text="Spare" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

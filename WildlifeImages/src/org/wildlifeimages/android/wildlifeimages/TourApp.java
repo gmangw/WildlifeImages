@@ -14,14 +14,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.style.StyleSpan;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +48,7 @@ public class TourApp extends Activity {
 	private boolean isLandscape = false;
 
 	private int activeId;
-	
+
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
 	private void mapInit() {
@@ -96,10 +100,22 @@ public class TourApp extends Activity {
 		activeId = layoutResID;
 	}
 
+	private Button makeStyledButton(String label, Context c, LayoutParams params, OnClickListener listen){
+		Button button = new Button(c);
+		button.setText(label);
+		button.setLayoutParams(params);
+		button.setOnClickListener(listen);
+		button.setTextSize(16);
+		button.setPadding(10,8,10,8);
+		button.setMinEms(5);
+		button.setBackgroundResource(R.drawable.android_button);
+		return button;
+	}
+	
 	public void exhibitSwitch(Exhibit e, String contentTag) {
 		Exhibit previous = exhibitList.getCurrent();
 		exhibitList.setCurrent(e, contentTag);
-		
+
 		/* If not viewing any exhibit or the exhibit is not the one currently open */
 		if ((WebView) findViewById(R.id.exhibit) == null || false == previous.equals(e)){
 			exhibitList.setCurrent(e, contentTag);
@@ -110,21 +126,41 @@ public class TourApp extends Activity {
 			}
 			Iterator<String> tagList = e.getTags();
 			LinearLayout buttonList = (LinearLayout)findViewById(R.id.exhibit_sidebar_linear);
-			
+
 			int index = 0;
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1);
+			OnClickListener listen = new OnClickListener(){
+				public void onClick(View v) {
+					exhibitProcessSidebar(v);
+				}};
 			while (tagList.hasNext()){
-				Button button = new Button(buttonList.getContext());
-				String label = tagList.next();
-				button.setText(label);
-				LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-				button.setLayoutParams(params);
-				button.setOnClickListener(new OnClickListener(){
-					public void onClick(View v) {
-						exhibitProcessSidebar(v);
-					}});
-				/* Add each button after the previous one, keeping map at the end */
-				buttonList.addView(button, index);
-				index++; 
+				if (isLandscape){
+					Button button = makeStyledButton(tagList.next(), buttonList.getContext(), params, listen);
+					
+					/* Add each button after the previous one, keeping map at the end */
+					buttonList.addView(button, index);
+					index++; 
+				}
+				else{
+					LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
+					buttonPair.setLayoutParams(params);
+					buttonPair.setOrientation(LinearLayout.VERTICAL);
+					for(int i=0; i<2; i++){
+						if (tagList.hasNext()){
+							Button button = makeStyledButton(tagList.next(), buttonPair.getContext(), params, listen);
+							buttonPair.addView(button);
+						}
+						else{
+							Button filler = makeStyledButton("", buttonPair.getContext(), params, null);
+							filler.setEnabled(false);
+							buttonPair.addView(filler);
+						}
+					}
+
+					/* Add each button after the previous one, keeping map at the end */
+					buttonList.addView(buttonPair, index);
+					index++; 
+				}
 			}
 		}
 		WebView mWebView;
@@ -142,13 +178,22 @@ public class TourApp extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-
-		menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
-		menu.add(0, R.integer.MENU_MAP, 0, R.string.menu_map);
-		menu.add(0, R.integer.MENU_SCAN, 0, R.string.menu_scan);
-		menu.add(0, R.integer.MENU_CAMERA, 0, R.string.menu_camera);
-		menu.add(0, R.integer.MENU_PREVIOUS, 0, R.string.menu_previous);
-		menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
+		
+		if(isLandscape){
+			menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
+			menu.add(0, R.integer.MENU_MAP, 0, R.string.menu_map);
+			menu.add(0, R.integer.MENU_SCAN, 0, R.string.menu_scan);
+			menu.add(0, R.integer.MENU_CAMERA, 0, R.string.menu_camera);
+			menu.add(0, R.integer.MENU_PREVIOUS, 0, R.string.menu_previous);
+			menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
+		}else{
+			menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
+			menu.add(0, R.integer.MENU_SCAN, 0, R.string.menu_scan);
+			menu.add(0, R.integer.MENU_MAP, 0, R.string.menu_map);
+			menu.add(0, R.integer.MENU_PREVIOUS, 0, R.string.menu_previous);
+			menu.add(0, R.integer.MENU_CAMERA, 0, R.string.menu_camera);
+			menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
+		}
 
 		return true;
 	}
@@ -238,7 +283,7 @@ public class TourApp extends Activity {
 
 		// turn off the window's title bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		Display screen = this.getWindowManager().getDefaultDisplay();
 		if (screen.getWidth() > screen.getHeight()){
 			isLandscape = true;
@@ -256,12 +301,12 @@ public class TourApp extends Activity {
 			// we are being restored: resume a previous instance
 			Log.w(this.getClass().getName(), "SIS is nonnull");
 			Exhibit saved = exhibitList.get(savedState.getString(getResources().getString(R.string.save_current_exhibit)));
-			
+
 			exhibitList.setCurrent(saved, Exhibit.TAG_AUTO);
-			
+
 			ArrayList<String> activeTagList = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_tag));
 			ArrayList<String> exhibitNames = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_names));
-			
+
 			//while(nameList.hasNext()){
 			for(int i=0; i<exhibitNames.size(); i++){
 				Exhibit e = exhibitList.get(exhibitNames.get(i));
@@ -269,7 +314,7 @@ public class TourApp extends Activity {
 					e.setCurrentTag(activeTagList.get(i));
 				}
 			}
-			
+
 			activeHomeId = savedState.getInt(getResources().getString(R.string.save_current_home_id));
 			activeId = savedState.getInt(getResources().getString(R.string.save_current_page));
 			switch(activeId){
@@ -321,7 +366,7 @@ public class TourApp extends Activity {
 
 		outState.putInt(getResources().getString(R.string.save_current_page), activeId);
 		outState.putInt(getResources().getString(R.string.save_current_home_id), activeHomeId);
-		
+
 		Iterator<String> keyList = exhibitList.keys();
 		ArrayList<String> currentExhibitList = new ArrayList<String>();
 		ArrayList<String> currentTagList = new ArrayList<String>();
@@ -409,7 +454,7 @@ public class TourApp extends Activity {
 	public void introProcessSidebar(View v){
 		introProcessSidebar(v.getId());
 	}
-	
+
 	public void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_intro:

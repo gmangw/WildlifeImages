@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 public class Exhibit {
 	
-	public static final String TAG_INTRO = "Introduction";
+	public static final String TAG_INTRO = "Info";
 	
 	public static final String TAG_MAP = "Map"; //TODO
 	
