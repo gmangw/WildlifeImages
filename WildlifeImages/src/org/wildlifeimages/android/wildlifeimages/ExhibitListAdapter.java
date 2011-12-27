@@ -10,6 +10,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * This adapter uses an {@link ExhibitList} to show {@link Exhibit} info within a {@linkplain android.widget.ListView ListView}. 
+ * 
+ * @author Graham Wilkinson 
+ * 	
+ */
 public class ExhibitListAdapter extends BaseAdapter{
 	
 	ExhibitList backingList;

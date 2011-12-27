@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+/**
+ * An Exhibit contains all of the content info for one map location.
+ * 
+ * @author Graham Wilkinson 
+ * 	
+ */
 public class Exhibit {
 	
 	public static final String TAG_INTRO = "Info";

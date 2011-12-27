@@ -14,18 +14,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Spannable;
-import android.text.style.StyleSpan;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,9 +31,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This Android App is intended for visitors to Wildlife Images Rehabilitation and Education Center.
+ * Users can find information about each exhibit and find their way around the center.
+ * 
+ * @author Graham Wilkinson
+ * @author Shady Glenn
+ * @author Naveen Nanja
+ * 	
+ */
 public class TourApp extends Activity {
 
 	public ExhibitList exhibitList;
@@ -108,25 +109,34 @@ public class TourApp extends Activity {
 		button.setTextSize(16);
 		button.setPadding(10,8,10,8);
 		button.setMinEms(5);
+		//button.setFocusable(true); //TODO focusable elements for keyboard nav?
 		button.setBackgroundResource(R.drawable.android_button);
 		return button;
 	}
 	
 	public void exhibitSwitch(Exhibit e, String contentTag) {
+		boolean remakeButtons = false;
 		Exhibit previous = exhibitList.getCurrent();
+		String previousTag = previous.getCurrentTag();
+		
 		exhibitList.setCurrent(e, contentTag);
-
+		
 		/* If not viewing any exhibit or the exhibit is not the one currently open */
-		if ((WebView) findViewById(R.id.exhibit) == null || false == previous.equals(e)){
-			exhibitList.setCurrent(e, contentTag);
+		if ((ExhibitView) findViewById(R.id.exhibit) == null){
 			if (isLandscape){
 				setActiveView(R.layout.exhibit_layout);
 			}else{
 				setActiveView(R.layout.exhibit_layout_vertical);
 			}
+			remakeButtons = true;
+		}
+		remakeButtons = remakeButtons || false == previous.equals(e);
+		if(remakeButtons){
 			Iterator<String> tagList = e.getTags();
 			LinearLayout buttonList = (LinearLayout)findViewById(R.id.exhibit_sidebar_linear);
-
+			
+			buttonList.removeAllViews();
+			
 			int index = 0;
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1);
 			OnClickListener listen = new OnClickListener(){
@@ -163,10 +173,12 @@ public class TourApp extends Activity {
 				}
 			}
 		}
-		WebView mWebView;
-		mWebView = (WebView) findViewById(R.id.exhibit);
-		//mWebView.loadData(e.getContent(contentTag), "text/html", null);
-		mWebView.loadUrl(e.getContent(e.getCurrentTag()));
+		if (remakeButtons || previousTag != contentTag){
+			ExhibitView exView;
+			exView = (ExhibitView) findViewById(R.id.exhibit);
+			//mWebView.loadData(e.getContent(contentTag), "text/html", null);
+			exView.loadUrl(e.getContent(e.getCurrentTag()));
+		}
 	}
 
 	/**
@@ -301,8 +313,6 @@ public class TourApp extends Activity {
 			// we are being restored: resume a previous instance
 			Log.w(this.getClass().getName(), "SIS is nonnull");
 			Exhibit saved = exhibitList.get(savedState.getString(getResources().getString(R.string.save_current_exhibit)));
-
-			exhibitList.setCurrent(saved, Exhibit.TAG_AUTO);
 
 			ArrayList<String> activeTagList = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_tag));
 			ArrayList<String> exhibitNames = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_names));

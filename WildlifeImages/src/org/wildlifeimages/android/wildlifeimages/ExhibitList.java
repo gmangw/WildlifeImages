@@ -5,6 +5,14 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import android.webkit.WebView;
+
+/**
+ * A collection of {@link Exhibit} instances.
+ * 
+ * @author Graham Wilkinson 
+ * 	
+ */
 public class ExhibitList {
 
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
@@ -17,7 +25,7 @@ public class ExhibitList {
 		{"Alpha", "56", "59", "", "Bravo",
 			"Introduction", "file:///android_asset/ExhibitContents/alphaIntro.html", 
 			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
-			"Photos", "file:///android_asset/ExhibitContents/alphaPhotos.html",
+			"Photos", "file:///android_asset/ExhibitContents/hawk.jpg,file:///android_asset/ExhibitContents/eagle.jpg",
 			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
 			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html",
@@ -25,24 +33,24 @@ public class ExhibitList {
 		{"Bravo", "38", "56", "Alpha", "Charlie",
 			"Introduction", "file:///android_asset/ExhibitContents/bravoIntro.html", 
 			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
-			"Photos", "file:///android_asset/ExhibitContents/badger.jpg",
-			"Streaming Video", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Photos", "file:///android_asset/ExhibitContents/badger.jpg,file:///android_asset/ExhibitContents/bobcat.jpg",
+			"Habitat", "file:///android_asset/ExhibitContents/alphaDiet.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
-			"Habitat", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+			"Streaming Video", "file:///android_asset/ExhibitContents/alphaVideos.html"},
 		{"Charlie", "30", "44", "Bravo", "Delta",
 			"Introduction", "file:///android_asset/ExhibitContents/charlieIntro.html", 
-			"Family Tree", "file:///android_asset/ExhibitContents/alphaHistory.html",
+			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html",
 			"Photos", "file:///android_asset/ExhibitContents/wolf.jpg",
 			"Videos", "file:///android_asset/ExhibitContents/alphaVideos.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
-			"Diet", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+			"Family Tree", "file:///android_asset/ExhibitContents/alphaHistory.html"},
 		{"Delta", "46", "27", "Charlie", "",
 			"Introduction", "file:///android_asset/ExhibitContents/deltaIntro.html", 
 			"History", "file:///android_asset/ExhibitContents/alphaHistory.html",
 			"Photos", "file:///android_asset/ExhibitContents/bobcat.jpg",
-			"New Home", "file:///android_asset/ExhibitContents/alphaVideos.html",
+			"Behavior", "file:///android_asset/ExhibitContents/alphaDiet.html",
 			"Fun Facts", "file:///android_asset/ExhibitContents/alphaFunFacts.html",
-			"Behavior", "file:///android_asset/ExhibitContents/alphaDiet.html"},
+			"New Home", "file:///android_asset/ExhibitContents/alphaVideos.html"},
 	};
 	
 	public ExhibitList(){
