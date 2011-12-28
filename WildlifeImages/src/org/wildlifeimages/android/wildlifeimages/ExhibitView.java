@@ -25,7 +25,6 @@ public class ExhibitView extends FrameLayout{
 	WebView htmlView;
 	MultiImageView picView;
 
-
 	public ExhibitView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		htmlView = new WebView(context, attrs);
@@ -41,7 +40,7 @@ public class ExhibitView extends FrameLayout{
 
 	public void loadUrl(String url){
 		String lower = url.toLowerCase();
-		if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".png")){
+		if (lower.endsWith(".gif") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png")){
 			loadImageUrl(url);
 		}else{
 			loadHtmlUrl(url);
@@ -56,11 +55,15 @@ public class ExhibitView extends FrameLayout{
 
 	public void loadImageUrl(String imgUrl){
 		String[] bml = imgUrl.split(",");
-		//bml[0] = imgUrl;
-		//bml[1] = "file:///android_asset/ExhibitContents/bobcat.jpg";
 		picView.setImageBitmapList(bml);
 		picView.setVisibility(View.VISIBLE);
 		htmlView.setVisibility(View.INVISIBLE);
+	}
+
+	public void loadData(String data, String mimeType, String encoding){
+		htmlView.loadData(data, mimeType, encoding);
+		htmlView.setVisibility(View.VISIBLE);
+		picView.setVisibility(View.INVISIBLE);
 	}
 
 }

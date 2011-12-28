@@ -74,8 +74,8 @@ public class TourApp extends Activity {
 		}else{
 			setActiveView(R.layout.intro_layout_vertical);
 		}
-		WebView mWebView;
-		mWebView = (WebView) findViewById(R.id.intro);
+		ExhibitView mWebView;
+		mWebView = (ExhibitView) findViewById(R.id.intro);
 		mWebView.loadUrl("file:///android_asset/intro.html");
 	}
 
@@ -472,19 +472,19 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
+			((ExhibitView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_events:
-			((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
+			((ExhibitView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_photos:
-			((WebView) findViewById(R.id.intro)).loadUrl("file:///android_asset/photos.html");
+			((ExhibitView) findViewById(R.id.intro)).loadUrl("file:///android_asset/Denise-Pictures-157.jpg,file:///android_asset/aaaaclark0007.jpg,file:///android_asset/Carson.jpg,file:///android_asset/Miss-Jefferson1.jpg");
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
-			((WebView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
+			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that Barcode Scanner or Google Goggles be installed already.<br><br>" +
 					"The camera will generate duplicate photos, and leave garbage files if you cancel it.",
 					"text/html", null);

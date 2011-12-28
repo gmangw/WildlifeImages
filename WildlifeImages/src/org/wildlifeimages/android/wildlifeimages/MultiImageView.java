@@ -77,11 +77,12 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		}
 		return gestures.onTouchEvent(event);  
 	}
-	
+
 	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
 	private Bitmap getBitmapFromAsset(String imgUrl)
 	{	
-		String filename = "ExhibitContents" + imgUrl.substring(Math.max(imgUrl.lastIndexOf("/"), 0));
+		String filename = imgUrl.replaceAll("file:///android_asset/", "");
+
 		try{
 			AssetManager assetManager = this.getContext().getAssets();
 
@@ -124,11 +125,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
+
 		Matrix m = this.getImageMatrix();
 
 		m.postTranslate(-distanceX, 0);
 		this.setImageMatrix(m);
+
 		this.invalidate();
+
 		return false;
 	}
 
