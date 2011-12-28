@@ -52,6 +52,8 @@ public class TourApp extends Activity {
 
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
+	private WebContentManager webManager;
+	
 	private void mapInit() {
 		// tell system to use the layout defined in our XML file
 		if (isLandscape){
@@ -76,7 +78,7 @@ public class TourApp extends Activity {
 		}
 		ExhibitView mWebView;
 		mWebView = (ExhibitView) findViewById(R.id.intro);
-		mWebView.loadUrl("file:///android_asset/intro.html");
+		mWebView.loadUrl("file:///android_asset/intro.html"); //TODO string
 	}
 
 	public void listInit(){
@@ -90,7 +92,6 @@ public class TourApp extends Activity {
 		}
 		String[] tempArray = tempList.toArray(new String[0]);
 		Arrays.sort(tempArray);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tempArray);
 		ExhibitListAdapter exhibitAdapter = new ExhibitListAdapter(this, exhibitList);
 		list.setAdapter(exhibitAdapter);
 		list.setOnItemClickListener(new ItemClickHandler());
@@ -210,6 +211,10 @@ public class TourApp extends Activity {
 		return true;
 	}
 
+	private String loadString(int resId){
+		return getResources().getString(resId);
+	}
+	
 	/**
 	 * Invoked when the user selects an item from the Menu.
 	 * 
@@ -232,31 +237,26 @@ public class TourApp extends Activity {
 			mapInit();
 			return true;
 		case R.integer.MENU_SCAN:
-			boolean scanAvailable = isIntentAvailable(this, "com.google.zxing.client.android.SCAN");
+			boolean scanAvailable = isIntentAvailable(this, loadString(R.string.intent_action_scan));
 
 			if (scanAvailable){
 				//mapInit();
-				Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-				intent.putExtra("com.google.zxing.client.android.SCAN.SCAN_MODE", "QR_CODE_MODE");
+				Intent intent = new Intent(loadString(R.string.intent_action_scan));
+				intent.putExtra(loadString(R.string.intent_extra_scan_mode), loadString(R.string.intent_qr_mode));
 				startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
 			} else {
-				Toast.makeText(this.getApplicationContext(), "Install the Barcode Scanner app first.", 1).show();
+				Toast.makeText(this.getApplicationContext(), loadString(R.string.scan_app_missing), 1).show();
+				//TODO
 			}
 			return true;
 		case R.integer.MENU_CAMERA:
 			/* http://achorniy.wordpress.com/2010/04/26/howto-launch-android-camera-using-intents/ */
 			//define the file-name to save photo taken by Camera activity
-			String fileName = "new-photo-name.jpg";
-			Uri imageUri;
-			//create parameters for Intent with filename
-			ContentValues values = new ContentValues();
-			values.put(MediaStore.Images.Media.TITLE, fileName);
-			values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
-			//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-			imageUri = getContentResolver().insert(
-					MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+			String fileName = "file://mnt/sdcard/pic.jpg"; //TODO filename
+			Uri imageUri = Uri.parse(fileName);
 			//create new Intent
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			//Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA); TODO if we don't want image back
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 			startActivityForResult(intent, R.integer.CAPTURE_IMAGE_ACTIVITY_REQUEST);
@@ -304,18 +304,15 @@ public class TourApp extends Activity {
 		}		
 
 		exhibitList = new ExhibitList();
+		webManager = new WebContentManager(this.getApplicationContext());
 
 		if (savedState == null) {
-			// we were just launched: set up a new instance
-			Log.w(this.getClass().getName(), "SIS is null");
 			introInit();
 		} else {
-			// we are being restored: resume a previous instance
-			Log.w(this.getClass().getName(), "SIS is nonnull");
-			Exhibit saved = exhibitList.get(savedState.getString(getResources().getString(R.string.save_current_exhibit)));
+			Exhibit saved = exhibitList.get(savedState.getString(loadString(R.string.save_current_exhibit)));
 
-			ArrayList<String> activeTagList = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_tag));
-			ArrayList<String> exhibitNames = savedState.getStringArrayList(getResources().getString(R.string.save_current_exhibit_names));
+			ArrayList<String> activeTagList = savedState.getStringArrayList(loadString(R.string.save_current_exhibit_tag));
+			ArrayList<String> exhibitNames = savedState.getStringArrayList(loadString(R.string.save_current_exhibit_names));
 
 			//while(nameList.hasNext()){
 			for(int i=0; i<exhibitNames.size(); i++){
@@ -325,8 +322,8 @@ public class TourApp extends Activity {
 				}
 			}
 
-			activeHomeId = savedState.getInt(getResources().getString(R.string.save_current_home_id));
-			activeId = savedState.getInt(getResources().getString(R.string.save_current_page));
+			activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
+			activeId = savedState.getInt(loadString(R.string.save_current_page));
 			switch(activeId){
 			case R.layout.list_layout:
 				listInit();
@@ -371,11 +368,10 @@ public class TourApp extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.w(this.getClass().getName(), "SIS called");
-		outState.putString(getResources().getString(R.string.save_current_exhibit), exhibitList.getCurrent().getName());
+		outState.putString(loadString(R.string.save_current_exhibit), exhibitList.getCurrent().getName());
 
-		outState.putInt(getResources().getString(R.string.save_current_page), activeId);
-		outState.putInt(getResources().getString(R.string.save_current_home_id), activeHomeId);
+		outState.putInt(loadString(R.string.save_current_page), activeId);
+		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 
 		Iterator<String> keyList = exhibitList.keys();
 		ArrayList<String> currentExhibitList = new ArrayList<String>();
@@ -385,8 +381,8 @@ public class TourApp extends Activity {
 			currentExhibitList.add(exhibitName);
 			currentTagList.add(exhibitList.get(exhibitName).getCurrentTag());
 		}
-		outState.putStringArrayList(getResources().getString(R.string.save_current_exhibit_names), currentExhibitList);
-		outState.putStringArrayList(getResources().getString(R.string.save_current_exhibit_tag), currentTagList);
+		outState.putStringArrayList(loadString(R.string.save_current_exhibit_names), currentExhibitList);
+		outState.putStringArrayList(loadString(R.string.save_current_exhibit_tag), currentTagList);
 	}
 
 	/**
@@ -413,7 +409,7 @@ public class TourApp extends Activity {
 	}
 
 	private boolean processResultQR(String textQR){
-		String prefix = this.getResources().getString(R.string.qr_prefix);
+		String prefix = loadString(R.string.qr_prefix);
 		textQR.substring(0, prefix.length());
 		if(textQR.substring(0, prefix.length()).equals(prefix)){
 			String potential_key = textQR.substring(prefix.length());
@@ -435,11 +431,11 @@ public class TourApp extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == R.integer.CODE_SCAN_ACTIVITY_REQUEST) {
 			if (resultCode == RESULT_OK) {
-				String contents = intent.getStringExtra("SCAN_RESULT");
-				String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
-				if (format.equals("QR_CODE")){
+				String contents = intent.getStringExtra(loadString(R.string.intent_extra_result));
+				String format = intent.getStringExtra(loadString(R.string.intent_extra_result_format));
+				if (format.equals(loadString(R.string.intent_result_qr))){
 					if (false == processResultQR(contents)){
-						Toast.makeText(this.getApplicationContext(), "Code not recognized: " + contents, 1).show();
+						Toast.makeText(this.getApplicationContext(), loadString(R.string.invalid_qr_result) + contents, 1).show();
 					}
 				}
 			} else if (resultCode == RESULT_CANCELED) {
@@ -448,10 +444,6 @@ public class TourApp extends Activity {
 			if (resultCode == RESULT_OK) {
 				//use imageUri here to access the image
 				//TODO
-			} else if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
-			} else {
-				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
 			}
 		}
 	}
@@ -465,6 +457,11 @@ public class TourApp extends Activity {
 		introProcessSidebar(v.getId());
 	}
 
+	
+	public String getBestUrl(String localUrl){
+		return webManager.getUrl(localUrl);
+	}
+	
 	public void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_intro:
@@ -472,22 +469,22 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl("file:///android_asset/donate.html");
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl("donate.html"));
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_events:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl("file:///android_asset/events.html");
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl("events.html"));
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_photos:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl("file:///android_asset/Denise-Pictures-157.jpg,file:///android_asset/aaaaclark0007.jpg,file:///android_asset/Carson.jpg,file:///android_asset/Miss-Jefferson1.jpg");
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl("Denise-Pictures-157.jpg") + "," + getBestUrl("aaaaclark0007.jpg") + "," + getBestUrl("Carson.jpg") + "," + getBestUrl("Miss-Jefferson1.jpg"));
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
 			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that Barcode Scanner or Google Goggles be installed already.<br><br>" +
-					"The camera will generate duplicate photos, and leave garbage files if you cancel it.",
-					"text/html", null);
+					"The camera will leave a pic at the filesystem root, does nothing with it.",
+					"text/html", null); //TODO
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_exhibitlist:
@@ -515,14 +512,14 @@ public class TourApp extends Activity {
 	public void onBackPressed() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final TourApp me = this;
-		builder.setMessage("Are you sure you want to exit?")
+		builder.setMessage(loadString(R.string.exit_question))
 		.setCancelable(false)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		.setPositiveButton(loadString(R.string.exit_option_yes), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				me.finish();
 			}
 		})
-		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		.setNegativeButton(R.string.exit_option_no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
 			}

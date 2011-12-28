@@ -26,42 +26,42 @@
             <Button
                 android:id="@+id/intro_sidebar_intro"
                 style="@style/IntroHorizontalButton"
-                android:text="About Us" />
+                android:text="@string/intro_sidebar_about" />
 
             <Button
                 android:id="@+id/intro_sidebar_donations"
                 style="@style/IntroHorizontalButton"
-                android:text="Donate" />
+                android:text="@string/intro_sidebar_support" />
 
             <Button
                 android:id="@+id/intro_sidebar_events"
                 style="@style/IntroHorizontalButton"
-                android:text="Events" />
+                android:text="@string/intro_sidebar_events" />
 
             <Button
                 android:id="@+id/intro_sidebar_photos"
                 style="@style/IntroHorizontalButton"
-                android:text="Photos" />
+                android:text="@string/intro_sidebar_photos" />
 
             <Button
                 android:id="@+id/intro_sidebar_app"
                 style="@style/IntroHorizontalButton"
-                android:text="About This App" />
+                android:text="@string/intro_sidebar_app" />
 
             <Button
                 android:id="@+id/intro_sidebar_exhibitlist"
                 style="@style/IntroHorizontalButton"
-                android:text="Exhibit List" />
+                android:text="@string/intro_sidebar_exhibitlist" />
 
             <Button
                 android:id="@+id/intro_sidebar_map"
                 style="@style/IntroHorizontalButton"
-                android:text="Map" />
+                android:text="@string/intro_sidebar_map" />
 
             <Button
-                android:id="@+id/intro_sidebar_spare"
+                android:id="@+id/intro_sidebar_share"
                 style="@style/IntroHorizontalButton"
-                android:text="Spare" />
+                android:text="@string/intro_sidebar_share" />
         </LinearLayout>
     </ScrollView>
 

@@ -40,11 +40,15 @@ public class ExhibitView extends FrameLayout{
 
 	public void loadUrl(String url){
 		String lower = url.toLowerCase();
-		if (lower.endsWith(".gif") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png")){
-			loadImageUrl(url);
-		}else{
-			loadHtmlUrl(url);
+		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
+		for (int i=0; i<extensionList.length; i++){
+			if (lower.endsWith(extensionList[i])){
+				loadImageUrl(url);
+				return;
+			}
 		}
+		//Else
+		loadHtmlUrl(url);
 	}
 
 	public void loadHtmlUrl(String htmlUrl){

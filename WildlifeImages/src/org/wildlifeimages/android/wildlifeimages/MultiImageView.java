@@ -40,7 +40,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		Matrix m = this.getImageMatrix();
 		Rect viewRect = new Rect();
 		this.getDrawingRect(viewRect);
-		RectF viewRectF = new RectF(viewRect);
+		RectF viewRectF = new RectF(viewRect); 
 		m.setRectToRect(bmpRect, viewRectF, Matrix.ScaleToFit.CENTER);
 		this.setImageMatrix(m);
 		baseMatrix = new Matrix(m);
@@ -81,7 +81,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
 	private Bitmap getBitmapFromAsset(String imgUrl)
 	{	
-		String filename = imgUrl.replaceAll("file:///android_asset/", "");
+		String filename = imgUrl.replaceAll("file:///android_asset/", ""); //TODO
 
 		try{
 			AssetManager assetManager = this.getContext().getAssets();

@@ -14,8 +14,6 @@ public class Exhibit {
 	
 	public static final String TAG_INTRO = "Info";
 	
-	public static final String TAG_MAP = "Map"; //TODO
-	
 	public static final String TAG_AUTO = "_auto";
 	
 	private String name;
