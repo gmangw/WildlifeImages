@@ -309,8 +309,13 @@ public class TourApp extends Activity {
 		}		
 
 		exhibitList = new ExhibitList();
-		webManager = new WebContentManager(this.getApplicationContext());
-
+		
+		/* Use saved version of webManager if we restarted due to something trivial */
+		webManager = (WebContentManager)getLastNonConfigurationInstance();
+		if (null == webManager){
+			webManager = new WebContentManager(this.getApplicationContext().getCacheDir());
+		}
+		
 		if (savedState == null) {
 			introInit();
 		} else {
@@ -546,12 +551,17 @@ public class TourApp extends Activity {
 
 	}
 
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+	    final WebContentManager data = webManager;
+	    return data;
+	}
+	
 	public class ItemClickHandler implements AdapterView.OnItemClickListener{
 
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Exhibit e = (Exhibit)parent.getItemAtPosition(position);
 			exhibitSwitch(e, Exhibit.TAG_AUTO);
 		}
-
 	}
 }

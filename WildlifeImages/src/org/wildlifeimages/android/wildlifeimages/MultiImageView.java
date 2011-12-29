@@ -1,7 +1,11 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -24,6 +28,8 @@ import android.widget.ImageView;
  */
 public class MultiImageView extends ImageView implements GestureDetector.OnGestureListener{
 
+	private static final String ASSET_PREFIX = "file:///android_asset/";
+	
 	private GestureDetector gestures;
 	private Matrix baseMatrix = new Matrix();
 	private String[] bitmapList = new String[0];
@@ -81,19 +87,25 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
 	private Bitmap getBitmapFromAsset(String imgUrl)
 	{	
-		String filename = imgUrl.replaceAll("file:///android_asset/", ""); //TODO
-
-		try{
-			AssetManager assetManager = this.getContext().getAssets();
-
-			InputStream istr = assetManager.open(filename);
+		try{ //TODO cache this stuff in memory, files are loading slow from SD
+			InputStream istr;
+			if (imgUrl.startsWith(ASSET_PREFIX)){
+				AssetManager assetManager = this.getContext().getAssets();
+				istr = assetManager.open(imgUrl.replaceAll(ASSET_PREFIX, ""));
+			}else{
+				File f = new File(new URI(imgUrl));
+				istr = new FileInputStream(f);
+			}
 			Bitmap bitmap = BitmapFactory.decodeStream(istr);
 
 			return bitmap;
 		}catch(IOException e){
-			Log.w(this.getClass().getName(), "Asset filename " + filename + " is bad");
+			Log.w(this.getClass().getName(), "Asset " + imgUrl + " is missing or corrupt.");
 			return null;
+		} catch (URISyntaxException e) {
+			Log.w(this.getClass().getName(), "Bad url " + imgUrl);
 		}
+		return null;
 	}
 
 	public boolean onDown(MotionEvent e) {

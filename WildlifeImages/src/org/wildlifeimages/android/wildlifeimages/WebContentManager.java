@@ -1,43 +1,40 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 import java.util.Hashtable;
 
-import android.content.Context;
 import android.util.Log;
 
 public class WebContentManager {
 
 	private Hashtable<String, String> newUrlMap = new Hashtable<String, String>();
-
-	private Context context;
+	
+	private File cacheDir;
 
 	private boolean enabled = true;
 
-	public WebContentManager(Context context){
-		this.context = context;
-		File cache = context.getCacheDir();
+	public WebContentManager(File cacheDir){
+		this.cacheDir = cacheDir;
 
-		addFileToMap(cache);
+		addFileToMap(cacheDir);
 	}
 	
 	public void updateCache(){
+		populateCache("aaaaclark0007.jpg");
 		populateCache("ExhibitContents/alphaFunFacts.html");
 	}
 
 	private void populateCache(String filename){
 		if (false == newUrlMap.containsKey(filename)){
 			try {
-				File f  = new File(context.getCacheDir().getAbsolutePath() + "/" + filename);
+				File f  = new File(cacheDir.getAbsolutePath() + "/" + filename);
 				if (false == f.getParentFile().exists()){
 					if (true == f.getParentFile().mkdir()){ //TODO only generates one higher directory
 						Log.d(this.getClass().getName(), "Cache subdirectory created at " + f.getParentFile());
@@ -68,25 +65,38 @@ public class WebContentManager {
 
 	private byte[] getWebContent(String filename){
 		URL url;
-		String s = ""; //TODO StringBuilder
 		try {
 			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + filename);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			//Log.i(this.getClass().getName(), "" + new Date(conn.getLastModified()));
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(conn.getInputStream()));
-			String line = reader.readLine();
-			while (line != null){
-				s = s.concat(line);
-				line = reader.readLine();
+			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());
+			
+			int lengthGuess = conn.getContentLength();
+			byte[] buffer = new byte[lengthGuess + 256]; //TODO pick size
+			
+			InputStream binaryReader = conn.getInputStream();
+			int length = 0;
+			int read = 0;
+			while (true){
+				read = binaryReader.read(buffer, length, buffer.length - length);
+				if (read == -1){
+					break;
+				}else{
+					length += read;
+				}
 			}
-			reader.close();
+			if (length > lengthGuess){
+				Log.w(this.getClass().getName(), "Guess was " + lengthGuess + ", actually read " + length);
+			}
+			byte[] result = new byte[length];
+			System.arraycopy(buffer, 0, result, 0, result.length);
+			buffer = null;
+			binaryReader.close();
 			conn.disconnect();
-			return s.getBytes();
+			return result;
 		} catch (MalformedURLException e) {
-			Log.w(this.getClass().getName(), "Caching of " + filename + " failed with MalformedUrl");
+			Log.e(this.getClass().getName(), "Caching of " + filename + " failed with MalformedUrl");
 		} catch (IOException e) {
-			Log.w(this.getClass().getName(), "Caching of " + filename + " failed with IOException");
+			Log.e(this.getClass().getName(), "Caching of " + filename + " failed with IOException: " + e.getMessage());
 		}
 		return null;	
 	}
@@ -99,7 +109,7 @@ public class WebContentManager {
 			}
 		}else{
 			String path = file.getAbsolutePath();
-			path = path.replace(context.getCacheDir().getAbsolutePath()+"/", "");
+			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
 			newUrlMap.put(path, "");//TODO
 			Log.d(this.getClass().getName(), "Found in cache: " + path);
 		}
@@ -108,7 +118,7 @@ public class WebContentManager {
 	public String getUrl(String localUrl) {
 		if (enabled && newUrlMap.containsKey(localUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + localUrl);
-			return context.getCacheDir().toURI() + localUrl;
+			return cacheDir.toURI() + localUrl;
 		}else{
 			return "file:///android_asset/" + localUrl;
 		}
@@ -128,8 +138,7 @@ public class WebContentManager {
 	
 	public void clearCache(){
 		/* This function scares me a little */
-		File cache = context.getCacheDir();
-		File[] list = cache.listFiles();
+		File[] list = cacheDir.listFiles();
 		for(int i=0; i<list.length; i++){
 			recursiveRemove(list[i]);
 		}
