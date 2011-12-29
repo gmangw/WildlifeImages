@@ -469,7 +469,15 @@ public class TourApp extends Activity {
 
 	
 	public String getBestUrl(String localUrl){
-		return webManager.getUrl(localUrl);
+		String[] list = localUrl.split(",");
+		StringBuffer result = new StringBuffer();
+		for (int i=0; i<list.length; i++){
+			result.append(webManager.getUrl(list[i]));
+			if (i+1 < list.length){
+				result.append(",");
+			}
+		}
+		return result.toString();
 	}
 	
 	public void introProcessSidebar(int viewId){

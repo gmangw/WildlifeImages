@@ -57,6 +57,7 @@ public class ExhibitView extends FrameLayout{
 		picView.setVisibility(View.INVISIBLE);
 	}
 
+	/* Need full urls... */
 	public void loadImageUrl(String imgUrl){
 		String[] bml = imgUrl.split(",");
 		picView.setImageBitmapList(bml);
