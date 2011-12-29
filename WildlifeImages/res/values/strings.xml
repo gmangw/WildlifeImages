@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<!--
+     Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,21 +16,19 @@
 -->
 
 <resources>
-	<string name="app_name">Wildlife Images</string>
-	
+
+    <string name="app_name">Wildlife Images</string>
     <string name="menu_home">Home</string>
     <string name="menu_map">Map</string>
     <string name="menu_scan">QR Scan</string>
     <string name="menu_camera">Camera</string>
     <string name="menu_next">Next</string>
     <string name="menu_previous">Previous</string>
-    
     <string name="save_current_exhibit">sce</string>
     <string name="save_current_exhibit_tag">scet</string>
     <string name="save_current_page">scp</string>
     <string name="save_current_home_id">schi</string>
     <string name="save_current_exhibit_names">scen</string>
-    
     <string name="intro_sidebar_share">Share</string>
     <string name="intro_sidebar_about">About Us</string>
     <string name="intro_sidebar_support">Support</string>
@@ -38,7 +37,6 @@
     <string name="intro_sidebar_exhibitlist">Exhibit List</string>
     <string name="intro_sidebar_map">Map</string>
     <string name="intro_sidebar_photos">Photos</string>
-    
     <string name="intent_action_scan">com.google.zxing.client.android.SCAN</string>
     <string name="intent_extra_scan_mode">com.google.zxing.client.android.SCAN.SCAN_MODE</string>
     <string name="intent_extra_result">SCAN_RESULT</string>
@@ -48,15 +46,24 @@
     <string name="scan_app_missing">Install Barcode Scanner or Google Goggles first.</string>
     <string name="invalid_qr_result">Sorry, this is not a valid Wildlife Images QR code. </string>
     <string name="qr_prefix">market://search?q=pname:org.xbmc.android.remote&amp;extra=Wildlife_Images_Exhibit_</string>
-    
     <string name="exit_question">Are you sure you want to exit?</string>
     <string name="exit_option_yes">Yes</string>
     <string name="exit_option_no">No</string>
-    <string-array name="image_extensions">
-        <item >jpg</item>
-        <item >jpeg</item>
-        <item >png</item>
-        <item >gif</item>
+    <string name="intro_url_about">intro.html</string>
+    <string name="intro_url_support">donate.html</string>
+    <string name="intro_url_events">events.html</string>
+
+    <string-array name="intro_image_list">
+        <item>Denise-Pictures-157.jpg</item>
+        <item>aaaaclark0007.jpg</item>
+        <item>Carson.jpg</item>
+        <item>Miss-Jefferson1.jpg</item>
     </string-array>
-    
+    <string-array name="image_extensions">
+        <item>jpg</item>
+        <item>jpeg</item>
+        <item>png</item>
+        <item>gif</item>
+    </string-array>
+
 </resources>

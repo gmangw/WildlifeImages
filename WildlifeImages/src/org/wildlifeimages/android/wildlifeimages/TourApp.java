@@ -78,7 +78,7 @@ public class TourApp extends Activity {
 		}
 		ExhibitView mWebView;
 		mWebView = (ExhibitView) findViewById(R.id.intro);
-		mWebView.loadUrl("file:///android_asset/intro.html"); //TODO string
+		mWebView.loadUrl(getBestUrl(loadString(R.string.intro_url_about)));
 	}
 
 	public void listInit(){
@@ -178,7 +178,7 @@ public class TourApp extends Activity {
 			ExhibitView exView;
 			exView = (ExhibitView) findViewById(R.id.exhibit);
 			//mWebView.loadData(e.getContent(contentTag), "text/html", null);
-			exView.loadUrl(e.getContent(e.getCurrentTag()));
+			exView.loadUrl(getBestUrl(e.getContent(e.getCurrentTag())));
 		}
 	}
 
@@ -191,6 +191,7 @@ public class TourApp extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
+		boolean scanAvailable = isIntentAvailable(this, loadString(R.string.intent_action_scan));
 		
 		if(isLandscape){
 			menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
@@ -206,6 +207,10 @@ public class TourApp extends Activity {
 			menu.add(0, R.integer.MENU_PREVIOUS, 0, R.string.menu_previous);
 			menu.add(0, R.integer.MENU_CAMERA, 0, R.string.menu_camera);
 			menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
+		}
+		
+		if (false == scanAvailable){
+			menu.findItem(R.integer.MENU_SCAN).setEnabled(false);
 		}
 
 		return true;
@@ -469,23 +474,35 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl("donate.html"));
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl(loadString(R.string.intro_url_support)));
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_events:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl("events.html"));
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl(loadString(R.string.intro_url_events)));
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_photos:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl("Denise-Pictures-157.jpg") + "," + getBestUrl("aaaaclark0007.jpg") + "," + getBestUrl("Carson.jpg") + "," + getBestUrl("Miss-Jefferson1.jpg"));
+			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
+			String urlList = "";
+			for(int i=0; i<introPhotoList.length; i++){
+				urlList = urlList.concat(getBestUrl(introPhotoList[i]));
+				if (i+1 < introPhotoList.length){
+					urlList = urlList.concat(",");
+				}
+			}
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(urlList);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
 			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
-					"QR code scan requires that Barcode Scanner or Google Goggles be installed already.<br><br>" +
-					"The camera will leave a pic at the filesystem root, does nothing with it.",
+					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
+					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>" +
+					"The camera will leave a pic at the filesystem root, does nothing with it.<br><br>" +
+					"Viewing this page has triggered a cache flush and web update for debug purposes.",
 					"text/html", null); //TODO
 			activeHomeId = viewId;
+			webManager.clearCache();
+			webManager.updateCache();
 			break;
 		case R.id.intro_sidebar_exhibitlist:
 			listInit();
