@@ -5,13 +5,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Stack;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import android.util.Log;
-import android.webkit.WebView;
 
 /**
  * A collection of {@link Exhibit} instances.

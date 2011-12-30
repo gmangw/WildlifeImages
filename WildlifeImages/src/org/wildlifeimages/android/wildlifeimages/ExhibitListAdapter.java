@@ -3,7 +3,6 @@ package org.wildlifeimages.android.wildlifeimages;
 import java.util.Iterator;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

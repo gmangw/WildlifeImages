@@ -1,10 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.util.Enumeration;
 import java.util.Iterator;
 
 import android.content.Context;
-import android.content.res.Resources.NotFoundException;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -121,17 +119,15 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		map.setBounds(originX, originY, this.getWidth(), 3*this.getWidth()/4);
 		map.draw(canvas);
 
-		/*
     	Paint p = new Paint();
     	p.setARGB(255, 0, 0, 255);
 
     	Iterator<String> list = exhibitList.keys();
 
-    	while(list.hasNext()){
+    	while(list.hasNext() == false){ //TODO debug drawing, disabled by "== false"
     		Exhibit e = exhibitList.get(list.next());
     		canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
 		}
-		*/
 	}
 
 	/**
@@ -148,15 +144,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent msg) {
 		return false;
-	}
-
-	/**
-	 * Standard window-focus override. Notice focus lost so we can pause on
-	 * focus lost. e.g. user switches to take a call.
-	 */
-	@Override
-	public void onWindowFocusChanged(boolean hasWindowFocus) {
-		//TODO
 	}
 
 	/* Callback invoked when the surface dimensions change. */

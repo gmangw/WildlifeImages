@@ -11,11 +11,20 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+/**
+ * This class handles the caching and updating of exhibit content.
+ * 
+ * @author Graham Wilkinson 
+ * 		
+ */
 public class WebContentManager {
 
 	public static final String ASSET_PREFIX = "file:///android_asset/";
@@ -23,6 +32,7 @@ public class WebContentManager {
 	private Hashtable<String, String> newUrlMap = new Hashtable<String, String>();
 
 	private File cacheDir;
+	private HashMap<String, Bitmap> bmpCache;
 
 	private boolean enabled = true;
 
@@ -30,11 +40,12 @@ public class WebContentManager {
 		this.cacheDir = cacheDir;
 
 		addFileToMap(cacheDir);
+		bmpCache = new HashMap<String, Bitmap>();
 	}
 
 	public void updateCache(){
 		populateCache("aaaaclark0007.jpg");
-		populateCache("ExhibitContents/alphaFunFacts.html");
+		populateCache("ExhibitContents/alphaFunFacts.html"); //TODO
 	}
 
 	private void populateCache(String filename){
@@ -59,6 +70,7 @@ public class WebContentManager {
 					enabled = true;
 					Log.d(this.getClass().getName(), "Page cached: " + filename);
 				}
+				bmpCache.remove(filename);
 			} catch (FileNotFoundException e) {
 				Log.w(this.getClass().getName(), "Cache disabled due to FileNotFoundException");
 				enabled = false;
@@ -77,7 +89,7 @@ public class WebContentManager {
 			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());
 
 			int lengthGuess = conn.getContentLength();
-			byte[] buffer = new byte[lengthGuess + 256]; //TODO pick size
+			byte[] buffer = new byte[lengthGuess + 256]; //Extra space added just in case.
 
 			InputStream binaryReader = conn.getInputStream();
 			int length = 0;
@@ -116,7 +128,7 @@ public class WebContentManager {
 		}else{
 			String path = file.getAbsolutePath();
 			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
-			newUrlMap.put(path, "");//TODO
+			newUrlMap.put(path, "");
 			Log.d(this.getClass().getName(), "Found in cache: " + path);
 		}
 	}
@@ -167,5 +179,28 @@ public class WebContentManager {
 			Log.w(this.getClass().getName(), "Bad url " + longUrl);
 		}
 		return istr;
+	}
+
+	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
+		if (bmpCache.containsKey(shortUrl)){
+			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
+			return bmpCache.get(shortUrl);
+		}else{
+			Bitmap bmp = getBitmapFromStream(streamAssetOrFile(shortUrl, assets));
+			bmpCache.put(shortUrl, bmp);
+			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);
+			return bmp;
+		}
+	}
+	
+	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
+	private Bitmap getBitmapFromStream(InputStream istr)
+	{
+		if (null == istr){
+			return null;
+		}else{
+			Bitmap bitmap = BitmapFactory.decodeStream(istr);
+			return bitmap;
+		}
 	}
 }

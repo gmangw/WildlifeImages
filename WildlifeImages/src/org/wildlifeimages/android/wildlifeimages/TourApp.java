@@ -1,14 +1,9 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -20,7 +15,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +22,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
-import android.content.res.XmlResourceParser;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,9 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.webkit.WebView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -70,14 +61,12 @@ public class TourApp extends Activity {
 	private WebContentManager webManager;
 
 	private void mapInit() {
-		// tell system to use the layout defined in our XML file
 		if (isLandscape){
 			setActiveView(R.layout.tour_layout);
 		}else{
 			setActiveView(R.layout.tour_layout_vertical);
 		}
 		MapView mMapView;
-		// get handles to the MapView from XML
 		mMapView = (MapView) findViewById(R.id.map);
 
 		mMapView.setExhibitList(exhibitList);
@@ -85,7 +74,6 @@ public class TourApp extends Activity {
 	}
 
 	private void introInit() {
-		// tell system to use the layout defined in our XML file
 		if (isLandscape){
 			setActiveView(R.layout.intro_layout);
 		}else{
@@ -275,7 +263,6 @@ public class TourApp extends Activity {
 			//define the file-name to save photo taken by Camera activity
 			String fileName = "file://mnt/sdcard/pic.jpg"; //TODO filename
 			Uri imageUri = Uri.parse(fileName);
-			//create new Intent
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			//Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA); TODO if we don't want image back
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -327,7 +314,7 @@ public class TourApp extends Activity {
 		try{
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 	        XmlPullParser xmlBox = factory.newPullParser();
-	        AssetManager assetManager = this.getApplicationContext().getAssets(); //TODO
+	        AssetManager assetManager = this.getApplicationContext().getAssets();
 			InputStream istr = assetManager.open("exhibits.xml");
 	        BufferedReader in = new BufferedReader(new InputStreamReader(istr));
 	        xmlBox.setInput(in);
@@ -336,7 +323,7 @@ public class TourApp extends Activity {
 		}catch(XmlPullParserException e){
 			throw(null); //TODO
 		} catch (IOException e) {
-			throw(null); //TODO
+			throw(null);
 		}
 
 		/* Use saved version of webManager if we restarted due to something trivial */
@@ -387,15 +374,6 @@ public class TourApp extends Activity {
 			}
 
 		}
-	}
-
-	/**
-	 * Invoked when the Activity loses user focus.
-	 */
-	@Override
-	protected void onPause() {
-		super.onPause();
-		//TODO
 	}
 
 	/**
@@ -454,7 +432,7 @@ public class TourApp extends Activity {
 			String potential_key = textQR.substring(prefix.length());
 			if (exhibitList.containsKey(potential_key)){
 				Exhibit e = exhibitList.get(potential_key);
-				exhibitSwitch(e, Exhibit.TAG_AUTO); //TODO add tag and app url to qr code
+				exhibitSwitch(e, Exhibit.TAG_AUTO); //TODO add tag to qr code
 				return true;
 			}else{
 				return false;
@@ -506,7 +484,6 @@ public class TourApp extends Activity {
 				result.append(",");
 			}
 		}
-		//return result.toString(); //TODO
 		return webManager.getBestUrl(localUrl);
 	}
 
