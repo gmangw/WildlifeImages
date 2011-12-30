@@ -121,7 +121,7 @@ public class WebContentManager {
 		}
 	}
 
-	public String getUrl(String localUrl) {
+	public String getBestUrl(String localUrl) {
 		if (enabled && newUrlMap.containsKey(localUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + localUrl);
 			return cacheDir.toURI() + localUrl;
@@ -151,19 +151,20 @@ public class WebContentManager {
 		newUrlMap.clear();
 	}
 
-	public InputStream streamAssetOrCache(String imgUrl, AssetManager assets) {
+	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) {
 		InputStream istr = null;
+		String longUrl = getBestUrl(shortUrl);
 		try{
-			if (imgUrl.startsWith(ASSET_PREFIX)){
-				istr = assets.open(imgUrl.replaceAll(ASSET_PREFIX, "")); 
+			if (longUrl.startsWith(ASSET_PREFIX)){
+				istr = assets.open(shortUrl);
 			}else{
-				File f = new File(new URI(imgUrl));
+				File f = new File(new URI(longUrl));
 				istr = new FileInputStream(f);
 			}
 		}catch(IOException e){
-			Log.w(this.getClass().getName(), "Asset " + imgUrl + " is missing or corrupt.");
+			Log.w(this.getClass().getName(), "Asset " + longUrl + " is missing or corrupt.");
 		} catch (URISyntaxException e) {
-			Log.w(this.getClass().getName(), "Bad url " + imgUrl);
+			Log.w(this.getClass().getName(), "Bad url " + longUrl);
 		}
 		return istr;
 	}

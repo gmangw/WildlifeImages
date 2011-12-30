@@ -1,14 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -30,15 +24,17 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 
 	private GestureDetector gestures;
 	private Matrix baseMatrix = new Matrix();
-	private String[] bitmapList = new String[0];
+	private String[] shortUrlList = new String[0];
 	private int currentBitmapIndex;
 	private WebContentManager webManager = null;
+	private BitmapCache bmpCache;
 
 	RectF bmpRect = new RectF();
 
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		gestures = new GestureDetector(context, this);
+		bmpCache = new BitmapCache();
 	}
 
 	private void reMeasureMatrix(){
@@ -59,10 +55,25 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		reMeasureMatrix();
 	}
 
-	public void setImageBitmapList(String[] bmpList){
-		bitmapList = bmpList.clone();
+	private void setBitmap(String shortUrl, WebContentManager webManager){
+		if (bmpCache.contains(shortUrl)){
+			setImageBitmap(bmpCache.get(shortUrl));
+			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
+		}else{
+			InputStream istr = webManager.streamAssetOrFile(shortUrl, this.getContext().getAssets());
+			
+			Bitmap bmp = getBitmapFromStream(istr);
+			setImageBitmap(bmp);
+			bmpCache.put(shortUrl, bmp);
+			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);
+		}
+	}
+	
+	public void setImageBitmapList(String[] shortImgUrlList, WebContentManager webManager){
+		shortUrlList = shortImgUrlList.clone(); //Being cautious in case the original is altered somehow
 		currentBitmapIndex = 0;
-		setImageBitmap(getBitmapFromAsset(bitmapList[currentBitmapIndex]));
+		setBitmap(shortUrlList[currentBitmapIndex], webManager);
+		this.webManager = webManager;
 	}
 
 	@Override
@@ -84,12 +95,8 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
-	private Bitmap getBitmapFromAsset(String imgUrl)
-	{	
-		//TODO cache this stuff in memory, files are loading slow from SD
-		InputStream istr;
-
-		istr = webManager.streamAssetOrCache(imgUrl, this.getContext().getAssets());
+	private Bitmap getBitmapFromStream(InputStream istr)
+	{
 		if (null == istr){
 			return null;
 		}else{
@@ -99,7 +106,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	public boolean onDown(MotionEvent e) {
-		if (bitmapList.length > 1){
+		if (shortUrlList.length > 1){
 			return true;
 		}else{
 			return false;
@@ -109,14 +116,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		if (velocityX < 0){
-			if (currentBitmapIndex < (bitmapList.length-1)){
+			if (currentBitmapIndex < (shortUrlList.length-1)){
 				currentBitmapIndex++;
-				setImageBitmap(getBitmapFromAsset(bitmapList[currentBitmapIndex]));
+				setBitmap(shortUrlList[currentBitmapIndex], webManager);
 			}
 		}else{
 			if (currentBitmapIndex > 0){
 				currentBitmapIndex--;
-				setImageBitmap(getBitmapFromAsset(bitmapList[currentBitmapIndex]));
+				setBitmap(shortUrlList[currentBitmapIndex], webManager);
 			}
 		}
 		return false;
@@ -144,8 +151,4 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public boolean onSingleTapUp(MotionEvent e) {
 		return false;
 	} 
-	
-	public void setWebContentManager(WebContentManager m){
-		webManager = m;
-	}
 }

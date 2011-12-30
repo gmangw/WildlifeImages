@@ -16,7 +16,7 @@ import android.widget.FrameLayout;
 public class ExhibitView extends FrameLayout{
 	private WebView htmlView;
 	private MultiImageView picView;
-	private WebContentManager webManager = null;
+	//private WebContentManager webManager = null;
 
 	public ExhibitView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -30,39 +30,34 @@ public class ExhibitView extends FrameLayout{
 		this.addView(htmlView);
 		this.addView(picView);
 	}
-
-	public void loadShortUrl(String shortUrl){
-		//TODO
-	}
 	
-	public void loadUrl(String url){
+	public void loadUrl(String shortUrl, WebContentManager webManager){
 		String[] urlList = new String[1];
-		urlList[0] = url;
-		loadUrlList(urlList);
+		urlList[0] = shortUrl;
+		loadUrlList(urlList, webManager);
 	}
 	
-	public void loadUrlList(String[] url){
-		String lower = url[0].toLowerCase();
+	public void loadUrlList(String[] shortUrlList, WebContentManager webManager){
+		String lower = shortUrlList[0].toLowerCase();
 		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
 		for (int i=0; i<extensionList.length; i++){
 			if (lower.endsWith(extensionList[i])){
-				loadImageUrl(url);
+				loadImageUrl(shortUrlList, webManager);
 				return;
 			}
 		}
 		//Else
-		loadHtmlUrl(url[0]);
+		loadHtmlUrl(shortUrlList[0], webManager);
 	}
 
-	public void loadHtmlUrl(String htmlUrl){
-		htmlView.loadUrl(htmlUrl);
+	public void loadHtmlUrl(String htmlShortUrl, WebContentManager webManager){
+		htmlView.loadUrl(webManager.getBestUrl(htmlShortUrl));
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
 	}
 
-	/* Need full urls... */
-	public void loadImageUrl(String[] imgUrl){
-		picView.setImageBitmapList(imgUrl);
+	public void loadImageUrl(String[] imgShortUrl, WebContentManager webManager){
+		picView.setImageBitmapList(imgShortUrl, webManager);
 		picView.setVisibility(View.VISIBLE);
 		htmlView.setVisibility(View.INVISIBLE);
 	}
@@ -73,9 +68,9 @@ public class ExhibitView extends FrameLayout{
 		picView.setVisibility(View.INVISIBLE);
 	}
 	
-	public void setWebContentManager(WebContentManager m){
+	/*public void setWebContentManager(WebContentManager m){
 		webManager = m;
 		picView.setWebContentManager(webManager);
-	}
+	}*/
 
 }

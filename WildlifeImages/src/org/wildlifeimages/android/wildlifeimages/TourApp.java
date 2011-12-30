@@ -93,8 +93,7 @@ public class TourApp extends Activity {
 		}
 		ExhibitView mExhibitView;
 		mExhibitView = (ExhibitView) findViewById(R.id.intro);
-		mExhibitView.setWebContentManager(webManager);
-		mExhibitView.loadUrl(getBestUrl(loadString(R.string.intro_url_about)));
+		mExhibitView.loadUrl(loadString(R.string.intro_url_about), webManager);
 	}
 
 	public void listInit(){
@@ -193,13 +192,9 @@ public class TourApp extends Activity {
 		if (remakeButtons || previousTag != contentTag){
 			ExhibitView exView;
 			exView = (ExhibitView) findViewById(R.id.exhibit);
-			exView.setWebContentManager(webManager);
 			//mWebView.loadData(e.getContent(contentTag), "text/html", null);
 			String[] content = e.getContent(e.getCurrentTag());
-			for(int i=0; i<content.length; i++){
-				content[i] = getBestUrl(content[i]);
-			}
-			exView.loadUrlList(content);
+			exView.loadUrlList(content, webManager);
 		}
 	}
 
@@ -506,13 +501,13 @@ public class TourApp extends Activity {
 		String[] list = localUrl.split(",");
 		StringBuffer result = new StringBuffer();
 		for (int i=0; i<list.length; i++){
-			result.append(webManager.getUrl(list[i]));
+			result.append(webManager.getBestUrl(list[i]));
 			if (i+1 < list.length){
 				result.append(",");
 			}
 		}
 		//return result.toString(); //TODO
-		return webManager.getUrl(localUrl);
+		return webManager.getBestUrl(localUrl);
 	}
 
 	public void introProcessSidebar(int viewId){
@@ -522,19 +517,16 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl(loadString(R.string.intro_url_support)));
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), webManager);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_events:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(getBestUrl(loadString(R.string.intro_url_events)));
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), webManager);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_photos:
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			for(int i=0; i<introPhotoList.length; i++){
-				introPhotoList[i] = getBestUrl(introPhotoList[i]);
-			}
-			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList);//TODO
+			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, webManager);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
