@@ -20,7 +20,7 @@ public class Exhibit {
 	
 	private String currentTag = Exhibit.TAG_INTRO;
 	
-	private Hashtable<String, String> contents = new Hashtable<String, String>();
+	private Hashtable<String, String[]> contents = new Hashtable<String, String[]>();
 	
 	private ArrayList<String> tagList = new ArrayList<String>();
 	
@@ -52,8 +52,8 @@ public class Exhibit {
 		return tagList.iterator();
 	}
 	
-	public String getContent(String contentTag) {
-		String c = contents.get(contentTag);
+	public String[] getContent(String contentTag) {
+		String[] c = contents.get(contentTag);
 		if (c == null){
 			return contents.get(Exhibit.TAG_INTRO);
 		}else{
@@ -61,7 +61,7 @@ public class Exhibit {
 		}
 	}
 
-	public void setContent(String contentTag, String content) {
+	public void setContent(String contentTag, String[] content) {
 		tagList.add(contentTag);
 		contents.put(contentTag, content);
 	}
@@ -69,7 +69,9 @@ public class Exhibit {
 	public Exhibit(String name, String intro){
 		this.name = name;
 		tagList.add(Exhibit.TAG_INTRO);
-		contents.put(Exhibit.TAG_INTRO, intro);
+		String[] s = new String[1];
+		s[0] = intro;
+		contents.put(Exhibit.TAG_INTRO, s);
 	}
 
 	public String getName() {

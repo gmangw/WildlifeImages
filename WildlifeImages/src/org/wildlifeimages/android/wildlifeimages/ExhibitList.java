@@ -58,7 +58,8 @@ public class ExhibitList {
 					exhibitList.put(e.getName(), e);
 					keyList.add(e.getName());
 				}else if (xmlBox.getName().equalsIgnoreCase("content")){
-					e.setContent(xmlBox.getAttributeValue(null, "tag"), xmlBox.getAttributeValue(null, "page"));
+					String urlList = xmlBox.getAttributeValue(null, "page");
+					e.setContent(xmlBox.getAttributeValue(null, "tag"), urlList.split(","));
 				}
 			} else if(eventType == XmlPullParser.END_TAG) {
 

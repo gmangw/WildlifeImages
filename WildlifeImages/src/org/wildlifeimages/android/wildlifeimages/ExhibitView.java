@@ -1,15 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -22,8 +14,9 @@ import android.widget.FrameLayout;
  */
 
 public class ExhibitView extends FrameLayout{
-	WebView htmlView;
-	MultiImageView picView;
+	private WebView htmlView;
+	private MultiImageView picView;
+	private WebContentManager webManager = null;
 
 	public ExhibitView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -38,8 +31,18 @@ public class ExhibitView extends FrameLayout{
 		this.addView(picView);
 	}
 
+	public void loadShortUrl(String shortUrl){
+		//TODO
+	}
+	
 	public void loadUrl(String url){
-		String lower = url.toLowerCase();
+		String[] urlList = new String[1];
+		urlList[0] = url;
+		loadUrlList(urlList);
+	}
+	
+	public void loadUrlList(String[] url){
+		String lower = url[0].toLowerCase();
 		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
 		for (int i=0; i<extensionList.length; i++){
 			if (lower.endsWith(extensionList[i])){
@@ -48,7 +51,7 @@ public class ExhibitView extends FrameLayout{
 			}
 		}
 		//Else
-		loadHtmlUrl(url);
+		loadHtmlUrl(url[0]);
 	}
 
 	public void loadHtmlUrl(String htmlUrl){
@@ -58,9 +61,8 @@ public class ExhibitView extends FrameLayout{
 	}
 
 	/* Need full urls... */
-	public void loadImageUrl(String imgUrl){
-		String[] bml = imgUrl.split(",");
-		picView.setImageBitmapList(bml);
+	public void loadImageUrl(String[] imgUrl){
+		picView.setImageBitmapList(imgUrl);
 		picView.setVisibility(View.VISIBLE);
 		htmlView.setVisibility(View.INVISIBLE);
 	}
@@ -69,6 +71,11 @@ public class ExhibitView extends FrameLayout{
 		htmlView.loadData(data, mimeType, encoding);
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
+	}
+	
+	public void setWebContentManager(WebContentManager m){
+		webManager = m;
+		picView.setWebContentManager(webManager);
 	}
 
 }

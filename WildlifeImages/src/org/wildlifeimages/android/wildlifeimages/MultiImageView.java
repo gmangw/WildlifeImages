@@ -28,12 +28,11 @@ import android.widget.ImageView;
  */
 public class MultiImageView extends ImageView implements GestureDetector.OnGestureListener{
 
-	private static final String ASSET_PREFIX = "file:///android_asset/";
-	
 	private GestureDetector gestures;
 	private Matrix baseMatrix = new Matrix();
 	private String[] bitmapList = new String[0];
 	private int currentBitmapIndex;
+	private WebContentManager webManager = null;
 
 	RectF bmpRect = new RectF();
 
@@ -87,26 +86,16 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
 	private Bitmap getBitmapFromAsset(String imgUrl)
 	{	
-		try{ //TODO cache this stuff in memory, files are loading slow from SD
-			InputStream istr;
-			//TODO find some way to have WebContentManager handle this logic
-			if (imgUrl.startsWith(ASSET_PREFIX)){
-				AssetManager assetManager = this.getContext().getAssets();
-				istr = assetManager.open(imgUrl.replaceAll(ASSET_PREFIX, "")); 
-			}else{
-				File f = new File(new URI(imgUrl));
-				istr = new FileInputStream(f);
-			}
-			Bitmap bitmap = BitmapFactory.decodeStream(istr);
+		//TODO cache this stuff in memory, files are loading slow from SD
+		InputStream istr;
 
-			return bitmap;
-		}catch(IOException e){
-			Log.w(this.getClass().getName(), "Asset " + imgUrl + " is missing or corrupt.");
+		istr = webManager.streamAssetOrCache(imgUrl, this.getContext().getAssets());
+		if (null == istr){
 			return null;
-		} catch (URISyntaxException e) {
-			Log.w(this.getClass().getName(), "Bad url " + imgUrl);
+		}else{
+			Bitmap bitmap = BitmapFactory.decodeStream(istr);
+			return bitmap;
 		}
-		return null;
 	}
 
 	public boolean onDown(MotionEvent e) {
@@ -155,4 +144,8 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public boolean onSingleTapUp(MotionEvent e) {
 		return false;
 	} 
+	
+	public void setWebContentManager(WebContentManager m){
+		webManager = m;
+	}
 }

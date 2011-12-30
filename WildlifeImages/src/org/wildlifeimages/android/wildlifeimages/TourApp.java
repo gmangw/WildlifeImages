@@ -91,9 +91,10 @@ public class TourApp extends Activity {
 		}else{
 			setActiveView(R.layout.intro_layout_vertical);
 		}
-		ExhibitView mWebView;
-		mWebView = (ExhibitView) findViewById(R.id.intro);
-		mWebView.loadUrl(getBestUrl(loadString(R.string.intro_url_about)));
+		ExhibitView mExhibitView;
+		mExhibitView = (ExhibitView) findViewById(R.id.intro);
+		mExhibitView.setWebContentManager(webManager);
+		mExhibitView.loadUrl(getBestUrl(loadString(R.string.intro_url_about)));
 	}
 
 	public void listInit(){
@@ -192,8 +193,13 @@ public class TourApp extends Activity {
 		if (remakeButtons || previousTag != contentTag){
 			ExhibitView exView;
 			exView = (ExhibitView) findViewById(R.id.exhibit);
+			exView.setWebContentManager(webManager);
 			//mWebView.loadData(e.getContent(contentTag), "text/html", null);
-			exView.loadUrl(getBestUrl(e.getContent(e.getCurrentTag())));
+			String[] content = e.getContent(e.getCurrentTag());
+			for(int i=0; i<content.length; i++){
+				content[i] = getBestUrl(content[i]);
+			}
+			exView.loadUrlList(content);
 		}
 	}
 
@@ -505,7 +511,8 @@ public class TourApp extends Activity {
 				result.append(",");
 			}
 		}
-		return result.toString();
+		//return result.toString(); //TODO
+		return webManager.getUrl(localUrl);
 	}
 
 	public void introProcessSidebar(int viewId){
@@ -524,14 +531,10 @@ public class TourApp extends Activity {
 			break;
 		case R.id.intro_sidebar_photos:
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			String urlList = "";
 			for(int i=0; i<introPhotoList.length; i++){
-				urlList = urlList.concat(getBestUrl(introPhotoList[i]));
-				if (i+1 < introPhotoList.length){
-					urlList = urlList.concat(",");
-				}
+				introPhotoList[i] = getBestUrl(introPhotoList[i]);
 			}
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(urlList);
+			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList);//TODO
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:

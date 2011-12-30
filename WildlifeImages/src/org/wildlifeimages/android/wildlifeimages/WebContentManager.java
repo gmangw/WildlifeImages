@@ -1,21 +1,27 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Hashtable;
 
+import android.content.res.AssetManager;
 import android.util.Log;
 
 public class WebContentManager {
 
+	public static final String ASSET_PREFIX = "file:///android_asset/";
+
 	private Hashtable<String, String> newUrlMap = new Hashtable<String, String>();
-	
+
 	private File cacheDir;
 
 	private boolean enabled = true;
@@ -25,7 +31,7 @@ public class WebContentManager {
 
 		addFileToMap(cacheDir);
 	}
-	
+
 	public void updateCache(){
 		populateCache("aaaaclark0007.jpg");
 		populateCache("ExhibitContents/alphaFunFacts.html");
@@ -42,13 +48,13 @@ public class WebContentManager {
 						Log.e(this.getClass().getName(), "Cache subdirectory creation failed: " + f.getParentFile());
 					}
 				}
-				
+
 				byte[] newContent = getWebContent(filename);
 				if (null != newContent){
 					FileOutputStream fOut = new FileOutputStream(f);
 					fOut.write(newContent);
 					fOut.close();
-	
+
 					newUrlMap.put(filename, ""); //TODO
 					enabled = true;
 					Log.d(this.getClass().getName(), "Page cached: " + filename);
@@ -69,10 +75,10 @@ public class WebContentManager {
 			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + filename);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());
-			
+
 			int lengthGuess = conn.getContentLength();
 			byte[] buffer = new byte[lengthGuess + 256]; //TODO pick size
-			
+
 			InputStream binaryReader = conn.getInputStream();
 			int length = 0;
 			int read = 0;
@@ -123,7 +129,7 @@ public class WebContentManager {
 			return "file:///android_asset/" + localUrl;
 		}
 	}
-	
+
 	private void recursiveRemove(File f){
 		if (f.isDirectory()){
 			File[] list = f.listFiles();
@@ -135,7 +141,7 @@ public class WebContentManager {
 			Log.d(this.getClass().getName(), "Removed cache file " + f.getName());
 		}
 	}
-	
+
 	public void clearCache(){
 		/* This function scares me a little */
 		File[] list = cacheDir.listFiles();
@@ -143,5 +149,22 @@ public class WebContentManager {
 			recursiveRemove(list[i]);
 		}
 		newUrlMap.clear();
+	}
+
+	public InputStream streamAssetOrCache(String imgUrl, AssetManager assets) {
+		InputStream istr = null;
+		try{
+			if (imgUrl.startsWith(ASSET_PREFIX)){
+				istr = assets.open(imgUrl.replaceAll(ASSET_PREFIX, "")); 
+			}else{
+				File f = new File(new URI(imgUrl));
+				istr = new FileInputStream(f);
+			}
+		}catch(IOException e){
+			Log.w(this.getClass().getName(), "Asset " + imgUrl + " is missing or corrupt.");
+		} catch (URISyntaxException e) {
+			Log.w(this.getClass().getName(), "Bad url " + imgUrl);
+		}
+		return istr;
 	}
 }
