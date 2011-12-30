@@ -89,9 +89,10 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	{	
 		try{ //TODO cache this stuff in memory, files are loading slow from SD
 			InputStream istr;
+			//TODO find some way to have WebContentManager handle this logic
 			if (imgUrl.startsWith(ASSET_PREFIX)){
 				AssetManager assetManager = this.getContext().getAssets();
-				istr = assetManager.open(imgUrl.replaceAll(ASSET_PREFIX, ""));
+				istr = assetManager.open(imgUrl.replaceAll(ASSET_PREFIX, "")); 
 			}else{
 				File f = new File(new URI(imgUrl));
 				istr = new FileInputStream(f);

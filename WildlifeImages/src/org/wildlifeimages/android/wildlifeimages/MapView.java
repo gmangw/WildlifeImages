@@ -1,9 +1,13 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -121,13 +125,13 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
     	Paint p = new Paint();
     	p.setARGB(255, 0, 0, 255);
 
-    	Enumeration<Exhibit> list = exhibitList.elements();
+    	Iterator<String> list = exhibitList.keys();
 
-    	while(list.hasMoreElements()){
-    		Exhibit e = list.nextElement();
+    	while(list.hasNext()){
+    		Exhibit e = exhibitList.get(list.next());
     		canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
-		}*/
-
+		}
+		*/
 	}
 
 	/**

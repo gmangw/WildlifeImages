@@ -1,9 +1,22 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,7 +26,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.XmlResourceParser;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -53,7 +68,7 @@ public class TourApp extends Activity {
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
 	private WebContentManager webManager;
-	
+
 	private void mapInit() {
 		// tell system to use the layout defined in our XML file
 		if (isLandscape){
@@ -114,14 +129,14 @@ public class TourApp extends Activity {
 		button.setBackgroundResource(R.drawable.android_button);
 		return button;
 	}
-	
+
 	public void exhibitSwitch(Exhibit e, String contentTag) {
 		boolean remakeButtons = false;
 		Exhibit previous = exhibitList.getCurrent();
 		String previousTag = previous.getCurrentTag();
-		
+
 		exhibitList.setCurrent(e, contentTag);
-		
+
 		/* If not viewing any exhibit or the exhibit is not the one currently open */
 		if ((ExhibitView) findViewById(R.id.exhibit) == null){
 			if (isLandscape){
@@ -135,44 +150,44 @@ public class TourApp extends Activity {
 		if(remakeButtons){
 			Iterator<String> tagList = e.getTags();
 			LinearLayout buttonList = (LinearLayout)findViewById(R.id.exhibit_sidebar_linear);
-			
+
 			buttonList.removeAllViews();
-			
+
 			int index = 0;
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1);
 			OnClickListener listen = new OnClickListener(){
 				public void onClick(View v) {
 					exhibitProcessSidebar(v);
 				}};
-			while (tagList.hasNext()){
-				if (isLandscape){
-					Button button = makeStyledButton(tagList.next(), buttonList.getContext(), params, listen);
-					
-					/* Add each button after the previous one, keeping map at the end */
-					buttonList.addView(button, index);
-					index++; 
-				}
-				else{
-					LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
-					buttonPair.setLayoutParams(params);
-					buttonPair.setOrientation(LinearLayout.VERTICAL);
-					for(int i=0; i<2; i++){
-						if (tagList.hasNext()){
-							Button button = makeStyledButton(tagList.next(), buttonPair.getContext(), params, listen);
-							buttonPair.addView(button);
-						}
-						else{
-							Button filler = makeStyledButton("", buttonPair.getContext(), params, null);
-							filler.setEnabled(false);
-							buttonPair.addView(filler);
-						}
-					}
+				while (tagList.hasNext()){
+					if (isLandscape){
+						Button button = makeStyledButton(tagList.next(), buttonList.getContext(), params, listen);
 
-					/* Add each button after the previous one, keeping map at the end */
-					buttonList.addView(buttonPair, index);
-					index++; 
+						/* Add each button after the previous one, keeping map at the end */
+						buttonList.addView(button, index);
+						index++; 
+					}
+					else{
+						LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
+						buttonPair.setLayoutParams(params);
+						buttonPair.setOrientation(LinearLayout.VERTICAL);
+						for(int i=0; i<2; i++){
+							if (tagList.hasNext()){
+								Button button = makeStyledButton(tagList.next(), buttonPair.getContext(), params, listen);
+								buttonPair.addView(button);
+							}
+							else{
+								Button filler = makeStyledButton("", buttonPair.getContext(), params, null);
+								filler.setEnabled(false);
+								buttonPair.addView(filler);
+							}
+						}
+
+						/* Add each button after the previous one, keeping map at the end */
+						buttonList.addView(buttonPair, index);
+						index++; 
+					}
 				}
-			}
 		}
 		if (remakeButtons || previousTag != contentTag){
 			ExhibitView exView;
@@ -192,7 +207,7 @@ public class TourApp extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		boolean scanAvailable = isIntentAvailable(this, loadString(R.string.intent_action_scan));
-		
+
 		if(isLandscape){
 			menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
 			menu.add(0, R.integer.MENU_MAP, 0, R.string.menu_map);
@@ -208,7 +223,7 @@ public class TourApp extends Activity {
 			menu.add(0, R.integer.MENU_CAMERA, 0, R.string.menu_camera);
 			menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
 		}
-		
+
 		if (false == scanAvailable){
 			menu.findItem(R.integer.MENU_SCAN).setEnabled(false);
 		}
@@ -219,7 +234,7 @@ public class TourApp extends Activity {
 	private String loadString(int resId){
 		return getResources().getString(resId);
 	}
-	
+
 	/**
 	 * Invoked when the user selects an item from the Menu.
 	 * 
@@ -308,14 +323,27 @@ public class TourApp extends Activity {
 			isLandscape = false;
 		}		
 
-		exhibitList = new ExhibitList();
-		
+		try{
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+	        XmlPullParser xmlBox = factory.newPullParser();
+	        AssetManager assetManager = this.getApplicationContext().getAssets(); //TODO
+			InputStream istr = assetManager.open("exhibits.xml");
+	        BufferedReader in = new BufferedReader(new InputStreamReader(istr));
+	        xmlBox.setInput(in);
+	        Log.i(this.getClass().getName(), "Input has been set.");
+	        exhibitList = new ExhibitList(xmlBox);
+		}catch(XmlPullParserException e){
+			throw(null); //TODO
+		} catch (IOException e) {
+			throw(null); //TODO
+		}
+
 		/* Use saved version of webManager if we restarted due to something trivial */
 		webManager = (WebContentManager)getLastNonConfigurationInstance();
 		if (null == webManager){
 			webManager = new WebContentManager(this.getApplicationContext().getCacheDir());
 		}
-		
+
 		if (savedState == null) {
 			introInit();
 		} else {
@@ -467,7 +495,7 @@ public class TourApp extends Activity {
 		introProcessSidebar(v.getId());
 	}
 
-	
+
 	public String getBestUrl(String localUrl){
 		String[] list = localUrl.split(",");
 		StringBuffer result = new StringBuffer();
@@ -479,7 +507,7 @@ public class TourApp extends Activity {
 		}
 		return result.toString();
 	}
-	
+
 	public void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_intro:
@@ -561,10 +589,10 @@ public class TourApp extends Activity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-	    final WebContentManager data = webManager;
-	    return data;
+		final WebContentManager data = webManager;
+		return data;
 	}
-	
+
 	public class ItemClickHandler implements AdapterView.OnItemClickListener{
 
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
