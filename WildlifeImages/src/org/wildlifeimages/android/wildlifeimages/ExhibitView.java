@@ -30,13 +30,13 @@ public class ExhibitView extends FrameLayout{
 		this.addView(htmlView);
 		this.addView(picView);
 	}
-	
+
 	public void loadUrl(String shortUrl, WebContentManager webManager){
 		String[] urlList = new String[1];
 		urlList[0] = shortUrl;
 		loadUrlList(urlList, webManager);
 	}
-	
+
 	public void loadUrlList(String[] shortUrlList, WebContentManager webManager){
 		String lower = shortUrlList[0].toLowerCase();
 		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
@@ -62,15 +62,9 @@ public class ExhibitView extends FrameLayout{
 		htmlView.setVisibility(View.INVISIBLE);
 	}
 
-	public void loadData(String data, String mimeType, String encoding){
-		htmlView.loadData(data, mimeType, encoding);
+	public void loadData(String data){
+		htmlView.loadData(data, "text/html", null);
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
 	}
-	
-	/*public void setWebContentManager(WebContentManager m){
-		webManager = m;
-		picView.setWebContentManager(webManager);
-	}*/
-
 }

@@ -35,18 +35,15 @@ public class ExhibitList {
 		Exhibit e = null;
 
 		while (eventType != XmlPullParser.END_DOCUMENT) {
-
-			if(eventType == XmlPullParser.START_DOCUMENT) {
-
-			} else if(eventType == XmlPullParser.START_TAG) {
+			if(eventType == XmlPullParser.START_TAG) {
 				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					String name = xmlBox.getAttributeValue(null, "name");
+					String name = xmlBox.getAttributeValue(null, "name"); 
 					String introduction = xmlBox.getAttributeValue(null, "intro");
 					int xCoord = Integer.decode(xmlBox.getAttributeValue(null, "xpos"));
 					int yCoord = Integer.decode(xmlBox.getAttributeValue(null, "ypos"));
 					String previous = xmlBox.getAttributeValue(null, "previous");
 					String next = xmlBox.getAttributeValue(null, "next");
-
+					//TODO null handling
 					e = new Exhibit(name, introduction);
 					e.setCoords(xCoord, yCoord);
 					e.setNext(next);
@@ -57,10 +54,6 @@ public class ExhibitList {
 					String urlList = xmlBox.getAttributeValue(null, "page");
 					e.setContent(xmlBox.getAttributeValue(null, "tag"), urlList.split(","));
 				}
-			} else if(eventType == XmlPullParser.END_TAG) {
-
-			} else if(eventType == XmlPullParser.TEXT) {
-				//xmlBox.getText();
 			}
 			eventType = xmlBox.next();
 		}

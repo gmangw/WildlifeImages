@@ -27,20 +27,20 @@ import android.util.Log;
  */
 public class WebContentManager {
 
-	public static final String ASSET_PREFIX = "file:///android_asset/";
+	public static final String ASSET_PREFIX = "file:///android_asset/"; //TODO
 
-	private Hashtable<String, String> newUrlMap = new Hashtable<String, String>();
+	private Hashtable<String, String> cachedFiles = new Hashtable<String, String>();
 
 	private File cacheDir;
-	private HashMap<String, Bitmap> bmpCache;
+	private HashMap<String, Bitmap> cachedBitmaps;
 
 	private boolean enabled = true;
 
 	public WebContentManager(File cacheDir){
 		this.cacheDir = cacheDir;
 
-		addFileToMap(cacheDir);
-		bmpCache = new HashMap<String, Bitmap>();
+		addAllToMap(cacheDir);
+		cachedBitmaps = new HashMap<String, Bitmap>();
 	}
 
 	public void updateCache(){
@@ -48,109 +48,12 @@ public class WebContentManager {
 		populateCache("ExhibitContents/alphaFunFacts.html"); //TODO
 	}
 
-	private void populateCache(String filename){
-		if (false == newUrlMap.containsKey(filename)){
-			try {
-				File f  = new File(cacheDir.getAbsolutePath() + "/" + filename);
-				if (false == f.getParentFile().exists()){
-					if (true == f.getParentFile().mkdir()){ //TODO only generates one higher directory
-						Log.d(this.getClass().getName(), "Cache subdirectory created at " + f.getParentFile());
-					}else{
-						Log.e(this.getClass().getName(), "Cache subdirectory creation failed: " + f.getParentFile());
-					}
-				}
-
-				byte[] newContent = getWebContent(filename);
-				if (null != newContent){
-					FileOutputStream fOut = new FileOutputStream(f);
-					fOut.write(newContent);
-					fOut.close();
-
-					newUrlMap.put(filename, ""); //TODO
-					enabled = true;
-					Log.d(this.getClass().getName(), "Page cached: " + filename);
-				}
-				bmpCache.remove(filename);
-			} catch (FileNotFoundException e) {
-				Log.w(this.getClass().getName(), "Cache disabled due to FileNotFoundException");
-				enabled = false;
-			} catch (IOException e) {
-				Log.w(this.getClass().getName(), "Cache disabled due to IOException");
-				enabled = false;
-			}
-		}
-	}
-
-	private byte[] getWebContent(String filename){
-		URL url;
-		try {
-			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + filename);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());
-
-			int lengthGuess = conn.getContentLength();
-			byte[] buffer = new byte[lengthGuess + 256]; //Extra space added just in case.
-
-			InputStream binaryReader = conn.getInputStream();
-			int length = 0;
-			int read = 0;
-			while (true){
-				read = binaryReader.read(buffer, length, buffer.length - length);
-				if (read == -1){
-					break;
-				}else{
-					length += read;
-				}
-			}
-			if (length > lengthGuess){
-				Log.w(this.getClass().getName(), "Guess was " + lengthGuess + ", actually read " + length);
-			}
-			byte[] result = new byte[length];
-			System.arraycopy(buffer, 0, result, 0, result.length);
-			buffer = null;
-			binaryReader.close();
-			conn.disconnect();
-			return result;
-		} catch (MalformedURLException e) {
-			Log.e(this.getClass().getName(), "Caching of " + filename + " failed with MalformedUrl");
-		} catch (IOException e) {
-			Log.e(this.getClass().getName(), "Caching of " + filename + " failed with IOException: " + e.getMessage());
-		}
-		return null;	
-	}
-
-	private void addFileToMap(File file){
-		if (file.isDirectory()){
-			File[] list = file.listFiles();
-			for(int i=0; i<list.length; i++){
-				addFileToMap(list[i]);
-			}
-		}else{
-			String path = file.getAbsolutePath();
-			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
-			newUrlMap.put(path, "");
-			Log.d(this.getClass().getName(), "Found in cache: " + path);
-		}
-	}
-
 	public String getBestUrl(String localUrl) {
-		if (enabled && newUrlMap.containsKey(localUrl)){
+		if (enabled && cachedFiles.containsKey(localUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + localUrl);
-			return cacheDir.toURI() + localUrl;
+			return cacheDir.toURI().toString() + localUrl;
 		}else{
 			return "file:///android_asset/" + localUrl;
-		}
-	}
-
-	private void recursiveRemove(File f){
-		if (f.isDirectory()){
-			File[] list = f.listFiles();
-			for(int i=0; i<list.length; i++){
-				recursiveRemove(list[i]);
-			}
-		}else{
-			f.delete();
-			Log.d(this.getClass().getName(), "Removed cache file " + f.getName());
 		}
 	}
 
@@ -160,7 +63,7 @@ public class WebContentManager {
 		for(int i=0; i<list.length; i++){
 			recursiveRemove(list[i]);
 		}
-		newUrlMap.clear();
+		cachedFiles.clear();
 	}
 
 	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) {
@@ -182,25 +85,118 @@ public class WebContentManager {
 	}
 
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
-		if (bmpCache.containsKey(shortUrl)){
+		if (cachedBitmaps.containsKey(shortUrl)){
 			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
-			return bmpCache.get(shortUrl);
+			return cachedBitmaps.get(shortUrl);
 		}else{
-			Bitmap bmp = getBitmapFromStream(streamAssetOrFile(shortUrl, assets));
-			bmpCache.put(shortUrl, bmp);
+			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
+			cachedBitmaps.put(shortUrl, bmp); //TODO may want to limit cache size
 			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);
 			return bmp;
 		}
 	}
-	
-	/* http://stackoverflow.com/questions/2752924/android-images-from-assets-folder-in-a-gridview */
-	private Bitmap getBitmapFromStream(InputStream istr)
-	{
-		if (null == istr){
+
+	private void populateCache(String shortUrl){
+		if (false == cachedFiles.containsKey(shortUrl)){
+			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
+			mkdirForFile(f); //TODO only generates one higher directory
+
+			byte[] newContent = getWebContent(shortUrl);
+			if (null != newContent){
+				try {
+					FileOutputStream fOut = new FileOutputStream(f);
+					fOut.write(newContent);
+					fOut.close();
+
+					cachedBitmaps.remove(shortUrl);
+					cachedFiles.put(shortUrl, ""); //TODO
+					Log.d(this.getClass().getName(), "File cached: " + shortUrl);
+				} catch (FileNotFoundException e) {
+					Log.w(this.getClass().getName(), "FileNotFoundException while trying to cache " + shortUrl);
+				} catch (IOException e) {
+					Log.w(this.getClass().getName(), "IOException while trying to cache " + shortUrl);
+				}
+			}		
+		}
+	}
+
+	private byte[] getWebContent(String shortUrl){
+		URL url;
+		try {
+			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
+		}catch(MalformedURLException e){
+			Log.e(this.getClass().getName(), "Caching of " + shortUrl + " failed with MalformedUrlException.");
 			return null;
+		}
+		int length = 0;
+		int read = 0;
+		byte[] buffer = null;
+		try {
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());
+			int lengthGuess = conn.getContentLength();
+			buffer = new byte[lengthGuess + 256]; //Extra space added just in case.
+			
+			InputStream binaryReader = conn.getInputStream();			
+			while (true){
+				read = binaryReader.read(buffer, length, buffer.length - length);
+				if (read == -1){
+					break;
+				}else{
+					length += read;
+				}
+			}
+			binaryReader.close();
+			conn.disconnect();
+			if (length > lengthGuess){
+				Log.w(this.getClass().getName(), "Guess was " + lengthGuess + ", actually read " + length);
+			}
+		} catch (IOException e) {
+			Log.e(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
+		}
+		
+		if (length > 0){
+			byte[] result = new byte[length];
+			System.arraycopy(buffer, 0, result, 0, result.length);
+			return result;
 		}else{
-			Bitmap bitmap = BitmapFactory.decodeStream(istr);
-			return bitmap;
+			return null;
+		}	
+	}
+
+	private void addAllToMap(File file){
+		if (file.isDirectory()){
+			File[] list = file.listFiles();
+			for(int i=0; i<list.length; i++){
+				addAllToMap(list[i]);
+			}
+		}else{
+			String path = file.getAbsolutePath();
+			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
+			cachedFiles.put(path, "");
+			Log.d(this.getClass().getName(), "Found in cache: " + path);
+		}
+	}
+
+	private void mkdirForFile(File file){
+		if (false == file.getParentFile().exists()){
+			if (true == file.getParentFile().mkdir()){ 
+				Log.d(this.getClass().getName(), "Cache subdirectory created at " + file.getParentFile());
+			}else{
+				Log.e(this.getClass().getName(), "Cache subdirectory creation failed: " + file.getParentFile());
+			}
+		}
+	}
+
+	private void recursiveRemove(File f){
+		if (f.isDirectory()){
+			File[] list = f.listFiles();
+			for(int i=0; i<list.length; i++){
+				recursiveRemove(list[i]);
+			}
+		}else{
+			f.delete();
+			Log.d(this.getClass().getName(), "Removed cache file " + f.getName());
 		}
 	}
 }
