@@ -37,6 +37,10 @@ public class WebContentManager {
 	private HashMap<String, Bitmap> cachedBitmaps;
 
 	private boolean enabled = true;
+	
+	private int accessTime = 0;
+	
+	private Hashtable<String, Integer> timekeeper = new Hashtable<String, Integer>();
 
 	public WebContentManager(File cacheDir){
 		this.cacheDir = cacheDir;
@@ -63,12 +67,13 @@ public class WebContentManager {
 		}
 	}
 
-	public String getBestUrl(String localUrl) {
-		if (enabled && cachedFiles.containsKey(localUrl)){
-			Log.d(this.getClass().getName(), "Pulled from cache: " + localUrl);
-			return cacheDir.toURI().toString() + localUrl;
+	public String getBestUrl(String shortUrl) {
+		timekeeper.put(shortUrl, accessTime++);
+		if (enabled && cachedFiles.containsKey(shortUrl)){
+			Log.d(this.getClass().getName(), "Pulled from cache: " + shortUrl);
+			return cacheDir.toURI().toString() + shortUrl;
 		}else{
-			return "file:///android_asset/" + localUrl;
+			return "file:///android_asset/" + shortUrl;
 		}
 	}
 
@@ -91,6 +96,7 @@ public class WebContentManager {
 				File f = new File(new URI(longUrl));
 				istr = new FileInputStream(f);
 			}
+			timekeeper.put(shortUrl, accessTime++);
 		}catch(IOException e){
 			Log.w(this.getClass().getName(), "Asset " + longUrl + " is missing or corrupt.");
 		} catch (URISyntaxException e) {
@@ -100,6 +106,7 @@ public class WebContentManager {
 	}
 
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
+		timekeeper.put(shortUrl, accessTime++);
 		if (cachedBitmaps.containsKey(shortUrl)){
 			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
 			return cachedBitmaps.get(shortUrl);
@@ -222,5 +229,18 @@ public class WebContentManager {
 			f.delete();
 			Log.d(this.getClass().getName(), "Removed cache file " + f.getName());
 		}
+	}
+	
+	public int getMostRecentIndex(String[] shortUrlList){
+		int resultIndex = 0;
+		int mostRecent = 0;
+		for(int i=0; i<shortUrlList.length; i++){
+			Integer time = timekeeper.get(shortUrlList[i]);
+			if (time != null && time > mostRecent){
+				mostRecent = time;
+				resultIndex = i;
+			}
+		}
+		return resultIndex;
 	}
 }

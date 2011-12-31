@@ -53,9 +53,10 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		return webManager.getBitmap(shortUrl, this.getContext().getAssets());
 	}
 
-	public void setImageBitmapList(String[] shortImgUrlList, WebContentManager webManager){
-		shortUrlList = shortImgUrlList.clone(); //Being cautious in case the original is altered somehow
-		currentBitmapIndex = 0;
+	public void setImageBitmapList(String[] shortUrlList, WebContentManager webManager){
+		//TODO shortUrlList can be modified from here if desired
+		this.shortUrlList = shortUrlList;
+		currentBitmapIndex = webManager.getMostRecentIndex(shortUrlList);
 		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], webManager));
 		this.webManager = webManager;
 	}

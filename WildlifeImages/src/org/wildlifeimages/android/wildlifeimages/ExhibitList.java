@@ -23,10 +23,7 @@ public class ExhibitList {
 
 	private Exhibit current = null;
 
-	private XmlPullParser xmlBox;
-
-	public ExhibitList(XmlPullParser parser) throws XmlPullParserException, IOException{
-		xmlBox = parser;
+	public ExhibitList(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 
 		int eventType;
 
