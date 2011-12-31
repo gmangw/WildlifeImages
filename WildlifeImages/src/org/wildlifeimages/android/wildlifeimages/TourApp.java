@@ -39,7 +39,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 /**
- * This Android App is intended for visitors to Wildlife Images Rehabilitation and Education Center.
+ * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.
  * Users can find information about each exhibit and find their way around the center.
  * 
  * @author Graham Wilkinson

@@ -1,11 +1,13 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,7 +29,7 @@ import android.util.Log;
  */
 public class WebContentManager {
 
-	public static final String ASSET_PREFIX = "file:///android_asset/"; //TODO
+	public static final String ASSET_PREFIX = "file:///android_asset/";
 
 	private Hashtable<String, String> cachedFiles = new Hashtable<String, String>();
 
@@ -44,8 +46,21 @@ public class WebContentManager {
 	}
 
 	public void updateCache(){
-		populateCache("aaaaclark0007.jpg");
-		populateCache("ExhibitContents/alphaFunFacts.html"); //TODO
+		if (populateCache("list.txt")){
+			try{
+				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
+				while(true){
+					String line = in.readLine();
+					if (null == line){
+						break;
+					}else{
+						populateCache(line);
+					}
+				}
+			}catch(IOException e){
+				Log.w(this.getClass().getName(), "Problem updating from list.txt");
+			}
+		}
 	}
 
 	public String getBestUrl(String localUrl) {
@@ -96,7 +111,7 @@ public class WebContentManager {
 		}
 	}
 
-	private void populateCache(String shortUrl){
+	private boolean populateCache(String shortUrl){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
 			mkdirForFile(f); //TODO only generates one higher directory
@@ -111,12 +126,19 @@ public class WebContentManager {
 					cachedBitmaps.remove(shortUrl);
 					cachedFiles.put(shortUrl, ""); //TODO
 					Log.d(this.getClass().getName(), "File cached: " + shortUrl);
+					return true;
 				} catch (FileNotFoundException e) {
 					Log.w(this.getClass().getName(), "FileNotFoundException while trying to cache " + shortUrl);
+					return false;
 				} catch (IOException e) {
 					Log.w(this.getClass().getName(), "IOException while trying to cache " + shortUrl);
+					return false;
 				}
-			}		
+			}else{
+				return false;
+			}
+		}else{
+			return true;
 		}
 	}
 
@@ -133,11 +155,13 @@ public class WebContentManager {
 		byte[] buffer = null;
 		try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());
+			InputStream binaryReader = conn.getInputStream();
 			int lengthGuess = conn.getContentLength();
+			if (lengthGuess == -1){
+				lengthGuess = 32768;
+			}
 			buffer = new byte[lengthGuess + 256]; //Extra space added just in case.
-			
-			InputStream binaryReader = conn.getInputStream();			
+			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());	
 			while (true){
 				read = binaryReader.read(buffer, length, buffer.length - length);
 				if (read == -1){
@@ -152,9 +176,9 @@ public class WebContentManager {
 				Log.w(this.getClass().getName(), "Guess was " + lengthGuess + ", actually read " + length);
 			}
 		} catch (IOException e) {
-			Log.e(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
+			Log.w(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
 		}
-		
+
 		if (length > 0){
 			byte[] result = new byte[length];
 			System.arraycopy(buffer, 0, result, 0, result.length);
