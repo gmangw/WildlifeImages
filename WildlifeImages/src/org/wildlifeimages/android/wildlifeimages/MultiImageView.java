@@ -2,10 +2,13 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -23,6 +26,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private String[] shortUrlList = new String[0];
 	private int currentBitmapIndex;
 	private WebContentManager webManager = null;
+	private int xScrollOffset = 0;
 
 	RectF bmpRect = new RectF();
 
@@ -75,6 +79,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public boolean onTouchEvent(MotionEvent event) { 
 		if (event.getAction() == MotionEvent.ACTION_UP){
 			this.setImageMatrix(baseMatrix);
+			xScrollOffset = 0;
 		}
 		return gestures.onTouchEvent(event);  
 	}
@@ -90,12 +95,12 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		if (velocityX < 0){
-			if (currentBitmapIndex < (shortUrlList.length-1)){
+			if (hasNextImage()){
 				currentBitmapIndex++;
 				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], webManager));
 			}
 		}else{
-			if (currentBitmapIndex > 0){
+			if (hasPreviousImage()){
 				currentBitmapIndex--;
 				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], webManager));
 			}
@@ -103,15 +108,50 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		return false;
 	}
 
+	private boolean hasNextImage(){
+		return (currentBitmapIndex < (shortUrlList.length-1));
+	}
+
+	private boolean hasPreviousImage(){
+		return (currentBitmapIndex > 0);
+	}
+
 	public void onLongPress(MotionEvent e) {
+	}
+
+	@Override
+	public void onDraw(Canvas canvas){
+		super.onDraw(canvas);
+
+		Paint p = new Paint();
+		p.setARGB(127, 0, 0, 0);
+		p.setTextSize(30);
+		p.setAntiAlias(true);
+
+		String label = (currentBitmapIndex+1) + "/" + shortUrlList.length;
+
+		int bottom = canvas.getClipBounds().bottom;
+
+		canvas.drawRect(0, bottom - p.getTextSize(), p.measureText(label)+2, bottom, p);
+
+		p.setARGB(165, 255, 255, 255);
+
+		canvas.drawText(label, 1, bottom-1, p);
 	}
 
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
 
-		Matrix m = this.getImageMatrix();
+		Matrix m = new Matrix(baseMatrix);
 
-		m.postTranslate(-distanceX, 0);
+		xScrollOffset += distanceX;
+		if (false == hasNextImage()){
+			xScrollOffset = Math.min(0, xScrollOffset);
+		}
+		if (false == hasPreviousImage()){
+			xScrollOffset = Math.max(0, xScrollOffset);
+		}
+		m.postTranslate(-xScrollOffset, 0);
 		this.setImageMatrix(m);
 
 		this.invalidate();

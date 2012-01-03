@@ -14,7 +14,7 @@
 		next="Charlie" intro="ExhibitContents/bravoIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos"
-			page="ExhibitContents/badger.jpg,ExhibitContents/bobcat.jpg" />
+			page="ExhibitContents/badger.jpg,ExhibitContents/IMG_1716.JPG" />
 		<content tag="Habitat" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />

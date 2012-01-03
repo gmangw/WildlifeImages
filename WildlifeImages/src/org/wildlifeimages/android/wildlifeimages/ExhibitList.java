@@ -65,7 +65,11 @@ public class ExhibitList {
 	}
 
 	public Exhibit get(String potential_key) {
-		return exhibitList.get(potential_key);
+		if (null == potential_key){
+			return null;
+		}else{
+			return exhibitList.get(potential_key);
+		}
 	}
 
 	public void setCurrent(Exhibit current, String contentTag) {
