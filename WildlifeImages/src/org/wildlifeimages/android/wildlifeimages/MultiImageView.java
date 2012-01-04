@@ -1,5 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

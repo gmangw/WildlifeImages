@@ -13,9 +13,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import android.app.ProgressDialog;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,9 +39,9 @@ public class WebContentManager {
 	private HashMap<String, Bitmap> cachedBitmaps;
 
 	private boolean enabled = true;
-	
+
 	private int accessTime = 0;
-	
+
 	private Hashtable<String, Integer> timekeeper = new Hashtable<String, Integer>();
 
 	public WebContentManager(File cacheDir){
@@ -49,8 +51,9 @@ public class WebContentManager {
 		cachedBitmaps = new HashMap<String, Bitmap>();
 	}
 
-	public void updateCache(){
-		if (populateCache("list.txt")){
+	public void updateCache(ProgressManager progress){
+		ArrayList<String> lines = new ArrayList<String>();
+		if (populateCache("list.txt", null)){
 			try{
 				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
 				while(true){
@@ -58,11 +61,14 @@ public class WebContentManager {
 					if (null == line){
 						break;
 					}else{
-						populateCache(line);
+						lines.add(line);
 					}
 				}
 			}catch(IOException e){
 				Log.w(this.getClass().getName(), "Problem updating from list.txt");
+			}
+			for (int i=0; i<lines.size(); i++){
+				populateCache(lines.get(i), progress);
 			}
 		}
 	}
@@ -118,12 +124,12 @@ public class WebContentManager {
 		}
 	}
 
-	private boolean populateCache(String shortUrl){
+	private boolean populateCache(String shortUrl, ProgressManager progress){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
 			mkdirForFile(f); //TODO only generates one higher directory
 
-			byte[] newContent = getWebContent(shortUrl);
+			byte[] newContent = getWebContent(shortUrl, progress);
 			if (null != newContent){
 				try {
 					FileOutputStream fOut = new FileOutputStream(f);
@@ -149,7 +155,7 @@ public class WebContentManager {
 		}
 	}
 
-	private byte[] getWebContent(String shortUrl){
+	private byte[] getWebContent(String shortUrl, ProgressManager progress){
 		URL url;
 		try {
 			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
@@ -166,22 +172,24 @@ public class WebContentManager {
 			int lengthGuess = conn.getContentLength();
 			if (lengthGuess == -1){
 				lengthGuess = 32768;
+				Log.e(this.getClass().getName(), "File size unknown for " + shortUrl);
 			}
-			buffer = new byte[lengthGuess + 256]; //Extra space added just in case.
+			buffer = new byte[lengthGuess];
 			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());	
-			while (true){
+			while (buffer.length - length > 0){
 				read = binaryReader.read(buffer, length, buffer.length - length);
 				if (read == -1){
+					
 					break;
 				}else{
 					length += read;
+					if (progress != null){
+						progress.setProgress(100*length/lengthGuess);
+					}
 				}
 			}
 			binaryReader.close();
 			conn.disconnect();
-			if (length > lengthGuess){
-				Log.w(this.getClass().getName(), "Guess was " + lengthGuess + ", actually read " + length);
-			}
 		} catch (IOException e) {
 			Log.w(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
 		}
@@ -230,7 +238,7 @@ public class WebContentManager {
 			Log.d(this.getClass().getName(), "Removed cache file " + f.getName());
 		}
 	}
-	
+
 	public int getMostRecentIndex(String[] shortUrlList){
 		int resultIndex = 0;
 		int mostRecent = 0;

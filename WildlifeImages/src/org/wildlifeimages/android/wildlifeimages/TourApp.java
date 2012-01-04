@@ -15,6 +15,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -61,10 +62,12 @@ public class TourApp extends Activity {
 	private WebContentManager webManager;
 
 	private Uri imageUri = null;
-	
+
 	private AlertDialog scanDialog;
-	
+
 	private AlertDialog exitDialog;
+	
+	private ProgressManager updateDialogManager = new ProgressManager();
 
 	/**
 	 * Invoked when the Activity is created.
@@ -82,13 +85,13 @@ public class TourApp extends Activity {
 		isLandscape = isScreenLandscape();
 
 		exhibitList = buildExhibitList();
-		
+
 		/* Use saved version of webManager if app just restarted */
 		webManager = (WebContentManager)getLastNonConfigurationInstance();
 		if (null == webManager){
 			webManager = new WebContentManager(this.getCacheDir());
 		}
-		
+
 		scanDialog = createScanDialog();
 		exitDialog = createExitDialog();
 
@@ -282,7 +285,7 @@ public class TourApp extends Activity {
 	private String loadString(int resId){
 		return getResources().getString(resId);
 	}
-	
+
 	private AlertDialog createExitDialog(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final TourApp me = this;
@@ -300,7 +303,7 @@ public class TourApp extends Activity {
 		});
 		return builder.create();
 	}
-	
+
 	private AlertDialog createScanDialog(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(loadString(R.string.scan_app_question))
@@ -332,9 +335,10 @@ public class TourApp extends Activity {
 
 		outState.putInt(loadString(R.string.save_current_page), activeId);
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
-		
+
 		scanDialog.dismiss();
 		exitDialog.dismiss();
+		updateDialogManager.dismiss();
 
 		Iterator<String> keyList = exhibitList.keys();
 		ArrayList<String> currentExhibitList = new ArrayList<String>();
@@ -438,14 +442,29 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
+			final ProgressDialog progressDialog = new ProgressDialog(this);
+			progressDialog.setMessage("Looking for updated content...");
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progressDialog.setCancelable(false);
+			progressDialog.show();
+			
+			updateDialogManager.setDialog(progressDialog);
+			Thread thread = new Thread(){
+				@Override
+				public void run(){
+					webManager.clearCache();
+					webManager.updateCache(updateDialogManager);
+					updateDialogManager.dismiss();
+				}
+			};
+			thread.start();
+			
 			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
 					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>" +
 					"The camera will leave a pic at the filesystem root, does nothing with it.<br><br>" +
 			"Viewing this page has triggered a cache flush and web update for debug purposes."); //TODO
 			activeHomeId = viewId;
-			webManager.clearCache();
-			webManager.updateCache();
 			break;
 		case R.id.intro_sidebar_exhibitlist:
 			showList();
@@ -519,7 +538,7 @@ public class TourApp extends Activity {
 			return true;
 		case R.integer.MENU_SCAN:
 			boolean scanAvailable = isIntentAvailable(this, loadString(R.string.intent_action_scan));
-			
+
 			if (scanAvailable){
 				Intent intent = new Intent(loadString(R.string.intent_action_scan));
 				intent.putExtra(loadString(R.string.intent_extra_scan_mode), loadString(R.string.intent_qr_mode));
