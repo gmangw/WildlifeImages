@@ -34,6 +34,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -59,6 +60,12 @@ public class TourApp extends Activity {
 
 	private WebContentManager webManager;
 
+	private Uri imageUri = null;
+	
+	private AlertDialog scanDialog;
+	
+	private AlertDialog exitDialog;
+
 	/**
 	 * Invoked when the Activity is created.
 	 * 
@@ -75,12 +82,15 @@ public class TourApp extends Activity {
 		isLandscape = isScreenLandscape();
 
 		exhibitList = buildExhibitList();
-
+		
 		/* Use saved version of webManager if app just restarted */
 		webManager = (WebContentManager)getLastNonConfigurationInstance();
 		if (null == webManager){
 			webManager = new WebContentManager(this.getCacheDir());
 		}
+		
+		scanDialog = createScanDialog();
+		exitDialog = createExitDialog();
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
@@ -90,22 +100,15 @@ public class TourApp extends Activity {
 	}
 
 	private void showIntro() {
-		if (isLandscape){
-			setActiveView(R.layout.intro_layout);
-		}else{
-			setActiveView(R.layout.intro_layout_vertical);
-		}
+		setActiveView(R.layout.intro_layout);
+
 		ExhibitView mExhibitView;
 		mExhibitView = (ExhibitView) findViewById(R.id.intro);
 		mExhibitView.loadUrl(loadString(R.string.intro_url_about), webManager);
 	}
 
 	private void showMap() {
-		if (isLandscape){
-			setActiveView(R.layout.tour_layout);
-		}else{
-			setActiveView(R.layout.tour_layout_vertical);
-		}
+		setActiveView(R.layout.tour_layout);
 		MapView mMapView;
 		mMapView = (MapView) findViewById(R.id.map);
 
@@ -138,11 +141,7 @@ public class TourApp extends Activity {
 
 		/* If not viewing any exhibit or the exhibit is not the one currently open */
 		if ((ExhibitView) findViewById(R.id.exhibit) == null){
-			if (isLandscape){
-				setActiveView(R.layout.exhibit_layout);
-			}else{
-				setActiveView(R.layout.exhibit_layout_vertical);
-			}
+			setActiveView(R.layout.exhibit_layout);
 			needRemakeButtons = true;
 		}
 		needRemakeButtons = needRemakeButtons || false == previous.equals(e);
@@ -221,17 +220,14 @@ public class TourApp extends Activity {
 			break;
 
 		case R.layout.tour_layout:
-		case R.layout.tour_layout_vertical:
 			showMap();
 			break;
 
 		case R.layout.exhibit_layout:
-		case R.layout.exhibit_layout_vertical:
 			showExhibit(saved, Exhibit.TAG_AUTO);
 			break;
 
 		case R.layout.intro_layout:
-		case R.layout.intro_layout_vertical:
 		default:
 			showIntro();
 			introProcessSidebar(activeHomeId);
@@ -286,6 +282,42 @@ public class TourApp extends Activity {
 	private String loadString(int resId){
 		return getResources().getString(resId);
 	}
+	
+	private AlertDialog createExitDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final TourApp me = this;
+		builder.setMessage(loadString(R.string.exit_question))
+		.setCancelable(false)
+		.setPositiveButton(loadString(R.string.exit_option_yes), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				me.finish();
+			}
+		})
+		.setNegativeButton(R.string.exit_option_no, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		return builder.create();
+	}
+	
+	private AlertDialog createScanDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(loadString(R.string.scan_app_question))
+		.setCancelable(false)
+		.setPositiveButton(R.string.scan_app_option_yes, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(loadString(R.string.scan_app_url)));
+				startActivity(i);
+			}
+		})
+		.setNegativeButton(R.string.scan_app_option_no, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		return builder.create();
+	}
 
 	/**
 	 * Notification that something is about to happen, to give the Activity a
@@ -300,6 +332,9 @@ public class TourApp extends Activity {
 
 		outState.putInt(loadString(R.string.save_current_page), activeId);
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
+		
+		scanDialog.dismiss();
+		exitDialog.dismiss();
 
 		Iterator<String> keyList = exhibitList.keys();
 		ArrayList<String> currentExhibitList = new ArrayList<String>();
@@ -372,6 +407,9 @@ public class TourApp extends Activity {
 			if (resultCode == RESULT_OK) {
 				//use imageUri here to access the image
 				//TODO
+				ImageView v = new ImageView(this);
+				v.setImageURI(imageUri);
+				setContentView(v);
 			}
 		}
 	}
@@ -379,7 +417,7 @@ public class TourApp extends Activity {
 	public void introProcessSidebar(View v){
 		introProcessSidebar(v.getId());
 	}
-	
+
 	private void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_intro:
@@ -438,7 +476,6 @@ public class TourApp extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		boolean scanAvailable = isIntentAvailable(this, loadString(R.string.intent_action_scan));
 
 		if(isLandscape){
 			menu.add(0, R.integer.MENU_HOME, 0, R.string.menu_home);
@@ -456,10 +493,6 @@ public class TourApp extends Activity {
 			menu.add(0, R.integer.MENU_NEXT, 0, R.string.menu_next);
 		}
 
-		if (false == scanAvailable){
-			menu.findItem(R.integer.MENU_SCAN).setEnabled(false);
-		}
-
 		return true;
 	}
 
@@ -474,7 +507,7 @@ public class TourApp extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.integer.MENU_HOME:
-			if(activeId == R.layout.intro_layout || activeId == R.layout.intro_layout_vertical){
+			if(activeId == R.layout.intro_layout){
 				introProcessSidebar(R.id.intro_sidebar_intro);
 			}else{
 				showIntro();
@@ -486,23 +519,21 @@ public class TourApp extends Activity {
 			return true;
 		case R.integer.MENU_SCAN:
 			boolean scanAvailable = isIntentAvailable(this, loadString(R.string.intent_action_scan));
-
+			
 			if (scanAvailable){
-				//mapInit();
 				Intent intent = new Intent(loadString(R.string.intent_action_scan));
 				intent.putExtra(loadString(R.string.intent_extra_scan_mode), loadString(R.string.intent_qr_mode));
 				startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
-			} else {
-				Toast.makeText(this, loadString(R.string.scan_app_missing), 1).show();
-				//TODO
+			} else {	
+				scanDialog.show();
 			}
 			return true;
 		case R.integer.MENU_CAMERA:
 			/* http://achorniy.wordpress.com/2010/04/26/howto-launch-android-camera-using-intents/ */
-			//define the file-name to save photo taken by Camera activity
 			String fileName = "file://mnt/sdcard/pic.jpg"; //TODO filename
-			Uri imageUri = Uri.parse(fileName);
-			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			imageUri = Uri.parse(fileName);
+			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //TODO check availability first
+
 			//Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA); TODO if we don't want image back
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -533,23 +564,7 @@ public class TourApp extends Activity {
 	/* http://stackoverflow.com/questions/2257963/android-how-to-show-dialog-to-confirm-user-wishes-to-exit-activity */
 	@Override
 	public void onBackPressed() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final TourApp me = this;
-		builder.setMessage(loadString(R.string.exit_question))
-		.setCancelable(false)
-		.setPositiveButton(loadString(R.string.exit_option_yes), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				me.finish();
-			}
-		})
-		.setNegativeButton(R.string.exit_option_no, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
-
+		exitDialog.show(); //TODO allow backwards navigation?
 	}
 
 	@Override
