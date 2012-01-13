@@ -1,8 +1,17 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.webkit.DownloadListener;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
@@ -16,12 +25,17 @@ import android.widget.FrameLayout;
 public class ExhibitView extends FrameLayout{
 	private WebView htmlView;
 	private MultiImageView picView;
-	//private WebContentManager webManager = null;
+	private Context context = this.getContext();
 
 	public ExhibitView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		htmlView = new WebView(context, attrs);
 		htmlView.setVisibility(View.VISIBLE);
+
+		htmlView.getSettings().setJavaScriptEnabled(true);
+		htmlView.getSettings().setPluginsEnabled(true);
+
+		htmlView.setDownloadListener(new SoundLinkListener());
 
 		picView = new MultiImageView(context, attrs);
 		picView.setBackgroundColor(0xFF000000);
@@ -66,5 +80,22 @@ public class ExhibitView extends FrameLayout{
 		htmlView.loadData(data, "text/html", null);
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
+	}
+
+	private class SoundLinkListener implements DownloadListener{
+		public void onDownloadStart(String url, String userAgent,
+				String contentDisposition, String mimetype, long contentLength) {
+			Log.w(this.getClass().getName(), "Got a download request for " + url);
+
+			MediaPlayer soundPlayer = new MediaPlayer();
+			try{
+				AssetFileDescriptor fd = context.getAssets().openFd("ExhibitContents/test.mp3");
+				soundPlayer.setDataSource(fd.getFileDescriptor(),fd.getStartOffset(),fd.getLength());
+				soundPlayer.prepare();
+				soundPlayer.start();
+			} catch (IOException e){
+				Log.e(this.getClass().getName(), Log.getStackTraceString(e));
+			}
+		}
 	}
 }

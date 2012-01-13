@@ -92,7 +92,7 @@ public class WebContentManager {
 		cachedFiles.clear();
 	}
 
-	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) {
+	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) { 
 		InputStream istr = null;
 		String longUrl = getBestUrl(shortUrl);
 		try{
@@ -127,7 +127,11 @@ public class WebContentManager {
 	private boolean populateCache(String shortUrl, ProgressManager progress){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
-			mkdirForFile(f); //TODO only generates one higher directory
+			try{
+				mkdirForFile(f); //TODO only generates one higher directory 
+			}catch(IOException e){
+				return false;
+			}
 
 			byte[] newContent = getWebContent(shortUrl, progress);
 			if (null != newContent){
@@ -179,7 +183,7 @@ public class WebContentManager {
 			while (buffer.length - length > 0){
 				read = binaryReader.read(buffer, length, buffer.length - length);
 				if (read == -1){
-					
+
 					break;
 				}else{
 					length += read;
@@ -217,12 +221,17 @@ public class WebContentManager {
 		}
 	}
 
-	private void mkdirForFile(File file){
-		if (false == file.getParentFile().exists()){
+	private void mkdirForFile(File file) throws IOException{
+		if (file.getParentFile().exists()){
+			return;
+		}else{
+			mkdirForFile(file.getParentFile());
 			if (true == file.getParentFile().mkdir()){ 
 				Log.d(this.getClass().getName(), "Cache subdirectory created at " + file.getParentFile());
+				return;
 			}else{
 				Log.e(this.getClass().getName(), "Cache subdirectory creation failed: " + file.getParentFile());
+				throw(new IOException());
 			}
 		}
 	}
