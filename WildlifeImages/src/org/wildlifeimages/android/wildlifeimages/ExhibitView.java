@@ -1,17 +1,10 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
@@ -26,6 +19,7 @@ public class ExhibitView extends FrameLayout{
 	private WebView htmlView;
 	private MultiImageView picView;
 	private Context context = this.getContext();
+	private ContentManager lastContentManager;
 
 	public ExhibitView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -45,35 +39,39 @@ public class ExhibitView extends FrameLayout{
 		this.addView(picView);
 	}
 
-	public void loadUrl(String shortUrl, WebContentManager webManager){
+	public void loadUrl(String shortUrl, ContentManager contentManager){
 		String[] urlList = new String[1];
 		urlList[0] = shortUrl;
-		loadUrlList(urlList, webManager);
+		loadUrlList(urlList, contentManager);
+		lastContentManager = contentManager;
 	}
 
-	public void loadUrlList(String[] shortUrlList, WebContentManager webManager){
+	public void loadUrlList(String[] shortUrlList, ContentManager contentManager){
 		String lower = shortUrlList[0].toLowerCase();
 		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
+		lastContentManager = contentManager;
 		for (int i=0; i<extensionList.length; i++){
 			if (lower.endsWith(extensionList[i])){
-				loadImageUrl(shortUrlList, webManager);
+				loadImageUrl(shortUrlList, contentManager);
 				return;
 			}
 		}
 		//Else
-		loadHtmlUrl(shortUrlList[0], webManager);
+		loadHtmlUrl(shortUrlList[0], contentManager);
 	}
 
-	public void loadHtmlUrl(String htmlShortUrl, WebContentManager webManager){
-		htmlView.loadUrl(webManager.getBestUrl(htmlShortUrl));
+	public void loadHtmlUrl(String htmlShortUrl, ContentManager contentManager){
+		htmlView.loadUrl(contentManager.getBestUrl(htmlShortUrl));
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
+		lastContentManager = contentManager;
 	}
 
-	public void loadImageUrl(String[] imgShortUrl, WebContentManager webManager){
-		picView.setImageBitmapList(imgShortUrl, webManager);
+	public void loadImageUrl(String[] imgShortUrl, ContentManager contentManager){
+		picView.setImageBitmapList(imgShortUrl, contentManager);
 		picView.setVisibility(View.VISIBLE);
 		htmlView.setVisibility(View.INVISIBLE);
+		lastContentManager = contentManager;
 	}
 
 	public void loadData(String data){
@@ -85,16 +83,11 @@ public class ExhibitView extends FrameLayout{
 	private class SoundLinkListener implements DownloadListener{
 		public void onDownloadStart(String url, String userAgent,
 				String contentDisposition, String mimetype, long contentLength) {
-			Log.w(this.getClass().getName(), "Got a download request for " + url);
-
-			MediaPlayer soundPlayer = new MediaPlayer();
-			try{
-				AssetFileDescriptor fd = context.getAssets().openFd("ExhibitContents/test.mp3");
-				soundPlayer.setDataSource(fd.getFileDescriptor(),fd.getStartOffset(),fd.getLength());
-				soundPlayer.prepare();
-				soundPlayer.start();
-			} catch (IOException e){
-				Log.e(this.getClass().getName(), Log.getStackTraceString(e));
+			url = url.replaceAll(ContentManager.ASSET_PREFIX, "");
+			Log.w(this.getClass().getName(), url);
+			if (lastContentManager != null){
+				AVManager avManager = new AVManager();
+				avManager.playSound(url, lastContentManager, context.getAssets());
 			}
 		}
 	}

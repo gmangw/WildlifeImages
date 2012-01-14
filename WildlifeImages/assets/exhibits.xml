@@ -18,7 +18,7 @@
 		<content tag="Habitat" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
-		<content tag="Streaming Video" page="ExhibitContents/bravoVideos.html" />
+		<content tag="Audio" page="ExhibitContents/bravoAudio.html" />
 	</exhibit>
 	<exhibit name="Charlie" xpos="30" ypos="44" previous="Bravo"
 		next="Delta" intro="ExhibitContents/charlieIntro.html">

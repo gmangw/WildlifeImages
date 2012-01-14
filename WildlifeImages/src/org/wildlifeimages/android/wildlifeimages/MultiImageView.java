@@ -1,6 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -26,7 +24,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private Matrix baseMatrix = new Matrix();
 	private String[] shortUrlList = new String[0];
 	private int currentBitmapIndex;
-	private WebContentManager webManager = null;
+	private ContentManager contentManager = null;
 	private int xScrollOffset = 0;
 
 	RectF bmpRect = new RectF();
@@ -54,16 +52,16 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		reMeasureMatrix();
 	}
 
-	private Bitmap getBitmap(String shortUrl, WebContentManager webManager){
-		return webManager.getBitmap(shortUrl, this.getContext().getAssets());
+	private Bitmap getBitmap(String shortUrl, ContentManager contentManager){
+		return contentManager.getBitmap(shortUrl, this.getContext().getAssets());
 	}
 
-	public void setImageBitmapList(String[] shortUrlList, WebContentManager webManager){
+	public void setImageBitmapList(String[] shortUrlList, ContentManager contentManager){
 		//TODO shortUrlList can be modified from here if desired
 		this.shortUrlList = shortUrlList;
-		currentBitmapIndex = webManager.getMostRecentIndex(shortUrlList);
-		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], webManager));
-		this.webManager = webManager;
+		currentBitmapIndex = contentManager.getMostRecentIndex(shortUrlList);
+		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
+		this.contentManager = contentManager;
 	}
 
 	@Override
@@ -98,12 +96,12 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		if (velocityX < 0){
 			if (hasNextImage()){
 				currentBitmapIndex++;
-				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], webManager));
+				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
 			}
 		}else{
 			if (hasPreviousImage()){
 				currentBitmapIndex--;
-				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], webManager));
+				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
 			}
 		}
 		return false;

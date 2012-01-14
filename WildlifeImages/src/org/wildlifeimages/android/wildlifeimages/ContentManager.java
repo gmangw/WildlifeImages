@@ -4,23 +4,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 
-import android.app.ProgressDialog;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 /**
@@ -29,26 +25,24 @@ import android.util.Log;
  * @author Graham Wilkinson 
  * 		
  */
-public class WebContentManager {
+public class ContentManager {
 
 	public static final String ASSET_PREFIX = "file:///android_asset/";
 
 	private Hashtable<String, String> cachedFiles = new Hashtable<String, String>();
 
 	private File cacheDir;
-	private HashMap<String, Bitmap> cachedBitmaps;
-
-	private boolean enabled = true;
+	BitmapCache imgCache;
 
 	private int accessTime = 0;
 
 	private Hashtable<String, Integer> timekeeper = new Hashtable<String, Integer>();
 
-	public WebContentManager(File cacheDir){
+	public ContentManager(File cacheDir){
 		this.cacheDir = cacheDir;
 
 		addAllToMap(cacheDir);
-		cachedBitmaps = new HashMap<String, Bitmap>();
+		imgCache = new BitmapCache();
 	}
 
 	public void updateCache(ProgressManager progress){
@@ -56,14 +50,13 @@ public class WebContentManager {
 		if (populateCache("list.txt", null)){
 			try{
 				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
-				while(true){
-					String line = in.readLine();
-					if (null == line){
-						break;
-					}else{
+				String line;
+				do{
+					line = in.readLine();
+					if (null != line){
 						lines.add(line);
 					}
-				}
+				}while(null != line);
 			}catch(IOException e){
 				Log.w(this.getClass().getName(), "Problem updating from list.txt");
 			}
@@ -73,23 +66,24 @@ public class WebContentManager {
 		}
 	}
 
+	public void clearCache(){
+		/* This function scares me a little */
+		File[] list = cacheDir.listFiles();
+		FileFetcher fetch = new FileFetcher();
+		for(int i=0; i<list.length; i++){
+			fetch.recursiveRemove(list[i]);
+		}
+		cachedFiles.clear();
+	}
+
 	public String getBestUrl(String shortUrl) {
 		timekeeper.put(shortUrl, accessTime++);
-		if (enabled && cachedFiles.containsKey(shortUrl)){
+		if (cachedFiles.containsKey(shortUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + shortUrl);
 			return cacheDir.toURI().toString() + shortUrl;
 		}else{
 			return "file:///android_asset/" + shortUrl;
 		}
-	}
-
-	public void clearCache(){
-		/* This function scares me a little */
-		File[] list = cacheDir.listFiles();
-		for(int i=0; i<list.length; i++){
-			recursiveRemove(list[i]);
-		}
-		cachedFiles.clear();
 	}
 
 	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) { 
@@ -111,14 +105,34 @@ public class WebContentManager {
 		return istr;
 	}
 
+	public AssetFileDescriptor getFileDescriptor(String shortUrl, AssetManager assets){
+		AssetFileDescriptor afd = null;
+		String longUrl = getBestUrl(shortUrl);
+		try{
+			if (longUrl.startsWith(ASSET_PREFIX)){
+				afd = assets.openFd(shortUrl);
+			}else{
+				File f = new File(new URI(longUrl));
+				ParcelFileDescriptor pfd = ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
+				afd = new AssetFileDescriptor(pfd, -1, 0);
+			}
+			timekeeper.put(shortUrl, accessTime++);
+		} catch (IOException e){
+			// TODO
+		} catch (URISyntaxException e) {
+			// TODO
+		}
+		return afd;
+	}
+
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
 		timekeeper.put(shortUrl, accessTime++);
-		if (cachedBitmaps.containsKey(shortUrl)){
+		if (imgCache.containsKey(shortUrl)){
 			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
-			return cachedBitmaps.get(shortUrl);
+			return imgCache.get(shortUrl);
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
-			cachedBitmaps.put(shortUrl, bmp); //TODO may want to limit cache size
+			imgCache.put(shortUrl, bmp); //TODO may want to limit cache size
 			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);
 			return bmp;
 		}
@@ -127,20 +141,19 @@ public class WebContentManager {
 	private boolean populateCache(String shortUrl, ProgressManager progress){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
+			FileFetcher fetch = new FileFetcher();
 			try{
-				mkdirForFile(f); //TODO only generates one higher directory 
+				fetch.mkdirForFile(f); //TODO only generates one higher directory 
 			}catch(IOException e){
 				return false;
 			}
 
-			byte[] newContent = getWebContent(shortUrl, progress);
+			byte[] newContent = fetch.getWebContent(shortUrl, progress);
 			if (null != newContent){
 				try {
-					FileOutputStream fOut = new FileOutputStream(f);
-					fOut.write(newContent);
-					fOut.close();
+					fetch.writeBytesToFile(newContent, f);
 
-					cachedBitmaps.remove(shortUrl);
+					imgCache.remove(shortUrl);
 					cachedFiles.put(shortUrl, ""); //TODO
 					Log.d(this.getClass().getName(), "File cached: " + shortUrl);
 					return true;
@@ -159,54 +172,6 @@ public class WebContentManager {
 		}
 	}
 
-	private byte[] getWebContent(String shortUrl, ProgressManager progress){
-		URL url;
-		try {
-			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
-		}catch(MalformedURLException e){
-			Log.e(this.getClass().getName(), "Caching of " + shortUrl + " failed with MalformedUrlException.");
-			return null;
-		}
-		int length = 0;
-		int read = 0;
-		byte[] buffer = null;
-		try {
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			InputStream binaryReader = conn.getInputStream();
-			int lengthGuess = conn.getContentLength();
-			if (lengthGuess == -1){
-				lengthGuess = 32768;
-				Log.e(this.getClass().getName(), "File size unknown for " + shortUrl);
-			}
-			buffer = new byte[lengthGuess];
-			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());	
-			while (buffer.length - length > 0){
-				read = binaryReader.read(buffer, length, buffer.length - length);
-				if (read == -1){
-
-					break;
-				}else{
-					length += read;
-					if (progress != null){
-						progress.setProgress(100*length/lengthGuess);
-					}
-				}
-			}
-			binaryReader.close();
-			conn.disconnect();
-		} catch (IOException e) {
-			Log.w(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
-		}
-
-		if (length > 0){
-			byte[] result = new byte[length];
-			System.arraycopy(buffer, 0, result, 0, result.length);
-			return result;
-		}else{
-			return null;
-		}	
-	}
-
 	private void addAllToMap(File file){
 		if (file.isDirectory()){
 			File[] list = file.listFiles();
@@ -218,33 +183,6 @@ public class WebContentManager {
 			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
 			cachedFiles.put(path, "");
 			Log.d(this.getClass().getName(), "Found in cache: " + path);
-		}
-	}
-
-	private void mkdirForFile(File file) throws IOException{
-		if (file.getParentFile().exists()){
-			return;
-		}else{
-			mkdirForFile(file.getParentFile());
-			if (true == file.getParentFile().mkdir()){ 
-				Log.d(this.getClass().getName(), "Cache subdirectory created at " + file.getParentFile());
-				return;
-			}else{
-				Log.e(this.getClass().getName(), "Cache subdirectory creation failed: " + file.getParentFile());
-				throw(new IOException());
-			}
-		}
-	}
-
-	private void recursiveRemove(File f){
-		if (f.isDirectory()){
-			File[] list = f.listFiles();
-			for(int i=0; i<list.length; i++){
-				recursiveRemove(list[i]);
-			}
-		}else{
-			f.delete();
-			Log.d(this.getClass().getName(), "Removed cache file " + f.getName());
 		}
 	}
 

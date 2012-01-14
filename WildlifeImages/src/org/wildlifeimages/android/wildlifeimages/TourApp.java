@@ -59,7 +59,7 @@ public class TourApp extends Activity {
 
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
-	private WebContentManager webManager;
+	private ContentManager contentManager;
 
 	private Uri imageUri = null;
 
@@ -86,10 +86,10 @@ public class TourApp extends Activity {
 
 		exhibitList = buildExhibitList();
 
-		/* Use saved version of webManager if app just restarted */
-		webManager = (WebContentManager)getLastNonConfigurationInstance();
-		if (null == webManager){
-			webManager = new WebContentManager(this.getCacheDir());
+		/* Use saved version of contentManager if app just restarted */
+		contentManager = (ContentManager)getLastNonConfigurationInstance();
+		if (null == contentManager){
+			contentManager = new ContentManager(this.getCacheDir());
 		}
 
 		scanDialog = createScanDialog();
@@ -107,7 +107,7 @@ public class TourApp extends Activity {
 
 		ExhibitView mExhibitView;
 		mExhibitView = (ExhibitView) findViewById(R.id.intro);
-		mExhibitView.loadUrl(loadString(R.string.intro_url_about), webManager);
+		mExhibitView.loadUrl(loadString(R.string.intro_url_about), contentManager);
 	}
 
 	private void showMap() {
@@ -156,7 +156,7 @@ public class TourApp extends Activity {
 			ExhibitView exView;
 			exView = (ExhibitView) findViewById(R.id.exhibit);
 			String[] content = e.getContent(e.getCurrentTag());
-			exView.loadUrlList(content, webManager);
+			exView.loadUrlList(content, contentManager);
 		}
 	}
 
@@ -429,16 +429,16 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), webManager);
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), contentManager);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_events:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), webManager);
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), contentManager);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_photos:
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, webManager);
+			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, contentManager);
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
@@ -452,8 +452,8 @@ public class TourApp extends Activity {
 			Thread thread = new Thread(){
 				@Override
 				public void run(){
-					webManager.clearCache();
-					webManager.updateCache(updateDialogManager);
+					contentManager.clearCache();
+					contentManager.updateCache(updateDialogManager);
 					updateDialogManager.dismiss();
 				}
 			};
@@ -588,7 +588,7 @@ public class TourApp extends Activity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		final WebContentManager data = webManager;
+		final ContentManager data = contentManager;
 		return data;
 	}
 
