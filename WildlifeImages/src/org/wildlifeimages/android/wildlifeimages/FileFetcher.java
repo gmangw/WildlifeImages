@@ -11,7 +11,7 @@ import java.net.URL;
 import android.util.Log;
 
 public class FileFetcher {
-	public byte[] getWebContent(String shortUrl, ProgressManager progress){
+	public byte[] getWebContent(String shortUrl, ContentUpdater progress){
 		URL url;
 		try {
 			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
@@ -30,6 +30,11 @@ public class FileFetcher {
 				lengthGuess = 32768;
 				Log.e(this.getClass().getName(), "File size unknown for " + shortUrl);
 			}
+
+			if (progress != null){
+				progress.setText(shortUrl);
+			}
+
 			buffer = new byte[lengthGuess];
 			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());	
 			while (buffer.length - length > 0){
@@ -40,7 +45,7 @@ public class FileFetcher {
 				}else{
 					length += read;
 					if (progress != null){
-						progress.setProgress(100*length/lengthGuess);
+						progress.publish(100*length/lengthGuess);
 					}
 				}
 			}
@@ -58,7 +63,7 @@ public class FileFetcher {
 			return null;
 		}	
 	}
-	
+
 	public void recursiveRemove(File f){
 		if (f.isDirectory()){
 			File[] list = f.listFiles();
@@ -69,7 +74,7 @@ public class FileFetcher {
 			f.delete();
 		}
 	}
-	
+
 	public void mkdirForFile(File file) throws IOException{
 		if (file.getParentFile().exists()){
 			return;
@@ -82,7 +87,7 @@ public class FileFetcher {
 			}
 		}
 	}
-	
+
 	public void writeBytesToFile(byte[] content, File f) throws IOException{
 		FileOutputStream fOut = new FileOutputStream(f);
 		fOut.write(content);

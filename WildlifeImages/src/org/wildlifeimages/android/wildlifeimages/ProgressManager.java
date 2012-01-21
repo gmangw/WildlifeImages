@@ -51,4 +51,16 @@ public class ProgressManager {
 			dialog = null;
 		}
 	}
+	
+	public void show(){
+		if (dialog != null){
+			dialog.show();
+		}
+	}
+
+	public void setText(String label) {
+		if (dialog != null){
+			dialog.setMessage(label);
+		}		
+	}
 }

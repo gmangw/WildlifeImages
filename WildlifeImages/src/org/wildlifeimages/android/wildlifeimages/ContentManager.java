@@ -16,6 +16,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
@@ -45,25 +46,8 @@ public class ContentManager {
 		imgCache = new BitmapCache();
 	}
 
-	public void updateCache(ProgressManager progress){
-		ArrayList<String> lines = new ArrayList<String>();
-		if (populateCache("list.txt", null)){
-			try{
-				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
-				String line;
-				do{
-					line = in.readLine();
-					if (null != line){
-						lines.add(line);
-					}
-				}while(null != line);
-			}catch(IOException e){
-				Log.w(this.getClass().getName(), "Problem updating from list.txt");
-			}
-			for (int i=0; i<lines.size(); i++){
-				populateCache(lines.get(i), progress);
-			}
-		}
+	public void startUpdate(ProgressManager progress){
+		new ContentUpdater(this).execute(progress);
 	}
 
 	public void clearCache(){
@@ -71,7 +55,7 @@ public class ContentManager {
 		File[] list = cacheDir.listFiles();
 		FileFetcher fetch = new FileFetcher();
 		for(int i=0; i<list.length; i++){
-			fetch.recursiveRemove(list[i]);
+			fetch.recursiveRemove(list[i]); 
 		}
 		cachedFiles.clear();
 	}
@@ -138,7 +122,36 @@ public class ContentManager {
 		}
 	}
 
-	private boolean populateCache(String shortUrl, ProgressManager progress){
+
+
+	private void addAllToMap(File file){
+		if (file.isDirectory()){
+			File[] list = file.listFiles();
+			for(int i=0; i<list.length; i++){
+				addAllToMap(list[i]);
+			}
+		}else{
+			String path = file.getAbsolutePath();
+			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
+			cachedFiles.put(path, "");
+			Log.d(this.getClass().getName(), "Found in cache: " + path);
+		}
+	}
+
+	public int getMostRecentIndex(String[] shortUrlList){
+		int resultIndex = 0;
+		int mostRecent = 0;
+		for(int i=0; i<shortUrlList.length; i++){
+			Integer time = timekeeper.get(shortUrlList[i]);
+			if (time != null && time > mostRecent){
+				mostRecent = time;
+				resultIndex = i;
+			}
+		}
+		return resultIndex;
+	}
+	
+	private boolean populateCache(String shortUrl, ContentUpdater progress){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
 			FileFetcher fetch = new FileFetcher();
@@ -171,31 +184,26 @@ public class ContentManager {
 			return true;
 		}
 	}
-
-	private void addAllToMap(File file){
-		if (file.isDirectory()){
-			File[] list = file.listFiles();
-			for(int i=0; i<list.length; i++){
-				addAllToMap(list[i]);
+	
+	public void updateCache(ContentUpdater progress){
+		ArrayList<String> lines = new ArrayList<String>();
+		if (populateCache("list.txt", null)){
+			try{
+				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
+				String line;
+				do{
+					line = in.readLine();
+					if (null != line){
+						lines.add(line);
+					}
+				}while(null != line);
+			}catch(IOException e){
+				Log.w(this.getClass().getName(), "Problem updating from list.txt");
 			}
-		}else{
-			String path = file.getAbsolutePath();
-			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
-			cachedFiles.put(path, "");
-			Log.d(this.getClass().getName(), "Found in cache: " + path);
-		}
-	}
-
-	public int getMostRecentIndex(String[] shortUrlList){
-		int resultIndex = 0;
-		int mostRecent = 0;
-		for(int i=0; i<shortUrlList.length; i++){
-			Integer time = timekeeper.get(shortUrlList[i]);
-			if (time != null && time > mostRecent){
-				mostRecent = time;
-				resultIndex = i;
+			for (int i=0; i<lines.size(); i++){
+				progress.show();
+				populateCache(lines.get(i), progress);
 			}
 		}
-		return resultIndex;
 	}
 }

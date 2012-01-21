@@ -66,7 +66,7 @@ public class TourApp extends Activity {
 	private AlertDialog scanDialog;
 
 	private AlertDialog exitDialog;
-	
+
 	private ProgressManager updateDialogManager = new ProgressManager();
 
 	/**
@@ -442,23 +442,18 @@ public class TourApp extends Activity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
+
 			final ProgressDialog progressDialog = new ProgressDialog(this);
 			progressDialog.setMessage("Looking for updated content...");
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			progressDialog.setCancelable(false);
-			progressDialog.show();
-			
+
 			updateDialogManager.setDialog(progressDialog);
-			Thread thread = new Thread(){
-				@Override
-				public void run(){
-					contentManager.clearCache();
-					contentManager.updateCache(updateDialogManager);
-					updateDialogManager.dismiss();
-				}
-			};
-			thread.start();
-			
+
+			contentManager.clearCache();
+
+			contentManager.startUpdate(updateDialogManager);
+
 			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
 					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>" +
@@ -593,7 +588,6 @@ public class TourApp extends Activity {
 	}
 
 	public class ItemClickHandler implements AdapterView.OnItemClickListener{
-
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Exhibit e = (Exhibit)parent.getItemAtPosition(position);
 			showExhibit(e, Exhibit.TAG_AUTO);

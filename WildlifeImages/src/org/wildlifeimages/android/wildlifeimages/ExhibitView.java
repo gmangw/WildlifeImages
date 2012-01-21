@@ -1,12 +1,22 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.os.AsyncTask;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 /**
  * A modified FrameLayout containing a {@link WebView} and a {@link MultiImageView}.
@@ -15,7 +25,7 @@ import android.widget.FrameLayout;
  * 	
  */
 
-public class ExhibitView extends FrameLayout{
+public class ExhibitView extends FrameLayout implements DownloadListener{
 	private WebView htmlView;
 	private MultiImageView picView;
 	private Context context = this.getContext();
@@ -29,7 +39,7 @@ public class ExhibitView extends FrameLayout{
 		htmlView.getSettings().setJavaScriptEnabled(true);
 		htmlView.getSettings().setPluginsEnabled(true);
 
-		htmlView.setDownloadListener(new SoundLinkListener());
+		htmlView.setDownloadListener(this);
 
 		picView = new MultiImageView(context, attrs);
 		picView.setBackgroundColor(0xFF000000);
@@ -80,14 +90,83 @@ public class ExhibitView extends FrameLayout{
 		picView.setVisibility(View.INVISIBLE);
 	}
 
-	private class SoundLinkListener implements DownloadListener{
-		public void onDownloadStart(String url, String userAgent,
-				String contentDisposition, String mimetype, long contentLength) {
-			url = url.replaceAll(ContentManager.ASSET_PREFIX, "");
-			Log.w(this.getClass().getName(), url);
-			if (lastContentManager != null){
-				AVManager avManager = new AVManager();
-				avManager.playSound(url, lastContentManager, context.getAssets());
+	public void onDownloadStart(String url, String userAgent,
+			String contentDisposition, String mimetype, long contentLength) {
+		Log.d(this.getClass().getName(), "Clicked link with type " + mimetype); //TODO
+		url = url.replaceAll(ContentManager.ASSET_PREFIX, "");
+		Log.w(this.getClass().getName(), url);
+		if (lastContentManager != null){
+			AVManager avManager = new AVManager();
+			MediaPlayer soundPlayer = avManager.playSound(url, lastContentManager, context.getAssets());
+			new MediaThread(this.getContext()).execute(soundPlayer);
+		}
+	}
+
+	public class MediaThread extends AsyncTask<MediaPlayer, Integer, Integer> implements OnClickListener, OnCompletionListener{
+
+		private Context context;
+		private ProgressDialog progressDialog;
+		private MediaPlayer player;
+		private boolean finished = false;
+
+		public MediaThread(Context c){
+			context = c;
+		}
+
+		@Override
+		protected void onPreExecute(){
+			progressDialog = new ProgressDialog(context);
+			progressDialog.setMessage("Playing Audio");
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progressDialog.setCancelable(false);;
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LinearLayout buttons = (LinearLayout)inflater.inflate(R.layout.media_progress_layout, null);
+			for (int i=0; i<buttons.getChildCount(); i++){
+				buttons.getChildAt(i).setOnClickListener(this);
+			}
+			progressDialog.setCustomTitle(buttons);
+			progressDialog.show();
+		}
+
+		@Override
+		protected void onPostExecute(Integer i){
+			progressDialog.dismiss();
+		}
+
+		@Override
+		protected Integer doInBackground(MediaPlayer... params) {
+			player = params[0];
+			player.setOnCompletionListener(this);
+			while(finished == false){
+				if (player.isPlaying()){
+					publishProgress(100 * player.getCurrentPosition()/player.getDuration());
+				}
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {;
+				}
+			}
+			return 0;
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... amount) {
+			progressDialog.setProgress(amount[0]);
+		}
+
+		public void onCompletion(MediaPlayer mp) {
+			finished = true;
+		}
+
+		public void onClick(View v) {
+			if (v.getId() == R.id.media_pause_button){
+				if (player.isPlaying()){
+					player.pause();
+				}else {
+					player.start();
+				}
+			} else if (v.getId() == R.id.media_stop_button){
+				player.stop();
 			}
 		}
 	}

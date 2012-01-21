@@ -6,13 +6,14 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.util.Log;
+import android.widget.Toast;
 
 public class AVManager {
 
 	public AVManager(){
 	}
 
-	public void playSound(String shortUrl, ContentManager contentManager, AssetManager assets){
+	public MediaPlayer playSound(String shortUrl, ContentManager contentManager, AssetManager assets){
 		MediaPlayer soundPlayer = new MediaPlayer();
 		try{
 			AssetFileDescriptor fd = contentManager.getFileDescriptor((shortUrl), assets);
@@ -23,10 +24,10 @@ public class AVManager {
 			}
 			fd.close();
 			soundPlayer.prepare();
-			soundPlayer.start();
+			soundPlayer.start();			
 		} catch (IOException e){
 			Log.e(this.getClass().getName(), Log.getStackTraceString(e));
 		}
-
+		return soundPlayer;
 	}
 }
