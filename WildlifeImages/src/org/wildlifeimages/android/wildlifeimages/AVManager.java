@@ -6,7 +6,6 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.util.Log;
-import android.widget.Toast;
 
 public class AVManager {
 

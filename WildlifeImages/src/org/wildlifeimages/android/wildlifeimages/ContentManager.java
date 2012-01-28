@@ -12,11 +12,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
@@ -28,9 +31,13 @@ import android.util.Log;
  */
 public class ContentManager {
 
+	private static ContentManager self = null;
+	
 	public static final String ASSET_PREFIX = "file:///android_asset/";
 
 	private Hashtable<String, String> cachedFiles = new Hashtable<String, String>();
+	
+	private ExhibitList exhibitList;
 
 	private File cacheDir;
 	BitmapCache imgCache;
@@ -39,11 +46,18 @@ public class ContentManager {
 
 	private Hashtable<String, Integer> timekeeper = new Hashtable<String, Integer>();
 
-	public ContentManager(File cacheDir){
+	public static ContentManager getSelf(){
+		return self;
+	}
+	
+	public ContentManager(File cacheDir, AssetManager assets){
+		self = this;
+		
 		this.cacheDir = cacheDir;
-
 		addAllToMap(cacheDir);
 		imgCache = new BitmapCache();
+		
+		exhibitList = buildExhibitList(assets);
 	}
 
 	public void startUpdate(ProgressManager progress){
@@ -122,8 +136,6 @@ public class ContentManager {
 		}
 	}
 
-
-
 	private void addAllToMap(File file){
 		if (file.isDirectory()){
 			File[] list = file.listFiles();
@@ -201,9 +213,33 @@ public class ContentManager {
 				Log.w(this.getClass().getName(), "Problem updating from list.txt");
 			}
 			for (int i=0; i<lines.size(); i++){
-				progress.show();
+				//progress.show();
 				populateCache(lines.get(i), progress);
 			}
 		}
+	}
+	
+	public ExhibitList getExhibitList(){
+		return exhibitList;
+	}
+	
+	private ExhibitList buildExhibitList(AssetManager assetManager){
+		try{
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+			XmlPullParser xmlBox = factory.newPullParser();
+			InputStream istr = assetManager.open("exhibits.xml");
+			BufferedReader in = new BufferedReader(new InputStreamReader(istr));
+			xmlBox.setInput(in);
+			Log.i(this.getClass().getName(), "Input has been set.");
+			return new ExhibitList(xmlBox);
+		}catch(XmlPullParserException e){
+			throw(null); //TODO
+		} catch (IOException e) {
+			throw(null);
+		}
+	}
+
+	public static void setSelf(ContentManager contentManager) {
+		self = contentManager;
 	}
 }

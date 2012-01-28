@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
     <FrameLayout
-        android:id="@+id/exhibitframe"
+        android:id="@+id/exhibitframe_port"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="2" >

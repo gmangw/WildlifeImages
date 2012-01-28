@@ -1,22 +1,16 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 /**
  * A modified FrameLayout containing a {@link WebView} and a {@link MultiImageView}.
@@ -97,6 +91,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		Log.w(this.getClass().getName(), url);
 		if (lastContentManager != null){
 			AVManager avManager = new AVManager();
+			IntroActivity.self.setContentView(R.layout.media_progress_layout);
 			MediaPlayer soundPlayer = avManager.playSound(url, lastContentManager, context.getAssets());
 			new MediaThread(this.getContext()).execute(soundPlayer);
 		}
@@ -104,8 +99,6 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 	public class MediaThread extends AsyncTask<MediaPlayer, Integer, Integer> implements OnClickListener, OnCompletionListener{
 
-		private Context context;
-		private ProgressDialog progressDialog;
 		private MediaPlayer player;
 		private boolean finished = false;
 
@@ -115,22 +108,12 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 		@Override
 		protected void onPreExecute(){
-			progressDialog = new ProgressDialog(context);
-			progressDialog.setMessage("Playing Audio");
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			progressDialog.setCancelable(false);;
-			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			LinearLayout buttons = (LinearLayout)inflater.inflate(R.layout.media_progress_layout, null);
-			for (int i=0; i<buttons.getChildCount(); i++){
-				buttons.getChildAt(i).setOnClickListener(this);
-			}
-			progressDialog.setCustomTitle(buttons);
-			progressDialog.show();
+			
 		}
 
 		@Override
 		protected void onPostExecute(Integer i){
-			progressDialog.dismiss();
+
 		}
 
 		@Override
@@ -151,7 +134,10 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 		@Override
 		protected void onProgressUpdate(Integer... amount) {
-			progressDialog.setProgress(amount[0]);
+			ProgressBar progress = (ProgressBar)IntroActivity.self.findViewById(R.id.media_progress);
+			if (progress != null){
+				progress.setProgress(amount[0]);
+			}
 		}
 
 		public void onCompletion(MediaPlayer mp) {

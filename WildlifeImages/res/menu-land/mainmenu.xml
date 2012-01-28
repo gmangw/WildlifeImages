@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item android:id="@integer/MENU_HOME"
+		android:title="@string/menu_home" />
+	<item android:id="@integer/MENU_MAP"
+		android:title="@string/menu_map" />
+	<item android:id="@integer/MENU_SCAN"
+		android:title="@string/menu_scan" />
+	<item android:id="@integer/MENU_CAMERA"
+		android:title="@string/menu_camera" />
+	<item android:id="@integer/MENU_PREVIOUS"
+		android:title="@string/menu_previous" />
+	<item android:id="@integer/MENU_NEXT"
+		android:title="@string/menu_next" />
+</menu>  

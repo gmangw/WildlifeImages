@@ -7,7 +7,7 @@
     android:orientation="horizontal" >
 
     <FrameLayout
-        android:id="@+id/exhibitframe"
+        android:id="@+id/exhibitframe_land"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1" >
@@ -40,7 +40,7 @@
                 android:onClick="exhibitProcessSidebar"
                 android:text="Map"
                 android:visibility="gone" />
-        </LinearLayout>
+        </LinearLayout> 
     </ScrollView>
 
 </LinearLayout>

@@ -9,19 +9,47 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 /**
  * A collection of {@link Exhibit} instances.
  * 
  * @author Graham Wilkinson 
  * 	
  */
-public class ExhibitList {
+public class ExhibitList implements Parcelable{
 
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
 
 	private ArrayList<String> keyList = new ArrayList<String>();
 
 	private Exhibit current = null;
+
+	public static final Parcelable.Creator<ExhibitList> CREATOR = new Parcelable.Creator<ExhibitList>() {
+		public ExhibitList createFromParcel(Parcel in) {
+			return new ExhibitList(in);
+		}
+
+		public ExhibitList[] newArray(int size) {
+			return new ExhibitList[size];
+		}
+	};
+
+	private ExhibitList(Parcel in) {
+		Log.w(this.getClass().getName(), "Reading current");
+		current = in.readParcelable(Exhibit.class.getClassLoader());
+		String[] keyArray = new String[in.readInt()];
+		Log.w(this.getClass().getName(), "Reading keys");
+		in.readStringArray(keyArray);
+		Log.w(this.getClass().getName(), "Reading values");
+		Parcelable[] values = in.readParcelableArray(Exhibit.class.getClassLoader());
+		for(int i=0; i<values.length; i++){
+			exhibitList.put(keyArray[i], (Exhibit)values[i]);
+			keyList.add(keyArray[i]);
+		}
+	}
 
 	public ExhibitList(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 
@@ -133,5 +161,23 @@ public class ExhibitList {
 
 	public Exhibit getExhibitAt(int position) {
 		return get(keyList.get(position));
+	}
+
+	public int describeContents() {
+		return 0;
+	}
+
+	public void writeToParcel(Parcel out, int flags) {
+		
+		Exhibit[] valueArray = new Exhibit[keyList.size()];
+		for( int i=0; i<valueArray.length; i++){
+			valueArray[i] = get(keyList.get(i));
+		}
+		
+		out.writeParcelable(current, 0);
+		out.writeInt(valueArray.length);
+		out.writeStringArray(keyList.toArray(new String[keyList.size()]));
+		out.writeParcelableArray(valueArray, 0);
+		
 	}
 }

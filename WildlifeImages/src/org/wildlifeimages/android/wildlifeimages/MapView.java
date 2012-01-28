@@ -2,6 +2,7 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import java.util.Iterator;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,7 +25,6 @@ import android.view.SurfaceView;
 class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
 	private ExhibitList exhibitList;
-	private TourApp parent;
 
 	private GestureDetector gestures;
 
@@ -38,15 +38,9 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
 
-		gestures = new GestureDetector(context, new GestureListener(this));
-
 		//this.setBackgroundDrawable( context.getResources().getDrawable( R.drawable.map) );
 		this.setBackgroundColor(Color.WHITE);
 		setFocusable(true); // make sure we get key events
-	}
-
-	public void setParent(TourApp app){
-		parent = app;
 	}
 
 	public void setExhibitList(ExhibitList list){
@@ -58,59 +52,6 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		return gestures.onTouchEvent(event);  
 	}  
 
-	private class GestureListener implements GestureDetector.OnGestureListener, 
-	GestureDetector.OnDoubleTapListener {  
-
-		public GestureListener(MapView view) {   
-		}
-
-		//@Override
-		public boolean onDoubleTap(MotionEvent e) {
-			return false;
-		}
-		//@Override
-		public boolean onDoubleTapEvent(MotionEvent e) {
-			return false;
-		}
-		//@Override
-		public boolean onSingleTapConfirmed(MotionEvent e) {
-
-			float percentHoriz = 100*(e.getX()/getWidth());
-			float percentVert = 100*(e.getY()/(3*getWidth()/4));
-
-			Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
-			if(selectedExhibit != null){
-				parent.showExhibit(selectedExhibit, Exhibit.TAG_AUTO);
-			}
-
-			return true;
-		}
-		//@Override
-		public boolean onDown(MotionEvent e) {
-			return true;
-		}
-		//@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
-			return false;
-		}
-		//@Override
-		public void onLongPress(MotionEvent e) {
-		}
-		//@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
-			return false;
-		}
-		//@Override
-		public void onShowPress(MotionEvent e) {
-		}
-		//@Override
-		public boolean onSingleTapUp(MotionEvent e) {
-			return false;
-		}  
-	} 
-
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
@@ -119,14 +60,14 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		map.setBounds(originX, originY, this.getWidth(), 3*this.getWidth()/4);
 		map.draw(canvas);
 
-    	Paint p = new Paint();
-    	p.setARGB(255, 0, 0, 255);
+		Paint p = new Paint();
+		p.setARGB(255, 0, 0, 255);
 
-    	Iterator<String> list = exhibitList.keys();
+		Iterator<String> list = exhibitList.keys();
 
-    	while(list.hasNext() == false){ //TODO debug drawing, disabled by "== false"
-    		Exhibit e = exhibitList.get(list.next());
-    		canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
+		while(list.hasNext() == false){ //TODO debug drawing, disabled by "== false"
+			Exhibit e = exhibitList.get(list.next());
+			canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
 		}
 	}
 
@@ -166,5 +107,19 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceDestroyed(SurfaceHolder holder) {
 	}
 
+	public void setGestureDetector(GestureDetector gestureListener) {
+		gestures = gestureListener;
+	}
 
+	public void processSingleTap(WireActivity context, float x, float y){
+		float percentHoriz = 100*(x/getWidth());
+		float percentVert = 100*(y/(3*getWidth()/4));		
+
+		Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
+		if(selectedExhibit != null){
+			exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
+
+			ExhibitActivity.start(context);
+		}
+	}
 }

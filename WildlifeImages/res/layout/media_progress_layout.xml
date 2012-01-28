@@ -2,20 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/media_pause_button"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:text=">" />
+        android:layout_weight="2"
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/media_stop_button"
+        <Button
+            android:id="@+id/media_pause_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text=">" />
+
+        <Button
+            android:id="@+id/media_stop_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="[]" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/media_progress"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:text="[]" />
+        android:layout_weight="1" />
 
 </LinearLayout>
