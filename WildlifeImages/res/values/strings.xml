@@ -52,7 +52,7 @@
     <string name="scan_app_question">After installing the excellent Barcode Scanner app 
         (free in the Android Market or Amazon App Store) you can scan exhibit barcodes to view information
         about each exhibit. Would you like to install Barcode Scanner now?</string>
-    <string name="scan_app_option_yes">Install Barcode Scanner</string>
+    <string name="scan_app_option_yes">Get From Market</string>
     <string name="scan_app_option_no">No Thanks</string>
     <string name="scan_app_url">market://search?q=pname:com.google.zxing.client.android</string>
     <string name="intro_url_about">intro.html</string>

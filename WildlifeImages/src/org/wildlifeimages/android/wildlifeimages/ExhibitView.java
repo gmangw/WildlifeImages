@@ -1,16 +1,12 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 /**
  * A modified FrameLayout containing a {@link WebView} and a {@link MultiImageView}.
@@ -23,7 +19,6 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	private WebView htmlView;
 	private MultiImageView picView;
 	private Context context = this.getContext();
-	private ContentManager lastContentManager;
 
 	public ExhibitView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -47,13 +42,11 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		String[] urlList = new String[1];
 		urlList[0] = shortUrl;
 		loadUrlList(urlList, contentManager);
-		lastContentManager = contentManager;
 	}
 
 	public void loadUrlList(String[] shortUrlList, ContentManager contentManager){
 		String lower = shortUrlList[0].toLowerCase();
 		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
-		lastContentManager = contentManager;
 		for (int i=0; i<extensionList.length; i++){
 			if (lower.endsWith(extensionList[i])){
 				loadImageUrl(shortUrlList, contentManager);
@@ -68,14 +61,12 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		htmlView.loadUrl(contentManager.getBestUrl(htmlShortUrl));
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
-		lastContentManager = contentManager;
 	}
 
 	public void loadImageUrl(String[] imgShortUrl, ContentManager contentManager){
 		picView.setImageBitmapList(imgShortUrl, contentManager);
 		picView.setVisibility(View.VISIBLE);
 		htmlView.setVisibility(View.INVISIBLE);
-		lastContentManager = contentManager;
 	}
 
 	public void loadData(String data){
@@ -89,71 +80,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		Log.d(this.getClass().getName(), "Clicked link with type " + mimetype); //TODO
 		url = url.replaceAll(ContentManager.ASSET_PREFIX, "");
 		Log.w(this.getClass().getName(), url);
-		if (lastContentManager != null){
-			AVManager avManager = new AVManager();
-			IntroActivity.self.setContentView(R.layout.media_progress_layout);
-			MediaPlayer soundPlayer = avManager.playSound(url, lastContentManager, context.getAssets());
-			new MediaThread(this.getContext()).execute(soundPlayer);
-		}
-	}
 
-	public class MediaThread extends AsyncTask<MediaPlayer, Integer, Integer> implements OnClickListener, OnCompletionListener{
-
-		private MediaPlayer player;
-		private boolean finished = false;
-
-		public MediaThread(Context c){
-			context = c;
-		}
-
-		@Override
-		protected void onPreExecute(){
-			
-		}
-
-		@Override
-		protected void onPostExecute(Integer i){
-
-		}
-
-		@Override
-		protected Integer doInBackground(MediaPlayer... params) {
-			player = params[0];
-			player.setOnCompletionListener(this);
-			while(finished == false){
-				if (player.isPlaying()){
-					publishProgress(100 * player.getCurrentPosition()/player.getDuration());
-				}
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {;
-				}
-			}
-			return 0;
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... amount) {
-			ProgressBar progress = (ProgressBar)IntroActivity.self.findViewById(R.id.media_progress);
-			if (progress != null){
-				progress.setProgress(amount[0]);
-			}
-		}
-
-		public void onCompletion(MediaPlayer mp) {
-			finished = true;
-		}
-
-		public void onClick(View v) {
-			if (v.getId() == R.id.media_pause_button){
-				if (player.isPlaying()){
-					player.pause();
-				}else {
-					player.start();
-				}
-			} else if (v.getId() == R.id.media_stop_button){
-				player.stop();
-			}
-		}
+		AVActivity.start(context, url);
 	}
 }

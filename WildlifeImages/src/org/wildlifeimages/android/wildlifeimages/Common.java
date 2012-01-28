@@ -1,10 +1,11 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.net.URI;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -86,6 +87,24 @@ public class Common {
 		context.startActivity(intent);
 	}
 
+	public static AlertDialog createScanDialog(final WireActivity context){
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setMessage(context.loadString(R.string.scan_app_question))
+		.setCancelable(false)
+		.setPositiveButton(R.string.scan_app_option_yes, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(context.loadString(R.string.scan_app_url)));
+				context.startActivity(i);
+			}
+		})
+		.setNegativeButton(R.string.scan_app_option_no, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		return builder.create();
+	}
+	
 	public static void menuItemProcess(WireActivity context, int id, ExhibitList exhibits){
 		switch (id) {
 		case R.integer.MENU_HOME:
@@ -102,13 +121,11 @@ public class Common {
 				intent.putExtra(context.loadString(R.string.intent_extra_scan_mode), context.loadString(R.string.intent_qr_mode));
 				context.startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
 			} else {
-				//scanDialog.show(); TODO
+				context.scanDialog.show();
 			}
 			break;
 		case R.integer.MENU_CAMERA:
-			/* http://achorniy.wordpress.com/2010/04/26/howto-launch-android-camera-using-intents/ */
-			Common.startCamera(context, null);//ScanActivity.start(context);
-
+			Common.startCamera(context, null);
 			break;
 		case R.integer.MENU_NEXT:
 			Exhibit next = exhibits.getNext();

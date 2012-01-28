@@ -8,10 +8,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 
 /**
  * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.
@@ -26,13 +24,9 @@ public class IntroActivity extends WireActivity {
 
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
-	private AlertDialog scanDialog;
-
 	private AlertDialog exitDialog;
 
 	private ProgressManager updateDialogManager = new ProgressManager();
-
-	public static IntroActivity self;
 
 	/**
 	 * Invoked when the Activity is created.
@@ -42,12 +36,13 @@ public class IntroActivity extends WireActivity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedState) {
-		super.onCreate(savedState);
+		super.onCreate(savedState);		
 
-		self = this;		
-
-		scanDialog = createScanDialog();
 		exitDialog = createExitDialog();
+
+		if (ContentManager.getSelf() == null){
+			new ContentManager(this.getCacheDir(), this.getAssets());
+		}
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
@@ -64,69 +59,34 @@ public class IntroActivity extends WireActivity {
 		mExhibitView.loadUrl(loadString(R.string.intro_url_about), ContentManager.getSelf());
 	}
 
-	private void showExhibit(Exhibit e, String contentTag){
-		ContentManager.getSelf().getExhibitList().setCurrent(e, contentTag);
-		ExhibitActivity.start(this);
-	}
-
 	private void showList(){
 		ExhibitListActivity.start(this);
 	}
 
 	private void restoreState(Bundle savedState){
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-
-		/*ArrayList<String> activeTagList = savedState.getStringArrayList(loadString(R.string.save_current_exhibit_tag));
-		ArrayList<String> exhibitNames = savedState.getStringArrayList(loadString(R.string.save_current_exhibit_names));
-
-		for(int i=0; i<exhibitNames.size(); i++){
-			Exhibit e = exhibitList.get(exhibitNames.get(i));
-			if (e != null){
-				e.setCurrentTag(activeTagList.get(i));
-			}
-		}*/
-
 		activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
-
 
 		showIntro();
 		introProcessSidebar(activeHomeId);
-
 	}
 
-	private AlertDialog createExitDialog(){
+	private AlertDialog createExitDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final IntroActivity me = this;
 		builder.setMessage(loadString(R.string.exit_question))
-		.setCancelable(false)
-		.setPositiveButton(loadString(R.string.exit_option_yes), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				me.finish();
-			}
-		})
-		.setNegativeButton(R.string.exit_option_no, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-		return builder.create();
-	}
-
-	private AlertDialog createScanDialog(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(loadString(R.string.scan_app_question))
-		.setCancelable(false)
-		.setPositiveButton(R.string.scan_app_option_yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(loadString(R.string.scan_app_url)));
-				startActivity(i);
-			}
-		})
-		.setNegativeButton(R.string.scan_app_option_no, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
+				.setCancelable(false)
+				.setPositiveButton(loadString(R.string.exit_option_yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								me.finish();
+							}
+						})
+				.setNegativeButton(R.string.exit_option_no,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
 		return builder.create();
 	}
 
@@ -143,7 +103,6 @@ public class IntroActivity extends WireActivity {
 
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 
-		scanDialog.dismiss();
 		exitDialog.dismiss();
 		updateDialogManager.dismiss();
 
@@ -159,7 +118,7 @@ public class IntroActivity extends WireActivity {
 		outState.putStringArrayList(loadString(R.string.save_current_exhibit_tag), currentTagList);
 	}
 
-	public void introProcessSidebar(View v){
+	public void introProcessSidebar(View v) {
 		introProcessSidebar(v.getId());
 	}
 
@@ -183,7 +142,6 @@ public class IntroActivity extends WireActivity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
-
 			final ProgressDialog progressDialog = new ProgressDialog(this);
 			progressDialog.setMessage("Looking for updated content...");
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -191,7 +149,7 @@ public class IntroActivity extends WireActivity {
 			progressDialog.show();
 
 			updateDialogManager.setDialog(progressDialog);
-			
+
 			ContentManager contentManager = ContentManager.getSelf();
 			contentManager.clearCache();
 
@@ -200,7 +158,6 @@ public class IntroActivity extends WireActivity {
 			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
 					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>" +
-					"The camera will leave a pic at the filesystem root, does nothing with it.<br><br>" +
 			"Viewing this page has triggered a cache flush and web update for debug purposes."); //TODO
 			activeHomeId = viewId;
 			break;
@@ -215,9 +172,9 @@ public class IntroActivity extends WireActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (this.isTaskRoot()){
+		if (this.isTaskRoot()) {
 			exitDialog.show();
-		}else{
+		} else {
 			finish();
 		}
 	}
