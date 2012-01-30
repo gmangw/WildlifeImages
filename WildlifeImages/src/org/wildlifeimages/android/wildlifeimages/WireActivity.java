@@ -26,6 +26,7 @@ public abstract class WireActivity extends Activity{
 		//	ContentManager.setSelf(contentManager);
 		//}
 
+		//Makes it so we do not see the title bar at the top.
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		scanDialog = Common.createScanDialog(this);
