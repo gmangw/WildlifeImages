@@ -45,16 +45,12 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	}
 
 	public void loadUrlList(String[] shortUrlList, ContentManager contentManager){
-		String lower = shortUrlList[0].toLowerCase();
 		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
-		for (int i=0; i<extensionList.length; i++){
-			if (lower.endsWith(extensionList[i])){
-				loadImageUrl(shortUrlList, contentManager);
-				return;
-			}
+		if (Common.isImageUrl(shortUrlList[0], extensionList)){
+			loadImageUrl(shortUrlList, contentManager);
+		} else {
+			loadHtmlUrl(shortUrlList[0], contentManager);
 		}
-		//Else
-		loadHtmlUrl(shortUrlList[0], contentManager);
 	}
 
 	public void loadHtmlUrl(String htmlShortUrl, ContentManager contentManager){

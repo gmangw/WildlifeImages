@@ -77,7 +77,8 @@ public class ExhibitList implements Parcelable{
 					keyList.add(e.getName());
 				}else if (xmlBox.getName().equalsIgnoreCase("content")){
 					String urlList = xmlBox.getAttributeValue(null, "page");
-					e.setContent(xmlBox.getAttributeValue(null, "tag"), urlList.split(","));
+					String[] content = urlList.split(",");
+					e.setContent(xmlBox.getAttributeValue(null, "tag"), content);
 				}
 			}
 			eventType = xmlBox.next();

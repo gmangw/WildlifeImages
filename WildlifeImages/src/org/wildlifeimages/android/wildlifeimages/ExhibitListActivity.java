@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListView;
 
 public class ExhibitListActivity extends ListActivity {
@@ -13,6 +14,8 @@ public class ExhibitListActivity extends ListActivity {
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		setContentView(R.layout.list_layout);
 		setListAdapter(new ExhibitListAdapter(this, ContentManager.getSelf().getExhibitList()));
 	}

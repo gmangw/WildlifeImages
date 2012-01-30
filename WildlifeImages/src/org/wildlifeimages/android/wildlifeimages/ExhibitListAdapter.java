@@ -3,10 +3,12 @@ package org.wildlifeimages.android.wildlifeimages;
 import java.util.Iterator;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -43,6 +45,13 @@ public class ExhibitListAdapter extends BaseAdapter{
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item_layout, null);
+        }
+        
+        if (entry.hasContent("Photos")){
+        	String[] photos = entry.getContent("Photos");
+        	ImageView thumb = (ImageView)convertView.findViewById(R.id.listitemphoto);
+        	Bitmap bmp = ContentManager.getSelf().getBitmap(photos[0], convertView.getContext().getAssets());
+        	thumb.setImageBitmap(bmp);
         }
         
         TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);

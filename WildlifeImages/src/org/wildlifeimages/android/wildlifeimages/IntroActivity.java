@@ -142,6 +142,18 @@ public class IntroActivity extends WireActivity {
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_app:
+			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
+					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
+					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>"); //TODO
+			activeHomeId = viewId;
+			break;
+		case R.id.intro_sidebar_exhibitlist:
+			showList();
+			break;
+		case R.id.intro_sidebar_map:
+			MapActivity.start(this);
+			break;
+		case R.id.intro_sidebar_update:
 			final ProgressDialog progressDialog = new ProgressDialog(this);
 			progressDialog.setMessage("Looking for updated content...");
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -154,18 +166,6 @@ public class IntroActivity extends WireActivity {
 			contentManager.clearCache();
 
 			contentManager.startUpdate(updateDialogManager);
-
-			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
-					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
-					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>" +
-			"Viewing this page has triggered a cache flush and web update for debug purposes."); //TODO
-			activeHomeId = viewId;
-			break;
-		case R.id.intro_sidebar_exhibitlist:
-			showList();
-			break;
-		case R.id.intro_sidebar_map:
-			MapActivity.start(this);
 			break;
 		}
 	}

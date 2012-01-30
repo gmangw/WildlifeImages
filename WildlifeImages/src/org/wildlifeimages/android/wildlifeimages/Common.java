@@ -132,17 +132,27 @@ public class Common {
 
 			if(next != null){
 				exhibits.setCurrent(next, Exhibit.TAG_AUTO);
+				ExhibitActivity.start(context);
 			}
-			ExhibitActivity.start(context);
 			break;
 		case R.integer.MENU_PREVIOUS:
 			Exhibit prev = exhibits.getPrevious();
 
 			if(prev != null){
 				exhibits.setCurrent(prev, Exhibit.TAG_AUTO);
+				ExhibitActivity.start(context);
 			}
-			ExhibitActivity.start(context);
 			break;
 		}
+	}
+	
+	public static boolean isImageUrl(String url, String[] extensionList){
+		String lower = url.toLowerCase();
+		for (int i=0; i<extensionList.length; i++){
+			if (lower.endsWith(extensionList[i])){
+				return true;
+			}
+		}
+		return false;
 	}
 }

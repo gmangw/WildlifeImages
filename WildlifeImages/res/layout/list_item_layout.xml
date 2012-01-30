@@ -2,30 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal"
-        android:padding="16px" >
-
-        <TextView
-            android:id="@+id/listitemlabel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="3"
-            android:textSize="30sp"
-            android:typeface="sans" />
-
-        <TextView
-            android:id="@+id/listiteminfo"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:gravity="bottom"
-            android:textSize="16sp"
-            android:typeface="serif" />
-    </LinearLayout>
+    
 
 </LinearLayout>

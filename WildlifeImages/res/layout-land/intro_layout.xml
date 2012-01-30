@@ -59,9 +59,9 @@
                 android:text="@string/intro_sidebar_map" />
 
             <Button
-                android:id="@+id/intro_sidebar_share"
+                android:id="@+id/intro_sidebar_update"
                 style="@style/IntroHorizontalButton"
-                android:text="@string/intro_sidebar_share" />
+                android:text="@string/intro_sidebar_update" />
         </LinearLayout>
     </ScrollView>
 

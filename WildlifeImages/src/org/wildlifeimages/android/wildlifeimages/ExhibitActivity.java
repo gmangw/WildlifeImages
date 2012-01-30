@@ -29,6 +29,7 @@ public class ExhibitActivity extends WireActivity{
 		//	String tag = savedState.getString(loadString(R.string.save_current_exhibit_tag));
 		//	showExhibit(e, tag);
 		//}
+		remakeButtons(exhibitList.getCurrent());
 		showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 	}
 
@@ -40,14 +41,7 @@ public class ExhibitActivity extends WireActivity{
 
 		exhibitList.setCurrent(e, contentTag);
 
-		/* If not viewing any exhibit or the exhibit is not the one currently open */
-		//if ((ExhibitView) findViewById(R.id.exhibit) == null){
-		//	setContentView(R.layout.exhibit_layout);
-		needRemakeButtons = true; //TODO
-		//}
-		needRemakeButtons = needRemakeButtons || false == previous.equals(e);
-
-		if(needRemakeButtons){
+		if(false == previous.equals(e)){
 			remakeButtons(e);
 		}
 		if (needRemakeButtons || previousTag != contentTag){
@@ -67,8 +61,8 @@ public class ExhibitActivity extends WireActivity{
 				exhibitProcessSidebar(v);
 			}
 		};
-
 		buttonList.removeAllViews();
+		buttonList.setVisibility(View.GONE);
 		int index = 0;
 		while (tagList.hasNext()){
 			if (null != findViewById(R.id.exhibitframe_land)){
@@ -98,6 +92,7 @@ public class ExhibitActivity extends WireActivity{
 				index++; 
 			}
 		}
+		buttonList.setVisibility(View.VISIBLE);
 	}
 
 	private Button makeStyledButton(String label, Context c, LayoutParams params, OnClickListener listen){
@@ -130,10 +125,6 @@ public class ExhibitActivity extends WireActivity{
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-		
-		outState.putString(loadString(R.string.save_current_exhibit), exhibitList.getCurrent().getName());
-		outState.putString(loadString(R.string.save_current_exhibit_tag), exhibitList.getCurrent().getCurrentTag());
 	}
 	
 	public static void start(Activity context) {
