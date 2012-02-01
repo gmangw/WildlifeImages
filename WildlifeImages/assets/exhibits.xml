@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <exhibit_list>
-	<exhibit name="Alpha" xpos="57" ypos="59" next="Velociraptors"
+	<exhibit name="Alpha" xpos="57" ypos="59" next="Bravo"
 		intro="ExhibitContents/alphaIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos"
@@ -10,8 +10,8 @@
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Spare" page="ExhibitContents/alphaDiet.html" />
 	</exhibit>
-	<exhibit name="Velociraptors" xpos="38" ypos="56" previous="Alpha"
-		next="Charlie" intro="ExhibitContents/bravoIntro.html">
+	<exhibit name="Bravo" xpos="38" ypos="56" previous="Alpha"
+		next="Velociraptors" intro="ExhibitContents/bravoIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos"
 			page="ExhibitContents/badger.jpg,ExhibitContents/IMG_1716.JPG" />
@@ -20,15 +20,15 @@
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Audio" page="ExhibitContents/bravoAudio.html" />
 	</exhibit>
-	<exhibit name="Charlie" xpos="30" ypos="44" previous="Velociraptors"
-		next="Delta" intro="ExhibitContents/charlieIntro.html">
+	<exhibit name="Velociraptors" xpos="30" ypos="44" previous="Bravo"
+		next="Delta" intro="ExhibitContents/VelociraptorsIntro.html">
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Photos" page="ExhibitContents/wolf.jpg" />
 		<content tag="Videos" page="ExhibitContents/alphaVideos.html" />
 		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
 		<content tag="Family Tree" page="ExhibitContents/alphaHistory.html" />
 	</exhibit>
-	<exhibit name="Delta" xpos="46" ypos="27" previous="Charlie"
+	<exhibit name="Delta" xpos="46" ypos="27" previous="Velociraptors"
 		intro="ExhibitContents/deltaIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
