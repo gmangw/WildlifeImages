@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 /**
- * This class...
+ * This class will handle the exhibit page.
  * 
  * @author Graham Wilkinson
  * @author Shady Glenn
