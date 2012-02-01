@@ -221,7 +221,7 @@ public class IntroActivity extends WireActivity {
 	 * Bootstrapper that allows the launching of activities.
 	 * So will start the activity for this page.
 	 * 
-	 * @param an Activity called context which takes wahtever to be passed when starting this page.
+	 * @param an Activity called context which takes whatever to be passed when starting this page.
 	 */
 	public static void start(Activity context) {
 		Intent introIntent = new Intent(context, IntroActivity.class);
