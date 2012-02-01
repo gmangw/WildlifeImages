@@ -26,6 +26,8 @@ public class IntroActivity extends WireActivity {
 
 	private AlertDialog exitDialog;
 
+	//This progress manager will handle the update button when pressed.
+	//It will be what you see when you are updating the app.
 	private ProgressManager updateDialogManager = new ProgressManager();
 
 	/**
@@ -40,6 +42,7 @@ public class IntroActivity extends WireActivity {
 
 		exitDialog = createExitDialog();
 
+		//Create a new content manager if there is none.
 		if (ContentManager.getSelf() == null){
 			new ContentManager(this.getCacheDir(), this.getAssets());
 		}
@@ -51,6 +54,9 @@ public class IntroActivity extends WireActivity {
 		}
 	}
 
+	/**
+	 * Loads the page at intro_url_about.
+	 */
 	private void showIntro() {
 		setContentView(R.layout.intro_layout);
 
@@ -59,10 +65,18 @@ public class IntroActivity extends WireActivity {
 		mExhibitView.loadUrl(loadString(R.string.intro_url_about), ContentManager.getSelf());
 	}
 
+	/**
+	 * Starts the ExhibitListActivity page.
+	 */
 	private void showList(){
 		ExhibitListActivity.start(this);
 	}
 
+	/**
+	 * Shows the intro and loads the proper sidebar.
+	 * 
+	 * * @param savedState a Bundle containing state saved from a previous execution.
+	 */
 	private void restoreState(Bundle savedState){
 		activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
 
@@ -70,6 +84,9 @@ public class IntroActivity extends WireActivity {
 		introProcessSidebar(activeHomeId);
 	}
 
+	/**
+	 * Create the exit dialog box with yes/no option.
+	 */
 	private AlertDialog createExitDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final IntroActivity me = this;
@@ -103,6 +120,10 @@ public class IntroActivity extends WireActivity {
 
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 
+		/* 
+		 * Here we are dismissing since if you have a dialog open and rotate the device it
+		 * will try to exit the application and we do not want that. 
+		*/
 		exitDialog.dismiss();
 		updateDialogManager.dismiss();
 
