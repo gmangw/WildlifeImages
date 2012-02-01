@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.widget.ImageView;
 
 /**
  * This class handles the caching and updating of exhibit content.
@@ -32,11 +33,11 @@ import android.util.Log;
 public class ContentManager {
 
 	private static ContentManager self = null;
-	
+
 	public static final String ASSET_PREFIX = "file:///android_asset/";
 
 	private Hashtable<String, String> cachedFiles = new Hashtable<String, String>();
-	
+
 	private ExhibitList exhibitList;
 
 	private File cacheDir;
@@ -49,15 +50,25 @@ public class ContentManager {
 	public static ContentManager getSelf(){
 		return self;
 	}
-	
+
 	public ContentManager(File cacheDir, AssetManager assets){
 		self = this;
-		
+
 		this.cacheDir = cacheDir;
-		addAllToMap(cacheDir);
 		imgCache = new BitmapCache();
-		
+		addAllToMap(cacheDir);
+
 		exhibitList = buildExhibitList(assets);
+
+		for(int i=0; i<exhibitList.getCount(); i++){
+			Exhibit entry = exhibitList.getExhibitAt(i);
+			if (entry.hasContent("Photos")){
+				String[] photos = entry.getContent("Photos");
+				ContentManager.getSelf().getBitmap(photos[0], assets);
+			}
+		}
+		
+		
 	}
 
 	public void startUpdate(ProgressManager progress){
@@ -162,7 +173,7 @@ public class ContentManager {
 		}
 		return resultIndex;
 	}
-	
+
 	private boolean populateCache(String shortUrl, ContentUpdater progress){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
@@ -196,7 +207,7 @@ public class ContentManager {
 			return true;
 		}
 	}
-	
+
 	public void updateCache(ContentUpdater progress){
 		ArrayList<String> lines = new ArrayList<String>();
 		if (populateCache("list.txt", null)){
@@ -220,11 +231,11 @@ public class ContentManager {
 			}
 		}
 	}
-	
+
 	public ExhibitList getExhibitList(){
 		return exhibitList;
 	}
-	
+
 	private ExhibitList buildExhibitList(AssetManager assetManager){
 		try{
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
