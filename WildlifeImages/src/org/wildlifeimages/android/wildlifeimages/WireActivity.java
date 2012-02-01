@@ -47,6 +47,13 @@ public abstract class WireActivity extends Activity{
 		return true;
 	}
 
+	/**
+	 * Gets called when an activity has been started and a request has been given for when it ends.
+	 * 
+	 * @param an int requestCode that has the code for what action to do.
+	 * @param an int resultCode that has the resulting code from the request.
+	 * @param a Intent intent that is the intent used to start the process.	
+	 */	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent){
 		Common.processActivityResult(this, requestCode, resultCode, intent);

@@ -12,6 +12,14 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+/**
+ * All the static functions that are not start are kept here.
+ * 
+ * @author Graham Wilkinson
+ * @author Shady Glenn
+ * @author Naveen Nanja
+ * 	
+ */	
 public class Common {
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
@@ -36,6 +44,14 @@ public class Common {
 		return list.size() > 0;
 	}
 
+	/**
+	 * Gets called when an activity has been started and a request has been given for when it ends.
+	 * 
+	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
+	 * @param an int requestCode that has the code for what action to do.
+	 * @param an int resultCode that has the resulting code from the request.
+	 * @param a Intent intent that is the intent used to start the process.	
+	 */	
 	public static void processActivityResult(WireActivity context, int requestCode, int resultCode, Intent intent){
 		if (requestCode == R.integer.CODE_SCAN_ACTIVITY_REQUEST && resultCode == Activity.RESULT_OK) {
 			String contents = intent.getStringExtra(context.loadString(R.string.intent_extra_result));
@@ -55,6 +71,12 @@ public class Common {
 		}
 	}
 
+	/**
+	 * Will process the string gotten from a QR code.
+	 * 
+	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
+	 * @param a String textQR that contains the text returned from the QR scanner.
+	 */	
 	private static String processResultQR(WireActivity context, String textQR){
 		String prefix = context.loadString(R.string.qr_prefix);
 		textQR.substring(0, prefix.length());
@@ -66,6 +88,11 @@ public class Common {
 		}
 	}
 
+	/**
+	 * Checks if you have an application to scan a QR code and launch it if you have one.
+	 * 
+	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
+	 */
 	public static void startScan(WireActivity context){
 		boolean scanAvailable = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan));
 
@@ -76,6 +103,12 @@ public class Common {
 		}
 	}
 
+	/**
+	 * Starts the camera application to take a picture.
+	 * 
+	 * @param an Activity context that has the information about the current activity.
+	 * @param a URI imageUri that contains the location of where the image will be stored. 
+	 */
 	public static void startCamera(Activity context, Uri imageUri){
 		//String fileName = "file://mnt/sdcard/pic.jpg"; //TODO filename
 		//imageUri = Uri.parse(fileName);
@@ -87,6 +120,11 @@ public class Common {
 		context.startActivity(intent);
 	}
 
+	/**
+	 * Will ask the user if you don't have a QR scanner if you would like to download one.
+	 * 
+	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
+	 */
 	public static AlertDialog createScanDialog(final WireActivity context){
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(context.loadString(R.string.scan_app_question))
@@ -105,6 +143,14 @@ public class Common {
 		return builder.create();
 	}
 	
+	/**
+	 * Tries to match the id of the menu button pressed with one of the cases, so home or map, etc...
+	 * Launches the appropriate activity according to the case found from the id.
+	 * 
+	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
+	 * @param an int id containing the id of the view, so a button or an item.
+	 * @param an ExhibitList exhibits that contains the current list of exhibits.
+	 */
 	public static void menuItemProcess(WireActivity context, int id, ExhibitList exhibits){
 		switch (id) {
 		case R.integer.MENU_HOME:
@@ -146,6 +192,12 @@ public class Common {
 		}
 	}
 	
+	/**
+	 * This will check if the image URL passed in has an acceptable image format.
+	 * 
+	 * @param a String url containing the URL of the supposed image.
+	 * @param a String[] extensionlist that is an array of the acceptable extensions.
+	 */
 	public static boolean isImageUrl(String url, String[] extensionList){
 		String lower = url.toLowerCase();
 		for (int i=0; i<extensionList.length; i++){

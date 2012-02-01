@@ -4,7 +4,14 @@ import java.util.HashMap;
 
 import android.graphics.Bitmap;
 	
-	
+/**
+ * This class will handle cached bitmaps, pretty much as hashtable.
+ * 
+ * @author Graham Wilkinson
+ * @author Shady Glenn
+ * @author Naveen Nanja
+ * 	
+ */	
 public class BitmapCache {
 	private HashMap<String, Bitmap> cachedBitmaps;
 	
