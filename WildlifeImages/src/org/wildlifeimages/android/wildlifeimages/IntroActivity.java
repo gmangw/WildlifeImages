@@ -26,8 +26,10 @@ public class IntroActivity extends WireActivity {
 
 	private AlertDialog exitDialog;
 
-	//This progress manager will handle the update button when pressed.
-	//It will be what you see when you are updating the app.
+	/*
+	 * This progress manager will handle the update button when pressed.
+	 * It will be what you see when you are updating the app.
+	 */
 	private ProgressManager updateDialogManager = new ProgressManager();
 
 	/**
@@ -42,7 +44,7 @@ public class IntroActivity extends WireActivity {
 
 		exitDialog = createExitDialog();
 
-		//Create a new content manager if there is none.
+		/* Create a new content manager if there is none. */
 		if (ContentManager.getSelf() == null){
 			new ContentManager(this.getCacheDir(), this.getAssets());
 		}
@@ -127,6 +129,7 @@ public class IntroActivity extends WireActivity {
 		exitDialog.dismiss();
 		updateDialogManager.dismiss();
 
+		/* Here we are saving state, so saving the items we had open. */
 		Iterator<String> keyList = exhibitList.keys();
 		ArrayList<String> currentExhibitList = new ArrayList<String>();
 		ArrayList<String> currentTagList = new ArrayList<String>();
@@ -139,10 +142,20 @@ public class IntroActivity extends WireActivity {
 		outState.putStringArrayList(loadString(R.string.save_current_exhibit_tag), currentTagList);
 	}
 
+	/**
+	 * Helper function for introProcessSidebar.
+	 * 
+	 * @param a View v
+	 */
 	public void introProcessSidebar(View v) {
 		introProcessSidebar(v.getId());
 	}
 
+	/**
+	 * If you hit a button, process that button and do the specific action of that button.
+	 * 
+	 * @param int viewId, the Id of the view.
+	 */
 	private void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_intro:
@@ -191,6 +204,10 @@ public class IntroActivity extends WireActivity {
 		}
 	}
 
+	/**
+	 * Will show the exit dialog if we are in the main part of the program.
+	 * Else it will call the finish function which will move us back to the previous page.
+	 */
 	@Override
 	public void onBackPressed() {
 		if (this.isTaskRoot()) {
@@ -200,6 +217,12 @@ public class IntroActivity extends WireActivity {
 		}
 	}
 
+	/**
+	 * Bootstrapper that allows the launching of activities.
+	 * So will start the activity for this page.
+	 * 
+	 * @param an Activity called context which takes wahtever to be passed when starting this page.
+	 */
 	public static void start(Activity context) {
 		Intent introIntent = new Intent(context, IntroActivity.class);
 		context.startActivityIfNeeded(introIntent, 0);
