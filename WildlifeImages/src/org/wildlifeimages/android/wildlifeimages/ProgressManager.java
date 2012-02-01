@@ -1,10 +1,14 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 
-public class ProgressManager {
+public class ProgressManager implements OnCancelListener {
 
 	private ProgressDialog dialog;
+	
+	private boolean isCancelled = false;
 	
 	public ProgressManager() {
 	}
@@ -43,6 +47,7 @@ public class ProgressManager {
 	
 	public void setDialog(ProgressDialog progressDialog){
 		dialog = progressDialog;
+		dialog.setOnCancelListener(this);
 	}
 
 	public void dismiss() {
@@ -62,5 +67,17 @@ public class ProgressManager {
 		if (dialog != null){
 			dialog.setMessage(label);
 		}		
+	}
+	
+	public boolean isCancelled(){
+		return isCancelled;
+	}
+
+	public void onCancel(DialogInterface dialog) {
+		isCancelled = true;
+	}
+
+	public void reset() {
+		isCancelled = false;
 	}
 }

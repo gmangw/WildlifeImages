@@ -184,7 +184,7 @@ public class ContentManager {
 					return true;
 				} catch (FileNotFoundException e) {
 					Log.w(this.getClass().getName(), "FileNotFoundException while trying to cache " + shortUrl);
-					return false;
+					return true;
 				} catch (IOException e) {
 					Log.w(this.getClass().getName(), "IOException while trying to cache " + shortUrl);
 					return false;
@@ -214,7 +214,9 @@ public class ContentManager {
 			}
 			for (int i=0; i<lines.size(); i++){
 				//progress.show();
-				populateCache(lines.get(i), progress);
+				if (false == populateCache(lines.get(i), progress)){
+					break;
+				}
 			}
 		}
 	}

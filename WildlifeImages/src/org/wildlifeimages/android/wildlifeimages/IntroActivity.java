@@ -191,7 +191,7 @@ public class IntroActivity extends WireActivity {
 			final ProgressDialog progressDialog = new ProgressDialog(this);
 			progressDialog.setMessage("Looking for updated content...");
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			progressDialog.setCancelable(false);
+			progressDialog.setCancelable(true);
 			progressDialog.show();
 
 			updateDialogManager.setDialog(progressDialog);

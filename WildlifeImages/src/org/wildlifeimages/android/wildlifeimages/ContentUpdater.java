@@ -1,6 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>{
 
@@ -43,7 +44,16 @@ public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>
 	}
 	
 	@Override
+	protected void onCancelled(){
+		Log.w(this.getClass().getName(), "onCancelled");
+		progress.reset();
+	}
+	
+	@Override
 	protected void onProgressUpdate(Integer... amount) {
+		if (progress.isCancelled()){
+			this.cancel(true);
+		}
 		if (amount[0] == -1){
 			progress.setText(label);
 		}else{

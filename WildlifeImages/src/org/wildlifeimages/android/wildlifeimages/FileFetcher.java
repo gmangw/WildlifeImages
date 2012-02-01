@@ -40,12 +40,14 @@ public class FileFetcher {
 			while (buffer.length - length > 0){
 				read = binaryReader.read(buffer, length, buffer.length - length);
 				if (read == -1){
-
 					break;
 				}else{
 					length += read;
 					if (progress != null){
 						progress.publish(100*length/lengthGuess);
+						if (progress.isCancelled()){
+							throw(new InterruptedException());
+						}
 					}
 				}
 			}
@@ -53,6 +55,9 @@ public class FileFetcher {
 			conn.disconnect();
 		} catch (IOException e) {
 			Log.w(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
+		} catch (InterruptedException e) {
+			Log.d(this.getClass().getName(), "Update cancelled.");
+			return null;
 		}
 
 		if (length > 0){
