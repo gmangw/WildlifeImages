@@ -12,8 +12,22 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+/**
+ * This class will handle the exhibit page.
+ * 
+ * @author Graham Wilkinson
+ * @author Shady Glenn
+ * @author Naveen Nanja
+ * 	
+ */
 public class ExhibitActivity extends WireActivity{
 
+	/**
+	 * This will happen when the activity actually starts.
+	 * Will grab the latest state of the current exhibit and call showExhibit to display it.
+	 * 
+	 * @param a bundle savedState that holds the current state.
+	 */
 	@Override
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
@@ -33,6 +47,12 @@ public class ExhibitActivity extends WireActivity{
 		showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 	}
 
+	/**
+	 * This will display the given exhibit.
+	 * 
+	 * @param an Exhibit e that is the exhibit to be shown.
+	 * @param a String contentTag which is the name of the button selected.
+	 */
 	public void showExhibit(Exhibit e, String contentTag) {
 		boolean needRemakeButtons = false;
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
@@ -52,6 +72,11 @@ public class ExhibitActivity extends WireActivity{
 		}
 	}
 
+	/**
+	 * Get all of the buttons for a given exhibit and display them.
+	 * 
+	 * @param an Exhibit e that is the exhibit to be shown.
+	 */
 	private void remakeButtons(Exhibit e){
 		Iterator<String> tagList = e.getTags();
 		LinearLayout buttonList = (LinearLayout)findViewById(R.id.exhibit_sidebar_linear);
@@ -70,9 +95,8 @@ public class ExhibitActivity extends WireActivity{
 
 				/* Add each button after the previous one, keeping any xml buttons at the end */
 				buttonList.addView(button, index);
-				index++; 
-			}
-			else{
+				index++;
+			} else{
 				LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
 				buttonPair.setLayoutParams(params);
 				buttonPair.setOrientation(LinearLayout.VERTICAL);
@@ -80,8 +104,7 @@ public class ExhibitActivity extends WireActivity{
 					if (tagList.hasNext()){
 						Button button = makeStyledButton(tagList.next(), buttonPair.getContext(), params, listen);
 						buttonPair.addView(button);
-					}
-					else{
+					} else {
 						Button filler = makeStyledButton("", buttonPair.getContext(), params, null);
 						filler.setEnabled(false);
 						buttonPair.addView(filler);
@@ -95,6 +118,14 @@ public class ExhibitActivity extends WireActivity{
 		buttonList.setVisibility(View.VISIBLE);
 	}
 
+	/**
+	 * Get all of the buttons for a given exhibit and display them.
+	 * 
+	 * @param a String label that is the label of the button.
+	 * @param a Context c that is the thing that the button is going to sit in.
+	 * @param LayoutParams params that contains the layout parameters.
+	 * @param an OnClickListener listen that listens for clicks.
+	 */
 	private Button makeStyledButton(String label, Context c, LayoutParams params, OnClickListener listen){
 		Button button = new Button(c);
 		button.setText(label);
@@ -108,6 +139,11 @@ public class ExhibitActivity extends WireActivity{
 		return button;
 	}
 
+	/**
+	 * Get all of the buttons for a given exhibit and display them.
+	 * 
+	 * @param a View v that is the current button.
+	 */
 	public void exhibitProcessSidebar(View v){
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		switch (v.getId()) {
@@ -122,11 +158,22 @@ public class ExhibitActivity extends WireActivity{
 		}
 	}
 
+	/**
+	 * Pass the current outState and pass it up to the parent to overwrite it.s
+	 * 
+	 * @param a Bundle outState where you will put current state into, overwire the initial function.
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 	}
 	
+	/**
+	 * Bootstrapper that allows the launching of activities.
+	 * So will start the activity for this page.
+	 * 
+	 * @param an Activity called context which takes whatever to be passed when starting this page.
+	 */
 	public static void start(Activity context) {
 		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
 		//exhibitIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

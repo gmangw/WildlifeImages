@@ -6,8 +6,20 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+/**
+ * This class will handle the map page.
+ * @author Graham Wilkinson
+ * @author Shady Glenn
+ * @author Naveen Nanja
+ */
 public class MapActivity extends WireActivity{
 
+	/**
+	 * Invoked when the Activity is created.
+	 * 
+	 * @param savedState a Bundle containing state saved from a previous execution,
+	 * or null if this is a new execution
+	 */
 	@Override
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
@@ -22,11 +34,19 @@ public class MapActivity extends WireActivity{
 		//mMapView.setParent(this);
 	}
 
+	/**
+	 * Invoked when the Activity is created.
+	 * 
+	 * @param a Context context that has the location where we are in program flow.
+	 */
 	public static void start(Context context) {
 		Intent mapIntent = new Intent(context, MapActivity.class);
 		context.startActivity(mapIntent);
 	}
 
+	/**
+	 * When you click on the map or gesture, this will interpret your input.
+	 */
 	private class MapGestureListener implements GestureDetector.OnGestureListener, 
 	GestureDetector.OnDoubleTapListener {  
 		WireActivity parent;
