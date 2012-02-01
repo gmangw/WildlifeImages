@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 
 /**
  * This class will handle the map page.
+ * 
  * @author Graham Wilkinson
  * @author Shady Glenn
  * @author Naveen Nanja

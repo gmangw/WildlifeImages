@@ -8,7 +8,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
-
+/**
+ * The parent for the other activities allowing for fun helper functions.
+ */
 public abstract class WireActivity extends Activity{
 	
 	AlertDialog scanDialog;
