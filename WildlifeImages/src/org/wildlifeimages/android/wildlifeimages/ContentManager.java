@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.widget.ImageView;
 
 /**
  * This class handles the caching and updating of exhibit content.
