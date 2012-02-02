@@ -142,7 +142,7 @@ public class Common {
 		});
 		return builder.create();
 	}
-	
+
 	/**
 	 * Tries to match the id of the menu button pressed with one of the cases, so home or map, etc...
 	 * Launches the appropriate activity according to the case found from the id.
@@ -179,6 +179,10 @@ public class Common {
 			if(next != null){
 				exhibits.setCurrent(next, Exhibit.TAG_AUTO);
 				ExhibitActivity.start(context);
+			}else{
+				if (context.getClass() != ExhibitActivity.class){
+					ExhibitActivity.start(context);
+				}
 			}
 			break;
 		case R.integer.MENU_PREVIOUS:
@@ -187,11 +191,15 @@ public class Common {
 			if(prev != null){
 				exhibits.setCurrent(prev, Exhibit.TAG_AUTO);
 				ExhibitActivity.start(context);
+			}else{
+				if (context.getClass() != ExhibitActivity.class){
+					ExhibitActivity.start(context);
+				}
 			}
 			break;
 		}
 	}
-	
+
 	/**
 	 * This will check if the image URL passed in has an acceptable image format.
 	 * 

@@ -58,7 +58,8 @@ public class ExhibitListAdapter extends BaseAdapter{
         itemLabel.setText(entry.getName());
         
         TextView itemInfo = (TextView) convertView.findViewById(R.id.listiteminfo);
-        Iterator<String> tagList = entry.getTags();
+        itemInfo.setVisibility(View.GONE);
+        /*Iterator<String> tagList = entry.getTags();
         String info = "";
         tagList.next();
         while(tagList.hasNext()){
@@ -67,7 +68,7 @@ public class ExhibitListAdapter extends BaseAdapter{
         		info = info.concat(", ");
         	}
         }
-        itemInfo.setText(info);
+        itemInfo.setText(info);*/
         
         if (backingList.getCurrent().equals(entry)){
         	itemLabel.setTextColor(0xFF085FFF);

@@ -18,15 +18,6 @@ public abstract class WireActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
-		/* Use saved version of contentManager if activity just restarted */
-		//ContentManager contentManager = (ContentManager)getLastNonConfigurationInstance();
-		//if (null == contentManager){
-		//if (ContentManager.getSelf() == null){
-		//	new ContentManager(this.getCacheDir(), this.getAssets());
-		//}
-		//}else{
-		//	ContentManager.setSelf(contentManager);
-		//}
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
@@ -69,10 +60,4 @@ public abstract class WireActivity extends Activity{
 		
 		scanDialog.dismiss();
 	}
-	
-	//@Override
-	//public Object onRetainNonConfigurationInstance() {
-	//	final ContentManager data = ContentManager.getSelf();
-	//	return data;
-	//	}
 }
