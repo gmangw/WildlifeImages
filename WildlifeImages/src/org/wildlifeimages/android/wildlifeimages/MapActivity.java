@@ -2,7 +2,11 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -31,7 +35,7 @@ public class MapActivity extends WireActivity{
 		mMapView = (MapView) findViewById(R.id.map);
 
 		mMapView.setExhibitList(ContentManager.getSelf().getExhibitList());
-		mMapView.setGestureDetector(new GestureDetector(this.getApplicationContext(), new MapGestureListener(this)));
+		mMapView.setGestureDetector(new GestureDetector(this, new MapGestureListener(this)));
 		//mMapView.setParent(this);
 	}
 
@@ -84,9 +88,13 @@ public class MapActivity extends WireActivity{
 		public void onLongPress(MotionEvent e) {
 		}
 		//@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
-			return false;
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			MapView mMapView = (MapView) findViewById(R.id.map);
+			Matrix m = mMapView.getImageMatrix();			
+			m.postTranslate(-distanceX, -distanceY);
+			mMapView.setImageMatrix(m);
+			mMapView.invalidate();
+			return true;
 		}
 		//@Override
 		public void onShowPress(MotionEvent e) {

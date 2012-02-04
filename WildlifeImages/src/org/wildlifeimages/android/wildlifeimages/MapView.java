@@ -5,14 +5,17 @@ import java.util.Iterator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView;
 
 
 /**
@@ -21,7 +24,7 @@ import android.view.SurfaceView;
  * @author Graham Wilkinson 
  * 	
  */
-class MapView extends SurfaceView implements SurfaceHolder.Callback {
+class MapView extends ImageView {
 
 	private ExhibitList exhibitList;
 
@@ -33,13 +36,9 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		// register our interest in hearing about changes to our surface
-		SurfaceHolder holder = getHolder();
-		holder.addCallback(this);
-
-		//this.setBackgroundDrawable( context.getResources().getDrawable( R.drawable.map) );
-		this.setBackgroundColor(Color.WHITE);
-		setFocusable(true); // make sure we get key events
+		Matrix m = new Matrix();
+		m.setScale(0.75f, 0.75f);
+		this.setImageMatrix(m);
 	}
 
 	public void setExhibitList(ExhibitList list){
@@ -56,17 +55,21 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 		super.onDraw(canvas);
 
 		Drawable map = this.getResources().getDrawable(R.drawable.map);
-		map.setBounds(originX, originY, this.getWidth(), 3*this.getWidth()/4);
-		map.draw(canvas);
 
 		Paint p = new Paint();
 		p.setARGB(255, 0, 0, 255);
 
 		Iterator<String> list = exhibitList.keys();
 
-		while(list.hasNext() == false){ //TODO debug drawing, disabled by "== false"
+		Matrix m = this.getImageMatrix();
+		
+		while(list.hasNext()){ 
 			Exhibit e = exhibitList.get(list.next());
-			canvas.drawCircle(e.getX()*getWidth()/100, e.getY()*(3*getWidth()/4)/100, 10, p);
+			float x = e.getX()*map.getIntrinsicWidth()/100;
+			float y = e.getY()*map.getIntrinsicHeight()/100;
+			float[] xy = {x,y};
+			m.mapPoints(xy);
+			canvas.drawCircle(xy[0], xy[1], 10, p);
 		}
 	}
 
@@ -85,35 +88,24 @@ class MapView extends SurfaceView implements SurfaceHolder.Callback {
 	public boolean onKeyUp(int keyCode, KeyEvent msg) {
 		return false;
 	}
-
-	/* Callback invoked when the surface dimensions change. */
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-	}
-
-	/*
-	 * Callback invoked when the Surface has been created and is ready to be
-	 * used.
-	 */
-	public void surfaceCreated(SurfaceHolder holder) {
-	}
-
-	/*
-	 * Callback invoked when the Surface has been destroyed and must no longer
-	 * be touched. WARNING: after this method returns, the Surface/Canvas must
-	 * never be touched again!
-	 */
-	public void surfaceDestroyed(SurfaceHolder holder) {
-	}
-
+	
 	public void setGestureDetector(GestureDetector gestureListener) {
 		gestures = gestureListener;
 	}
 
 	public void processSingleTap(WireActivity context, float x, float y){
-		float percentHoriz = 100*(x/getWidth());
-		float percentVert = 100*(y/(3*getWidth()/4));		
-
+		Matrix m = new Matrix();
+		getImageMatrix().invert(m);
+		Drawable map = this.getResources().getDrawable(R.drawable.map);
+		
+		float[] xy = {x,y};
+		m.mapPoints(xy);
+		
+		float percentHoriz = xy[0]*100/map.getIntrinsicWidth();
+		float percentVert = xy[1]*100/map.getIntrinsicHeight();
+		Log.w(this.getClass().getName(), x + "," + y);
+		Log.w(this.getClass().getName(), percentHoriz + "," + percentVert);
+		
 		Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
 		if(selectedExhibit != null){
 			exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
