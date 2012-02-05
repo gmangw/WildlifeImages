@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 /**
- * For playing audio and other things such as video.
+ * For playing audio and video.
  * Audio Video Activity.
  * 
  * @author Graham Wilkinson
