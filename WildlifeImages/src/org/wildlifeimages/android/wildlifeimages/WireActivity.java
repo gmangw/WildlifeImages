@@ -51,7 +51,7 @@ public abstract class WireActivity extends Activity{
 	}
 
 	String loadString(int resId){
-		return getResources().getString(resId);
+		return getResources().getString(resId); 
 	}
 	
 	@Override

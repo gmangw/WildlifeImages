@@ -49,7 +49,7 @@
     <string name="exit_question">Are you sure you want to exit?</string>
     <string name="exit_option_yes">Yes</string>
     <string name="exit_option_no">No</string>
-    <string name="scan_app_question">After installing the excellent Barcode Scanner app 
+    <string name="scan_app_options">After installing the excellent Barcode Scanner app 
         (free in the Android Market or Amazon App Store) you can scan exhibit barcodes to view information
         about each exhibit. Would you like to install Barcode Scanner now?</string>
     <string name="scan_app_option_yes">Get From Market</string>

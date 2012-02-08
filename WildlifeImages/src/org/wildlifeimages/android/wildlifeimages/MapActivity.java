@@ -62,7 +62,10 @@ public class MapActivity extends WireActivity{
 
 		//@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			return false;
+			MapView mMapView = (MapView) findViewById(R.id.map);
+			
+			mMapView.zoomIn(e.getX(), e.getY());
+			return true;
 		}
 		//@Override
 		public boolean onDoubleTapEvent(MotionEvent e) {
@@ -71,8 +74,27 @@ public class MapActivity extends WireActivity{
 		//@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			mMapView.processSingleTap(parent, e.getX(), e.getY());
+			
+			float x = e.getX();
+			float y = e.getY();
+			Matrix m = new Matrix();
+			mMapView.getImageMatrix().invert(m);
+			
+			float[] xy = {x,y};
+			m.mapPoints(xy);
+			
+			float percentHoriz = xy[0]*100/mMapView.mapWidth;
+			float percentVert = xy[1]*100/mMapView.mapHeight;
+			Log.w(this.getClass().getName(), x + "," + y);
+			Log.w(this.getClass().getName(), percentHoriz + "," + percentVert);
+			
+			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
+			if(selectedExhibit != null){
+				exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
 
+				ExhibitActivity.start(parent);
+			}
 			return true;
 		}
 		//@Override
@@ -86,14 +108,14 @@ public class MapActivity extends WireActivity{
 		}
 		//@Override
 		public void onLongPress(MotionEvent e) {
+			MapView mMapView = (MapView) findViewById(R.id.map);
+			mMapView.zoomOut();
 		}
 		//@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			Matrix m = mMapView.getImageMatrix();			
-			m.postTranslate(-distanceX, -distanceY);
-			mMapView.setImageMatrix(m);
-			mMapView.invalidate();
+			mMapView.processScroll(distanceX, distanceY);
+			
 			return true;
 		}
 		//@Override

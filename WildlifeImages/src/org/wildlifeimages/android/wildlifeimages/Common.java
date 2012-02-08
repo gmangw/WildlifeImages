@@ -127,7 +127,7 @@ public class Common {
 	 */
 	public static AlertDialog createScanDialog(final WireActivity context){
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-		builder.setMessage(context.loadString(R.string.scan_app_question))
+		builder.setMessage(context.loadString(R.string.scan_app_options))
 		.setCancelable(false)
 		.setPositiveButton(R.string.scan_app_option_yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {

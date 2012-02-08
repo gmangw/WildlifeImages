@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <exhibit_list>
-	<exhibit name="Alpha" xpos="57" ypos="59" next="Bravo"
+	<exhibit name="Brown Bear 1" xpos="25" ypos="86" next="Brown Bear 2"
 		intro="ExhibitContents/alphaIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos"
@@ -10,8 +10,8 @@
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Spare" page="ExhibitContents/alphaDiet.html" />
 	</exhibit>
-	<exhibit name="Bravo" xpos="38" ypos="56" previous="Alpha"
-		next="Velociraptors" intro="ExhibitContents/bravoIntro.html">
+	<exhibit name="Brown Bear 2" xpos="9" ypos="80" previous="Brown Bear 1"
+		next="Black Bear 1" intro="ExhibitContents/bravoIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos"
 			page="ExhibitContents/badger.jpg,ExhibitContents/IMG_1716.JPG" />
@@ -20,15 +20,55 @@
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Audio" page="ExhibitContents/bravoAudio.html" />
 	</exhibit>
-	<exhibit name="Velociraptors" xpos="30" ypos="44" previous="Bravo"
-		next="Delta" intro="ExhibitContents/charlieIntro.html">
+	<exhibit name="Black Bear 1" xpos="24" ypos="55" previous="Brown Bear 2"
+		next="Black Bear 2" intro="ExhibitContents/charlieIntro.html">
 		<content tag="Diet" page="ExhibitContents/alphaDiet.html" />
 		<content tag="Photos" page="ExhibitContents/wolf.jpg" />
 		<content tag="Videos" page="ExhibitContents/alphaVideos.html" />
 		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
 		<content tag="Family Tree" page="ExhibitContents/alphaHistory.html" />
 	</exhibit>
-	<exhibit name="Delta" xpos="46" ypos="27" previous="Velociraptors"
+	<exhibit name="Black Bear 2" xpos="9" ypos="55" previous="Black Bear 1"
+		next="Lynx" intro="ExhibitContents/deltaIntro.html">
+		<content tag="History" page="ExhibitContents/alphaHistory.html" />
+		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
+		<content tag="Behavior" page="ExhibitContents/alphaDiet.html" />
+		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
+		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
+	</exhibit>
+	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bear 2"
+		next="Cougar" intro="ExhibitContents/deltaIntro.html">
+		<content tag="History" page="ExhibitContents/alphaHistory.html" />
+		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
+		<content tag="Behavior" page="ExhibitContents/alphaDiet.html" />
+		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
+		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
+	</exhibit>
+	<exhibit name="Cougar" xpos="45" ypos="51" previous="Lynx"
+		next="Badger" intro="ExhibitContents/deltaIntro.html">
+		<content tag="History" page="ExhibitContents/alphaHistory.html" />
+		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
+		<content tag="Behavior" page="ExhibitContents/alphaDiet.html" />
+		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
+		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
+	</exhibit>
+	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
+		next="Wolves" intro="ExhibitContents/deltaIntro.html">
+		<content tag="History" page="ExhibitContents/alphaHistory.html" />
+		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
+		<content tag="Behavior" page="ExhibitContents/alphaDiet.html" />
+		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
+		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
+	</exhibit>
+	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger"
+		next="Wolf Pups" intro="ExhibitContents/deltaIntro.html">
+		<content tag="History" page="ExhibitContents/alphaHistory.html" />
+		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
+		<content tag="Behavior" page="ExhibitContents/alphaDiet.html" />
+		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
+		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
+	</exhibit>
+	<exhibit name="Wolf Pups" xpos="24" ypos="34" previous="Wolves"
 		intro="ExhibitContents/deltaIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
