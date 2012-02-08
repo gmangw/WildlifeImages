@@ -153,8 +153,8 @@ class MapView extends ImageView {
 	}
 
 	public void processScroll(float distanceX, float distanceY){
-		final float zoomlow = 0.75f;
-		final float zoomhi = 1.5f;
+		final float zoomlow = 0.85f;
+		final float zoomhi = 2.0f;
 		final float zoomdiff = zoomhi - zoomlow;
 		final float focalX = 0.30f;
 		final float focalY = 0.25f;
