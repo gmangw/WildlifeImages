@@ -6,23 +6,16 @@ import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.widget.ImageView;
 /**
  * This {@link SurfaceView} draws a map of the facility with clickable points from an {@link ExhibitList} 
@@ -32,8 +25,6 @@ import android.widget.ImageView;
  */
 class MapView extends ImageView {
 
-	private ExhibitList exhibitList;
-
 	private GestureDetector gestures;
 
 	private float originX;
@@ -42,6 +33,14 @@ class MapView extends ImageView {
 	
 	public final int mapWidth;
 	public final int mapHeight;
+	
+	private static final Paint p = new Paint();
+	private static final Paint rectP = new Paint();
+	private static final Paint activeP = new Paint();
+	private final float[] points;
+	private float[] transformedPoints;
+	private final String[] exhibitNames;
+	private static String activeName = "";
 
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -53,7 +52,33 @@ class MapView extends ImageView {
 		mapHeight = drawable.getIntrinsicHeight();
 		scale = 0.75f;
 		originX = 0;
-		originY = 0;		
+		originY = 0;
+		
+		p.setARGB(255, 255, 255, 255);
+		p.setTextSize(20);
+		p.setTypeface(Typeface.SERIF);
+		p.setTextAlign(Paint.Align.CENTER);
+		p.setAntiAlias(true);
+		
+		rectP.setARGB(200, 128, 128, 128);
+		activeP.setARGB(255, 0, 128, 255);
+		
+		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		
+		Iterator<String> list = exhibitList.keys();
+		
+		exhibitNames = new String[exhibitList.getCount()];
+		
+		points = new float[exhibitList.getCount()*2];
+		int i = 0;
+		while(list.hasNext()){ 
+			Exhibit e = exhibitList.get(list.next());
+			points[i] = e.getX()*mapWidth/100;
+			i++;
+			points[i] = e.getY()*mapHeight/100;
+			i++;
+			exhibitNames[i/2-1] = e.getName();
+		}
 	}
 
 	@Override
@@ -65,57 +90,43 @@ class MapView extends ImageView {
 		doTransform();
 	}
 	
-	public void setExhibitList(ExhibitList list){
-		exhibitList = list;
-	}
-	
 	private void doTransform(){
 		Matrix m = new Matrix();
 		m.setScale(scale, scale);
 		m.postTranslate((-originX) - scale*(mapWidth/2), (-originY) - scale*(mapHeight/2));
 		
 		this.setImageMatrix(m);
+		
+		transformedPoints = points.clone();
+		m.mapPoints(transformedPoints);
+		
 		invalidate();
 	}
 
 	@Override  
 	public boolean onTouchEvent(MotionEvent event) { 
+		if (event.getAction() == MotionEvent.ACTION_UP){
+			activeName = "";
+		}
+		invalidate();
 		return gestures.onTouchEvent(event);  
 	}  
 
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
-
-		Paint p = new Paint();
-		Paint rectP = new Paint();
 		
-		p.setARGB(255, 255, 255, 255);
-		p.setTextSize(20);
-		p.setTypeface(Typeface.SERIF);
-		p.setTextAlign(Paint.Align.CENTER);
-		p.setAntiAlias(true);
-		
-		rectP.setARGB(200, 128, 128, 128);
-
-		Iterator<String> list = exhibitList.keys();
-
-		Matrix m = this.getImageMatrix();
-		
-		while(list.hasNext()){ 
-			Exhibit e = exhibitList.get(list.next());
-			float x = e.getX()*mapWidth/100;
-			float y = e.getY()*mapHeight/100;
-			float[] xy = {x,y};
-			m.mapPoints(xy);
-			String name = e.getName();
-			
+		for(int i=0; i<points.length/2; i++){
 			Rect r = new Rect();
-			p.getTextBounds(name, 0, name.length(), r);
-			r.offsetTo((int)xy[0] - r.width()/2, (int)xy[1] - r.height() + 3); 
+			p.getTextBounds(exhibitNames[i], 0, exhibitNames[i].length(), r);
+			r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
 			r.inset(-3, -4);
-			canvas.drawRect(r, rectP);
-			canvas.drawText(name, xy[0], xy[1], p);
+			if (exhibitNames[i].equals(activeName)){
+				canvas.drawRect(r, activeP);
+			}else{
+				canvas.drawRect(r, rectP);
+			}
+			canvas.drawText(exhibitNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
 		}
 	}
 
@@ -154,5 +165,9 @@ class MapView extends ImageView {
 	public void zoomOut() {
 		scale = 1.0f;
 		doTransform();
+	}
+
+	public void showPress(String name) {
+		activeName = name;
 	}
 }

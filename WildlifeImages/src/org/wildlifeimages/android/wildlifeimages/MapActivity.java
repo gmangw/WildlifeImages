@@ -34,7 +34,6 @@ public class MapActivity extends WireActivity{
 		MapView mMapView;
 		mMapView = (MapView) findViewById(R.id.map);
 
-		mMapView.setExhibitList(ContentManager.getSelf().getExhibitList());
 		mMapView.setGestureDetector(new GestureDetector(this, new MapGestureListener(this)));
 		//mMapView.setParent(this);
 	}
@@ -49,6 +48,23 @@ public class MapActivity extends WireActivity{
 		context.startActivity(mapIntent);
 	}
 
+	private Exhibit findClickedExhibit(MapView mMapView, float x, float y){
+		Matrix m = new Matrix();
+		mMapView.getImageMatrix().invert(m);
+
+		float[] xy = {x,y};
+		m.mapPoints(xy);
+
+		float percentHoriz = xy[0]*100/mMapView.mapWidth;
+		float percentVert = xy[1]*100/mMapView.mapHeight;
+		Log.w(this.getClass().getName(), x + "," + y);
+		Log.w(this.getClass().getName(), percentHoriz + "," + percentVert);
+
+		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
+		return selectedExhibit;
+	}
+
 	/**
 	 * When you click on the map or gesture, this will interpret your input.
 	 */
@@ -60,68 +76,60 @@ public class MapActivity extends WireActivity{
 			parent = context;
 		}
 
-		//@Override
+
 		public boolean onDoubleTap(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			
+
 			mMapView.zoomIn(e.getX(), e.getY());
 			return true;
 		}
-		//@Override
+
 		public boolean onDoubleTapEvent(MotionEvent e) {
 			return false;
 		}
-		//@Override
+
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			
-			float x = e.getX();
-			float y = e.getY();
-			Matrix m = new Matrix();
-			mMapView.getImageMatrix().invert(m);
-			
-			float[] xy = {x,y};
-			m.mapPoints(xy);
-			
-			float percentHoriz = xy[0]*100/mMapView.mapWidth;
-			float percentVert = xy[1]*100/mMapView.mapHeight;
-			Log.w(this.getClass().getName(), x + "," + y);
-			Log.w(this.getClass().getName(), percentHoriz + "," + percentVert);
-			
-			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-			Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
-			if(selectedExhibit != null){
-				exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
 
-				ExhibitActivity.start(parent);
+			Exhibit selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
+			if(selectedExhibit != null){
+				ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+				exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
+				ExhibitActivity.start(parent);	
 			}
 			return true;
 		}
-		//@Override
+
 		public boolean onDown(MotionEvent e) {
+			MapView mMapView = (MapView) findViewById(R.id.map);
+
+			Exhibit selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
+			if(selectedExhibit != null){
+				mMapView.showPress(selectedExhibit.getName());
+			}
 			return true;
 		}
-		//@Override
+
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 				float velocityY) {
 			return false;
 		}
-		//@Override
+
 		public void onLongPress(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
 			mMapView.zoomOut();
 		}
-		//@Override
+
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
 			mMapView.processScroll(distanceX, distanceY);
-			
+
 			return true;
 		}
-		//@Override
+
 		public void onShowPress(MotionEvent e) {
 		}
-		//@Override
+
 		public boolean onSingleTapUp(MotionEvent e) {
 			return false;
 		}  

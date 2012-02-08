@@ -44,7 +44,7 @@
 		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
 		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
 	</exhibit>
-	<exhibit name="Cougar" xpos="45" ypos="51" previous="Lynx"
+	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx"
 		next="Badger" intro="ExhibitContents/deltaIntro.html">
 		<content tag="History" page="ExhibitContents/alphaHistory.html" />
 		<content tag="Photos" page="ExhibitContents/bobcat.jpg" />
