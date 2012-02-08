@@ -3,10 +3,7 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -57,8 +54,6 @@ public class MapActivity extends WireActivity{
 
 		float percentHoriz = xy[0]*100/mMapView.mapWidth;
 		float percentVert = xy[1]*100/mMapView.mapHeight;
-		Log.w(this.getClass().getName(), x + "," + y);
-		Log.w(this.getClass().getName(), percentHoriz + "," + percentVert);
 
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
@@ -78,10 +73,10 @@ public class MapActivity extends WireActivity{
 
 
 		public boolean onDoubleTap(MotionEvent e) {
-			MapView mMapView = (MapView) findViewById(R.id.map);
-
-			mMapView.zoomIn(e.getX(), e.getY());
-			return true;
+			//MapView mMapView = (MapView) findViewById(R.id.map); //TODO
+			//mMapView.zoomIn(e.getX(), e.getY());
+			//return true;
+			return false;
 		}
 
 		public boolean onDoubleTapEvent(MotionEvent e) {
@@ -116,8 +111,8 @@ public class MapActivity extends WireActivity{
 		}
 
 		public void onLongPress(MotionEvent e) {
-			MapView mMapView = (MapView) findViewById(R.id.map);
-			mMapView.zoomOut();
+			//MapView mMapView = (MapView) findViewById(R.id.map); //TODO
+			//mMapView.zoomOut();
 		}
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
