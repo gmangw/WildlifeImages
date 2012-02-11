@@ -16,7 +16,7 @@
         android:id="@+id/intro_sidebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="8" 
+        android:layout_weight="8"
         android:fillViewport="true" >
 
         <LinearLayout
@@ -27,64 +27,84 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="vertical" >
+                android:orientation="vertical" 
+                android:layout_weight="1" >
 
                 <Button
                     android:id="@+id/intro_sidebar_intro"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_about" />
 
                 <Button
                     android:id="@+id/intro_sidebar_donations"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_support" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:layout_weight="1" >
 
                 <Button
                     android:id="@+id/intro_sidebar_events"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_events" />
 
                 <Button
                     android:id="@+id/intro_sidebar_photos"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_photos" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:layout_weight="1" >
 
                 <Button
                     android:id="@+id/intro_sidebar_app"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_app" />
 
                 <Button
                     android:id="@+id/intro_sidebar_exhibitlist"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_exhibitlist" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:layout_weight="1" >
 
                 <Button
                     android:id="@+id/intro_sidebar_map"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_map" />
 
                 <Button
                     android:id="@+id/intro_sidebar_update"
                     style="@style/IntroVerticalButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="@string/intro_sidebar_update" />
             </LinearLayout>
         </LinearLayout>
