@@ -16,7 +16,8 @@
         android:id="@+id/intro_sidebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="8" >
+        android:layout_weight="8" 
+        android:fillViewport="true" >
 
         <LinearLayout
             android:layout_width="fill_parent"
