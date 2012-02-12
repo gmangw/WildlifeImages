@@ -215,4 +215,25 @@ public class Common {
 		}
 		return false;
 	}
+
+	public static float distance(float x1, float y1, float x2, float y2){
+		return (float)(Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)));
+	}
+
+	public static float clamp(float value, float min, float max){
+		if (value < min){
+			value = min;
+		}else if (value > max){
+			value = max;
+		}
+		return value;
+	}
+
+	//http://en.wikipedia.org/wiki/Smoothstep
+	public static float smoothStep(float edge0, float edge1, float x){
+		// Scale, and clamp x to 0..1 range
+		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
+		// Evaluate polynomial
+		return x*x*x*(x*(x*6 - 15) + 10);
+	}
 }

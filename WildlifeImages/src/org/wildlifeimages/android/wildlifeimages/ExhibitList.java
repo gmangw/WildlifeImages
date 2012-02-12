@@ -27,6 +27,41 @@ public class ExhibitList implements Parcelable{
 
 	private Exhibit current = null;
 
+	private float zoomFactor = 0.75f;
+	private float zoomMinimum = 1.00f;
+	private float zoomExponent = 1.00f;
+	private float[][] anchorPoints = { 
+		{0.00f, 0.00f, 1.30f},
+		{0.00f, 0.25f, 2.50f}, 
+		{0.00f, 0.50f, 1.00f},
+		{0.00f, 0.75f, 1.30f},
+		{0.00f, 1.00f, 1.30f},
+
+		{0.25f, 0.00f, 1.30f},
+		{0.25f, 0.25f, 2.50f}, 
+		{0.25f, 0.50f, 1.00f},
+		{0.25f, 0.75f, 1.30f},
+		{0.25f, 1.00f, 1.30f}, 
+
+		{0.50f, 0.00f, 1.30f},
+		{0.50f, 0.25f, 2.50f}, 
+		{0.50f, 0.50f, 1.00f},
+		{0.50f, 0.75f, 1.30f},
+		{0.50f, 1.00f, 1.30f},
+
+		{0.75f, 0.00f, 1.30f},
+		{0.75f, 0.25f, 2.50f}, 
+		{0.75f, 0.50f, 1.00f},
+		{0.75f, 0.75f, 1.30f},
+		{0.75f, 1.00f, 1.30f},
+
+		{1.00f, 0.00f, 1.30f},
+		{1.00f, 0.25f, 1.15f},
+		{1.00f, 0.50f, 1.00f},
+		{1.00f, 0.75f, 1.00f},
+		{1.00f, 1.00f, 1.00f},
+	};
+
 	public static final Parcelable.Creator<ExhibitList> CREATOR = new Parcelable.Creator<ExhibitList>() {
 		public ExhibitList createFromParcel(Parcel in) {
 			return new ExhibitList(in);
@@ -169,16 +204,44 @@ public class ExhibitList implements Parcelable{
 	}
 
 	public void writeToParcel(Parcel out, int flags) {
-		
+
 		Exhibit[] valueArray = new Exhibit[keyList.size()];
 		for( int i=0; i<valueArray.length; i++){
 			valueArray[i] = get(keyList.get(i));
 		}
-		
+
 		out.writeParcelable(current, 0);
 		out.writeInt(valueArray.length);
 		out.writeStringArray(keyList.toArray(new String[keyList.size()]));
 		out.writeParcelableArray(valueArray, 0);
-		
+
+	}
+
+	public float[][] getAnchorPoints() {
+		return anchorPoints;
+	}
+
+	public float getScale(float xFraction, float yFraction) {
+		float newScale = 0.0f;
+
+		for (int i=0; i<anchorPoints.length; i++){
+			float distance = (float)Math.pow(Common.distance(xFraction, yFraction, anchorPoints[i][0], anchorPoints[i][1]), zoomExponent);
+			float zoomCandidate = (anchorPoints[i][2]+zoomMinimum)-(zoomMinimum + (anchorPoints[i][2]-zoomMinimum)*(float)Common.smoothStep(0f, 0.75f, distance));
+			newScale = Math.max(newScale, zoomCandidate);
+		}
+
+		return zoomFactor * newScale;
+	}
+
+	public void setZoomFactor(float zoomFactor) {
+		this.zoomFactor = zoomFactor;
+	}
+
+	public void setZoomMinimum(float zoomMinimum) {
+		this.zoomMinimum = zoomMinimum;
+	}
+
+	public void setZoomExponent(float zoomExponent) {
+		this.zoomExponent = zoomExponent;
 	}
 }
