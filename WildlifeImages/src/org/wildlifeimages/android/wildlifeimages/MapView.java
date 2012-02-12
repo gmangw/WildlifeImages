@@ -43,6 +43,42 @@ class MapView extends ImageView {
 	private final String[] exhibitNames;
 	private static String activeName = "";
 
+	//TODO move to exhibitView
+	private static final float zoomFactor = 0.75f;
+	private static final float zoomlow = 1.00f;
+	private static final float zoomPower = 1.00f;
+	private static final float[][] anchorPoints =  { 
+		{0.00f, 0.00f, 1.30f},
+		{0.00f, 0.25f, 2.50f}, 
+		{0.00f, 0.50f, 1.00f},
+		{0.00f, 0.75f, 1.30f},
+		{0.00f, 1.00f, 1.30f},
+		
+		{0.25f, 0.00f, 1.30f},
+		{0.25f, 0.25f, 2.50f}, 
+		{0.25f, 0.50f, 1.00f},
+		{0.25f, 0.75f, 1.30f},
+		{0.25f, 1.00f, 1.30f}, 
+		
+		{0.50f, 0.00f, 1.30f},
+		{0.50f, 0.25f, 2.50f}, 
+		{0.50f, 0.50f, 1.00f},
+		{0.50f, 0.75f, 1.30f},
+		{0.50f, 1.00f, 1.30f},
+		
+		{0.75f, 0.00f, 1.30f},
+		{0.75f, 0.25f, 2.50f}, 
+		{0.75f, 0.50f, 1.00f},
+		{0.75f, 0.75f, 1.30f},
+		{0.75f, 1.00f, 1.30f},
+		
+		{1.00f, 0.00f, 1.30f},
+		{1.00f, 0.25f, 1.15f},
+		{1.00f, 0.50f, 1.00f},
+		{1.00f, 0.75f, 1.00f},
+		{1.00f, 1.00f, 1.00f},
+	};
+
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
@@ -130,6 +166,13 @@ class MapView extends ImageView {
 			}
 			canvas.drawText(exhibitNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
 		}
+		for (int i=0; i<anchorPoints.length; i++){
+			float[] pts = {anchorPoints[i][0]*mapWidth, anchorPoints[i][1]*mapHeight};
+			getImageMatrix().mapPoints(pts);
+			float l = pts[0];
+			float t = pts[1];
+			canvas.drawCircle(l, t, anchorPoints[i][2]*3, activeP); 
+		}
 	}
 
 	/**
@@ -153,36 +196,35 @@ class MapView extends ImageView {
 	}
 
 	public void processScroll(float distanceX, float distanceY){
-		final float zoomlow = 0.85f;
-		final float zoomhi = 2.0f;
-		final float zoomdiff = zoomhi - zoomlow;
-		final float focalX = 0.30f;
-		final float focalY = 0.25f;
-		
 		originX = clamp(originX + distanceX, getXFromFraction(0.0f), getXFromFraction(1.0f));
 		originY = clamp(originY + distanceY, getYFromFraction(0.0f), getYFromFraction(1.0f));
-		
-		
+
 		float xFraction = (float)Math.max(0.0f, getXFraction(originX));
 		float yFraction = (float)Math.max(0.0f, getYFraction(originY));
-		float distance = distance(xFraction, yFraction, focalX, focalY);
-		scale = (zoomhi+zoomlow)-(zoomlow + zoomdiff*(float)smoothStep(0f, 0.75f, distance));
-		//Log.d(this.getClass().getName(), xFraction + ", " + yFraction);
+
+		float newScale = 0.0f;
+		for (int i=0; i<anchorPoints.length; i++){
+			float distance = (float)Math.pow(distance(xFraction, yFraction, anchorPoints[i][0], anchorPoints[i][1]), zoomPower);
+			float zoomCandidate = (anchorPoints[i][2]+zoomlow)-(zoomlow + (anchorPoints[i][2]-zoomlow)*(float)smoothStep(0f, 0.75f, distance));
+			newScale = Math.max(newScale, zoomCandidate);
+		}
+		scale = zoomFactor * newScale;
+		Log.d(this.getClass().getName(), "" + scale); 
 		doTransform();
 	}
-	
+
 	private float getXFraction(float x){
 		return x/scale/mapWidth+0.5f;
 	}
-	
+
 	private float getYFraction(float y){
 		return y/scale/mapHeight+0.5f;
 	}
-	
+
 	private float getXFromFraction(float xFraction){
 		return scale*mapWidth*(xFraction - 0.5f);
 	}
-	
+
 	private float getYFromFraction(float yFraction){
 		return scale*mapHeight*(yFraction - 0.5f);
 	}
@@ -213,7 +255,7 @@ class MapView extends ImageView {
 		}
 		return value;
 	}
-	
+
 	//http://en.wikipedia.org/wiki/Smoothstep
 	public static float smoothStep(float edge0, float edge1, float x){
 		// Scale, and clamp x to 0..1 range
