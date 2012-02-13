@@ -16,15 +16,15 @@ import android.widget.TextView;
  * 	
  */
 public class ExhibitListAdapter extends BaseAdapter{
-	
+
 	ExhibitList backingList;
 	Context context;
-	
+
 	public ExhibitListAdapter(Context context, ExhibitList list){
 		backingList = list;
 		this.context = context;
 	}
-	
+
 	public int getCount() {
 		return backingList.getCount();
 	}
@@ -36,43 +36,32 @@ public class ExhibitListAdapter extends BaseAdapter{
 	public long getItemId(int position) {
 		return position;
 	}
-	
+
 	/* http://techdroid.kbeanie.com/2009/07/custom-listview-for-android.html */
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
-        Exhibit entry = backingList.getExhibitAt(position);
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_layout, null);
-        }
-        
-        if (entry.hasContent("Photos")){
-        	String[] photos = entry.getContent("Photos");
-        	ImageView thumb = (ImageView)convertView.findViewById(R.id.listitemphoto);
-        	Bitmap bmp = ContentManager.getSelf().getBitmap(photos[0], convertView.getContext().getAssets());
-        	thumb.setImageBitmap(bmp);
-        }
-        
-        TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
-        itemLabel.setText(entry.getName());
-        
-        TextView itemInfo = (TextView) convertView.findViewById(R.id.listiteminfo);
-        itemInfo.setVisibility(View.GONE);
-        /*Iterator<String> tagList = entry.getTags();
-        String info = "";
-        tagList.next();
-        while(tagList.hasNext()){
-        	info = info.concat(tagList.next());
-        	if (tagList.hasNext()){
-        		info = info.concat(", ");
-        	}
-        }
-        itemInfo.setText(info);*/
-        
-        if (backingList.getCurrent().equals(entry)){
-        	itemLabel.setTextColor(0xFF085FFF);
-        }
+		Exhibit entry = backingList.getExhibitAt(position);
+		if (convertView == null) {
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = inflater.inflate(R.layout.list_item_layout, null);
+		}
 
-        return convertView;
-    }
+		if (entry.hasContent("Photos")){
+			String[] photos = entry.getContent("Photos");
+			ImageView thumb = (ImageView)convertView.findViewById(R.id.listitemphoto);
+			Bitmap bmp = ContentManager.getSelf().getBitmapThumb(photos[0], convertView.getContext().getAssets());
+			thumb.setImageBitmap(bmp);
+			//thumb.setMaxHeight(32);
+		}
+
+		TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
+		itemLabel.setText(entry.getName());
+
+		itemLabel.setTextColor(0xFFFFFFFF);
+		if (backingList.getCurrent().equals(entry)){
+			itemLabel.setTextColor(0xFF085FFF);
+		}
+
+		return convertView;
+	}
 
 }

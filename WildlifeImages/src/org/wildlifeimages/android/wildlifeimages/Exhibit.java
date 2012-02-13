@@ -151,6 +151,19 @@ public class Exhibit implements Parcelable{
 	public int describeContents() {
 		return 0;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if (o.getClass() == Exhibit.class){
+			if (((Exhibit)o).getName().equals(name)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
 
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(name);

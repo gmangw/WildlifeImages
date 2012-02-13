@@ -8,6 +8,8 @@ public class ProgressManager implements OnCancelListener {
 
 	private ProgressDialog dialog;
 	
+	public UpdateListener finishListener = null;
+	
 	private boolean isCancelled = false;
 	
 	public ProgressManager() {
@@ -55,6 +57,10 @@ public class ProgressManager implements OnCancelListener {
 			dialog.dismiss();
 			dialog = null;
 		}
+		
+		if (finishListener != null){
+			finishListener.onUpdateCompleted();
+		}
 	}
 	
 	public void show(){
@@ -79,5 +85,9 @@ public class ProgressManager implements OnCancelListener {
 
 	public void reset() {
 		isCancelled = false;
+	}
+
+	public void registerUpdateListener(UpdateListener listener) {
+		finishListener = listener;
 	}
 }

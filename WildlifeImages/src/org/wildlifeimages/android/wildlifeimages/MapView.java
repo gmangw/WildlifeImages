@@ -38,9 +38,9 @@ class MapView extends ImageView {
 	private static final Paint p = new Paint();
 	private static final Paint rectP = new Paint();
 	private static final Paint activeP = new Paint();
-	private final float[] points;
+	private float[] points;
 	private float[] transformedPoints;
-	private final String[] exhibitNames;
+	private String[] exhibitNames;
 	private static String activeName = "";
 
 	public MapView(Context context, AttributeSet attrs) {
@@ -65,14 +65,17 @@ class MapView extends ImageView {
 		activeP.setARGB(255, 0, 128, 255);
 
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		setPoints(exhibitList);
+	}
 
+	private void setPoints(ExhibitList exhibitList){
 		Iterator<String> list = exhibitList.keys();
-
+		
 		exhibitNames = new String[exhibitList.getCount()];
-
+		
 		points = new float[exhibitList.getCount()*2];
-		int i = 0;
-		while(list.hasNext()){ 
+
+		for (int i=0; list.hasNext(); ){ 
 			Exhibit e = exhibitList.get(list.next());
 			points[i] = e.getX()*mapWidth/100;
 			i++;
@@ -80,8 +83,10 @@ class MapView extends ImageView {
 			i++;
 			exhibitNames[i/2-1] = e.getName();
 		}
+		
+		doTransform();
 	}
-
+	
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh){
 		super.onSizeChanged(w, h, oldw, oldh);

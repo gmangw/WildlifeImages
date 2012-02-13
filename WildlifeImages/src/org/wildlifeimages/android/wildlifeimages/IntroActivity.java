@@ -20,7 +20,7 @@ import android.view.View;
  * @author Naveen Nanja
  * 	
  */
-public class IntroActivity extends WireActivity {
+public class IntroActivity extends WireActivity implements UpdateListener {
 
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
@@ -198,7 +198,9 @@ public class IntroActivity extends WireActivity {
 
 			ContentManager contentManager = ContentManager.getSelf();
 			contentManager.clearCache();
-
+			
+			updateDialogManager.registerUpdateListener(this);
+			
 			contentManager.startUpdate(updateDialogManager);
 			break;
 		}
@@ -226,5 +228,9 @@ public class IntroActivity extends WireActivity {
 	public static void start(Activity context) {
 		Intent introIntent = new Intent(context, IntroActivity.class);
 		context.startActivityIfNeeded(introIntent, 0);
+	}
+
+	public void onUpdateCompleted() {
+		ContentManager.getSelf().prepareExhibits(this.getAssets());
 	}
 }

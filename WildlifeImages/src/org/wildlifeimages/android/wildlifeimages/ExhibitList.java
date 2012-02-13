@@ -84,6 +84,9 @@ public class ExhibitList implements Parcelable{
 			exhibitList.put(keyArray[i], (Exhibit)values[i]);
 			keyList.add(keyArray[i]);
 		}
+		zoomFactor = in.readFloat();
+		zoomMinimum = in.readFloat();
+		zoomExponent = in.readFloat();
 	}
 
 	public ExhibitList(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
@@ -215,6 +218,9 @@ public class ExhibitList implements Parcelable{
 		out.writeStringArray(keyList.toArray(new String[keyList.size()]));
 		out.writeParcelableArray(valueArray, 0);
 
+		out.writeFloat(zoomFactor);
+		out.writeFloat(zoomMinimum);
+		out.writeFloat(zoomExponent);
 	}
 
 	public float[][] getAnchorPoints() {

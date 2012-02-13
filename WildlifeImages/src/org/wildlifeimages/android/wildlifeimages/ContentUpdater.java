@@ -19,7 +19,6 @@ public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>
 		progress = arg0[0];
 
 		content.updateCache(this);
-		publishProgress(1);
 		return null;
 	}
 

@@ -49,16 +49,23 @@ public class ContentManager {
 	public static ContentManager getSelf(){
 		return self;
 	}
-
+	
 	public ContentManager(File cacheDir, AssetManager assets){
 		self = this;
 
 		this.cacheDir = cacheDir;
 		imgCache = new BitmapCache();
 		addAllToMap(cacheDir);
-
+		
+		prepareExhibits(assets);
+	}
+	
+	public void prepareExhibits(AssetManager assets){
 		exhibitList = buildExhibitList(assets);
-
+		cacheThumbs(assets);
+	}
+	
+	private void cacheThumbs(AssetManager assets){
 		for(int i=0; i<exhibitList.getCount(); i++){
 			Exhibit entry = exhibitList.getExhibitAt(i);
 			if (entry.hasContent("Photos")){
@@ -66,8 +73,6 @@ public class ContentManager {
 				ContentManager.getSelf().getBitmap(photos[0], assets);
 			}
 		}
-		
-		
 	}
 
 	public void startUpdate(ProgressManager progress){
@@ -135,14 +140,22 @@ public class ContentManager {
 
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
 		timekeeper.put(shortUrl, accessTime++);
+		populateBitmap(shortUrl, assets);
+		return imgCache.get(shortUrl);
+	}
+	
+	public Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
+		populateBitmap(shortUrl, assets);
+		return imgCache.getThumb(shortUrl);
+	}
+	
+	private void populateBitmap(String shortUrl, AssetManager assets){
 		if (imgCache.containsKey(shortUrl)){
 			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
-			return imgCache.get(shortUrl);
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
 			imgCache.put(shortUrl, bmp); //TODO may want to limit cache size
-			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);
-			return bmp;
+			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);	
 		}
 	}
 
