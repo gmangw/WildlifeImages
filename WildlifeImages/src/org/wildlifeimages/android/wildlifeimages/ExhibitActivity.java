@@ -67,7 +67,7 @@ public class ExhibitActivity extends WireActivity{
 		if (needRemakeButtons || previousTag != contentTag){
 			ExhibitView exView;
 			exView = (ExhibitView) findViewById(R.id.exhibit);
-			String[] content = e.getContent(e.getCurrentTag());
+			String[] content = e.getContent(e.getCurrentTag()).split(",");
 			exView.loadUrlList(content, ContentManager.getSelf());
 		}
 	}

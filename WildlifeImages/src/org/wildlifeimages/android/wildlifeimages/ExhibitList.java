@@ -101,22 +101,23 @@ public class ExhibitList implements Parcelable{
 			if(eventType == XmlPullParser.START_TAG) {
 				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
 					String name = xmlBox.getAttributeValue(null, "name"); 
-					String introduction = xmlBox.getAttributeValue(null, "intro");
 					int xCoord = Integer.decode(xmlBox.getAttributeValue(null, "xpos"));
 					int yCoord = Integer.decode(xmlBox.getAttributeValue(null, "ypos"));
 					String previous = xmlBox.getAttributeValue(null, "previous");
 					String next = xmlBox.getAttributeValue(null, "next");
 					//TODO null handling
-					e = new Exhibit(name, introduction);
+					e = new Exhibit(name);
 					e.setCoords(xCoord, yCoord);
 					e.setNext(next);
 					e.setPrevious(previous);
 					exhibitList.put(e.getName(), e);
 					keyList.add(e.getName());
 				}else if (xmlBox.getName().equalsIgnoreCase("content")){
-					String urlList = xmlBox.getAttributeValue(null, "page");
-					String[] content = urlList.split(",");
-					e.setContent(xmlBox.getAttributeValue(null, "tag"), content);
+					String url = xmlBox.getAttributeValue(null, "page");
+					e.setContent(xmlBox.getAttributeValue(null, "tag"), url);
+				}else if (xmlBox.getName().equalsIgnoreCase("photo")){
+					String url = xmlBox.getAttributeValue(null, "page");
+					e.setPhoto(url);
 				}
 			}
 			eventType = xmlBox.next();

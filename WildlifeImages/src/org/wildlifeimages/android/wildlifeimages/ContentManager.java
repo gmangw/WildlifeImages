@@ -69,7 +69,7 @@ public class ContentManager {
 		for(int i=0; i<exhibitList.getCount(); i++){
 			Exhibit entry = exhibitList.getExhibitAt(i);
 			if (entry.hasContent("Photos")){
-				String[] photos = entry.getContent("Photos");
+				String[] photos = entry.getContent("Photos").split(",");
 				ContentManager.getSelf().getBitmap(photos[0], assets);
 			}
 		}

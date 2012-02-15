@@ -45,12 +45,11 @@ public class ExhibitListAdapter extends BaseAdapter{
 			convertView = inflater.inflate(R.layout.list_item_layout, null);
 		}
 
-		if (entry.hasContent("Photos")){
-			String[] photos = entry.getContent("Photos");
+		if (entry.hasContent(Exhibit.TAG_PHOTOS)){
+			String[] photos = entry.getContent(Exhibit.TAG_PHOTOS).split(",");
 			ImageView thumb = (ImageView)convertView.findViewById(R.id.listitemphoto);
 			Bitmap bmp = ContentManager.getSelf().getBitmapThumb(photos[0], convertView.getContext().getAssets());
 			thumb.setImageBitmap(bmp);
-			//thumb.setMaxHeight(32);
 		}
 
 		TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
