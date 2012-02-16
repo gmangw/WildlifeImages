@@ -31,7 +31,7 @@ public class ExhibitParser {
 					exhibits.add(e);
 				}else if (xmlBox.getName().equalsIgnoreCase("content")){
 					String url = xmlBox.getAttributeValue(null, "page");
-					e.addContent(xmlBox.getAttributeValue(null, "tag"), url);
+					e.addOrigContent(xmlBox.getAttributeValue(null, "tag"), url);
 				}else if (xmlBox.getName().equalsIgnoreCase("photo")){
 					String url = xmlBox.getAttributeValue(null, "page");
 					e.addPhoto(url);
@@ -44,127 +44,47 @@ public class ExhibitParser {
 	public ArrayList<ExhibitInfo> getExhibits(){
 		return exhibits;
 	}
-	
+
 	public void writeExhibits(ZipOutputStream out) {
 		try {
-			out.write("<?xml version=\"1.0\"?><exhibit_list>".getBytes());
-			
+			StringBuffer sb = new StringBuffer();
+			sb.append("<?xml version=\"1.0\"?>\n<exhibit_list>");
+
 			for (ExhibitInfo e : exhibits){
-				
+				sb.append("\n\t<exhibit ");
+				appendValue(sb, "name", e.getName());
+				appendValue(sb, "xpos", e.getxCoord()+"");
+				appendValue(sb, "xpos", e.getyCoord()+"");
+				appendValue(sb, "next", e.getPrevious());
+				appendValue(sb, "next", e.getNext());
+				sb.append(">");
+				for (int i=0; i<e.getTagCount(); i++){
+					sb.append("\n\t\t<content ");
+					appendValue(sb, "tag", e.getTag(i));
+					appendValue(sb, "page", e.getContents(e.getTag(i)));
+					sb.append("/>");
+				}
+				for (String photo : e.getPhotos()){
+					sb.append("\n\t\t<photo ");
+					appendValue(sb, "page", photo);
+					sb.append("/>");
+				}
+				sb.append("\n\t</exhibit> ");
 			}
-			
-			out.write("</exhibit_list>".getBytes());
+
+			sb.append("\n</exhibit_list>");
+
+			out.write(sb.toString().getBytes());
 		} catch (IOException e) {
 		}
 	}
 
-	public class ExhibitInfo {
-		private static final String TAG_PHOTO = "Photos";
-
-		public final String origName;
-		public final int origXCoord;
-		public final int origYCoord;
-		public final String origPrevious;
-		public final String origNext;
-		
-		private String name = "New Exhibit";
-		private int xCoord = 0;
-		private int yCoord = 0;
-		private String previous = null;
-		private String next = null;
-		private Hashtable<String, String> contents = new Hashtable<String, String>();
-		private Hashtable<String, String> origContents = new Hashtable<String, String>();
-		private ArrayList<String> photos = new ArrayList<String>();
-		private ArrayList<String> tags = new ArrayList<String>();
-
-		public ExhibitInfo(String name, int x, int y, String previous, String next){
-			this.name = name;
-			this.origName = name;
-			
-			this.xCoord = x;
-			this.origXCoord = x;
-			
-			this.yCoord = y;
-			this.origYCoord = y;
-			
-			this.previous = previous;
-			this.origPrevious = previous;
-			
-			this.next = next;
-			this.origNext = next;
-		}
-
-		public String getContents(String tag){
-			return contents.get(tag);
-		}
-		
-		public String getOrigContents(String tag){
-			return origContents.get(tag);
-		}
-
-		public String getTag(int index){
-			return tags.get(index);
-		}
-
-		public int getTagCount(){
-			return tags.size();
-		}
-
-		public void addContent(String tag, String data){
-			if (contents.containsKey(tag) == false){
-				tags.add(tag);
-				origContents.put(tag, data);
-			}
-			contents.put(tag, data);
-		}
-		
-		
-
-		public void addPhoto(String url){
-			if (photos.size() == 0){
-				//tags.add(TAG_PHOTO); //TODO
-			}
-			photos.add(url);
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public int getxCoord() {
-			return xCoord;
-		}
-
-		public void setxCoord(int xCoord) {
-			this.xCoord = xCoord;
-		}
-
-		public int getyCoord() {
-			return yCoord;
-		}
-
-		public void setyCoord(int yCoord) {
-			this.yCoord = yCoord;
-		}
-
-		public String getPrevious() {
-			return previous;
-		}
-
-		public void setPrevious(String previous) {
-			this.previous = previous;
-		}
-
-		public String getNext() {
-			return next;
-		}
-
-		public void setNext(String next) {
-			this.next = next;
+	private void appendValue(StringBuffer sb, String name, String value){
+		if (value != null){
+			sb.append(name);
+			sb.append("=\"");
+			sb.append(value);
+			sb.append("\" ");
 		}
 	}
 }

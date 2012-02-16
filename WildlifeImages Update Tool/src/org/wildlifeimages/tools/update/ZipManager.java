@@ -29,11 +29,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -49,25 +54,27 @@ public class ZipManager extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	private static final Pattern filenamePattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
-	
+
 	private static final String assetPath = "assets/";
 
 	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 
 	private String[] originalFiles;
 
-	private final JPanel mainPanel = new JPanel(new GridLayout(4, 1));
+	private final JPanel mainPanel = new JPanel(new GridLayout(6, 1));
+
+	private final JButton newTagButton = new JButton("New Tag");
+	private final JButton newExhibitButton = new JButton("New Exhibit");
 
 	private final JButton saveButton = new JButton("Save");
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
 
-	private final JPanel listPanel = new JPanel(new GridLayout(1,2, 5, 5));
+	private final JPanel listPanel = new JPanel(new GridLayout(1,2));
 
 	private final JPanel exhibitInfoPanel = new JPanel(new GridLayout(1,3));
 	private final JLabel exhibitContentLabel = new JLabel();
-	private final JComboBox newContentLabel = new JComboBox();
-
+	private final JComboBox newContentDropdown = new JComboBox();
 
 	private final JList modifiedFilesList = new JList();
 
@@ -77,12 +84,18 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private ExhibitParser exhibitParser = null;
 
+	private final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,2));
+	private final JSpinner exhibitXCoordField = new JSpinner(new NumberSpinner("x"));
+	private final JSpinner exhibitYCoordField = new JSpinner(new NumberSpinner("y"));
+	private final JComboBox exhibitNextDropdown = new JComboBox();
+	private final JComboBox exhibitPreviousDropdown = new JComboBox();
+
 	private final ContentListModel contentListModel = new ContentListModel();
 	private final ModifiedListModel modifiedFilesListModel = new ModifiedListModel();
 
 	private final String EXHIBITSFILENAME = "exhibits.xml";
 
-	private ExhibitParser.ExhibitInfo currentExhibit;
+	private ExhibitInfo currentExhibit;
 	private String currentTag;
 
 	public static void main(String[] args){
@@ -103,6 +116,8 @@ public class ZipManager extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 
+		currentExhibit = exhibitParser.getExhibits().get(0);
+
 		exhibitNameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		exhibitNameList.setModel(new ExhibitListModel());
 
@@ -116,8 +131,20 @@ public class ZipManager extends JFrame implements ActionListener{
 				for (ListSelectionListener l : contentList.getListSelectionListeners()){
 					l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
 				}
+				exhibitXCoordField.setValue(currentExhibit.getxCoord());
+				exhibitYCoordField.setValue(currentExhibit.getyCoord());				
+
+				exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
+				exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
 			}
 		});
+
+		for (ExhibitInfo e : exhibitParser.getExhibits()){
+			if (false == e.getName().equals(currentExhibit.getName())){
+				exhibitPreviousDropdown.addItem(e.getName());
+				exhibitNextDropdown.addItem(e.getName());
+			}
+		}
 
 		contentList.setModel(contentListModel);
 		contentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -125,29 +152,26 @@ public class ZipManager extends JFrame implements ActionListener{
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				currentTag = (String)contentList.getSelectedValue();
-				ExhibitParser.ExhibitInfo e = currentExhibit;
+				ExhibitInfo e = currentExhibit;
 				String tag = (String)currentTag;
 				String data = e.getContents(tag);
 				exhibitContentLabel.setText(e.getOrigContents(tag));
-				newContentLabel.setSelectedItem(data);
+				newContentDropdown.setSelectedItem(data);
 			}
 		});
 
 		listPanel.add(new JScrollPane(exhibitNameList));
 		listPanel.add(new JScrollPane(contentList));
 
-		newContentLabel.setEditable(false);
-		newContentLabel.addItem(" ");
+		newContentDropdown.setEditable(false);
+		newContentDropdown.addItem(" ");
 		for (String s : originalFiles){
 			if (false == modifiedFiles.containsKey(s)){
-				newContentLabel.addItem(s);
+				newContentDropdown.addItem(s);
 			}
 		}
-		for (String s : modifiedFiles.keySet()){
-			newContentLabel.addItem(s);
-		}
 
-		newContentLabel.addActionListener(this);
+		newContentDropdown.addActionListener(this);
 
 		exhibitNameList.setSelectionInterval(0, 0);
 		contentList.setSelectionInterval(0, 0);
@@ -174,20 +198,34 @@ public class ZipManager extends JFrame implements ActionListener{
 			}
 		});
 
+		exhibitNextDropdown.addActionListener(this);
+		exhibitPreviousDropdown.addActionListener(this);
+
 		newFilePanel.add(newFileNameField);
 		newFilePanel.add(newFileButton);
 
 		exhibitInfoPanel.add(exhibitContentLabel);
-		exhibitInfoPanel.add(newContentLabel);
+		exhibitInfoPanel.add(newContentDropdown);
 		exhibitInfoPanel.add(newFilePanel);
 
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//modifiedFilesListModel = new ModifiedListModel();
 		modifiedFilesList.setModel(modifiedFilesListModel);
 		modifiedFilesList.setSelectionInterval(0, 0);
 
+		exhibitDataPanel.add(exhibitXCoordField);
+		exhibitDataPanel.add(exhibitPreviousDropdown);
+		exhibitDataPanel.add(exhibitYCoordField);
+		exhibitDataPanel.add(exhibitNextDropdown);
+
+		JPanel newButtonsPanel = new JPanel(new GridLayout(1,2));
+		newExhibitButton.addActionListener(this);
+		newTagButton.addActionListener(this);
+		newButtonsPanel.add(newExhibitButton);
+		newButtonsPanel.add(newTagButton);
+		mainPanel.add(newButtonsPanel);
 		mainPanel.add(listPanel);
 		mainPanel.add(exhibitInfoPanel);
+		mainPanel.add(exhibitDataPanel);
 		mainPanel.add(new JScrollPane(modifiedFilesList));
 		mainPanel.add(saveButton);
 
@@ -199,6 +237,51 @@ public class ZipManager extends JFrame implements ActionListener{
 	public void addFile(String filename, File newFile){
 		modifiedFiles.put(filename, newFile);
 		modifiedFilesListModel.notifyChange();
+		newContentDropdown.addItem(filename);
+	}
+
+	private class NumberSpinner implements SpinnerModel{
+		private int val = 0;
+		private final String type;
+		ArrayList<ChangeListener> listeners = new ArrayList<ChangeListener>();
+
+		public NumberSpinner(String spinnerType) {
+			type = spinnerType;
+		}
+		@Override
+		public void addChangeListener(ChangeListener arg0) {
+			listeners.add(arg0);
+		}
+		@Override
+		public Object getNextValue() {
+			return ++val;
+		}
+		@Override
+		public Object getPreviousValue() {
+			return --val;
+		}
+		@Override
+		public Object getValue() {
+			return val;
+		}
+		@Override
+		public void removeChangeListener(ChangeListener arg0) {
+			listeners.remove(arg0);
+		}
+		@Override
+		public void setValue(Object arg0) {
+			try{
+				val = Integer.parseInt(arg0.toString());
+				for (ChangeListener l : listeners){
+					if (type.equals("x")){
+						currentExhibit.setxCoord(val);
+					}else if (type.equals("y")){
+						currentExhibit.setyCoord(val);
+					}
+					l.stateChanged(new ChangeEvent(this));
+				}
+			}catch (NumberFormatException e){};
+		}
 	}
 
 	public String[] readAPK(String outFilename) throws XmlPullParserException{
@@ -253,11 +336,11 @@ public class ZipManager extends JFrame implements ActionListener{
 				}
 			}
 			out.putNextEntry(new ZipEntry("exhibits.xml"));
-			
+
 			exhibitParser.writeExhibits(out);
-			
+
 			out.closeEntry();
-			
+
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -267,25 +350,23 @@ public class ZipManager extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(saveButton)){
-			if (modifiedFiles.size() > 0){
-				JFileChooser chooser = new JFileChooser();
-				chooser.setFileFilter(new FileFilter(){
-					@Override
-					public boolean accept(File f) {
-						if (f.getName().endsWith(".zip")){
-							return true;
-						}
-						return false;
+			JFileChooser chooser = new JFileChooser();
+			chooser.setFileFilter(new FileFilter(){
+				@Override
+				public boolean accept(File f) {
+					if (f.getName().endsWith(".zip")){
+						return true;
 					}
-					@Override
-					public String getDescription() {
-						return "Zip files (*.zip)";
-					}
-				});
-				chooser.setDialogTitle("Select output zip file name.");
-				if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
-					this.saveFile(chooser.getSelectedFile());
+					return false;
 				}
+				@Override
+				public String getDescription() {
+					return "Zip files (*.zip)";
+				}
+			});
+			chooser.setDialogTitle("Select output zip file name.");
+			if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
+				this.saveFile(chooser.getSelectedFile());
 			}
 		}else if (event.getSource().equals(newFileButton)){
 			JFileChooser chooser = new JFileChooser();
@@ -293,8 +374,39 @@ public class ZipManager extends JFrame implements ActionListener{
 			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 				addFile(newFileNameField.getText(), chooser.getSelectedFile());
 			}
-		}else if (event.getSource().equals(newContentLabel)){
-			currentExhibit.addContent(currentTag, (String)newContentLabel.getSelectedItem());
+		}else if (event.getSource().equals(newContentDropdown)){
+			currentExhibit.addContent(currentTag, (String)newContentDropdown.getSelectedItem());
+		}else if (event.getSource().equals(exhibitPreviousDropdown)){
+			String prev = (String)exhibitPreviousDropdown.getSelectedItem();
+			if (prev != null){
+				currentExhibit.setPrevious(prev);
+			}
+		}else if (event.getSource().equals(exhibitNextDropdown)){
+			String next = (String)exhibitNextDropdown.getSelectedItem();
+			if (next != null){
+				currentExhibit.setNext(next);
+			}
+		}else if (event.getSource().equals(newTagButton)){
+			String newName = JOptionPane.showInputDialog("Name of new content:"); //TODO
+			if (newName != null){ //TODO format check
+				currentExhibit.addContent(newName, originalFiles[0]);
+				exhibitParser.getExhibits().add(currentExhibit);
+				contentListModel.notifyChange();
+			}
+		}else if (event.getSource().equals(newExhibitButton)){
+			String newName = JOptionPane.showInputDialog("Name of new exhibit:");
+			if (newName != null){ //TODO format check
+				String newContentName = JOptionPane.showInputDialog("Name of first new content:");
+				if (newContentName != null){ //TODO format check
+					ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
+					newE.addContent(newContentName, originalFiles[0]);
+					exhibitParser.getExhibits().add(newE);
+					exhibitNextDropdown.addItem(newName);
+					exhibitPreviousDropdown.addItem(newName);
+					((ExhibitListModel)exhibitNameList.getModel()).notifyChange();
+					contentListModel.notifyChange();
+				}
+			}
 		}
 	}
 
