@@ -11,12 +11,12 @@ import java.net.URL;
 import android.util.Log;
 
 public class FileFetcher {
-	public byte[] getWebContent(String shortUrl, ContentUpdater progress){
+	public static byte[] getWebContent(String shortUrl, ContentUpdater progress){
 		URL url;
 		try {
 			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
 		}catch(MalformedURLException e){
-			Log.e(this.getClass().getName(), "Caching of " + shortUrl + " failed with MalformedUrlException.");
+			Log.e(FileFetcher.class.getName(), "Caching of " + shortUrl + " failed with MalformedUrlException.");
 			return null;
 		}
 		int length = 0;
@@ -24,11 +24,11 @@ public class FileFetcher {
 		byte[] buffer = null;
 		try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			InputStream binaryReader = conn.getInputStream();
+			InputStream webStream = conn.getInputStream();
 			int lengthGuess = conn.getContentLength();
 			if (lengthGuess == -1){
 				lengthGuess = 32768;
-				Log.e(this.getClass().getName(), "File size unknown for " + shortUrl);
+				Log.e(FileFetcher.class.getName(), "File size unknown for " + shortUrl);
 			}
 
 			if (progress != null){
@@ -36,9 +36,9 @@ public class FileFetcher {
 			}
 
 			buffer = new byte[lengthGuess];
-			Log.i(this.getClass().getName(), conn.getHeaderFields().toString());	
+			Log.i(FileFetcher.class.getName(), conn.getHeaderFields().toString());	
 			while (buffer.length - length > 0){
-				read = binaryReader.read(buffer, length, buffer.length - length);
+				read = webStream.read(buffer, length, buffer.length - length);
 				if (read == -1){
 					break;
 				}else{
@@ -51,12 +51,12 @@ public class FileFetcher {
 					}
 				}
 			}
-			binaryReader.close();
+			webStream.close();
 			conn.disconnect();
 		} catch (IOException e) {
-			Log.w(this.getClass().getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
+			Log.w(FileFetcher.class.getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
 		} catch (InterruptedException e) {
-			Log.d(this.getClass().getName(), "Update cancelled.");
+			Log.d(FileFetcher.class.getName(), "Update cancelled.");
 			return null;
 		}
 
@@ -69,7 +69,7 @@ public class FileFetcher {
 		}	
 	}
 
-	public void recursiveRemove(File f){
+	public static void recursiveRemove(File f){
 		if (f.isDirectory()){
 			File[] list = f.listFiles();
 			for(int i=0; i<list.length; i++){
@@ -80,7 +80,7 @@ public class FileFetcher {
 		}
 	}
 
-	public void mkdirForFile(File file) throws IOException{
+	public static void mkdirForFile(File file) throws IOException{
 		if (file.getParentFile().exists()){
 			return;
 		}else{
@@ -93,7 +93,7 @@ public class FileFetcher {
 		}
 	}
 
-	public void writeBytesToFile(byte[] content, File f) throws IOException{
+	public static void writeBytesToFile(byte[] content, File f) throws IOException{
 		FileOutputStream fOut = new FileOutputStream(f);
 		fOut.write(content);
 		fOut.close();

@@ -54,8 +54,8 @@ public class ExhibitParser {
 				sb.append("\n\t<exhibit ");
 				appendValue(sb, "name", e.getName());
 				appendValue(sb, "xpos", e.getxCoord()+"");
-				appendValue(sb, "xpos", e.getyCoord()+"");
-				appendValue(sb, "next", e.getPrevious());
+				appendValue(sb, "ypos", e.getyCoord()+"");
+				appendValue(sb, "previous", e.getPrevious());
 				appendValue(sb, "next", e.getNext());
 				sb.append(">");
 				for (int i=0; i<e.getTagCount(); i++){

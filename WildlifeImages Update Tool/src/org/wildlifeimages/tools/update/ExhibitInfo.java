@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class ExhibitInfo {
-	private static final String TAG_PHOTO = "Photos";
-
 	public final String origName;
 	public final int origXCoord;
 	public final int origYCoord;

@@ -100,9 +100,18 @@ public class ExhibitList implements Parcelable{
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
 				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					String name = xmlBox.getAttributeValue(null, "name"); 
-					int xCoord = Integer.decode(xmlBox.getAttributeValue(null, "xpos"));
-					int yCoord = Integer.decode(xmlBox.getAttributeValue(null, "ypos"));
+					String name = xmlBox.getAttributeValue(null, "name");//TODO error check
+					
+					String tmp = xmlBox.getAttributeValue(null, "xpos");
+					int xCoord = 0;
+					int yCoord = 0;
+					if (tmp != null){
+						xCoord = Integer.decode(tmp);
+					}
+					tmp = xmlBox.getAttributeValue(null, "ypos");
+					if (tmp != null){
+						yCoord = Integer.decode(tmp);
+					}
 					String previous = xmlBox.getAttributeValue(null, "previous");
 					String next = xmlBox.getAttributeValue(null, "next");
 					//TODO null handling
@@ -112,6 +121,7 @@ public class ExhibitList implements Parcelable{
 					e.setPrevious(previous);
 					exhibitList.put(e.getName(), e);
 					keyList.add(e.getName());
+					Log.d(this.getClass().getName(), "Loading exhibit: " + name);
 				}else if (xmlBox.getName().equalsIgnoreCase("content")){
 					String url = xmlBox.getAttributeValue(null, "page");
 					e.setContent(xmlBox.getAttributeValue(null, "tag"), url);

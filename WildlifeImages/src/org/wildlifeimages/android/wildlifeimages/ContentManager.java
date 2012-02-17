@@ -4,13 +4,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -81,10 +87,10 @@ public class ContentManager {
 
 	public void clearCache(){
 		/* This function scares me a little */
+		//TODO check that this does not crash when cache is empty
 		File[] list = cacheDir.listFiles();
-		FileFetcher fetch = new FileFetcher();
 		for(int i=0; i<list.length; i++){
-			fetch.recursiveRemove(list[i]); 
+			FileFetcher.recursiveRemove(list[i]); 
 		}
 		cachedFiles.clear();
 	}
@@ -189,17 +195,16 @@ public class ContentManager {
 	private boolean populateCache(String shortUrl, ContentUpdater progress){
 		if (false == cachedFiles.containsKey(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
-			FileFetcher fetch = new FileFetcher();
 			try{
-				fetch.mkdirForFile(f); //TODO only generates one higher directory 
+				FileFetcher.mkdirForFile(f);
 			}catch(IOException e){
 				return false;
 			}
 
-			byte[] newContent = fetch.getWebContent(shortUrl, progress);
+			byte[] newContent = FileFetcher.getWebContent(shortUrl, progress);
 			if (null != newContent){
 				try {
-					fetch.writeBytesToFile(newContent, f);
+					FileFetcher.writeBytesToFile(newContent, f);
 
 					imgCache.remove(shortUrl);
 					cachedFiles.put(shortUrl, ""); //TODO
@@ -222,7 +227,37 @@ public class ContentManager {
 
 	public void updateCache(ContentUpdater progress){
 		ArrayList<String> lines = new ArrayList<String>();
-		if (populateCache("list.txt", null)){
+		
+		try{
+			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + "update.zip");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			InputStream webStream = conn.getInputStream();
+			ZipInputStream zipStream = new ZipInputStream(webStream);
+			ZipEntry ze = null;
+		      while ((ze = zipStream.getNextEntry()) != null) {
+		    
+		        File f  = new File(cacheDir.getAbsolutePath() + "/" + ze.getName());
+		        Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
+				try{
+					FileFetcher.mkdirForFile(f);
+				}catch(IOException e){
+					//TODO
+				}
+		        FileOutputStream fout = new FileOutputStream(f);
+		        for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
+		          fout.write(c);
+		        }
+		        zipStream.closeEntry();
+		        fout.close();
+		      }
+		      zipStream.close();
+		}catch(MalformedURLException e){
+			//TODO
+		} catch (IOException e) {
+			// TODO
+		}
+		
+		/*if (populateCache("list.txt", null)){
 			try{
 				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
 				String line;
@@ -241,7 +276,7 @@ public class ContentManager {
 					break;
 				}
 			}
-		}
+		}*/
 	}
 
 	public ExhibitList getExhibitList(){
@@ -252,7 +287,7 @@ public class ContentManager {
 		try{
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			XmlPullParser xmlBox = factory.newPullParser();
-			InputStream istr = assetManager.open("exhibits.xml");
+			InputStream istr = streamAssetOrFile("exhibits.xml", assetManager);
 			BufferedReader in = new BufferedReader(new InputStreamReader(istr));
 			xmlBox.setInput(in);
 			Log.i(this.getClass().getName(), "Input has been set.");

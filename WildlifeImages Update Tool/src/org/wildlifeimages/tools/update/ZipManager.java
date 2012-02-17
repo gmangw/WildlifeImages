@@ -390,7 +390,6 @@ public class ZipManager extends JFrame implements ActionListener{
 			String newName = JOptionPane.showInputDialog("Name of new content:"); //TODO
 			if (newName != null){ //TODO format check
 				currentExhibit.addContent(newName, originalFiles[0]);
-				exhibitParser.getExhibits().add(currentExhibit);
 				contentListModel.notifyChange();
 			}
 		}else if (event.getSource().equals(newExhibitButton)){
