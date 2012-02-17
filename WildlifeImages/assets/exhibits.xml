@@ -59,12 +59,18 @@
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
 		next="Wolves">
-		<content tag="Introduction" page="ExhibitContents/alphaIntro.html" />
-		<content tag="History" page="ExhibitContents/alphaHistory.html" />
-		<photo page="ExhibitContents/bobcat.jpg" />
-		<content tag="Behavior" page="ExhibitContents/alphaDiet.html" />
-		<content tag="Fun Facts" page="ExhibitContents/alphaFunFacts.html" />
-		<content tag="New Home" page="ExhibitContents/alphaVideos.html" />
+		<content tag="Introduction" page="ExhibitContents/badgerIntro.html" />
+		<content tag="History" page="ExhibitContents/badgerHistory.html" />
+		<photo page="ExhibitContents/Badger-Nubbs-1.jpg" />
+		<photo page="ExhibitContents/Badger-Nubbs-2.jpg" />
+		<photo page="ExhibitContents/Badger-Nubbs-3.jpg" />
+		<photo page="ExhibitContents/Badger-Nubbs-4.jpg" />
+		<photo page="ExhibitContents/Badger-Nubbs-5.jpg" />
+		<photo page="ExhibitContents/Badger-Boogie-1.jpg" />
+		<content tag="Behavior" page="ExhibitContents/badgerDiet.html" />
+		<content tag="Fun Facts" page="ExhibitContents/badgerFunFacts.html" />
+		<content tag="New Home" page="ExhibitContents/badgerNewHome.html" />
+		
 	</exhibit>
 	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger"
 		next="Wolf Pups">
