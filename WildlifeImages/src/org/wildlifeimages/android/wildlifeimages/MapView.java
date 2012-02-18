@@ -83,6 +83,8 @@ class MapView extends ImageView {
 				pointList.add(1.0f * x *mapWidth/100);
 				pointList.add(1.0f * y *mapHeight/100);
 				nameList.add(e.getName());
+			}else{
+				Log.d(this.getClass().getName(), "Excluding exhibit " + e.getName() + " from map.");
 			}
 		}
 
@@ -184,7 +186,7 @@ class MapView extends ImageView {
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 
 		scale = exhibitList.getScale(xFraction, yFraction);
-		Log.d(this.getClass().getName(), "" + scale); 
+		//Log.d(this.getClass().getName(), "" + scale); 
 		doTransform();
 	}
 

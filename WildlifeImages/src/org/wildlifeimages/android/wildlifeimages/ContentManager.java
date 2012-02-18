@@ -55,22 +55,22 @@ public class ContentManager {
 	public static ContentManager getSelf(){
 		return self;
 	}
-	
+
 	public ContentManager(File cacheDir, AssetManager assets){
 		self = this;
 
 		this.cacheDir = cacheDir;
 		imgCache = new BitmapCache();
 		addAllToMap(cacheDir);
-		
+
 		prepareExhibits(assets);
 	}
-	
+
 	public void prepareExhibits(AssetManager assets){
 		exhibitList = buildExhibitList(assets);
 		cacheThumbs(assets);
 	}
-	
+
 	private void cacheThumbs(AssetManager assets){
 		for(int i=0; i<exhibitList.getCount(); i++){
 			Exhibit entry = exhibitList.getExhibitAt(i);
@@ -149,15 +149,14 @@ public class ContentManager {
 		populateBitmap(shortUrl, assets);
 		return imgCache.get(shortUrl);
 	}
-	
+
 	public Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
 		populateBitmap(shortUrl, assets);
 		return imgCache.getThumb(shortUrl);
 	}
-	
+
 	private void populateBitmap(String shortUrl, AssetManager assets){
 		if (imgCache.containsKey(shortUrl)){
-			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
 			if (bmp != null){
@@ -229,56 +228,37 @@ public class ContentManager {
 
 	public void updateCache(ContentUpdater progress){
 		ArrayList<String> lines = new ArrayList<String>();
-		
+
 		try{
 			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + "update.zip");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			InputStream webStream = conn.getInputStream();
 			ZipInputStream zipStream = new ZipInputStream(webStream);
 			ZipEntry ze = null;
-		      while ((ze = zipStream.getNextEntry()) != null) {
-		    
-		        File f  = new File(cacheDir.getAbsolutePath() + "/" + ze.getName());
-		        Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
+			while ((ze = zipStream.getNextEntry()) != null) {
+
+				File f  = new File(cacheDir.getAbsolutePath() + "/" + ze.getName());
+				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
 				try{
 					FileFetcher.mkdirForFile(f);
 				}catch(IOException e){
 					//TODO
 				}
-		        FileOutputStream fout = new FileOutputStream(f);
-		        for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
-		          fout.write(c);
-		        }
-		        zipStream.closeEntry();
-		        fout.close();
-		      }
-		      zipStream.close();
+				FileOutputStream fout = new FileOutputStream(f);
+				for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
+					fout.write(c);
+				}
+				imgCache.remove(ze.getName());
+				cachedFiles.put(ze.getName(), ""); //TODO
+				zipStream.closeEntry();
+				fout.close();
+			}
+			zipStream.close();
 		}catch(MalformedURLException e){
 			//TODO
 		} catch (IOException e) {
 			// TODO
 		}
-		
-		/*if (populateCache("list.txt", null)){
-			try{
-				BufferedReader in = new BufferedReader(new InputStreamReader(streamAssetOrFile("list.txt", null)));
-				String line;
-				do{
-					line = in.readLine();
-					if (null != line){
-						lines.add(line);
-					}
-				}while(null != line);
-			}catch(IOException e){
-				Log.w(this.getClass().getName(), "Problem updating from list.txt");
-			}
-			for (int i=0; i<lines.size(); i++){
-				//progress.show();
-				if (false == populateCache(lines.get(i), progress)){
-					break;
-				}
-			}
-		}*/
 	}
 
 	public ExhibitList getExhibitList(){
