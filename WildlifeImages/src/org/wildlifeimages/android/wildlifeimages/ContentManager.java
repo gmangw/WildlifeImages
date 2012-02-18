@@ -160,8 +160,10 @@ public class ContentManager {
 			Log.i(this.getClass().getName(), "Retrieved cached Bitmap " + shortUrl);
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
-			imgCache.put(shortUrl, bmp); //TODO may want to limit cache size
-			Log.i(this.getClass().getName(), "Cached Bitmap " + shortUrl);	
+			if (bmp != null){
+				Log.i(this.getClass().getName(), "Caching Bitmap " + shortUrl);	
+				imgCache.put(shortUrl, bmp); //TODO may want to limit cache size
+			}
 		}
 	}
 
