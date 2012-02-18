@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.
@@ -93,19 +94,19 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final IntroActivity me = this;
 		builder.setMessage(loadString(R.string.exit_question))
-				.setCancelable(false)
-				.setPositiveButton(loadString(R.string.exit_option_yes),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								me.finish();
-							}
-						})
-				.setNegativeButton(R.string.exit_option_no,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
+		.setCancelable(false)
+		.setPositiveButton(loadString(R.string.exit_option_yes),
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				me.finish();
+			}
+		})
+		.setNegativeButton(R.string.exit_option_no,
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
 		return builder.create();
 	}
 
@@ -125,7 +126,7 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		/* 
 		 * Here we are dismissing since if you have a dialog open and rotate the device it
 		 * will try to exit the application and we do not want that. 
-		*/
+		 */
 		exitDialog.dismiss();
 		updateDialogManager.dismiss();
 
@@ -178,7 +179,7 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		case R.id.intro_sidebar_app:
 			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
 					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
-					" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>"); //TODO
+			" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>"); //TODO
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_exhibitlist:
@@ -198,9 +199,9 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 
 			ContentManager contentManager = ContentManager.getSelf();
 			contentManager.clearCache();
-			
+
 			updateDialogManager.registerUpdateListener(this);
-			
+
 			contentManager.startUpdate(updateDialogManager);
 			break;
 		}

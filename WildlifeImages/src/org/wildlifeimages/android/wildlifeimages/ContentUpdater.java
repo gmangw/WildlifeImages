@@ -2,6 +2,7 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>{
 
@@ -24,7 +25,7 @@ public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>
 
 	@Override
 	protected void onPostExecute(Integer result){
-		progress.dismiss();
+		progress.dismiss();	
 		content = null;
 		progress = null;
 	}
