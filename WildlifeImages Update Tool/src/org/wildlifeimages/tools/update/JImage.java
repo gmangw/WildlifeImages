@@ -1,7 +1,9 @@
 package org.wildlifeimages.tools.update;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
@@ -18,7 +20,7 @@ public class JImage extends JPanel{
 	public JImage(){
 		super();
 	}
-
+	
 	public void setImage(File newImage){
 		if (lastFile == null || (false == lastFile.equals(newImage.getName()))){
 			try {
@@ -37,6 +39,7 @@ public class JImage extends JPanel{
 	}
 
 	public void setImage(String shortUrl, ZipFile source){
+		final int previewSize = 92;
 		if (lastShortUrl == null || (false == lastShortUrl.equalsIgnoreCase(shortUrl))){
 			System.out.println("Loading image " + shortUrl);
 			try {
@@ -47,8 +50,8 @@ public class JImage extends JPanel{
 				lastShortUrl = shortUrl;
 
 				float aspect = 1.0f*image.getWidth()/image.getHeight();
-				BufferedImage smallImage = new BufferedImage(this.getWidth()+1, this.getHeight()+1, BufferedImage.TYPE_3BYTE_BGR);
-				smallImage.createGraphics().drawImage(image, 0, 0, (int)(this.getHeight()*aspect), this.getHeight(), this);
+				BufferedImage smallImage = new BufferedImage((int)(previewSize*aspect), previewSize, BufferedImage.TYPE_3BYTE_BGR);
+				smallImage.createGraphics().drawImage(image, 0, 0, (int)(previewSize*aspect), previewSize, this);
 				image = smallImage;
 
 				source.close();
@@ -58,14 +61,12 @@ public class JImage extends JPanel{
 			}
 		}
 	}
-
+	
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
 		if (image != null){
-			//float aspect = 1.0f*image.getWidth()/image.getHeight();
-			//g.drawImage(image, 0, 0, (int)(this.getHeight()*aspect), this.getHeight(), null);
-			g.drawImage(image, 0, 0, this);
+			g.drawImage(image, 0, 0, null);
 		}
 	}
 }

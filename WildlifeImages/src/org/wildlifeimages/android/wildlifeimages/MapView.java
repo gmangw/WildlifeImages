@@ -1,5 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.larvalabs.svgandroid.SVG;
@@ -70,23 +71,31 @@ class MapView extends ImageView {
 
 	private void setPoints(ExhibitList exhibitList){
 		Iterator<String> list = exhibitList.keys();
-		
-		exhibitNames = new String[exhibitList.getCount()];
-		
-		points = new float[exhibitList.getCount()*2];
 
-		for (int i=0; list.hasNext(); ){ 
+		ArrayList<Float> pointList = new ArrayList<Float>();
+		ArrayList<String> nameList = new ArrayList<String>();
+
+		for (; list.hasNext(); ){ 
 			Exhibit e = exhibitList.get(list.next());
-			points[i] = e.getX()*mapWidth/100;
-			i++;
-			points[i] = e.getY()*mapHeight/100;
-			i++;
-			exhibitNames[i/2-1] = e.getName();
+			int x = e.getX();
+			int y = e.getY();
+			if (x != -1 || y != -1){
+				pointList.add(1.0f * x *mapWidth/100);
+				pointList.add(1.0f * y *mapHeight/100);
+				nameList.add(e.getName());
+			}
 		}
-		
+
+		exhibitNames = nameList.toArray(new String[nameList.size()]);
+
+		points = new float[pointList.size()];
+		for (int i=0; i<points.length; i++){
+			points[i] = pointList.get(i);
+		}
+
 		doTransform();
 	}
-	
+
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh){
 		super.onSizeChanged(w, h, oldw, oldh);
