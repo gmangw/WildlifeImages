@@ -87,7 +87,7 @@
 		<content tag="Audio" page="ExhibitContents/Wolves/wolvesAudio.html" />
 		<content tag="Diet" page="ExhibitContents/Wolves/wolvesDiet.html" />
 	</exhibit>
-	<exhibit name="Wolf Pups" xpos="24" ypos="34" previous="Wolves">
+	<exhibit name="Wolf Pups" xpos="24" ypos="34" previous="Wolves" next="Bald Eagles">
 		<content tag="Introduction" page="ExhibitContents/WolfPups/wolfPupsIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/WolfPups/wolfPupsHabitat.html" />
 		<photo page="ExhibitContents/WolfPups/WolfPups-Kelsi-1.jpg" />
@@ -96,5 +96,31 @@
 		<content tag="Fun Facts" page="ExhibitContents/WolfPups/wolfPupsFunFacts.html" />
 		<content tag="Audio" page="ExhibitContents/WolfPups/wolfPupsAudio.html" />
 		<content tag="Diet" page="ExhibitContents/WolfPups/wolfPupsDiet.html" />
+	</exhibit>
+	<exhibit name="Bald Eagles" xpos="5" ypos="5" previous="Wolf Pups" next="Peregrine Falcon">
+		<content tag="Introduction" page="ExhibitContents/BaldEagles/baldEaglesIntro.html" />
+		<content tag="Habitat" page="ExhibitContents/BaldEagles/baldEaglesHabitat.html" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-2.jpg" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-3.jpg" />
+		<content tag="Fun Facts" page="ExhibitContents/BaldEagles/baldEaglesFunFacts.html" />
+		<content tag="Audio" page="ExhibitContents/BaldEagles/baldEaglesAudio.html" />
+		<content tag="Diet" page="ExhibitContents/BaldEagles/baldEaglesDiet.html" />
+	</exhibit>
+	<exhibit name="Peregrine Falcon" xpos="11" ypos="11" previous="Bald Eagles" next="Western Screech Owl">
+		<content tag="Introduction" page="ExhibitContents/PeregrineFalcon/peregrineFalconIntro.html" />
+		<content tag="Habitat" page="ExhibitContents/PeregrineFalcon/peregrineFalconHabitat.html" />
+		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-1.jpg" />
+		<content tag="Fun Facts" page="ExhibitContents/PeregrineFalcon/peregrineFalconFunFacts.html" />
+		<content tag="Audio" page="ExhibitContents/PeregrineFalcon/peregrineFalconAudio.html" />
+		<content tag="Diet" page="ExhibitContents/PeregrineFalcon/peregrineFalconDiet.html" />
+	</exhibit>
+	<exhibit name="Western Screech Owl" xpos="13" ypos="13" previous="Peregrine Falcon">
+		<content tag="Introduction" page="ExhibitContents/WesternScreechOwl/westernScreechOwlIntro.html" />
+		<content tag="Habitat" page="ExhibitContents/WesternScreechOwl/westernScreechOwlHabitat.html" />
+		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-1.jpg" />
+		<content tag="Fun Facts" page="ExhibitContents/WesternScreechOwl/westernScreechOwlFunFacts.html" />
+		<content tag="Audio" page="ExhibitContents/WesternScreechOwl/westernScreechOwlAudio.html" />
+		<content tag="Diet" page="ExhibitContents/WesternScreechOwl/westernScreechOwlDiet.html" />
 	</exhibit>
 </exhibit_list>
