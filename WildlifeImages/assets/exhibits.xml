@@ -97,7 +97,7 @@
 		<content tag="Audio" page="ExhibitContents/WolfPups/wolfPupsAudio.html" />
 		<content tag="Diet" page="ExhibitContents/WolfPups/wolfPupsDiet.html" />
 	</exhibit>
-	<exhibit name="Bald Eagles" xpos="5" ypos="5" previous="Wolf Pups" next="Peregrine Falcon">
+	<exhibit name="Bald Eagles" xpos="2" ypos="2" previous="Wolf Pups" next="Peregrine Falcon">
 		<content tag="Introduction" page="ExhibitContents/BaldEagles/baldEaglesIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/BaldEagles/baldEaglesHabitat.html" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
@@ -107,7 +107,7 @@
 		<content tag="Audio" page="ExhibitContents/BaldEagles/baldEaglesAudio.html" />
 		<content tag="Diet" page="ExhibitContents/BaldEagles/baldEaglesDiet.html" />
 	</exhibit>
-	<exhibit name="Peregrine Falcon" xpos="11" ypos="11" previous="Bald Eagles" next="Western Screech Owl">
+	<exhibit name="Peregrine Falcon" xpos="2" ypos="4" previous="Bald Eagles" next="Western Screech Owl">
 		<content tag="Introduction" page="ExhibitContents/PeregrineFalcon/peregrineFalconIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/PeregrineFalcon/peregrineFalconHabitat.html" />
 		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-1.jpg" />
@@ -115,12 +115,38 @@
 		<content tag="Audio" page="ExhibitContents/PeregrineFalcon/peregrineFalconAudio.html" />
 		<content tag="Diet" page="ExhibitContents/PeregrineFalcon/peregrineFalconDiet.html" />
 	</exhibit>
-	<exhibit name="Western Screech Owl" xpos="13" ypos="13" previous="Peregrine Falcon">
+	<exhibit name="Western Screech Owl" xpos="2" ypos="6" previous="Peregrine Falcon" next="Golden Eagles">
 		<content tag="Introduction" page="ExhibitContents/WesternScreechOwl/westernScreechOwlIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/WesternScreechOwl/westernScreechOwlHabitat.html" />
 		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-1.jpg" />
 		<content tag="Fun Facts" page="ExhibitContents/WesternScreechOwl/westernScreechOwlFunFacts.html" />
 		<content tag="Audio" page="ExhibitContents/WesternScreechOwl/westernScreechOwlAudio.html" />
 		<content tag="Diet" page="ExhibitContents/WesternScreechOwl/westernScreechOwlDiet.html" />
+	</exhibit>
+	<exhibit name="Golden Eagles" xpos="2" ypos="8" previous="Western Screech Owl" next="Great Horned Owl">
+		<content tag="Introduction" page="ExhibitContents/GoldenEagles/goldenEaglesIntro.html" />
+		<content tag="Habitat" page="ExhibitContents/GoldenEagles/goldenEaglesHabitat.html" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-1.jpg" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-2.jpg" />
+		<content tag="Fun Facts" page="ExhibitContents/GoldenEagles/goldenEaglesFunFacts.html" />
+		<content tag="Audio" page="ExhibitContents/GoldenEagles/goldenEaglesAudio.html" />
+		<content tag="Diet" page="ExhibitContents/GoldenEagles/goldenEaglesDiet.html" />
+	</exhibit>
+	<exhibit name="Great Horned Owl" xpos="2" ypos="10" previous="Golden Eagles" next="Sandhill Crane">
+		<content tag="Introduction" page="ExhibitContents/GreatHornedOwl/greatHornedOwlIntro.html" />
+		<content tag="Habitat" page="ExhibitContents/GreatHornedOwl/greatHornedOwlHabitat.html" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
+		<content tag="Fun Facts" page="ExhibitContents/GreatHornedOwl/greatHornedOwlFunFacts.html" />
+		<content tag="Audio" page="ExhibitContents/GreatHornedOwl/greatHornedOwlAudio.html" />
+		<content tag="Diet" page="ExhibitContents/GreatHornedOwl/greatHornedOwlDiet.html" />
+	</exhibit>
+	<exhibit name="Sandhill Crane" xpos="2" ypos="12" previous="Great Horned Owl">
+		<content tag="Introduction" page="ExhibitContents/SandhillCrane/sandhillCraneIntro.html" />
+		<content tag="Habitat" page="ExhibitContents/SandhillCrane/sandhillCraneHabitat.html" />
+		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
+		<content tag="Fun Facts" page="ExhibitContents/SandhillCrane/sandhillCraneFunFacts.html" />
+		<content tag="Audio" page="ExhibitContents/SandhillCrane/sandhillCraneAudio.html" />
+		<content tag="Diet" page="ExhibitContents/SandhillCrane/sandhillCraneDiet.html" />
 	</exhibit>
 </exhibit_list>
