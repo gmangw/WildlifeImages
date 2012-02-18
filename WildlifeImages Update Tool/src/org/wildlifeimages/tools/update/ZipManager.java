@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,6 +24,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -61,7 +64,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private String[] originalFiles;
 
-	private final JPanel mainPanel = new JPanel(new GridLayout(6, 1));
+	private final JPanel mainPanel = new JPanel(new GridLayout(7, 1));
 
 	private final JButton newTagButton = new JButton("New Tag");
 	private final JButton newExhibitButton = new JButton("New Exhibit");
@@ -75,6 +78,9 @@ public class ZipManager extends JFrame implements ActionListener{
 	private final JPanel exhibitInfoPanel = new JPanel(new GridLayout(1,3));
 	private final JLabel exhibitContentLabel = new JLabel();
 	private final JComboBox newContentDropdown = new JComboBox();
+
+	private final JList exhibitPhotosList = new JList();
+	private final JImage exhibitPhotosImage = new JImage();
 
 	private final JList modifiedFilesList = new JList();
 
@@ -92,6 +98,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private final ContentListModel contentListModel = new ContentListModel();
 	private final ModifiedListModel modifiedFilesListModel = new ModifiedListModel();
+	private final ExhibitPhotosModel exhibitPhotosModel = new ExhibitPhotosModel();
 
 	private final String EXHIBITSFILENAME = "exhibits.xml";
 
@@ -127,6 +134,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				currentExhibit = exhibitParser.getExhibits().get(exhibitNameList.getSelectedIndex());
 
 				contentListModel.notifyChange();
+				exhibitPhotosModel.notifyChange();
 				contentList.setSelectionInterval(0, 0);
 				for (ListSelectionListener l : contentList.getListSelectionListeners()){
 					l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
@@ -136,6 +144,20 @@ public class ZipManager extends JFrame implements ActionListener{
 
 				exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
 				exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
+
+				String[] photos = currentExhibit.getPhotos();
+				if (photos.length > 0){
+					String shortUrl = photos[0];
+					try{
+						if (modifiedFiles.containsKey(shortUrl)){
+							exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
+						}else{
+							exhibitPhotosImage.setImage(shortUrl, new ZipFile("WildlifeImages.apk"));
+						}
+					}catch(IOException e){
+						System.out.println("Error loading " + shortUrl);
+					}
+				}
 			}
 		});
 
@@ -208,6 +230,26 @@ public class ZipManager extends JFrame implements ActionListener{
 		exhibitInfoPanel.add(newContentDropdown);
 		exhibitInfoPanel.add(newFilePanel);
 
+		exhibitPhotosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		exhibitPhotosList.setModel(exhibitPhotosModel);
+		exhibitPhotosList.addListSelectionListener(new ListSelectionListener(){
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				int index = exhibitPhotosList.getSelectedIndex();
+				String shortUrl = currentExhibit.getPhotos()[index];
+				try{
+					if (modifiedFiles.containsKey(shortUrl)){
+						exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
+					}else{
+						exhibitPhotosImage.setImage(shortUrl, new ZipFile("WildlifeImages.apk"));
+					}
+				}catch(IOException e){
+					System.out.println("Error loading " + shortUrl);
+				}
+			}
+		});
+		exhibitPhotosList.setSelectionInterval(0, 0);
+
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modifiedFilesList.setModel(modifiedFilesListModel);
 		modifiedFilesList.setSelectionInterval(0, 0);
@@ -218,18 +260,25 @@ public class ZipManager extends JFrame implements ActionListener{
 		exhibitDataPanel.add(exhibitNextDropdown);
 
 		JPanel newButtonsPanel = new JPanel(new GridLayout(1,2));
+
 		newExhibitButton.addActionListener(this);
 		newTagButton.addActionListener(this);
 		newButtonsPanel.add(newExhibitButton);
 		newButtonsPanel.add(newTagButton);
+
+		JPanel exhibitPhotosPanel = new JPanel(new GridLayout(1, 2));
+		exhibitPhotosPanel.add(exhibitPhotosList);
+		exhibitPhotosPanel.add(exhibitPhotosImage);
+
 		mainPanel.add(newButtonsPanel);
 		mainPanel.add(listPanel);
 		mainPanel.add(exhibitInfoPanel);
 		mainPanel.add(exhibitDataPanel);
+		mainPanel.add(exhibitPhotosPanel);
 		mainPanel.add(new JScrollPane(modifiedFilesList));
 		mainPanel.add(saveButton);
 
-		this.setSize(720, 480);
+		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(mainPanel);
 	}
@@ -309,6 +358,7 @@ public class ZipManager extends JFrame implements ActionListener{
 					}
 				}
 			}
+			zf.close();
 			return files.toArray(new String[files.size()]);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -495,6 +545,36 @@ public class ZipManager extends JFrame implements ActionListener{
 		@Override
 		public int getSize() {
 			return modifiedFiles.size();
+		}
+
+		@Override
+		public void removeListDataListener(ListDataListener oldListener) {
+			listeners.remove(oldListener);
+		}
+
+		public void notifyChange(){
+			for (ListDataListener listener : listeners){
+				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
+			}
+		}
+	}
+
+	private class ExhibitPhotosModel implements ListModel{
+		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
+
+		@Override
+		public void addListDataListener(ListDataListener newListener) {
+			listeners.add(newListener);
+		}
+
+		@Override
+		public Object getElementAt(int index) {
+			return currentExhibit.getPhotos()[index];
+		}
+
+		@Override
+		public int getSize() {
+			return currentExhibit.getPhotos().length;
 		}
 
 		@Override
