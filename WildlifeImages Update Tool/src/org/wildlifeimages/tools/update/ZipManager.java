@@ -1,5 +1,7 @@
 package org.wildlifeimages.tools.update;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JButton;
@@ -63,10 +66,10 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private final JPanel mainPanel = new JPanel(new GridLayout(6, 1));
 
-	private final JButton newTagButton = new JButton("Add Content");
-	private final JButton newExhibitButton = new JButton("New Exhibit");
+	private final JButton newTagButton = new JButton("Add Content to Exhibit");
+	private final JButton newExhibitButton = new JButton("Create New Exhibit");
 
-	private final JButton saveButton = new JButton("Save");
+	private final JButton saveButton = new JButton("Save Updates");
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
 
@@ -78,19 +81,23 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private final JList exhibitPhotosList = new JList();
 	private final JImage exhibitPhotosImage = new JImage();
-	private final JButton newImageButton = new JButton("Add Photo");
+	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
 
 	private final JList modifiedFilesList = new JList();
 
-	private final JButton newFileButton = new JButton("Load new file");
+	private final JButton newFileButton = new JButton("Add file to project");
 	private final JTextField newFileNameField = new JTextField();
 
 	private ExhibitParser exhibitParser = null;
 
-	private final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,2));
+	private final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
+	private final JLabel exhibitXCoordOrig = new JLabel();
 	private final JSpinner exhibitXCoordField = new JSpinner(new NumberSpinner("x"));
+	private final JLabel exhibitYCoordOrig = new JLabel();
 	private final JSpinner exhibitYCoordField = new JSpinner(new NumberSpinner("y"));
+	private final JLabel exhibitNextOrig = new JLabel();
 	private final JComboBox exhibitNextDropdown = new JComboBox();
+	private final JLabel exhibitPreviousOrig = new JLabel();
 	private final JComboBox exhibitPreviousDropdown = new JComboBox();
 
 	private final ContentListModel contentListModel = new ContentListModel();
@@ -107,43 +114,37 @@ public class ZipManager extends JFrame implements ActionListener{
 		zr.setVisible(true);
 	}
 
+	public ZipInputStream getZipStream(){
+		//TODO
+		return new ZipInputStream(getClass().getResourceAsStream("/resources/WildlifeImages.apk"));
+	}
+
 	public ZipManager(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		saveButton.addActionListener(this);
-		saveButton.setSize(100, 20);
-
 		try {
-			originalFiles = this.readAPK("WildlifeImages.apk");
+			originalFiles = this.readAPK(getZipStream());
 		} catch (XmlPullParserException e) {
 			originalFiles = null;
-			e.printStackTrace();
 		}
 
 		currentExhibit = exhibitParser.getExhibits().get(0);
 
 		exhibitNameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		exhibitNameList.setModel(new ExhibitListModel());
-
 		exhibitNameList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				currentExhibit = exhibitParser.getExhibits().get(exhibitNameList.getSelectedIndex());
+				selectExhibit();
+			}
+		});
 
-				contentListModel.notifyChange();
-				exhibitPhotosModel.notifyChange();
-				contentList.setSelectionInterval(0, 0);
-				for (ListSelectionListener l : contentList.getListSelectionListeners()){
-					l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
-				}
-				exhibitXCoordField.setValue(currentExhibit.getxCoord());
-				exhibitYCoordField.setValue(currentExhibit.getyCoord());				
-
-				exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
-				exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
-				
-				exhibitPhotosList.setSelectionInterval(0, 0);
-				photoSelected();
+		contentList.setModel(contentListModel);
+		contentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		contentList.addListSelectionListener(new ListSelectionListener(){
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				selectContent();
 			}
 		});
 
@@ -153,23 +154,17 @@ public class ZipManager extends JFrame implements ActionListener{
 				exhibitNextDropdown.addItem(e.getName());
 			}
 		}
+		exhibitNextDropdown.addActionListener(this);
+		exhibitPreviousDropdown.addActionListener(this);
 
-		contentList.setModel(contentListModel);
-		contentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		contentList.addListSelectionListener(new ListSelectionListener(){
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				currentTag = (String)contentList.getSelectedValue();
-				ExhibitInfo e = currentExhibit;
-				String tag = (String)currentTag;
-				String data = e.getContents(tag);
-				exhibitContentLabel.setText(e.getOrigContents(tag));
-				newContentDropdown.setSelectedItem(data);
-			}
-		});
+		saveButton.addActionListener(this);
+		saveButton.setSize(100, 20);
 
-		listPanel.add(new JScrollPane(exhibitNameList));
-		listPanel.add(new JScrollPane(contentList));
+		newFileButton.addActionListener(this);
+
+		newExhibitButton.addActionListener(this);
+
+		newTagButton.addActionListener(this);
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.addItem(" ");
@@ -178,67 +173,49 @@ public class ZipManager extends JFrame implements ActionListener{
 				newContentDropdown.addItem(s);
 			}
 		}
-
 		newContentDropdown.addActionListener(this);
-
-		newFileButton.addActionListener(this);
-
-		newFileNameField.addKeyListener(new KeyListener(){
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				if (filenamePattern.matcher(newFileNameField.getText()).matches()){
-					newFileButton.setEnabled(true);
-				}else{
-					newFileButton.setEnabled(false);
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {	
-			}
-		});
-
-		exhibitNextDropdown.addActionListener(this);
-		exhibitPreviousDropdown.addActionListener(this);
-
-		exhibitInfoPanel.add(exhibitContentLabel);
-		exhibitInfoPanel.add(newContentDropdown);
 
 		exhibitPhotosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		exhibitPhotosList.setModel(exhibitPhotosModel);
 		exhibitPhotosList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				photoSelected();
+				selectPhoto();
 			}
 		});
-
-		exhibitNameList.setSelectionInterval(0, 0);
-		contentList.setSelectionInterval(0, 0);
-		exhibitPhotosList.setSelectionInterval(0, 0);
 
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modifiedFilesList.setModel(modifiedFilesListModel);
 		modifiedFilesList.setSelectionInterval(0, 0);
 
+		exhibitNameList.setSelectionInterval(0, 0);
+		contentList.setSelectionInterval(0, 0);
+		exhibitPhotosList.setSelectionInterval(0, 0);
+
+		listPanel.add(new JScrollPane(exhibitNameList));
+		listPanel.add(new JScrollPane(contentList));
+
+		exhibitInfoPanel.add(exhibitContentLabel);
+		exhibitInfoPanel.add(newContentDropdown);
+
+		exhibitDataPanel.add(exhibitXCoordOrig);
 		exhibitDataPanel.add(exhibitXCoordField);
+		exhibitDataPanel.add(exhibitPreviousOrig);
 		exhibitDataPanel.add(exhibitPreviousDropdown);
+		exhibitDataPanel.add(exhibitYCoordOrig);
 		exhibitDataPanel.add(exhibitYCoordField);
+		exhibitDataPanel.add(exhibitNextOrig);
 		exhibitDataPanel.add(exhibitNextDropdown);
 
-		JPanel newButtonsPanel = new JPanel(new GridLayout(1,5));
-
-		newExhibitButton.addActionListener(this);
-		newTagButton.addActionListener(this);
+		JPanel newButtonsPanel = new JPanel(new GridLayout(2,3));
 		newButtonsPanel.add(newExhibitButton);
 		newButtonsPanel.add(newTagButton);
 		newButtonsPanel.add(newImageButton);
 		newButtonsPanel.add(newFileButton);
 		newButtonsPanel.add(saveButton);
+		for (Component c : newButtonsPanel.getComponents()){
+			c.setBackground(Color.WHITE);
+		}
 
 		JPanel exhibitPhotosPanel = new JPanel(new GridLayout(1, 2));
 		exhibitPhotosPanel.add(exhibitPhotosList);
@@ -255,19 +232,56 @@ public class ZipManager extends JFrame implements ActionListener{
 		this.setLayout(new GridLayout(1,1));
 		this.add(mainPanel);
 	}
-	
-	private void photoSelected(){
+
+	private void selectExhibit(){
+		currentExhibit = exhibitParser.getExhibits().get(exhibitNameList.getSelectedIndex());
+
+		contentListModel.notifyChange();
+		exhibitPhotosModel.notifyChange();
+		contentList.setSelectionInterval(0, 0);
+		for (ListSelectionListener l : contentList.getListSelectionListeners()){
+			l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
+		}
+		exhibitXCoordField.setValue(currentExhibit.getxCoord());
+		exhibitXCoordOrig.setText(currentExhibit.origXCoord+"");
+		exhibitYCoordField.setValue(currentExhibit.getyCoord());
+		exhibitYCoordOrig.setText(currentExhibit.origYCoord+"");
+
+		exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
+		if (currentExhibit.getNext() != null){
+			exhibitNextOrig.setText(currentExhibit.origNext+"");
+		}else{
+			exhibitPreviousOrig.setText("");
+		}
+		exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
+		if (currentExhibit.getPrevious() != null){
+			exhibitPreviousOrig.setText(currentExhibit.origPrevious+"");
+		}else{
+			exhibitPreviousOrig.setText("");
+		}
+
+		exhibitPhotosList.setSelectionInterval(0, 0);
+		selectPhoto();
+	}
+
+	private void selectPhoto(){
 		int index = exhibitPhotosList.getSelectedIndex();
 		String shortUrl = currentExhibit.getPhotos()[index];
-		try{
-			if (modifiedFiles.containsKey(shortUrl)){
-				exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
-			}else{
-				exhibitPhotosImage.setImage(shortUrl, new ZipFile("WildlifeImages.apk"));
-			}
-		}catch(IOException e){
-			System.out.println("Error loading " + shortUrl);
+
+		if (modifiedFiles.containsKey(shortUrl)){
+			exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
+		}else{
+			exhibitPhotosImage.setImage(shortUrl, getZipStream());
 		}
+	}
+
+	private void selectContent(){
+		currentTag = (String)contentList.getSelectedValue();
+		ExhibitInfo e = currentExhibit;
+		String tag = (String)currentTag;
+		String data = e.getContents(tag);
+		exhibitContentLabel.setText(e.getOrigContents(tag));
+		newContentDropdown.setSelectedItem(data);
 	}
 
 	public void addFile(String filename, File newFile){
@@ -320,19 +334,17 @@ public class ZipManager extends JFrame implements ActionListener{
 		}
 	}
 
-	public String[] readAPK(String outFilename) throws XmlPullParserException{
+	public String[] readAPK(ZipInputStream zf) throws XmlPullParserException{
 		try {
-			ZipFile zf = new ZipFile(outFilename);
 
 			ArrayList<String> files = new ArrayList<String>();
-			for (Enumeration<? extends ZipEntry> entries = zf.entries(); entries.hasMoreElements();) {
-				ZipEntry item = entries.nextElement();
+			for (ZipEntry item = zf.getNextEntry(); item != null; item = zf.getNextEntry()){
 				String zipEntryName = (item).getName();
 				if (false == item.isDirectory() && zipEntryName.startsWith(assetPath)){
 					String shortUrl = zipEntryName.substring(assetPath.length());
 					files.add(shortUrl);
 					if (shortUrl.equals(EXHIBITSFILENAME)){						
-						InputStream stream = zf.getInputStream(item);
+						InputStream stream = zf;
 
 						XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 						XmlPullParser xmlBox = factory.newPullParser();
@@ -341,7 +353,6 @@ public class ZipManager extends JFrame implements ActionListener{
 						xmlBox.setInput(in);
 						System.out.println("Creating parser");
 						exhibitParser = new ExhibitParser(xmlBox);
-						stream.close();
 					}
 				}
 			}
