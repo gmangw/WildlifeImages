@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -22,6 +23,8 @@ import android.widget.LinearLayout;
  */
 public class ExhibitActivity extends WireActivity{
 
+	private Exhibit activityCurrentExhibit;
+
 	/**
 	 * This will happen when the activity actually starts.
 	 * Will grab the latest state of the current exhibit and call showExhibit to display it.
@@ -35,7 +38,7 @@ public class ExhibitActivity extends WireActivity{
 		setContentView(R.layout.exhibit_layout);
 
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-		
+
 		//if (savedState == null) { /* Start from scratch if there is no previous state */
 		//	showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 		//} else { /* Use saved state info if app just restarted */
@@ -70,6 +73,7 @@ public class ExhibitActivity extends WireActivity{
 			String[] content = e.getContent(e.getCurrentTag()).split(",");
 			exView.loadUrlList(content, ContentManager.getSelf());
 		}
+		activityCurrentExhibit = e;
 	}
 
 	/**
@@ -159,15 +163,26 @@ public class ExhibitActivity extends WireActivity{
 	}
 
 	/**
-	 * Pass the current outState and pass it up to the parent to overwrite it.s
+	 * Pass the current outState and pass it up to the parent to overwrite it.
 	 * 
-	 * @param a Bundle outState where you will put current state into, overwire the initial function.
+	 * @param a Bundle outState to store current state data.
 	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+
+		ExhibitView exView;
+		exView = (ExhibitView) findViewById(R.id.exhibit);
+		exView.clear();
 	}
-	
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+
+		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
+	}
+
 	/**
 	 * Bootstrapper that allows the launching of activities.
 	 * So will start the activity for this page.

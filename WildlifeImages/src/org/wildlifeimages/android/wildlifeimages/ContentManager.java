@@ -77,7 +77,7 @@ public class ContentManager {
 			Exhibit entry = exhibitList.getExhibitAt(i);
 			if (entry.hasContent("Photos")){
 				String[] photos = entry.getContent("Photos").split(",");
-				ContentManager.getSelf().getBitmap(photos[0], assets);
+				getBitmapThumb(photos[0], assets);
 			}
 		}
 	}
@@ -148,21 +148,30 @@ public class ContentManager {
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
 		timekeeper.put(shortUrl, accessTime++);
 		populateBitmap(shortUrl, assets);
-		return imgCache.get(shortUrl);
+		return imgCache.getBitmap(shortUrl);
 	}
 
 	public Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
-		populateBitmap(shortUrl, assets);
+		populateBitmapThumb(shortUrl, assets);
 		return imgCache.getThumb(shortUrl);
 	}
 
 	private void populateBitmap(String shortUrl, AssetManager assets){
-		if (imgCache.containsKey(shortUrl)){
+		if (imgCache.containsBitmap(shortUrl)){
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
 			if (bmp != null){
-				Log.i(this.getClass().getName(), "Caching Bitmap " + shortUrl);	
-				imgCache.put(shortUrl, bmp); //TODO may want to limit cache size
+				imgCache.putBitmap(shortUrl, bmp); //TODO may want to limit cache size
+			}
+		}
+	}
+	
+	private void populateBitmapThumb(String shortUrl, AssetManager assets){
+		if (imgCache.containsThumb(shortUrl)){
+		}else{
+			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
+			if (bmp != null){
+				imgCache.putThumb(shortUrl, bmp); //TODO may want to limit cache size
 			}
 		}
 	}
@@ -208,7 +217,7 @@ public class ContentManager {
 				try {
 					FileFetcher.writeBytesToFile(newContent, f);
 
-					imgCache.remove(shortUrl);
+					imgCache.removeBitmap(shortUrl);
 					cachedFiles.put(shortUrl, ""); //TODO
 					Log.d(this.getClass().getName(), "File cached: " + shortUrl);
 					return true;
@@ -259,7 +268,7 @@ public class ContentManager {
 						progress.publish((int)(100*lengthRead/length));
 					}
 				}
-				imgCache.remove(ze.getName());
+				imgCache.removeBitmap(ze.getName());
 				cachedFiles.put(ze.getName(), ""); //TODO
 				zipStream.closeEntry();
 				fout.close();

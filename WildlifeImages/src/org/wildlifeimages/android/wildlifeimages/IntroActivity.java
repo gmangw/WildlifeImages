@@ -207,6 +207,16 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 			break;
 		}
 	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		
+		if (activeHomeId == R.id.intro_sidebar_photos){
+			introProcessSidebar(R.id.intro_sidebar_intro);
+		}
+	}
+		
 
 	/**
 	 * Will show the exit dialog if we are in the main part of the program.

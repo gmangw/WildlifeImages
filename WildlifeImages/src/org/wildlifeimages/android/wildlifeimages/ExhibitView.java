@@ -79,4 +79,9 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 		AVActivity.start(context, url);
 	}
+
+	public void clear() {
+		htmlView.loadUrl("");
+		picView.setImageBitmap(null);
+	}
 }
