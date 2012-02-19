@@ -67,8 +67,6 @@
 		<photo page="ExhibitContents/Badger/Badger-Nubbs-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubbs-2.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubbs-3.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-4.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-5.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<content tag="Diet" page="ExhibitContents/Badger/badgerDiet.html" />
 		<content tag="Audio" page="ExhibitContents/Badger/badgerAudio.html" />
@@ -82,7 +80,6 @@
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-4.jpg" />
 		<content tag="Fun Facts" page="ExhibitContents/Wolves/wolvesFunFacts.html" />
 		<content tag="Audio" page="ExhibitContents/Wolves/wolvesAudio.html" />
 		<content tag="Diet" page="ExhibitContents/Wolves/wolvesDiet.html" />
