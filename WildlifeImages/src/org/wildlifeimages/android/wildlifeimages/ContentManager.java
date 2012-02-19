@@ -57,6 +57,8 @@ public class ContentManager {
 	}
 
 	public ContentManager(File cacheDir, AssetManager assets){
+		//testBitmapMax(assets);
+		
 		self = this;
 
 		this.cacheDir = cacheDir;
@@ -64,6 +66,29 @@ public class ContentManager {
 		addAllToMap(cacheDir);
 
 		prepareExhibits(assets);
+	}
+
+	private void testBitmapMax(AssetManager assets){
+		Bitmap[] list = new Bitmap[4000];
+		int i;
+		for(i=0; i<list.length; i++){
+			try{
+				InputStream stream = assets.open("ExhibitContents/Badger/Badger-Boogie-1.jpg");
+				list[i] = BitmapFactory.decodeStream(stream);
+				stream.close();
+			}catch(OutOfMemoryError e){
+				break;
+			} catch (IOException e) {
+				Log.e(this.getClass().getName(), "Failed to load");
+			}
+			if (i % 100 == 0){
+				Log.e(this.getClass().getName(), "Loaded " + i + " bitmaps");
+			}
+		}
+		Log.e(this.getClass().getName(), "Loaded " + i + " bitmaps");
+		for (int k = 0; k<i; k++){
+			list[k].recycle();
+		}
 	}
 
 	public void prepareExhibits(AssetManager assets){
@@ -164,7 +189,7 @@ public class ContentManager {
 			}
 		}
 	}
-	
+
 	private void populateBitmapThumb(String shortUrl, AssetManager assets){
 		if (imgCache.containsThumb(shortUrl)){
 		}else{
@@ -244,7 +269,7 @@ public class ContentManager {
 			InputStream webStream = conn.getInputStream();
 			ZipInputStream zipStream = new ZipInputStream(webStream);
 			ZipEntry ze = null;
-			
+
 			int length = conn.getContentLength();
 			int lengthRead = 0;
 			while ((ze = zipStream.getNextEntry()) != null) {
@@ -259,7 +284,7 @@ public class ContentManager {
 					//TODO
 				}
 				FileOutputStream fout = new FileOutputStream(f);
-				
+
 				for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
 					fout.write(c);
 					lengthRead++;

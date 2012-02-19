@@ -33,7 +33,7 @@ public class BitmapCache {
 	}
 
 	public Bitmap getThumb(String shortUrl){
-		Log.i(this.getClass().getName(), "Retrieved cached thumb " + shortUrl);
+		//Log.i(this.getClass().getName(), "Retrieved cached thumb " + shortUrl);
 		return cachedThumbs.get(shortUrl);
 	}
 
@@ -46,7 +46,7 @@ public class BitmapCache {
 	}
 
 	public void putThumb(String shortUrl, Bitmap bmp) {
-		Log.i(this.getClass().getName(), "Caching thumb " + shortUrl);
+		//Log.i(this.getClass().getName(), "Caching thumb " + shortUrl);
 		Bitmap thumb;
 		float aspect = 1.0f * bmp.getWidth() / bmp.getHeight();
 
