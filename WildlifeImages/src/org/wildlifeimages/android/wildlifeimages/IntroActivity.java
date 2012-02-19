@@ -189,9 +189,10 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 			MapActivity.start(this);
 			break;
 		case R.id.intro_sidebar_update:
+			//TODO onCreateDialog()
 			final ProgressDialog progressDialog = new ProgressDialog(this);
-			progressDialog.setMessage("Looking for updated content...");
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progressDialog.setMessage("Getting updated content...");
+			//progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			progressDialog.setCancelable(true);
 			progressDialog.show();
 

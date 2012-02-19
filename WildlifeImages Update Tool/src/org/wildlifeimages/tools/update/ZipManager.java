@@ -141,8 +141,9 @@ public class ZipManager extends JFrame implements ActionListener{
 
 				exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
 				exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
-
+				
 				exhibitPhotosList.setSelectionInterval(0, 0);
+				photoSelected();
 			}
 		});
 
@@ -212,17 +213,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		exhibitPhotosList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				int index = exhibitPhotosList.getSelectedIndex();
-				String shortUrl = currentExhibit.getPhotos()[index];
-				try{
-					if (modifiedFiles.containsKey(shortUrl)){
-						exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
-					}else{
-						exhibitPhotosImage.setImage(shortUrl, new ZipFile("WildlifeImages.apk"));
-					}
-				}catch(IOException e){
-					System.out.println("Error loading " + shortUrl);
-				}
+				photoSelected();
 			}
 		});
 
@@ -263,6 +254,20 @@ public class ZipManager extends JFrame implements ActionListener{
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(mainPanel);
+	}
+	
+	private void photoSelected(){
+		int index = exhibitPhotosList.getSelectedIndex();
+		String shortUrl = currentExhibit.getPhotos()[index];
+		try{
+			if (modifiedFiles.containsKey(shortUrl)){
+				exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
+			}else{
+				exhibitPhotosImage.setImage(shortUrl, new ZipFile("WildlifeImages.apk"));
+			}
+		}catch(IOException e){
+			System.out.println("Error loading " + shortUrl);
+		}
 	}
 
 	public void addFile(String filename, File newFile){

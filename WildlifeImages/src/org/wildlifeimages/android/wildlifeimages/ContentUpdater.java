@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>{
+public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Boolean>{
 
 	ProgressManager progress;
 	ContentManager content;
@@ -15,16 +15,21 @@ public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Integer>
 	}
 
 	@Override
-	protected Integer doInBackground(ProgressManager... arg0) {
+	protected Boolean doInBackground(ProgressManager... arg0) {
 
 		progress = arg0[0];
 
-		content.updateCache(this);
-		return null;
+		
+		return content.updateCache(this);
 	}
 
 	@Override
-	protected void onPostExecute(Integer result){
+	protected void onPostExecute(Boolean result){
+		if (result){
+			progress.setText("Update Complete");
+		}else{
+			progress.setText("Update Failed");
+		}
 		progress.dismiss();	
 		content = null;
 		progress = null;

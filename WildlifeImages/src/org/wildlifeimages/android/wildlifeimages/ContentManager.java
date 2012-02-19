@@ -227,7 +227,7 @@ public class ContentManager {
 		}
 	}
 
-	public void updateCache(ContentUpdater progress){
+	public boolean updateCache(ContentUpdater progress){
 		ArrayList<String> lines = new ArrayList<String>();
 
 		try{
@@ -236,8 +236,13 @@ public class ContentManager {
 			InputStream webStream = conn.getInputStream();
 			ZipInputStream zipStream = new ZipInputStream(webStream);
 			ZipEntry ze = null;
+			
+			int length = conn.getContentLength();
+			int lengthRead = 0;
 			while ((ze = zipStream.getNextEntry()) != null) {
-
+				if (progress.isCancelled() == true){
+					break;
+				}
 				File f  = new File(cacheDir.getAbsolutePath() + "/" + ze.getName());
 				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
 				try{
@@ -246,8 +251,13 @@ public class ContentManager {
 					//TODO
 				}
 				FileOutputStream fout = new FileOutputStream(f);
+				
 				for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
 					fout.write(c);
+					lengthRead++;
+					if (length != -1){
+						progress.publish((int)(100*lengthRead/length));
+					}
 				}
 				imgCache.remove(ze.getName());
 				cachedFiles.put(ze.getName(), ""); //TODO
@@ -255,10 +265,13 @@ public class ContentManager {
 				fout.close();
 			}
 			zipStream.close();
+			return true;
 		}catch(MalformedURLException e){
 			//TODO
+			return false;
 		} catch (IOException e) {
 			// TODO
+			return false;
 		}
 	}
 

@@ -16,6 +16,7 @@
             android:id="@+id/exhibit"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:background="@android:color/white"
             android:scrollbars="none" />
     </FrameLayout>
 
@@ -24,8 +25,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="3"
-        android:fillViewport="true"
-        android:background="#FFAAAAAA" >
+        android:background="#FFAAAAAA"
+        android:fillViewport="true" >
 
         <LinearLayout
             android:id="@+id/exhibit_sidebar_linear"
@@ -40,7 +41,7 @@
                 android:onClick="exhibitProcessSidebar"
                 android:text="Map"
                 android:visibility="gone" />
-        </LinearLayout> 
+        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>
