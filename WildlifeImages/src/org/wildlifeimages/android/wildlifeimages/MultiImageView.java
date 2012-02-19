@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -35,6 +36,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		gestures = new GestureDetector(context, this);
+		this.setFocusable(true);
 	}
 
 	private void reMeasureMatrix(){
@@ -77,6 +79,20 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		}
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		switch(keyCode){
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			scrollRight();
+			return true;
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+			scrollLeft();
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	@Override  
 	public boolean onTouchEvent(MotionEvent event) { 
 		if (event.getAction() == MotionEvent.ACTION_UP){
@@ -94,18 +110,26 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		}
 	}
 
+	private void scrollRight(){
+		if (hasNextImage()){
+			currentBitmapIndex++;
+			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
+		}
+	}
+
+	private void scrollLeft(){
+		if (hasPreviousImage()){
+			currentBitmapIndex--;
+			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
+		}
+	}
+
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		if (velocityX < 0){
-			if (hasNextImage()){
-				currentBitmapIndex++;
-				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
-			}
+			scrollRight();
 		}else{
-			if (hasPreviousImage()){
-				currentBitmapIndex--;
-				setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
-			}
+			scrollLeft();
 		}
 		return false;
 	}
