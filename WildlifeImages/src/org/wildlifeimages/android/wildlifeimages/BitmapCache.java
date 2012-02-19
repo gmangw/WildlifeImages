@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import android.graphics.Bitmap;
 import android.util.Log;
-	
+
 /**
  * This class will handle cached bitmaps, pretty much as hashtable.
  * 
@@ -16,12 +16,12 @@ import android.util.Log;
  */	
 public class BitmapCache {	
 	private static final int SIZE = 96;
-	public static final int CACHE_MAX = 2; //TODO
-	
+	public static final int CACHE_MAX = 5; //TODO
+
 	private HashMap<String, Bitmap> cachedBitmaps;
 	private HashMap<String, Bitmap> cachedThumbs;
 	LinkedList<String> sizeObserver = new LinkedList<String>();
-	
+
 	public BitmapCache(){
 		cachedBitmaps = new HashMap<String, Bitmap>();
 		cachedThumbs = new HashMap<String, Bitmap>();
@@ -31,7 +31,7 @@ public class BitmapCache {
 		Log.i(this.getClass().getName(), "Retrieved cached bitmap " + shortUrl);
 		return cachedBitmaps.get(shortUrl);
 	}
-	
+
 	public Bitmap getThumb(String shortUrl){
 		Log.i(this.getClass().getName(), "Retrieved cached thumb " + shortUrl);
 		return cachedThumbs.get(shortUrl);
@@ -40,7 +40,7 @@ public class BitmapCache {
 	public boolean containsBitmap(String shortUrl) {
 		return cachedBitmaps.containsKey(shortUrl);
 	}
-	
+
 	public boolean containsThumb(String shortUrl) {
 		return cachedThumbs.containsKey(shortUrl);
 	}
@@ -49,7 +49,7 @@ public class BitmapCache {
 		Log.i(this.getClass().getName(), "Caching thumb " + shortUrl);
 		Bitmap thumb;
 		float aspect = 1.0f * bmp.getWidth() / bmp.getHeight();
-		
+
 		if (aspect < 1.0f){
 			thumb = Bitmap.createScaledBitmap(bmp, SIZE, (int)(SIZE/aspect), true);
 			thumb = Bitmap.createBitmap(thumb, 0, 0, SIZE, SIZE);
@@ -59,7 +59,7 @@ public class BitmapCache {
 		}
 		cachedThumbs.put(shortUrl, thumb);
 	}
-	
+
 	public void putBitmap(String shortUrl, Bitmap bmp) {
 		cachedBitmaps.put(shortUrl, bmp);
 		sizeObserver.addLast(shortUrl);
@@ -70,8 +70,10 @@ public class BitmapCache {
 	}
 
 	public void removeBitmap(String shortUrl) {
-		cachedBitmaps.get(shortUrl).recycle();
-		cachedBitmaps.remove(shortUrl);
+		if (cachedBitmaps.containsKey(shortUrl)){
+			cachedBitmaps.get(shortUrl).recycle();
+			cachedBitmaps.remove(shortUrl);
+		}
 		sizeObserver.remove(shortUrl);
 		//cachedThumbs.remove(shortUrl);
 	}

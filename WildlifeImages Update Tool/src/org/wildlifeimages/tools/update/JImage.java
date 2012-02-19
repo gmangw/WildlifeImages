@@ -1,7 +1,11 @@
 package org.wildlifeimages.tools.update;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
@@ -13,14 +17,18 @@ import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.Scrollable;
 
 public class JImage extends JPanel{
 	private String lastShortUrl = null;
 	private String lastFile = null;
 	private BufferedImage image = null;
+	private final int previewSize;
 
-	public JImage(){
+	public JImage(int imageSize){
 		super();
+		
+		previewSize = imageSize;
 	}
 	
 	public void setImage(File newImage){
@@ -29,24 +37,16 @@ public class JImage extends JPanel{
 				image = ImageIO.read(newImage);
 				lastFile = newImage.getName();
 				lastShortUrl = null;
-
-				float aspect = 1.0f*image.getWidth()/image.getHeight();
-				BufferedImage smallImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-				smallImage.createGraphics().drawImage(image, 0, 0, (int)(this.getHeight()*aspect), this.getHeight(), this);
-				image = smallImage;
-				this.repaint();
+				shrinkImage();
 			} catch (IOException e) {
 			}
 		}
 	}
 
 	public void setImage(String shortUrl, ZipInputStream source){
-		final int previewSize = 92;
 		if (lastShortUrl == null || (false == lastShortUrl.equalsIgnoreCase(shortUrl))){
 			System.out.println("Loading image " + shortUrl);
 			try {
-				//ZipFile zf = new ZipFile("WildlifeImages.apk"); //TODO
-				//ZipEntry entry = zf.getEntry("assets/" + shortUrl); //TODO
 				ZipEntry entry;
 				for (entry = source.getNextEntry(); entry != null; entry = source.getNextEntry()){
 					if (entry.getName().equals("assets/" + shortUrl)){
@@ -60,18 +60,24 @@ public class JImage extends JPanel{
 				image = ImageIO.read(source);
 				lastFile = null;
 				lastShortUrl = shortUrl;
-
-				float aspect = 1.0f*image.getWidth()/image.getHeight();
-				BufferedImage smallImage = new BufferedImage((int)(previewSize*aspect), previewSize, BufferedImage.TYPE_3BYTE_BGR);
-				smallImage.createGraphics().drawImage(image, 0, 0, (int)(previewSize*aspect), previewSize, this);
-				image = smallImage;
-
+				shrinkImage();
 				source.close();
-				this.repaint();
+				
 			} catch (IOException e) {
 				System.out.println("Error loading image");
 			}
 		}
+	}
+	
+	private void shrinkImage(){
+		float aspect = 1.0f*image.getWidth()/image.getHeight();
+		BufferedImage smallImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_3BYTE_BGR);
+		Graphics2D g = smallImage.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.drawImage(image, 0, 0, image.getWidth()/2, image.getHeight()/2, this);
+		image = smallImage;
+		setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+		revalidate();
 	}
 	
 	@Override

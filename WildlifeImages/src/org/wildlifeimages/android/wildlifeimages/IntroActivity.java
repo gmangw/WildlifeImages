@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.

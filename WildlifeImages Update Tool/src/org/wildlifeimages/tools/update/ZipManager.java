@@ -1,12 +1,11 @@
 package org.wildlifeimages.tools.update;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,10 +21,11 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -36,10 +36,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
@@ -55,6 +55,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class ZipManager extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
+	
+	private final int previewSize = 240;
 
 	private static final Pattern filenamePattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 
@@ -64,7 +66,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private String[] originalFiles;
 
-	private final JPanel mainPanel = new JPanel(new GridLayout(6, 1));
+	private final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
 
 	private final JButton newTagButton = new JButton("Add Content to Exhibit");
 	private final JButton newExhibitButton = new JButton("Create New Exhibit");
@@ -73,20 +75,17 @@ public class ZipManager extends JFrame implements ActionListener{
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
 
-	private final JPanel listPanel = new JPanel(new GridLayout(1,2));
-
-	private final JPanel exhibitInfoPanel = new JPanel(new GridLayout(1,2));
+	private final JPanel contentPanel = new JPanel(new GridLayout(1,2));
 	private final JLabel exhibitContentLabel = new JLabel();
 	private final JComboBox newContentDropdown = new JComboBox();
 
 	private final JList exhibitPhotosList = new JList();
-	private final JImage exhibitPhotosImage = new JImage();
+	private final JImage exhibitPhotosImage = new JImage(previewSize);
 	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
 
 	private final JList modifiedFilesList = new JList();
 
 	private final JButton newFileButton = new JButton("Add file to project");
-	private final JTextField newFileNameField = new JTextField();
 
 	private ExhibitParser exhibitParser = null;
 
@@ -184,20 +183,27 @@ public class ZipManager extends JFrame implements ActionListener{
 			}
 		});
 
+		exhibitContentLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modifiedFilesList.setModel(modifiedFilesListModel);
+		
 		modifiedFilesList.setSelectionInterval(0, 0);
-
 		exhibitNameList.setSelectionInterval(0, 0);
 		contentList.setSelectionInterval(0, 0);
 		exhibitPhotosList.setSelectionInterval(0, 0);
 
-		listPanel.add(new JScrollPane(exhibitNameList));
-		listPanel.add(new JScrollPane(contentList));
+		JPanel contentDropdownPanel = new JPanel(new GridLayout(4, 1));
+		contentDropdownPanel.add(new JLabel("Original content:"));
+		contentDropdownPanel.add(exhibitContentLabel);
+		contentDropdownPanel.add(new JLabel("Current content:"));
+		contentDropdownPanel.add(newContentDropdown);
+		//contentDropdownPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-		exhibitInfoPanel.add(exhibitContentLabel);
-		exhibitInfoPanel.add(newContentDropdown);
-
+		contentPanel.add(new JScrollPane(contentList));
+		contentPanel.add(contentDropdownPanel);
+		contentPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		
 		exhibitDataPanel.add(exhibitXCoordOrig);
 		exhibitDataPanel.add(exhibitXCoordField);
 		exhibitDataPanel.add(exhibitPreviousOrig);
@@ -206,6 +212,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		exhibitDataPanel.add(exhibitYCoordField);
 		exhibitDataPanel.add(exhibitNextOrig);
 		exhibitDataPanel.add(exhibitNextDropdown);
+		exhibitDataPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		JPanel newButtonsPanel = new JPanel(new GridLayout(2,3));
 		newButtonsPanel.add(newExhibitButton);
@@ -217,22 +224,42 @@ public class ZipManager extends JFrame implements ActionListener{
 			c.setBackground(Color.WHITE);
 		}
 
-		JPanel exhibitPhotosPanel = new JPanel(new GridLayout(1, 2));
-		exhibitPhotosPanel.add(exhibitPhotosList);
-		exhibitPhotosPanel.add(exhibitPhotosImage);
-
-		mainPanel.add(newButtonsPanel);
-		mainPanel.add(listPanel);
-		mainPanel.add(exhibitInfoPanel);
-		mainPanel.add(exhibitDataPanel);
-		mainPanel.add(exhibitPhotosPanel);
-		mainPanel.add(new JScrollPane(modifiedFilesList));
-
+		JPanel listPanelTop = new JPanel(new BorderLayout());
+		listPanelTop.add(new JLabel("Exhibits:"), BorderLayout.NORTH);
+		listPanelTop.add(new JScrollPane(exhibitNameList), BorderLayout.CENTER);
+		JPanel listPanelBottom = new JPanel(new BorderLayout());
+		listPanelBottom.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
+		listPanelBottom.add(exhibitPhotosList, BorderLayout.CENTER);
+		JPanel listPanel = new JPanel(new GridLayout(2, 1));
+		listPanel.add(listPanelTop);
+		listPanel.add(listPanelBottom);
+		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		
+		JPanel subPanel1 = new JPanel(new GridLayout(1, 2, 2, 5));
+		JPanel subPanel2 = new JPanel(new GridLayout(2, 1, 2, 5));
+		JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
+		
+		subPanel1.add(listPanel);
+		subPanel1.add(new JScrollPane(exhibitPhotosImage));
+		subPanel2.add(exhibitDataPanel);
+		subPanel2.add(contentPanel);
+		subPanel3.add(new JScrollPane(modifiedFilesList));
+		subPanel3.add(newButtonsPanel);
+		
+		mainPanel.add(subPanel1);
+		mainPanel.add(subPanel2);
+		mainPanel.add(subPanel3);
+		
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		mainPanel.setBackground(Color.WHITE);
+		
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(mainPanel);
 	}
 
+	
+	
 	private void selectExhibit(){
 		currentExhibit = exhibitParser.getExhibits().get(exhibitNameList.getSelectedIndex());
 

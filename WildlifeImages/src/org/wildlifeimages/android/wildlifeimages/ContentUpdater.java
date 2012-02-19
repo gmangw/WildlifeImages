@@ -2,7 +2,6 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 public class ContentUpdater extends AsyncTask<ProgressManager, Integer, Boolean>{
 
