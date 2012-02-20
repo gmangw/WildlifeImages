@@ -3,6 +3,8 @@ package org.wildlifeimages.tools.update;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +27,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -36,10 +37,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
@@ -48,14 +49,20 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.svg.SVGDocument;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+
 public class ZipManager extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private final int previewSize = 240;
 
 	private static final Pattern filenamePattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
@@ -67,6 +74,8 @@ public class ZipManager extends JFrame implements ActionListener{
 	private String[] originalFiles;
 
 	private final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
+	
+	private JSVGCanvas map;
 
 	private final JButton newTagButton = new JButton("Add Content to Exhibit");
 	private final JButton newExhibitButton = new JButton("Create New Exhibit");
@@ -126,6 +135,9 @@ public class ZipManager extends JFrame implements ActionListener{
 		} catch (XmlPullParserException e) {
 			originalFiles = null;
 		}
+		
+		final Dimension mapDimension = new Dimension();
+		map = getMap(mapDimension);
 
 		currentExhibit = exhibitParser.getExhibits().get(0);
 
@@ -184,10 +196,10 @@ public class ZipManager extends JFrame implements ActionListener{
 		});
 
 		exhibitContentLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		
+
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modifiedFilesList.setModel(modifiedFilesListModel);
-		
+
 		modifiedFilesList.setSelectionInterval(0, 0);
 		exhibitNameList.setSelectionInterval(0, 0);
 		contentList.setSelectionInterval(0, 0);
@@ -203,7 +215,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		contentPanel.add(new JScrollPane(contentList));
 		contentPanel.add(contentDropdownPanel);
 		contentPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		
+
 		exhibitDataPanel.add(exhibitXCoordOrig);
 		exhibitDataPanel.add(exhibitXCoordField);
 		exhibitDataPanel.add(exhibitPreviousOrig);
@@ -234,32 +246,113 @@ public class ZipManager extends JFrame implements ActionListener{
 		listPanel.add(listPanelTop);
 		listPanel.add(listPanelBottom);
 		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		
+
 		JPanel subPanel1 = new JPanel(new GridLayout(1, 2, 2, 5));
 		JPanel subPanel2 = new JPanel(new GridLayout(2, 1, 2, 5));
 		JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
-		
+
 		subPanel1.add(listPanel);
 		subPanel1.add(new JScrollPane(exhibitPhotosImage));
 		subPanel2.add(exhibitDataPanel);
 		subPanel2.add(contentPanel);
 		subPanel3.add(new JScrollPane(modifiedFilesList));
 		subPanel3.add(newButtonsPanel);
-		
+
 		mainPanel.add(subPanel1);
 		mainPanel.add(subPanel2);
 		mainPanel.add(subPanel3);
-		
+
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		mainPanel.setBackground(Color.WHITE);
+
+		JPanel mapPanel = new JPanel(new GridLayout(1,1)){
+			//public void setMapDimension
+			
+			@Override
+			public void paint(Graphics g){
+				super.paint(g);
+				double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
+				double myAspect = 1.0*getWidth()/getHeight();
+				int w;
+				int h;
+				int offsetX = 0;
+				int offsetY = 0;
+				
+				System.out.println(myAspect + ", " + mapAspect);
+				
+				if (myAspect > mapAspect){
+					w = (int)(getWidth() * (mapAspect / myAspect));
+					h = getHeight();
+					offsetX = (getWidth() - w)/2;
+					System.out.println("width multiplied by " + (mapAspect / myAspect));
+				}else{
+					w = getWidth();
+					h = (int)(getHeight() * (myAspect / mapAspect));
+					offsetY = (getHeight() - h)/2;
+					System.out.println("height multiplied by " + (myAspect / mapAspect));
+				}
+				
+				for(ExhibitInfo e : exhibitParser.getExhibits()){
+					int exhibitX = e.getxCoord();
+					int exhibitY = e.getyCoord();
+					if (exhibitX != -1 || exhibitY != -1){
+						int x = w * exhibitX/100 + offsetX;
+						int y = h * exhibitY/100 + offsetY;
+						g.drawString(e.getName(), x-e.getName().length()*3, y+4);
+					}
+				}
+			}
+		};
+		mapPanel.add(map);
+		
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.addTab("Exhibit Stuff", mainPanel);
+		tabbedPane.addTab("Map", mapPanel);
 		
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
-		this.add(mainPanel);
+		this.add(tabbedPane);
 	}
 
-	
-	
+	public JSVGCanvas getMap(Dimension d){
+		ZipInputStream stream = getZipStream();
+
+		JSVGCanvas svgCanvas = new JSVGCanvas();
+		
+		try{
+			ZipEntry entry;
+			for (entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()){
+				if (entry.getName().equals("res/raw/map.svg")){
+					break;
+				}
+				entry = null;
+			}
+			if (entry == null){
+				throw new IOException("Could not load map.svg");
+			}
+
+
+			String parser = XMLResourceDescriptor.getXMLParserClassName();
+			SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
+			SVGDocument doc = (SVGDocument)f.createDocument("myURI", stream);
+			
+			String widthString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE);
+			String heightString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE);
+			int width = Integer.parseInt(widthString.substring(0, widthString.length()-3));
+			int height = Integer.parseInt(heightString.substring(0, heightString.length()-3));
+
+			d.setSize(width, height);
+			
+			svgCanvas.setSVGDocument(doc);
+
+			stream.close();
+		}catch(IOException e){
+			//TODO
+		}
+
+		return svgCanvas;
+	}
+
 	private void selectExhibit(){
 		currentExhibit = exhibitParser.getExhibits().get(exhibitNameList.getSelectedIndex());
 
@@ -270,21 +363,21 @@ public class ZipManager extends JFrame implements ActionListener{
 			l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
 		}
 		exhibitXCoordField.setValue(currentExhibit.getxCoord());
-		exhibitXCoordOrig.setText(currentExhibit.origXCoord+"");
+		exhibitXCoordOrig.setText("X coordinate: (was " + currentExhibit.origXCoord + ")");
 		exhibitYCoordField.setValue(currentExhibit.getyCoord());
-		exhibitYCoordOrig.setText(currentExhibit.origYCoord+"");
+		exhibitYCoordOrig.setText("Y coordinate: (was " + currentExhibit.origYCoord + ")");
 
 		exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
 		if (currentExhibit.getNext() != null){
-			exhibitNextOrig.setText(currentExhibit.origNext+"");
+			exhibitNextOrig.setText("Next: (was " + currentExhibit.origNext+")");
 		}else{
-			exhibitPreviousOrig.setText("");
+			exhibitPreviousOrig.setText("Next:");
 		}
 		exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
 		if (currentExhibit.getPrevious() != null){
-			exhibitPreviousOrig.setText(currentExhibit.origPrevious+"");
+			exhibitPreviousOrig.setText("Previous: (was " + currentExhibit.origPrevious+")");
 		}else{
-			exhibitPreviousOrig.setText("");
+			exhibitPreviousOrig.setText("Previous:");
 		}
 
 		exhibitPhotosList.setSelectionInterval(0, 0);
