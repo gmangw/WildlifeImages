@@ -2,7 +2,6 @@ package org.wildlifeimages.tools.update;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.zip.ZipOutputStream;
 
 import org.xmlpull.v1.XmlPullParser;

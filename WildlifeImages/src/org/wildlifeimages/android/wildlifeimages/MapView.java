@@ -146,14 +146,14 @@ class MapView extends ImageView {
 			}
 			canvas.drawText(exhibitNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
 		}
-		float[][] anchorPoints = ContentManager.getSelf().getExhibitList().getAnchorPoints();
+		/*float[][] anchorPoints = ContentManager.getSelf().getExhibitList().getAnchorPoints();
 		for (int i=0; i<anchorPoints.length; i++){
 			float[] pts = {anchorPoints[i][0]*mapWidth, anchorPoints[i][1]*mapHeight};
 			getImageMatrix().mapPoints(pts);
 			float l = pts[0];
 			float t = pts[1];
 			canvas.drawCircle(l, t, anchorPoints[i][2]*3, activeP); 
-		}
+		}*/
 	}
 
 	/**

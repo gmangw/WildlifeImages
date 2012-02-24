@@ -119,7 +119,13 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-
+		
+		if (activeHomeId == R.id.intro_sidebar_photos){
+			ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
+			exView.clear();
+		}
+		
+		
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 
 		/* 
@@ -130,7 +136,7 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		updateDialogManager.dismiss();
 
 		/* Here we are saving state, so saving the items we had open. */
-		Iterator<String> keyList = exhibitList.keys();
+		/*Iterator<String> keyList = exhibitList.keys();
 		ArrayList<String> currentExhibitList = new ArrayList<String>();
 		ArrayList<String> currentTagList = new ArrayList<String>();
 		while(keyList.hasNext()){
@@ -140,6 +146,7 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		}
 		outState.putStringArrayList(loadString(R.string.save_current_exhibit_names), currentExhibitList);
 		outState.putStringArrayList(loadString(R.string.save_current_exhibit_tag), currentTagList);
+		*/
 	}
 
 	/**
@@ -212,7 +219,7 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		super.onResume();
 		
 		if (activeHomeId == R.id.intro_sidebar_photos){
-			introProcessSidebar(R.id.intro_sidebar_intro);
+			introProcessSidebar(activeHomeId);
 		}
 	}
 		

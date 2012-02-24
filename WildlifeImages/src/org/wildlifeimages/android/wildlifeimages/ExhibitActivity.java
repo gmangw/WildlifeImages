@@ -38,15 +38,16 @@ public class ExhibitActivity extends WireActivity{
 
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 
-		//if (savedState == null) { /* Start from scratch if there is no previous state */
-		//	showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
-		//} else { /* Use saved state info if app just restarted */
-		//	Exhibit e = exhibitList.get(savedState.getString(loadString(R.string.save_current_exhibit)));
-		//	String tag = savedState.getString(loadString(R.string.save_current_exhibit_tag));
-		//	showExhibit(e, tag);
-		//}
-		remakeButtons(exhibitList.getCurrent());
-		showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
+		if (savedState == null) { /* Start from scratch if there is no previous state */
+			remakeButtons(exhibitList.getCurrent()); //TODO
+			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
+		} else { /* Use saved state info if app just restarted */
+			Exhibit e = exhibitList.get(savedState.getString(loadString(R.string.save_current_exhibit)));
+			String tag = savedState.getString(loadString(R.string.save_current_exhibit_tag));
+			remakeButtons(e); //TODO
+			showExhibit(e, tag);
+		}
+		
 	}
 
 	/**
@@ -170,9 +171,10 @@ public class ExhibitActivity extends WireActivity{
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
-		ExhibitView exView;
-		exView = (ExhibitView) findViewById(R.id.exhibit);
+		ExhibitView exView = (ExhibitView) findViewById(R.id.exhibit);
 		exView.clear();
+		outState.putString(loadString(R.string.save_current_exhibit), activityCurrentExhibit.getName());
+		outState.putString(loadString(R.string.save_current_exhibit_tag), activityCurrentExhibit.getCurrentTag());
 	}
 
 	@Override

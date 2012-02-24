@@ -3,33 +3,22 @@ package org.wildlifeimages.tools.update;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Scrollable;
 
 public class JImage extends JPanel{
+	private static final long serialVersionUID = -1069865040054492287L;
+
 	private String lastShortUrl = null;
 	private String lastFile = null;
 	private BufferedImage image = null;
-	private final int previewSize;
-
-	public JImage(int imageSize){
-		super();
-		
-		previewSize = imageSize;
-	}
 	
 	public void setImage(File newImage){
 		if (lastFile == null || (false == lastFile.equals(newImage.getName()))){
@@ -70,7 +59,6 @@ public class JImage extends JPanel{
 	}
 	
 	private void shrinkImage(){
-		float aspect = 1.0f*image.getWidth()/image.getHeight();
 		BufferedImage smallImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_3BYTE_BGR);
 		Graphics2D g = smallImage.createGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -78,6 +66,7 @@ public class JImage extends JPanel{
 		image = smallImage;
 		setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
 		revalidate();
+		this.repaint();
 	}
 	
 	@Override

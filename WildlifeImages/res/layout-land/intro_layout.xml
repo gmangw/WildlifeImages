@@ -12,17 +12,13 @@
         android:layout_weight="1"
         android:scrollbars="none" />
 
-    <ScrollView
+    <LinearLayout
         android:id="@+id/intro_sidebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="3" 
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
+        android:layout_weight="3"
+        android:fillViewport="true"
+        android:orientation="vertical" >
 
             <Button
                 android:id="@+id/intro_sidebar_intro"
@@ -47,7 +43,8 @@
             <Button
                 android:id="@+id/intro_sidebar_app"
                 style="@style/IntroHorizontalButton"
-                android:text="@string/intro_sidebar_app" />
+                android:text="@string/intro_sidebar_app"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/intro_sidebar_exhibitlist"
@@ -62,8 +59,9 @@
             <Button
                 android:id="@+id/intro_sidebar_update"
                 style="@style/IntroHorizontalButton"
-                android:text="@string/intro_sidebar_update" />
-        </LinearLayout>
-    </ScrollView>
+                android:text="@string/intro_sidebar_update"
+                android:visibility="gone" />
+
+    </LinearLayout>
 
 </LinearLayout>

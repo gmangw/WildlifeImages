@@ -62,10 +62,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class ZipManager extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 
-	private final int previewSize = 240;
-
-	private static final Pattern filenamePattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
+	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
 
 	private static final String assetPath = "assets/";
 
@@ -74,7 +74,7 @@ public class ZipManager extends JFrame implements ActionListener{
 	private String[] originalFiles;
 
 	private final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
-	
+
 	private JSVGCanvas map;
 
 	private final JButton newTagButton = new JButton("Add Content to Exhibit");
@@ -89,7 +89,7 @@ public class ZipManager extends JFrame implements ActionListener{
 	private final JComboBox newContentDropdown = new JComboBox();
 
 	private final JList exhibitPhotosList = new JList();
-	private final JImage exhibitPhotosImage = new JImage(previewSize);
+	private final JImage exhibitPhotosImage = new JImage();
 	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
 
 	private final JList modifiedFilesList = new JList();
@@ -133,9 +133,10 @@ public class ZipManager extends JFrame implements ActionListener{
 		try {
 			originalFiles = this.readAPK(getZipStream());
 		} catch (XmlPullParserException e) {
+			//TODO
 			originalFiles = null;
 		}
-		
+
 		final Dimension mapDimension = new Dimension();
 		map = getMap(mapDimension);
 
@@ -176,6 +177,8 @@ public class ZipManager extends JFrame implements ActionListener{
 		newExhibitButton.addActionListener(this);
 
 		newTagButton.addActionListener(this);
+
+		newImageButton.addActionListener(this);
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.addItem(" ");
@@ -266,8 +269,8 @@ public class ZipManager extends JFrame implements ActionListener{
 		mainPanel.setBackground(Color.WHITE);
 
 		JPanel mapPanel = new JPanel(new GridLayout(1,1)){
-			//public void setMapDimension
-			
+			private static final long serialVersionUID = -2662027617645159327L;
+
 			@Override
 			public void paint(Graphics g){
 				super.paint(g);
@@ -277,38 +280,38 @@ public class ZipManager extends JFrame implements ActionListener{
 				int h;
 				int offsetX = 0;
 				int offsetY = 0;
-				
-				System.out.println(myAspect + ", " + mapAspect);
-				
+
+
 				if (myAspect > mapAspect){
 					w = (int)(getWidth() * (mapAspect / myAspect));
 					h = getHeight();
 					offsetX = (getWidth() - w)/2;
-					System.out.println("width multiplied by " + (mapAspect / myAspect));
 				}else{
 					w = getWidth();
 					h = (int)(getHeight() * (myAspect / mapAspect));
 					offsetY = (getHeight() - h)/2;
-					System.out.println("height multiplied by " + (myAspect / mapAspect));
 				}
-				
+
+				//int fontHeight = g.getFontMetrics().getHeight();
+
 				for(ExhibitInfo e : exhibitParser.getExhibits()){
 					int exhibitX = e.getxCoord();
 					int exhibitY = e.getyCoord();
 					if (exhibitX != -1 || exhibitY != -1){
 						int x = w * exhibitX/100 + offsetX;
-						int y = h * exhibitY/100 + offsetY;
-						g.drawString(e.getName(), x-e.getName().length()*3, y+4);
+						int y = h * exhibitY/100 + offsetY; //+fontHeight/2; //TODO
+						int stringWidth = g.getFontMetrics().stringWidth(e.getName());
+						g.drawString(e.getName(), x-stringWidth/2, y);
 					}
 				}
 			}
 		};
 		mapPanel.add(map);
-		
+
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Exhibit Stuff", mainPanel);
 		tabbedPane.addTab("Map", mapPanel);
-		
+
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(tabbedPane);
@@ -318,7 +321,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		ZipInputStream stream = getZipStream();
 
 		JSVGCanvas svgCanvas = new JSVGCanvas();
-		
+
 		try{
 			ZipEntry entry;
 			for (entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()){
@@ -335,14 +338,14 @@ public class ZipManager extends JFrame implements ActionListener{
 			String parser = XMLResourceDescriptor.getXMLParserClassName();
 			SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 			SVGDocument doc = (SVGDocument)f.createDocument("myURI", stream);
-			
+
 			String widthString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE);
 			String heightString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE);
 			int width = Integer.parseInt(widthString.substring(0, widthString.length()-3));
 			int height = Integer.parseInt(heightString.substring(0, heightString.length()-3));
 
 			d.setSize(width, height);
-			
+
 			svgCanvas.setSVGDocument(doc);
 
 			stream.close();
@@ -480,6 +483,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			return files.toArray(new String[files.size()]);
 		} catch (IOException e) {
 			e.printStackTrace();
+			//TODO
 			return null;
 		}
 	}
@@ -500,7 +504,8 @@ public class ZipManager extends JFrame implements ActionListener{
 					in.close();
 					out.closeEntry();
 				}catch(FileNotFoundException e){
-					System.out.println("Error: Cannot read new file " + modifiedFiles.get(key)); //TODO
+					//TODO
+					System.out.println("Error: Cannot read new file " + modifiedFiles.get(key));
 				}
 			}
 			out.putNextEntry(new ZipEntry("exhibits.xml"));
@@ -512,6 +517,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			//TODO
 		}
 	}
 
@@ -540,10 +546,12 @@ public class ZipManager extends JFrame implements ActionListener{
 			JFileChooser chooser = new JFileChooser();
 			chooser.setDialogTitle("Select new file to add.");
 			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-				this.saveFile(chooser.getSelectedFile());
-				String newName = JOptionPane.showInputDialog("Local name for new file (such as ExhibitContents/bear.html):");
-				if (newName != null){ //TODO format check
-					addFile(newName, chooser.getSelectedFile());
+				if (chooser.getSelectedFile().exists()){
+					this.saveFile(chooser.getSelectedFile());
+					String newName = JOptionPane.showInputDialog("Local name for new file (such as ExhibitContents/bear.html):");
+					if (newName != null){ //TODO format check
+						addFile(newName, chooser.getSelectedFile());
+					}
 				}
 			}
 		}else if (event.getSource().equals(newContentDropdown)){
@@ -560,15 +568,17 @@ public class ZipManager extends JFrame implements ActionListener{
 			}
 		}else if (event.getSource().equals(newTagButton)){
 			String newName = JOptionPane.showInputDialog("Name of new content:"); //TODO
-			if (newName != null){ //TODO format check
+			if (newName != null && localPathPattern.matcher(newName).matches()){
 				currentExhibit.addContent(newName, originalFiles[0]);
 				contentListModel.notifyChange();
+			}else{
+				System.out.println("Invalid tag name " + newName);
 			}
 		}else if (event.getSource().equals(newExhibitButton)){
 			String newName = JOptionPane.showInputDialog("Name of new exhibit:");
-			if (newName != null){ //TODO format check
+			if (newName != null && exhibitNamePattern.matcher(newName).matches()){
 				String newContentName = JOptionPane.showInputDialog("Name of first new content:");
-				if (newContentName != null){ //TODO format check
+				if (newContentName != null && localPathPattern.matcher(newContentName).matches()){
 					ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
 					newE.addContent(newContentName, originalFiles[0]);
 					exhibitParser.getExhibits().add(newE);
@@ -576,7 +586,28 @@ public class ZipManager extends JFrame implements ActionListener{
 					exhibitPreviousDropdown.addItem(newName);
 					((ExhibitListModel)exhibitNameList.getModel()).notifyChange();
 					contentListModel.notifyChange();
+				}else{
+					System.out.println("Invalid tag name " + newContentName);
 				}
+			}else{
+				System.out.println("Invalid exhibit name " + newName);
+			}
+		}else if (event.getSource().equals(newImageButton)){
+			ArrayList<String> fileList = new ArrayList<String>();
+			for (String file : originalFiles){
+				if (false == modifiedFiles.containsKey(file)){
+					fileList.add(file);
+				}
+			}
+			for (String file : modifiedFiles.keySet()){
+				fileList.add(file);
+			}
+			Object[] files = fileList.toArray();
+			String s = (String)JOptionPane.showInputDialog(this, "File to use:", "New Photo",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
+
+			if ((s != null) && (s.length() > 0)) {
+				currentExhibit.addPhoto(s);
+				exhibitPhotosModel.notifyChange();
 			}
 		}
 	}
