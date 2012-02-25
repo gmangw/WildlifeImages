@@ -1,9 +1,11 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,6 +22,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
  * @author Naveen Nanja
  */
 public class MapActivity extends WireActivity{
+
+	private static final float ZOOM_FACTOR_START = 0.5f;
+	
+	private static final int BIRD_DIALOG = 0;
 
 	/**
 	 * Invoked when the Activity is created.
@@ -47,19 +53,19 @@ public class MapActivity extends WireActivity{
 			}
 
 			public void onStartTrackingTouch(SeekBar seekBar) {}
-			
+
 			public void onStopTrackingTouch(SeekBar seekBar) {}
 		});
-		
+
 		DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int ht = displaymetrics.heightPixels;
-        int wt = displaymetrics.widthPixels;
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		int ht = displaymetrics.heightPixels;
+		int wt = displaymetrics.widthPixels;
 		if (wt > 0){
 			int size = Math.max(ht, wt);
 			float zoomFactor = size / 800.0f;
 			Log.d(this.getClass().getName(), wt + "," + ht + ": " + zoomFactor);
-			ContentManager.getSelf().getExhibitList().setZoomFactor(zoomFactor * 0.75f);
+			ContentManager.getSelf().getExhibitList().setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
 	}
 
@@ -87,6 +93,36 @@ public class MapActivity extends WireActivity{
 		return selectedExhibit;
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id){
+		super.onCreateDialog(id);
+		
+		if (id == BIRD_DIALOG){
+			final String[] items = {
+					"Bald Eagles", 
+					"Peregrine Falcon", 
+					"Western Screech Owl",
+					"Golden Eagles",
+					"Great Horned Owl",
+					"Sandhill Crane"
+			};
+			final MapActivity self = this;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Birds:");
+			//TODO use adapter instead of items
+			builder.setItems(items, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					ContentManager.getSelf().getExhibitList().setCurrent(items[item], Exhibit.TAG_AUTO);
+					ExhibitActivity.start(self);	
+				}
+			});
+			AlertDialog alert = builder.create();
+			return alert;
+		}else{
+			return null;
+		}
+	}
+
 	/**
 	 * When you click on the map or gesture, this will interpret your input.
 	 */
@@ -112,15 +148,18 @@ public class MapActivity extends WireActivity{
 			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 			Exhibit selectedExhibit = exhibitList.get(findClickedExhibit(mMapView, e.getX(), e.getY()));
 			if(selectedExhibit != null){
-				exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
-				ExhibitActivity.start(parent);	
+				if (selectedExhibit.getName().equals("Lynx")){
+					parent.showDialog(BIRD_DIALOG);
+				}else{
+					exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
+					ExhibitActivity.start(parent);	
+				}
 			}
 			return true;
 		}
 
 		public boolean onDown(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 			String selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
 			if(selectedExhibit != null){
 				mMapView.showPress(selectedExhibit);

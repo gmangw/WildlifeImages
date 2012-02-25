@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-
 /**
  * An Exhibit contains all of the content info for one map location.
  * 

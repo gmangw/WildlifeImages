@@ -1,7 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
@@ -17,9 +16,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 /**

@@ -1,10 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,9 +20,9 @@ import android.view.View;
  */
 public class IntroActivity extends WireActivity implements UpdateListener {
 
+	private static final int EXIT_DIALOG = 0;
+	
 	private int activeHomeId = R.id.intro_sidebar_intro;
-
-	private AlertDialog exitDialog;
 
 	/*
 	 * This progress manager will handle the update button when pressed.
@@ -41,8 +39,6 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 	@Override
 	protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);		
-
-		exitDialog = createExitDialog();
 
 		/* Create a new content manager if there is none. */
 		if (ContentManager.getSelf() == null){
@@ -86,6 +82,12 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		introProcessSidebar(activeHomeId);
 	}
 
+	protected Dialog onCreateDialog(int id){
+		super.onCreateDialog(id);
+		
+		return createExitDialog();
+	}
+	
 	/**
 	 * Create the exit dialog box with yes/no option.
 	 */
@@ -118,13 +120,11 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		
 		if (activeHomeId == R.id.intro_sidebar_photos){
 			ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
 			exView.clear();
 		}
-		
 		
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 
@@ -132,7 +132,6 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		 * Here we are dismissing since if you have a dialog open and rotate the device it
 		 * will try to exit the application and we do not want that. 
 		 */
-		exitDialog.dismiss();
 		updateDialogManager.dismiss();
 
 		/* Here we are saving state, so saving the items we had open. */
@@ -231,7 +230,7 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 	@Override
 	public void onBackPressed() {
 		if (this.isTaskRoot()) {
-			exitDialog.show();
+			showDialog(EXIT_DIALOG);
 		} else {
 			finish();
 		}
