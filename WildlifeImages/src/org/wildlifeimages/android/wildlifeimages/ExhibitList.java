@@ -8,6 +8,8 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.util.Log;
+
 /**
  * A collection of {@link Exhibit} instances.
  * 
@@ -28,35 +30,35 @@ public class ExhibitList{
 	private float zoomMinimum = 1.00f;
 	private float zoomExponent = 1.00f;
 	private float[][] anchorPoints = { 
-			{0.00f, 0.00f, 1.30f},
+			{0.00f, 0.00f, 1.90f},
 			{0.00f, 0.25f, 2.50f}, 
-			{0.00f, 0.50f, 1.00f},
-			{0.00f, 0.75f, 1.30f},
-			{0.00f, 1.00f, 1.30f},
+			{0.00f, 0.50f, 1.80f},
+			{0.00f, 0.75f, 1.70f},
+			{0.00f, 1.00f, 1.60f},
 
-			{0.25f, 0.00f, 1.30f},
-			{0.25f, 0.25f, 2.50f}, 
-			{0.25f, 0.50f, 1.00f},
-			{0.25f, 0.75f, 1.30f},
-			{0.25f, 1.00f, 1.30f}, 
+			{0.25f, 0.00f, 2.00f},
+			{0.25f, 0.25f, 3.00f}, 
+			{0.25f, 0.50f, 1.80f},
+			{0.25f, 0.75f, 1.70f},
+			{0.25f, 1.00f, 1.60f}, 
 
-			{0.50f, 0.00f, 1.30f},
+			{0.50f, 0.00f, 1.60f},
 			{0.50f, 0.25f, 2.50f}, 
-			{0.50f, 0.50f, 1.00f},
+			{0.50f, 0.50f, 1.30f},
 			{0.50f, 0.75f, 1.30f},
-			{0.50f, 1.00f, 1.30f},
+			{0.50f, 1.00f, 1.60f},
 
-			{0.75f, 0.00f, 1.30f},
-			{0.75f, 0.25f, 2.50f}, 
-			{0.75f, 0.50f, 1.00f},
-			{0.75f, 0.75f, 1.30f},
-			{0.75f, 1.00f, 1.30f},
+			{0.75f, 0.00f, 1.60f},
+			{0.75f, 0.25f, 2.60f}, 
+			{0.75f, 0.50f, 1.60f},
+			{0.75f, 0.75f, 1.50f},
+			{0.75f, 1.00f, 1.40f},
 
-			{1.00f, 0.00f, 1.30f},
-			{1.00f, 0.25f, 1.15f},
-			{1.00f, 0.50f, 1.00f},
-			{1.00f, 0.75f, 1.00f},
-			{1.00f, 1.00f, 1.00f},
+			{1.00f, 0.00f, 1.60f},
+			{1.00f, 0.25f, 1.60f},
+			{1.00f, 0.50f, 1.60f},
+			{1.00f, 0.75f, 1.60f},
+			{1.00f, 1.00f, 1.60f},
 	};
 
 	private void readExhibitTag(XmlPullParser xmlBox, Exhibit e) throws XmlPullParserException, IOException{
@@ -214,6 +216,7 @@ public class ExhibitList{
 			newScale = Math.max(newScale, zoomCandidate);
 		}
 
+		//Log.i(this.getClass().getName(), ""+newScale);
 		return zoomFactor * newScale;
 	}
 

@@ -1,6 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import android.R.color;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -42,7 +41,13 @@ public class MapActivity extends WireActivity{
 		MapView mMapView = (MapView) findViewById(R.id.map);
 
 		mMapView.setGestureDetector(new GestureDetector(this, new MapGestureListener(this)));
-
+		if (savedState != null){
+			mMapView.processMove(savedState.getFloat(loadString(R.string.save_map_x)), savedState.getFloat(loadString(R.string.save_map_y)));
+			if (true == savedState.getBoolean(loadString(R.string.save_map_zoom))){
+				mMapView.toggleZoom();
+			}
+		}
+		
 		SeekBar slider = (SeekBar)findViewById(R.id.seek);
 		slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -69,6 +74,15 @@ public class MapActivity extends WireActivity{
 			Log.d(this.getClass().getName(), wt + "," + ht + ": " + zoomFactor);
 			exhibitList.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
+	}
+	
+	protected void onSaveInstanceState(Bundle out){
+		MapView mMapView = (MapView) findViewById(R.id.map);
+		float[] position = mMapView.getPosition();
+		
+		out.putFloat(loadString(R.string.save_map_x), position[0]);
+		out.putFloat(loadString(R.string.save_map_y), position[1]);
+		out.putBoolean(loadString(R.string.save_map_zoom), mMapView.isZoomed());
 	}
 
 	/**
@@ -150,9 +164,10 @@ public class MapActivity extends WireActivity{
 			parent = context;
 		}
 
-
 		public boolean onDoubleTap(MotionEvent e) {
-			return false;
+			MapView mMapView = (MapView) findViewById(R.id.map);
+			mMapView.toggleZoom();
+			return true;
 		}
 
 		public boolean onDoubleTapEvent(MotionEvent e) {

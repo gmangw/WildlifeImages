@@ -13,6 +13,9 @@
     <string name="save_current_page">scp</string>
     <string name="save_current_home_id">schi</string>
     <string name="save_current_exhibit_names">scen</string>
+    <string name="save_map_x">smx</string>
+    <string name="save_map_y">smy</string>
+    <string name="save_map_zoom">smz</string>
     <string name="intro_sidebar_update">Update</string>
     <string name="intro_sidebar_about">About</string>
     <string name="intro_sidebar_support">Support</string>
@@ -42,7 +45,7 @@
     <string name="intro_url_about">intro.html</string>
     <string name="intro_url_support">donate.html</string>
     <string name="intro_url_events">events.html</string>
-
+        
     <string-array name="intro_image_list">
         <item>shoshoni.jpg</item>
         <item>clark.jpg</item>

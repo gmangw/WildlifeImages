@@ -13,8 +13,10 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,7 +29,9 @@ import android.widget.ImageView;
  */
 class MapView extends ImageView {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
+
+	private boolean doZoom = false;
 
 	private GestureDetector gestures;
 
@@ -48,7 +52,7 @@ class MapView extends ImageView {
 
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-
+		
 		SVG svg = SVGParser.getSVGFromResource(getResources(), R.raw.map);
 		Drawable drawable = svg.createPictureDrawable();
 		this.setImageDrawable(drawable);
@@ -69,6 +73,16 @@ class MapView extends ImageView {
 
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		setPoints(exhibitList);
+	}
+
+	public void toggleZoom(){
+		doZoom = !doZoom;
+		doTransform();
+		processScroll(0.0f, 0.0f);
+	}
+	
+	public boolean isZoomed(){
+		return doZoom;
 	}
 
 	private void setPoints(ExhibitList exhibitList){
@@ -124,10 +138,16 @@ class MapView extends ImageView {
 
 	private void doTransform(){
 		Matrix m = new Matrix();
-		m.setScale(scale, scale);
-		float translateX = (-(originX - getWidth()/2)) - scale*(mapWidth/2);
-		float translateY = (-(originY - getHeight()/2)) - scale*(mapHeight/2);
-		m.postTranslate(translateX, translateY);
+		if (doZoom){
+			m.setScale(scale, scale);
+			float translateX = (-(originX - getWidth()/2)) - scale*(mapWidth/2);
+			float translateY = (-(originY - getHeight()/2)) - scale*(mapHeight/2);
+			m.postTranslate(translateX, translateY);
+		}else{
+			RectF rSrc = new RectF(0, 0, mapWidth, mapHeight);
+			RectF rDst = new RectF(0, 0, getWidth(), getHeight());
+			m.setRectToRect(rSrc, rDst, Matrix.ScaleToFit.CENTER);
+		}
 
 		this.setImageMatrix(m);
 
@@ -169,7 +189,7 @@ class MapView extends ImageView {
 				getImageMatrix().mapPoints(pts);
 				float l = pts[0];
 				float t = pts[1];
-				canvas.drawCircle(l, t, anchorPoints[i][2]*3, activeP); 
+				canvas.drawCircle(l, t, anchorPoints[i][2]*10, activeP); 
 			}
 		}
 	}
@@ -178,17 +198,43 @@ class MapView extends ImageView {
 		gestures = gestureListener;
 	}
 
+	public void processMove(float x, float y){
+		originX = x;
+		originY = y;
+		processScroll(0.0f, 0.0f);
+	}
+	
+	public float[] getPosition(){
+		float[] position = {originX, originY};
+		return position;
+	}
+	
 	public void processScroll(float distanceX, float distanceY){
-		originX = Common.clamp(originX + distanceX, getXFromFraction(0.0f), getXFromFraction(1.0f));
-		originY = Common.clamp(originY + distanceY, getYFromFraction(0.0f), getYFromFraction(1.0f));
+		if (doZoom){
+			if (originX + distanceX < getXFromFraction(0.10f)){
+				originX = originX - (originX - getXFromFraction(0.10f))/2.0f;
+			}else if(originX + distanceX > getXFromFraction(0.85f)){
+				originX = originX + (getXFromFraction(0.85f) - originX)/2.0f;
+			}else{
+				originX = originX + distanceX;
+			}
+			if (originY + distanceY < getYFromFraction(0.15f)){
+				originY = originY - (originY - getYFromFraction(0.15f))/2.0f;
+			}else if(originY + distanceY > getYFromFraction(0.80f)){
+				originY = originY + (getYFromFraction(0.80f) - originY)/2.0f;
+			}else{
+				originY = originY + distanceY;
+			}
 
-		float xFraction = (float)Math.max(0.0f, getXFraction(originX));
-		float yFraction = (float)Math.max(0.0f, getYFraction(originY));
+			float xFraction = (float)Math.max(0.0f, getXFraction(originX));
+			float yFraction = (float)Math.max(0.0f, getYFraction(originY));
 
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 
-		scale = exhibitList.getScale(xFraction, yFraction);
-		doTransform();
+			scale = exhibitList.getScale(xFraction, yFraction);
+
+			doTransform();
+		}
 	}
 
 	private float getXFraction(float x){
@@ -224,6 +270,10 @@ class MapView extends ImageView {
 				closest = displayNames[i];
 			}
 		}
-		return closest;
+		if (minDistance < 5){
+			return closest;
+		}else{
+			return null;
+		}
 	}
 }
