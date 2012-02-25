@@ -10,30 +10,74 @@ import org.xmlpull.v1.XmlPullParserException;
 public class ExhibitParser {
 	ArrayList<ExhibitInfo> exhibits = new ArrayList<ExhibitInfo>();
 
+	private void readExhibitTag(XmlPullParser xmlBox, ExhibitInfo e){
+		if (xmlBox.getName().equalsIgnoreCase("content")){
+			String url = xmlBox.getAttributeValue(null, "page");
+			e.addOrigContent(xmlBox.getAttributeValue(null, "tag"), url);
+		}else if (xmlBox.getName().equalsIgnoreCase("photo")){
+			String url = xmlBox.getAttributeValue(null, "page");
+			e.addPhoto(url);
+		}else if (xmlBox.getName().equalsIgnoreCase("alias")){
+			String tmp = xmlBox.getAttributeValue(null, "xpos");
+			int xAlias = -1;
+			int yAlias = -1;
+			if (tmp != null){
+				xAlias = Integer.decode(tmp);
+			}
+			tmp = xmlBox.getAttributeValue(null, "ypos");
+			if (tmp != null){
+				yAlias = Integer.decode(tmp);
+			}
+			String aliasName = xmlBox.getAttributeValue(null, "name");
+			e.addAlias(aliasName, xAlias, yAlias);
+			//exhibitList.put(aliasName, e);
+		}
+	}
+	
+	private void readExhibit(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
+		ExhibitInfo e = null;
+		
+		String name = xmlBox.getAttributeValue(null, "name"); 
+		
+		String tmp = xmlBox.getAttributeValue(null, "xpos");
+		int xCoord = -1;
+		int yCoord = -1;
+		if (tmp != null){
+			xCoord = Integer.decode(tmp);
+		}
+		tmp = xmlBox.getAttributeValue(null, "ypos");
+		if (tmp != null){
+			yCoord = Integer.decode(tmp);
+		}
+		
+		String previous = xmlBox.getAttributeValue(null, "previous");
+		String next = xmlBox.getAttributeValue(null, "next");
+
+		e = new ExhibitInfo(name, xCoord, yCoord, previous, next);
+		exhibits.add(e);
+		
+		int eventType = xmlBox.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if(eventType == XmlPullParser.START_TAG) {
+				readExhibitTag(xmlBox, e);
+			}else if(eventType == XmlPullParser.END_TAG){
+				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
+					break;
+				}
+			}
+			eventType = xmlBox.next();
+		}
+	}
+	
 	public ExhibitParser(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 		int eventType;
-
-		ExhibitInfo e = null;
 
 		eventType = xmlBox.getEventType();
 
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
 				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					String name = xmlBox.getAttributeValue(null, "name"); 
-					int xCoord = Integer.decode(xmlBox.getAttributeValue(null, "xpos"));
-					int yCoord = Integer.decode(xmlBox.getAttributeValue(null, "ypos"));
-					String previous = xmlBox.getAttributeValue(null, "previous");
-					String next = xmlBox.getAttributeValue(null, "next");
-
-					e = new ExhibitInfo(name, xCoord, yCoord, previous, next);
-					exhibits.add(e);
-				}else if (xmlBox.getName().equalsIgnoreCase("content")){
-					String url = xmlBox.getAttributeValue(null, "page");
-					e.addOrigContent(xmlBox.getAttributeValue(null, "tag"), url);
-				}else if (xmlBox.getName().equalsIgnoreCase("photo")){
-					String url = xmlBox.getAttributeValue(null, "page");
-					e.addPhoto(url);
+					readExhibit(xmlBox);
 				}
 			}
 			eventType = xmlBox.next();

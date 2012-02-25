@@ -9,125 +9,129 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-
 /**
  * A collection of {@link Exhibit} instances.
  * 
  * @author Graham Wilkinson 
  * 	
  */
-public class ExhibitList implements Parcelable{
+public class ExhibitList{
 
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
 
 	private ArrayList<String> keyList = new ArrayList<String>();
-
+	
 	private Exhibit current = null;
 
 	private float zoomFactor = 0.75f;
 	private float zoomMinimum = 1.00f;
 	private float zoomExponent = 1.00f;
 	private float[][] anchorPoints = { 
-		{0.00f, 0.00f, 1.30f},
-		{0.00f, 0.25f, 2.50f}, 
-		{0.00f, 0.50f, 1.00f},
-		{0.00f, 0.75f, 1.30f},
-		{0.00f, 1.00f, 1.30f},
+			{0.00f, 0.00f, 1.30f},
+			{0.00f, 0.25f, 2.50f}, 
+			{0.00f, 0.50f, 1.00f},
+			{0.00f, 0.75f, 1.30f},
+			{0.00f, 1.00f, 1.30f},
 
-		{0.25f, 0.00f, 1.30f},
-		{0.25f, 0.25f, 2.50f}, 
-		{0.25f, 0.50f, 1.00f},
-		{0.25f, 0.75f, 1.30f},
-		{0.25f, 1.00f, 1.30f}, 
+			{0.25f, 0.00f, 1.30f},
+			{0.25f, 0.25f, 2.50f}, 
+			{0.25f, 0.50f, 1.00f},
+			{0.25f, 0.75f, 1.30f},
+			{0.25f, 1.00f, 1.30f}, 
 
-		{0.50f, 0.00f, 1.30f},
-		{0.50f, 0.25f, 2.50f}, 
-		{0.50f, 0.50f, 1.00f},
-		{0.50f, 0.75f, 1.30f},
-		{0.50f, 1.00f, 1.30f},
+			{0.50f, 0.00f, 1.30f},
+			{0.50f, 0.25f, 2.50f}, 
+			{0.50f, 0.50f, 1.00f},
+			{0.50f, 0.75f, 1.30f},
+			{0.50f, 1.00f, 1.30f},
 
-		{0.75f, 0.00f, 1.30f},
-		{0.75f, 0.25f, 2.50f}, 
-		{0.75f, 0.50f, 1.00f},
-		{0.75f, 0.75f, 1.30f},
-		{0.75f, 1.00f, 1.30f},
+			{0.75f, 0.00f, 1.30f},
+			{0.75f, 0.25f, 2.50f}, 
+			{0.75f, 0.50f, 1.00f},
+			{0.75f, 0.75f, 1.30f},
+			{0.75f, 1.00f, 1.30f},
 
-		{1.00f, 0.00f, 1.30f},
-		{1.00f, 0.25f, 1.15f},
-		{1.00f, 0.50f, 1.00f},
-		{1.00f, 0.75f, 1.00f},
-		{1.00f, 1.00f, 1.00f},
+			{1.00f, 0.00f, 1.30f},
+			{1.00f, 0.25f, 1.15f},
+			{1.00f, 0.50f, 1.00f},
+			{1.00f, 0.75f, 1.00f},
+			{1.00f, 1.00f, 1.00f},
 	};
 
-	public static final Parcelable.Creator<ExhibitList> CREATOR = new Parcelable.Creator<ExhibitList>() {
-		public ExhibitList createFromParcel(Parcel in) {
-			return new ExhibitList(in);
+	private void readExhibitTag(XmlPullParser xmlBox, Exhibit e) throws XmlPullParserException, IOException{
+		if (xmlBox.getName().equalsIgnoreCase("content")){
+			String url = xmlBox.getAttributeValue(null, "page");
+			e.setContent(xmlBox.getAttributeValue(null, "tag"), url);
+		}else if (xmlBox.getName().equalsIgnoreCase("photo")){
+			String url = xmlBox.getAttributeValue(null, "page");
+			e.addPhoto(url);
+		}else if (xmlBox.getName().equalsIgnoreCase("alias")){
+			String tmp = xmlBox.getAttributeValue(null, "xpos");
+			int xAlias = -1;
+			int yAlias = -1;
+			if (tmp != null){
+				xAlias = Integer.decode(tmp);
+			}
+			tmp = xmlBox.getAttributeValue(null, "ypos");
+			if (tmp != null){
+				yAlias = Integer.decode(tmp);
+			}
+			String aliasName = xmlBox.getAttributeValue(null, "name");
+			e.addAlias(aliasName, xAlias, yAlias);
+			exhibitList.put(aliasName, e);
 		}
-
-		public ExhibitList[] newArray(int size) {
-			return new ExhibitList[size];
-		}
-	};
-
-	private ExhibitList(Parcel in) {
-		Log.w(this.getClass().getName(), "Reading current");
-		current = in.readParcelable(Exhibit.class.getClassLoader());
-		String[] keyArray = new String[in.readInt()];
-		Log.w(this.getClass().getName(), "Reading keys");
-		in.readStringArray(keyArray);
-		Log.w(this.getClass().getName(), "Reading values");
-		Parcelable[] values = in.readParcelableArray(Exhibit.class.getClassLoader());
-		for(int i=0; i<values.length; i++){
-			exhibitList.put(keyArray[i], (Exhibit)values[i]);
-			keyList.add(keyArray[i]);
-		}
-		zoomFactor = in.readFloat();
-		zoomMinimum = in.readFloat();
-		zoomExponent = in.readFloat();
 	}
+	
+	private void readExhibit(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
+		int eventType;
+		Exhibit e = null;
+		String name = xmlBox.getAttributeValue(null, "name");//TODO error check
 
+		String tmp = xmlBox.getAttributeValue(null, "xpos");
+		int xCoord = -1;
+		int yCoord = -1;
+		if (tmp != null){
+			xCoord = Integer.decode(tmp);
+		}
+		tmp = xmlBox.getAttributeValue(null, "ypos");
+		if (tmp != null){
+			yCoord = Integer.decode(tmp);
+		}
+		String previous = xmlBox.getAttributeValue(null, "previous");
+		String next = xmlBox.getAttributeValue(null, "next");
+		//TODO null handling
+		e = new Exhibit(name);
+		e.setCoords(xCoord, yCoord);
+		e.setNext(next);
+		e.setPrevious(previous);
+		exhibitList.put(e.getName(), e);
+		keyList.add(e.getName());
+
+		eventType = xmlBox.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if(eventType == XmlPullParser.START_TAG) {
+				readExhibitTag(xmlBox, e);
+			}else if(eventType == XmlPullParser.END_TAG){
+				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
+					break;
+				}
+			}
+			eventType = xmlBox.next();
+		}
+	}
+	
 	public ExhibitList(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 
 		int eventType;
 
 		eventType = xmlBox.getEventType();
 
-		Exhibit e = null;
-
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
 				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					String name = xmlBox.getAttributeValue(null, "name");//TODO error check
-					
-					String tmp = xmlBox.getAttributeValue(null, "xpos");
-					int xCoord = 0;
-					int yCoord = 0;
-					if (tmp != null){
-						xCoord = Integer.decode(tmp);
-					}
-					tmp = xmlBox.getAttributeValue(null, "ypos");
-					if (tmp != null){
-						yCoord = Integer.decode(tmp);
-					}
-					String previous = xmlBox.getAttributeValue(null, "previous");
-					String next = xmlBox.getAttributeValue(null, "next");
-					//TODO null handling
-					e = new Exhibit(name);
-					e.setCoords(xCoord, yCoord);
-					e.setNext(next);
-					e.setPrevious(previous);
-					exhibitList.put(e.getName(), e);
-					keyList.add(e.getName());
-					Log.d(this.getClass().getName(), "Loading exhibit: " + name);
-				}else if (xmlBox.getName().equalsIgnoreCase("content")){
-					String url = xmlBox.getAttributeValue(null, "page");
-					e.setContent(xmlBox.getAttributeValue(null, "tag"), url);
-				}else if (xmlBox.getName().equalsIgnoreCase("photo")){
-					String url = xmlBox.getAttributeValue(null, "page");
-					e.setPhoto(url);
+					readExhibit(xmlBox);
+				}else if(xmlBox.getName().equalsIgnoreCase("group")){
+					//TODO group for birds
 				}
 			}
 			eventType = xmlBox.next();
@@ -172,23 +176,6 @@ public class ExhibitList implements Parcelable{
 		}
 	}
 
-	public Exhibit findNearest(int percentHoriz, int percentVert) {
-		Enumeration<Exhibit> list = exhibitList.elements();
-
-		int minDistance = 100000;
-		Exhibit closest = null;
-
-		while(list.hasMoreElements()){
-			Exhibit e = list.nextElement();
-			int d = e.getDistance(percentHoriz, percentVert);
-			if(d < minDistance){
-				minDistance = d;
-				closest = e;
-			}
-		}
-		return closest;
-	}
-
 	public Exhibit getNext() {
 		if (current == null){
 			return get(keyList.get(0));
@@ -206,32 +193,11 @@ public class ExhibitList implements Parcelable{
 	}
 
 	public int getCount() {
-		return exhibitList.size();
+		return keyList.size();
 	}
 
 	public Exhibit getExhibitAt(int position) {
 		return get(keyList.get(position));
-	}
-
-	public int describeContents() {
-		return 0;
-	}
-
-	public void writeToParcel(Parcel out, int flags) {
-
-		Exhibit[] valueArray = new Exhibit[keyList.size()];
-		for( int i=0; i<valueArray.length; i++){
-			valueArray[i] = get(keyList.get(i));
-		}
-
-		out.writeParcelable(current, 0);
-		out.writeInt(valueArray.length);
-		out.writeStringArray(keyList.toArray(new String[keyList.size()]));
-		out.writeParcelableArray(valueArray, 0);
-
-		out.writeFloat(zoomFactor);
-		out.writeFloat(zoomMinimum);
-		out.writeFloat(zoomExponent);
 	}
 
 	public float[][] getAnchorPoints() {

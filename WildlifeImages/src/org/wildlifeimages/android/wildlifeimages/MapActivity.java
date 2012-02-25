@@ -3,9 +3,14 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 /**
  * This class will handle the map page.
@@ -28,11 +33,34 @@ public class MapActivity extends WireActivity{
 
 		setContentView(R.layout.tour_layout);
 
-		MapView mMapView;
-		mMapView = (MapView) findViewById(R.id.map);
+		MapView mMapView = (MapView) findViewById(R.id.map);
 
 		mMapView.setGestureDetector(new GestureDetector(this, new MapGestureListener(this)));
-		//mMapView.setParent(this);
+
+		SeekBar slider = (SeekBar)findViewById(R.id.seek);
+		slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				float zoomFactor = (.25f + progress/200.0f)*1.5f;
+				ContentManager.getSelf().getExhibitList().setZoomFactor(zoomFactor);
+				MapView mMapView = (MapView) findViewById(R.id.map);
+				mMapView.processScroll(0.0f, 0.0f);
+			}
+
+			public void onStartTrackingTouch(SeekBar seekBar) {}
+			
+			public void onStopTrackingTouch(SeekBar seekBar) {}
+		});
+		
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int ht = displaymetrics.heightPixels;
+        int wt = displaymetrics.widthPixels;
+		if (wt > 0){
+			int size = Math.max(ht, wt);
+			float zoomFactor = size / 800.0f;
+			Log.d(this.getClass().getName(), wt + "," + ht + ": " + zoomFactor);
+			ContentManager.getSelf().getExhibitList().setZoomFactor(zoomFactor * 0.75f);
+		}
 	}
 
 	/**
@@ -45,7 +73,7 @@ public class MapActivity extends WireActivity{
 		context.startActivity(mapIntent);
 	}
 
-	private Exhibit findClickedExhibit(MapView mMapView, float x, float y){
+	private String findClickedExhibit(MapView mMapView, float x, float y){
 		Matrix m = new Matrix();
 		mMapView.getImageMatrix().invert(m);
 
@@ -55,8 +83,7 @@ public class MapActivity extends WireActivity{
 		float percentHoriz = xy[0]*100/mMapView.mapWidth;
 		float percentVert = xy[1]*100/mMapView.mapHeight;
 
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-		Exhibit selectedExhibit = exhibitList.findNearest((int)percentHoriz, (int)percentVert);
+		String selectedExhibit = mMapView.findNearest((int)percentHoriz, (int)percentVert);
 		return selectedExhibit;
 	}
 
@@ -73,9 +100,6 @@ public class MapActivity extends WireActivity{
 
 
 		public boolean onDoubleTap(MotionEvent e) {
-			//MapView mMapView = (MapView) findViewById(R.id.map); //TODO
-			//mMapView.zoomIn(e.getX(), e.getY());
-			//return true;
 			return false;
 		}
 
@@ -85,10 +109,9 @@ public class MapActivity extends WireActivity{
 
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-
-			Exhibit selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
+			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			Exhibit selectedExhibit = exhibitList.get(findClickedExhibit(mMapView, e.getX(), e.getY()));
 			if(selectedExhibit != null){
-				ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 				exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
 				ExhibitActivity.start(parent);	
 			}
@@ -97,10 +120,10 @@ public class MapActivity extends WireActivity{
 
 		public boolean onDown(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-
-			Exhibit selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
+			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			String selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
 			if(selectedExhibit != null){
-				mMapView.showPress(selectedExhibit.getName());
+				mMapView.showPress(selectedExhibit);
 			}
 			return true;
 		}
@@ -111,8 +134,6 @@ public class MapActivity extends WireActivity{
 		}
 
 		public void onLongPress(MotionEvent e) {
-			//MapView mMapView = (MapView) findViewById(R.id.map); //TODO
-			//mMapView.zoomOut();
 		}
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {

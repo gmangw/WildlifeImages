@@ -19,6 +19,7 @@ public class ExhibitInfo {
 	private Hashtable<String, String> origContents = new Hashtable<String, String>();
 	private ArrayList<String> photos = new ArrayList<String>();
 	private ArrayList<String> tags = new ArrayList<String>();
+	private ArrayList<Alias> aliasList = new ArrayList<Alias>();
 
 	public ExhibitInfo(String name, int x, int y, String previous, String next){
 		this.name = name;
@@ -119,5 +120,25 @@ public class ExhibitInfo {
 
 	public void setNext(String next) {
 		this.next = next;
+	}
+	
+	public class Alias{
+		public final String name;
+		public final int xPos;
+		public final int yPos;
+		
+		public Alias(String aliasName, int aliasX, int aliasY){
+			name = aliasName;
+			xPos = aliasX;
+			yPos = aliasY;
+		}
+	}
+	
+	public void addAlias(String aliasName, int xPos, int yPos) {
+		aliasList.add(new Alias(aliasName, xPos, yPos));
+	}
+	
+	public Alias[] getAliases(){
+		return aliasList.toArray(new Alias[aliasList.size()]);
 	}
 }

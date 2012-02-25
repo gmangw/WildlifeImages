@@ -14,7 +14,7 @@ import android.util.Log;
  * @author Graham Wilkinson 
  * 	
  */
-public class Exhibit implements Parcelable{
+public class Exhibit{
 
 	public static final String TAG_AUTO = "_auto";
 
@@ -27,6 +27,8 @@ public class Exhibit implements Parcelable{
 	private Hashtable<String, String> contents = new Hashtable<String, String>();
 
 	private ArrayList<String> tagList = new ArrayList<String>();
+	
+	private ArrayList<Alias> aliasList = new ArrayList<Alias>();
 
 	private String next = null;
 
@@ -35,38 +37,6 @@ public class Exhibit implements Parcelable{
 	private int mapX = -1;
 
 	private int mapY = -1;
-
-	public static final Parcelable.Creator<Exhibit> CREATOR = new Parcelable.Creator<Exhibit>() {
-		public Exhibit createFromParcel(Parcel in) {
-			return new Exhibit(in); //TODO
-		}
-
-		public Exhibit[] newArray(int size) {
-			return new Exhibit[size];
-		}
-	};
-
-	private Exhibit(Parcel in) {
-		Log.w(this.getClass().getName(), "Reading data");
-		name = in.readString();
-		currentTag = in.readString();
-		next = in.readString();
-		previous = in.readString();
-		mapX = in.readInt();
-		mapY = in.readInt();
-
-		String[] tagArray = new String[in.readInt()];
-		Log.w(this.getClass().getName(), "Reading tagArray");
-		in.readStringArray(tagArray);
-
-		for (int i=0; i<tagArray.length; i++){
-			String contentArray = null;
-			Log.w(this.getClass().getName(), "Reading contentArray");
-			contentArray = in.readString();
-			contents.put(tagArray[i], contentArray);
-			tagList.add(tagArray[i]);
-		}
-	}
 
 	public Exhibit(String name){
 		this.name = name;
@@ -120,7 +90,7 @@ public class Exhibit implements Parcelable{
 		}
 	}
 
-	public void setPhoto(String content) {
+	public void addPhoto(String content) {
 		if (contents.containsKey(Exhibit.TAG_PHOTOS)){
 			String previousPhoto = getContent(Exhibit.TAG_PHOTOS);
 			setContent(Exhibit.TAG_PHOTOS, previousPhoto + "," + content);
@@ -138,8 +108,15 @@ public class Exhibit implements Parcelable{
 		mapY = y;
 	}
 
-	public int getDistance(int x, int y){
-		return (int)Math.sqrt(Math.pow(mapX - x, 2) + Math.pow(mapY - y, 2));
+	public int getMinDistance(int x, int y){
+		float distance = Common.distance(mapX, mapY, x, y);
+		for (Alias a : aliasList){
+			float aliasDistance = Common.distance(a.xPos, a.yPos, x, y);
+			if (aliasDistance < distance){
+				distance = aliasDistance;
+			}
+		}
+		return (int)distance;
 	}
 
 	public int getX(){
@@ -158,9 +135,6 @@ public class Exhibit implements Parcelable{
 		currentTag = contentTag;
 	}
 
-	public int describeContents() {
-		return 0;
-	}
 
 	@Override
 	public boolean equals(Object o){
@@ -175,20 +149,23 @@ public class Exhibit implements Parcelable{
 		}
 	}
 
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(name);
-		dest.writeString(currentTag);
-		dest.writeString(next);
-		dest.writeString(previous);
-		dest.writeInt(mapX);
-		dest.writeInt(mapY);
-
-		dest.writeInt(tagList.size());
-		dest.writeStringArray(tagList.toArray(new String[tagList.size()]));
-
-		for(int i=0; i<tagList.size(); i++){
-			String contentsArray = contents.get(tagList.get(i));
-			dest.writeString(contentsArray);
+	public void addAlias(String aliasName, int xPos, int yPos) {
+		aliasList.add(new Alias(aliasName, xPos, yPos));
+	}
+	
+	public Alias[] getAliases(){
+		return aliasList.toArray(new Alias[aliasList.size()]);
+	}
+	
+	public class Alias{
+		public final String name;
+		public final int xPos;
+		public final int yPos;
+		
+		public Alias(String aliasName, int aliasX, int aliasY){
+			name = aliasName;
+			xPos = aliasX;
+			yPos = aliasY;
 		}
 	}
 }

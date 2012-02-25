@@ -1,7 +1,10 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
+
+import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
@@ -27,6 +30,8 @@ import android.widget.ImageView;
  */
 class MapView extends ImageView {
 
+	private static final boolean DEBUG = true;
+
 	private GestureDetector gestures;
 
 	private float originX;
@@ -41,7 +46,7 @@ class MapView extends ImageView {
 	private static final Paint activeP = new Paint();
 	private float[] points;
 	private float[] transformedPoints;
-	private String[] exhibitNames;
+	private String[] displayNames;
 	private static String activeName = "";
 
 	public MapView(Context context, AttributeSet attrs) {
@@ -83,12 +88,17 @@ class MapView extends ImageView {
 				pointList.add(1.0f * x *mapWidth/100);
 				pointList.add(1.0f * y *mapHeight/100);
 				nameList.add(e.getName());
-			}else{
-				Log.d(this.getClass().getName(), "Excluding exhibit " + e.getName() + " from map.");
+			}
+			for (Alias a : e.getAliases()){
+				if (a.xPos != -1 || a.yPos != -1){
+					pointList.add(1.0f * a.xPos *mapWidth/100);
+					pointList.add(1.0f * a.yPos *mapHeight/100);
+					nameList.add(a.name);
+				}
 			}
 		}
 
-		exhibitNames = nameList.toArray(new String[nameList.size()]);
+		displayNames = nameList.toArray(new String[nameList.size()]);
 
 		points = new float[pointList.size()];
 		for (int i=0; i<points.length; i++){
@@ -136,40 +146,26 @@ class MapView extends ImageView {
 
 		for(int i=0; i<points.length/2; i++){
 			Rect r = new Rect();
-			p.getTextBounds(exhibitNames[i], 0, exhibitNames[i].length(), r);
+			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), r);
 			r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
 			r.inset(-3, -4);
-			if (exhibitNames[i].equals(activeName)){
+			if (displayNames[i].equals(activeName)){
 				canvas.drawRect(r, activeP);
 			}else{
 				canvas.drawRect(r, rectP);
 			}
-			canvas.drawText(exhibitNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
+			canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
 		}
-		/*float[][] anchorPoints = ContentManager.getSelf().getExhibitList().getAnchorPoints();
-		for (int i=0; i<anchorPoints.length; i++){
-			float[] pts = {anchorPoints[i][0]*mapWidth, anchorPoints[i][1]*mapHeight};
-			getImageMatrix().mapPoints(pts);
-			float l = pts[0];
-			float t = pts[1];
-			canvas.drawCircle(l, t, anchorPoints[i][2]*3, activeP); 
-		}*/
-	}
-
-	/**
-	 * Standard override to get key-press events.
-	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent msg) {
-		return false;
-	}
-
-	/**
-	 * Standard override for key-up. 
-	 */
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent msg) {
-		return false;
+		if (DEBUG){
+			float[][] anchorPoints = ContentManager.getSelf().getExhibitList().getAnchorPoints();
+			for (int i=0; i<anchorPoints.length; i++){
+				float[] pts = {anchorPoints[i][0]*mapWidth, anchorPoints[i][1]*mapHeight};
+				getImageMatrix().mapPoints(pts);
+				float l = pts[0];
+				float t = pts[1];
+				canvas.drawCircle(l, t, anchorPoints[i][2]*3, activeP); 
+			}
+		}
 	}
 
 	public void setGestureDetector(GestureDetector gestureListener) {
@@ -186,7 +182,6 @@ class MapView extends ImageView {
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 
 		scale = exhibitList.getScale(xFraction, yFraction);
-		//Log.d(this.getClass().getName(), "" + scale); 
 		doTransform();
 	}
 
@@ -208,5 +203,21 @@ class MapView extends ImageView {
 
 	public void showPress(String name) {
 		activeName = name;
+	}
+	
+	public String findNearest(int percentHoriz, int percentVert) {
+		float minDistance = 100000;
+		String closest = null;
+		
+		for(int i=0; i<displayNames.length; i++){
+			float x = points[i*2]/mapWidth*100.0f;
+			float y = points[i*2+1]/mapHeight*100.0f;
+			float d = Common.distance(percentHoriz, percentVert, x, y);
+			if(d < minDistance){
+				minDistance = d;
+				closest = displayNames[i];
+			}
+		}
+		return closest;
 	}
 }
