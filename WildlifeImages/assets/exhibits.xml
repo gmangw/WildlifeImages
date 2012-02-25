@@ -85,7 +85,7 @@
 		<content tag="Audio" page="ExhibitContents/WolfPups/wolfPupsAudio.html" />
 		<content tag="Diet" page="ExhibitContents/WolfPups/wolfPupsDiet.html" />
 	</exhibit>
-	<exhibit name="Bald Eagles" previous="Wolf Pups" next="Peregrine Falcon">
+	<exhibit name="Bald Eagles" xpos="66" ypos="8" previous="Wolf Pups" next="Peregrine Falcon">
 		<content tag="Introduction" page="ExhibitContents/BaldEagles/baldEaglesIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/BaldEagles/baldEaglesHabitat.html" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
@@ -129,7 +129,7 @@
 		<content tag="Audio" page="ExhibitContents/GreatHornedOwl/greatHornedOwlAudio.html" />
 		<content tag="Diet" page="ExhibitContents/GreatHornedOwl/greatHornedOwlDiet.html" />
 	</exhibit>
-	<exhibit name="Sandhill Crane" previous="Great Horned Owl">
+	<exhibit name="Sandhill Crane" xpos="63" ypos="35" previous="Great Horned Owl">
 		<content tag="Introduction" page="ExhibitContents/SandhillCrane/sandhillCraneIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/SandhillCrane/sandhillCraneHabitat.html" />
 		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
@@ -137,4 +137,10 @@
 		<content tag="Audio" page="ExhibitContents/SandhillCrane/sandhillCraneAudio.html" />
 		<content tag="Diet" page="ExhibitContents/SandhillCrane/sandhillCraneDiet.html" />
 	</exhibit>
+	<group name="Birds" xpos="53" ypos="10">
+		<member exhibit="Peregrine Falcon"></member>
+		<member exhibit="Western Screech Owl"></member>
+		<member exhibit="Golden Eagles"></member>
+		<member exhibit="Great Horned Owl"></member>
+	</group>
 </exhibit_list>

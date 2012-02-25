@@ -85,6 +85,42 @@ public class ExhibitList{
 		}
 	}
 
+	private void readGroupMember(XmlPullParser xmlBox, ArrayList<String> members){
+		if (xmlBox.getName().equalsIgnoreCase("member")){
+			String name = xmlBox.getAttributeValue(null, "exhibit");
+			members.add(name);
+		}
+	}
+	
+	private void readGroup(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
+		int eventType;
+		String groupName = xmlBox.getAttributeValue(null, "name");//TODO error check
+		ArrayList<String> members = new ArrayList<String>();
+		String tmp = xmlBox.getAttributeValue(null, "xpos");
+		int xCoord = -1;
+		int yCoord = -1;
+		if (tmp != null){
+			xCoord = Integer.decode(tmp);
+		}
+		tmp = xmlBox.getAttributeValue(null, "ypos");
+		if (tmp != null){
+			yCoord = Integer.decode(tmp);
+		}		
+		
+		eventType = xmlBox.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if(eventType == XmlPullParser.START_TAG) {
+				readGroupMember(xmlBox, members);
+			}else if(eventType == XmlPullParser.END_TAG){
+				if (xmlBox.getName().equalsIgnoreCase("group")){
+					break;
+				}
+			}
+			eventType = xmlBox.next();
+		}
+		addGroup(groupName, members.toArray(new String[0]), xCoord, yCoord);
+	}
+	
 	private void readExhibit(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 		int eventType;
 		Exhibit e = null;
@@ -134,7 +170,7 @@ public class ExhibitList{
 				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
 					readExhibit(xmlBox);
 				}else if(xmlBox.getName().equalsIgnoreCase("group")){
-					//TODO group for birds
+					readGroup(xmlBox);
 				}
 			}
 			eventType = xmlBox.next();
