@@ -94,6 +94,15 @@ class MapView extends ImageView {
 				}
 			}
 		}
+		for (String group : exhibitList.getGroupNames()){
+			int x = exhibitList.getGroupX(group);
+			int y = exhibitList.getGroupY(group);
+			if (x != -1 || y != -1){
+				pointList.add(1.0f * x *mapWidth/100);
+				pointList.add(1.0f * y *mapHeight/100);
+				nameList.add(group);
+			}
+		}
 
 		displayNames = nameList.toArray(new String[nameList.size()]);
 
@@ -201,11 +210,11 @@ class MapView extends ImageView {
 	public void showPress(String name) {
 		activeName = name;
 	}
-	
+
 	public String findNearest(int percentHoriz, int percentVert) {
 		float minDistance = 100000;
 		String closest = null;
-		
+
 		for(int i=0; i<displayNames.length; i++){
 			float x = points[i*2]/mapWidth*100.0f;
 			float y = points[i*2+1]/mapHeight*100.0f;

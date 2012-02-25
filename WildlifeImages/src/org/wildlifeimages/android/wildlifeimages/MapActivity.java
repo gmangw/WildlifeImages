@@ -1,5 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import android.R.color;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.ListAdapter;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -24,8 +26,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 public class MapActivity extends WireActivity{
 
 	private static final float ZOOM_FACTOR_START = 0.5f;
-	
-	private static final int BIRD_DIALOG = 0;
 
 	/**
 	 * Invoked when the Activity is created.
@@ -57,6 +57,8 @@ public class MapActivity extends WireActivity{
 			public void onStopTrackingTouch(SeekBar seekBar) {}
 		});
 
+		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		int ht = displaymetrics.heightPixels;
@@ -65,7 +67,7 @@ public class MapActivity extends WireActivity{
 			int size = Math.max(ht, wt);
 			float zoomFactor = size / 800.0f;
 			Log.d(this.getClass().getName(), wt + "," + ht + ": " + zoomFactor);
-			ContentManager.getSelf().getExhibitList().setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
+			exhibitList.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
 	}
 
@@ -93,34 +95,48 @@ public class MapActivity extends WireActivity{
 		return selectedExhibit;
 	}
 
+	private class GroupListListener implements DialogInterface.OnClickListener{
+		private final String name;
+		private final MapActivity self;
+		
+		public GroupListListener(String groupName, MapActivity parent){
+			name = groupName;
+			self = parent;
+		}
+		
+		public void onClick(DialogInterface dialog, int item) {
+			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			exhibitList.setCurrent(exhibitList.getGroup(name)[item], Exhibit.TAG_AUTO);
+			ExhibitActivity.start(self);	
+		}
+	}
+	
 	@Override
 	protected Dialog onCreateDialog(int id){
 		super.onCreateDialog(id);
-		
-		if (id == BIRD_DIALOG){
-			final String[] items = {
-					"Bald Eagles", 
-					"Peregrine Falcon", 
-					"Western Screech Owl",
-					"Golden Eagles",
-					"Great Horned Owl",
-					"Sandhill Crane"
-			};
-			final MapActivity self = this;
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Birds:");
-			//TODO use adapter instead of items
-			builder.setItems(items, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					ContentManager.getSelf().getExhibitList().setCurrent(items[item], Exhibit.TAG_AUTO);
-					ExhibitActivity.start(self);	
-				}
-			});
-			AlertDialog alert = builder.create();
-			return alert;
-		}else{
-			return null;
+
+		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		String groupName = null;
+		String[] names = exhibitList.getGroupNames();
+
+		for (String name : names){
+			if (name.hashCode() == id){
+				groupName = name;
+				break;
+			}
 		}
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(groupName);
+		builder.setInverseBackgroundForced(false);
+
+		ListAdapter adapter = new GroupListAdapter(groupName);
+
+		DialogInterface.OnClickListener listener = new GroupListListener(groupName, this);
+		
+		builder.setAdapter(adapter, listener);
+		AlertDialog alert = builder.create();
+		return alert;
 	}
 
 	/**
@@ -146,12 +162,13 @@ public class MapActivity extends WireActivity{
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
 			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-			Exhibit selectedExhibit = exhibitList.get(findClickedExhibit(mMapView, e.getX(), e.getY()));
+			String selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
+
 			if(selectedExhibit != null){
-				if (selectedExhibit.getName().equals("Lynx")){
-					parent.showDialog(BIRD_DIALOG);
+				if (exhibitList.getGroup(selectedExhibit).length > 0){
+					showDialog(selectedExhibit.hashCode());
 				}else{
-					exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
+					exhibitList.setCurrent(exhibitList.get(selectedExhibit), Exhibit.TAG_AUTO);
 					ExhibitActivity.start(parent);	
 				}
 			}

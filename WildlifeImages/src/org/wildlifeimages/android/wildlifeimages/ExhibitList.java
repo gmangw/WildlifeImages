@@ -19,7 +19,9 @@ public class ExhibitList{
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
 
 	private ArrayList<String> keyList = new ArrayList<String>();
-	
+
+	Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
+
 	private Exhibit current = null;
 
 	private float zoomFactor = 0.75f;
@@ -80,7 +82,7 @@ public class ExhibitList{
 			exhibitList.put(aliasName, e);
 		}
 	}
-	
+
 	private void readExhibit(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 		int eventType;
 		Exhibit e = null;
@@ -118,7 +120,7 @@ public class ExhibitList{
 			eventType = xmlBox.next();
 		}
 	}
-	
+
 	public ExhibitList(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 
 		int eventType;
@@ -225,5 +227,49 @@ public class ExhibitList{
 
 	public void setZoomExponent(float zoomExponent) {
 		this.zoomExponent = zoomExponent;
+	}
+
+	public String[] getGroupNames(){
+		return groupList.keySet().toArray(new String[0]);
+	}
+
+	public void addGroup(String groupName, String[] data, int x, int y){
+		groupList.put(groupName, new ExhibitGroup(data, x, y));
+	}
+
+	public int getGroupX(String groupName){
+		if (groupList.containsKey(groupName)){
+			return groupList.get(groupName).xPos;
+		}else{
+			return -1;
+		}
+	}
+
+	public int getGroupY(String groupName){
+		if (groupList.containsKey(groupName)){
+			return groupList.get(groupName).yPos;
+		}else{
+			return -1;
+		}
+	}
+
+	public String[] getGroup(String groupName) {
+		if (groupList.containsKey(groupName)){
+			return groupList.get(groupName).exhibits;
+		}else{
+			return new String[0];
+		}
+	}
+
+	public class ExhibitGroup{
+		public final String[] exhibits;
+		public final int xPos;
+		public final int yPos;
+
+		public ExhibitGroup(String[] list, int x, int y){
+			exhibits = list;
+			xPos = x;
+			yPos = y;
+		}
 	}
 }

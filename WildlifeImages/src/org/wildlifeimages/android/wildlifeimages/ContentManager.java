@@ -58,7 +58,7 @@ public class ContentManager {
 
 	public ContentManager(File cacheDir, AssetManager assets){
 		//testBitmapMax(assets);
-		
+
 		self = this;
 
 		this.cacheDir = cacheDir;
@@ -94,6 +94,16 @@ public class ContentManager {
 	public void prepareExhibits(AssetManager assets){
 		exhibitList = buildExhibitList(assets);
 		cacheThumbs(assets);
+
+		String[] items = {
+				"Bald Eagles", 
+				"Peregrine Falcon", 
+				"Western Screech Owl",
+				"Golden Eagles",
+				"Great Horned Owl",
+				"Sandhill Crane"
+		};
+		exhibitList.addGroup("Birds", items, 54, 10);
 	}
 
 	private void cacheThumbs(AssetManager assets){

@@ -144,6 +144,11 @@ public class Exhibit{
 			return false;
 		}
 	}
+	
+	@Override
+	public int hashCode(){
+		return name.hashCode();
+	}
 
 	public void addAlias(String aliasName, int xPos, int yPos) {
 		aliasList.add(new Alias(aliasName, xPos, yPos));
