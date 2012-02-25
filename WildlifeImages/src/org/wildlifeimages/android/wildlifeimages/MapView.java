@@ -10,8 +10,10 @@ import com.larvalabs.svgandroid.SVGParser;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -43,6 +45,7 @@ class MapView extends ImageView {
 	public final int mapHeight;
 
 	private static final Paint p = new Paint();
+	private static final Paint smallP = new Paint();
 	private static final Paint rectP = new Paint();
 	private static final Paint activeP = new Paint();
 	private float[] points;
@@ -52,7 +55,7 @@ class MapView extends ImageView {
 
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
+
 		SVG svg = SVGParser.getSVGFromResource(getResources(), R.raw.map);
 		Drawable drawable = svg.createPictureDrawable();
 		this.setImageDrawable(drawable);
@@ -68,6 +71,12 @@ class MapView extends ImageView {
 		p.setTextAlign(Paint.Align.CENTER);
 		p.setAntiAlias(true);
 
+		smallP.setARGB(255, 255, 255, 255);
+		smallP.setTextSize(12);
+		smallP.setTypeface(Typeface.SERIF);
+		smallP.setTextAlign(Paint.Align.CENTER);
+		smallP.setAntiAlias(true);
+
 		rectP.setARGB(200, 128, 128, 128);
 		activeP.setARGB(255, 0, 128, 255);
 
@@ -80,7 +89,7 @@ class MapView extends ImageView {
 		doTransform();
 		processScroll(0.0f, 0.0f);
 	}
-	
+
 	public boolean isZoomed(){
 		return doZoom;
 	}
@@ -172,15 +181,28 @@ class MapView extends ImageView {
 
 		for(int i=0; i<points.length/2; i++){
 			Rect r = new Rect();
-			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), r);
-			r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
-			r.inset(-3, -4);
+			rectP.setTextAlign(Align.CENTER);
+			if (doZoom == true){
+				p.getTextBounds(displayNames[i], 0, displayNames[i].length(), r);
+				r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
+				r.inset(-3, -4);
+			}else{
+				smallP.getTextBounds(displayNames[i], 0, displayNames[i].length(), r);
+				r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
+				r.inset(-1, -1);
+			}
+
 			if (displayNames[i].equals(activeName)){
 				canvas.drawRect(r, activeP);
 			}else{
 				canvas.drawRect(r, rectP);
 			}
-			canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
+
+			if (doZoom == true){
+				canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
+			}else{
+				canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], smallP);
+			}
 		}
 		if (DEBUG){
 			float[][] anchorPoints = ContentManager.getSelf().getExhibitList().getAnchorPoints();
@@ -203,25 +225,28 @@ class MapView extends ImageView {
 		originY = y;
 		processScroll(0.0f, 0.0f);
 	}
-	
+
 	public float[] getPosition(){
 		float[] position = {originX, originY};
 		return position;
 	}
-	
+
 	public void processScroll(float distanceX, float distanceY){
+		if (Math.abs(distanceX) > 1.0f || Math.abs(distanceY) > 1.0f){
+			doZoom = true;
+		}
 		if (doZoom){
 			if (originX + distanceX < getXFromFraction(0.10f)){
 				originX = originX - (originX - getXFromFraction(0.10f))/2.0f;
-			}else if(originX + distanceX > getXFromFraction(0.85f)){
-				originX = originX + (getXFromFraction(0.85f) - originX)/2.0f;
+			}else if(originX + distanceX > getXFromFraction(0.80f)){
+				originX = originX + (getXFromFraction(0.80f) - originX)/2.0f;
 			}else{
 				originX = originX + distanceX;
 			}
 			if (originY + distanceY < getYFromFraction(0.15f)){
 				originY = originY - (originY - getYFromFraction(0.15f))/2.0f;
-			}else if(originY + distanceY > getYFromFraction(0.80f)){
-				originY = originY + (getYFromFraction(0.80f) - originY)/2.0f;
+			}else if(originY + distanceY > getYFromFraction(0.75f)){
+				originY = originY + (getYFromFraction(0.75f) - originY)/2.0f;
 			}else{
 				originY = originY + distanceY;
 			}
