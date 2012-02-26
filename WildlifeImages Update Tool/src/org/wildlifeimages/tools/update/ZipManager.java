@@ -97,7 +97,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private final JButton newFileButton = new JButton("Add file to project");
 
-	private ExhibitParser exhibitParser = null;
+	private ExhibitLoader exhibitParser = null;
 
 	private final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
 	private final JLabel exhibitXCoordOrig = new JLabel();
@@ -484,7 +484,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 						xmlBox.setInput(in);
 						System.out.println("Creating parser");
-						exhibitParser = new ExhibitParser(xmlBox);
+						exhibitParser = new ExhibitLoader(xmlBox);
 					}
 				}
 			}

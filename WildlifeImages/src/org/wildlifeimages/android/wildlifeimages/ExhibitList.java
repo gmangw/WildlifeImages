@@ -8,15 +8,13 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 /**
  * A collection of {@link Exhibit} instances.
  * 
  * @author Graham Wilkinson 
  * 	
  */
-public class ExhibitList{
+public class ExhibitList implements Parser.ExhibitInterface{
 
 	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
 
@@ -60,121 +58,32 @@ public class ExhibitList{
 			{1.00f, 0.75f, 1.60f},
 			{1.00f, 1.00f, 1.60f},
 	};
-
-	private void readExhibitTag(XmlPullParser xmlBox, Exhibit e) throws XmlPullParserException, IOException{
-		if (xmlBox.getName().equalsIgnoreCase("content")){
-			String url = xmlBox.getAttributeValue(null, "page");
-			e.setContent(xmlBox.getAttributeValue(null, "tag"), url);
-		}else if (xmlBox.getName().equalsIgnoreCase("photo")){
-			String url = xmlBox.getAttributeValue(null, "page");
-			e.addPhoto(url);
-		}else if (xmlBox.getName().equalsIgnoreCase("alias")){
-			String tmp = xmlBox.getAttributeValue(null, "xpos");
-			int xAlias = -1;
-			int yAlias = -1;
-			if (tmp != null){
-				xAlias = Integer.decode(tmp);
-			}
-			tmp = xmlBox.getAttributeValue(null, "ypos");
-			if (tmp != null){
-				yAlias = Integer.decode(tmp);
-			}
-			String aliasName = xmlBox.getAttributeValue(null, "name");
-			e.addAlias(aliasName, xAlias, yAlias);
-			exhibitList.put(aliasName, e);
-		}
-	}
-
-	private void readGroupMember(XmlPullParser xmlBox, ArrayList<String> members){
-		if (xmlBox.getName().equalsIgnoreCase("member")){
-			String name = xmlBox.getAttributeValue(null, "exhibit");
-			members.add(name);
-		}
+	
+	public void addGroup(String groupName, String[] data, int x, int y){
+		groupList.put(groupName, new ExhibitGroup(data, x, y));
 	}
 	
-	private void readGroup(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
-		int eventType;
-		String groupName = xmlBox.getAttributeValue(null, "name");//TODO error check
-		ArrayList<String> members = new ArrayList<String>();
-		String tmp = xmlBox.getAttributeValue(null, "xpos");
-		int xCoord = -1;
-		int yCoord = -1;
-		if (tmp != null){
-			xCoord = Integer.decode(tmp);
-		}
-		tmp = xmlBox.getAttributeValue(null, "ypos");
-		if (tmp != null){
-			yCoord = Integer.decode(tmp);
-		}		
-		
-		eventType = xmlBox.getEventType();
-		while (eventType != XmlPullParser.END_DOCUMENT) {
-			if(eventType == XmlPullParser.START_TAG) {
-				readGroupMember(xmlBox, members);
-			}else if(eventType == XmlPullParser.END_TAG){
-				if (xmlBox.getName().equalsIgnoreCase("group")){
-					break;
-				}
-			}
-			eventType = xmlBox.next();
-		}
-		addGroup(groupName, members.toArray(new String[0]), xCoord, yCoord);
-	}
-	
-	private void readExhibit(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
-		int eventType;
-		Exhibit e = null;
-		String name = xmlBox.getAttributeValue(null, "name");//TODO error check
-
-		String tmp = xmlBox.getAttributeValue(null, "xpos");
-		int xCoord = -1;
-		int yCoord = -1;
-		if (tmp != null){
-			xCoord = Integer.decode(tmp);
-		}
-		tmp = xmlBox.getAttributeValue(null, "ypos");
-		if (tmp != null){
-			yCoord = Integer.decode(tmp);
-		}
-		String previous = xmlBox.getAttributeValue(null, "previous");
-		String next = xmlBox.getAttributeValue(null, "next");
-		//TODO null handling
-		e = new Exhibit(name);
+	public void addExhibit(String name, int xCoord, int yCoord, String next, String previous, Parser.ExhibitDataHolder data){
+		Exhibit e = new Exhibit(name);
 		e.setCoords(xCoord, yCoord);
 		e.setNext(next);
 		e.setPrevious(previous);
+		for(int i=0; i<data.contentNameList.size(); i++){
+			e.setContent(data.contentNameList.get(i), data.contentValueList.get(i));
+		}
+		for(String photo : data.photoList){
+			e.addPhoto(photo);
+		}
+		for(int i=0; i<data.aliasList.size(); i++){
+			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i));
+			exhibitList.put(data.aliasList.get(i), e);
+		}
 		exhibitList.put(e.getName(), e);
 		keyList.add(e.getName());
-
-		eventType = xmlBox.getEventType();
-		while (eventType != XmlPullParser.END_DOCUMENT) {
-			if(eventType == XmlPullParser.START_TAG) {
-				readExhibitTag(xmlBox, e);
-			}else if(eventType == XmlPullParser.END_TAG){
-				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					break;
-				}
-			}
-			eventType = xmlBox.next();
-		}
 	}
 
 	public ExhibitList(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
-
-		int eventType;
-
-		eventType = xmlBox.getEventType();
-
-		while (eventType != XmlPullParser.END_DOCUMENT) {
-			if(eventType == XmlPullParser.START_TAG) {
-				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					readExhibit(xmlBox);
-				}else if(xmlBox.getName().equalsIgnoreCase("group")){
-					readGroup(xmlBox);
-				}
-			}
-			eventType = xmlBox.next();
-		}
+		new Parser(xmlBox, this);
 	}
 
 	public Iterator<String> keys(){
@@ -270,10 +179,6 @@ public class ExhibitList{
 
 	public String[] getGroupNames(){
 		return groupList.keySet().toArray(new String[0]);
-	}
-
-	public void addGroup(String groupName, String[] data, int x, int y){
-		groupList.put(groupName, new ExhibitGroup(data, x, y));
 	}
 
 	public int getGroupX(String groupName){

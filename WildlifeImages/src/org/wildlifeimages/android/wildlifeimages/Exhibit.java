@@ -13,25 +13,16 @@ import java.util.Iterator;
 public class Exhibit{
 
 	public static final String TAG_AUTO = "_auto";
-
 	public static final String TAG_PHOTOS = "Photos";
 
 	private String name;
-
 	private String currentTag = null;
-
 	private Hashtable<String, String> contents = new Hashtable<String, String>();
-
 	private ArrayList<String> tagList = new ArrayList<String>();
-	
 	private ArrayList<Alias> aliasList = new ArrayList<Alias>();
-
 	private String next = null;
-
 	private String previous = null;
-
 	private int mapX = -1;
-
 	private int mapY = -1;
 
 	public Exhibit(String name){
