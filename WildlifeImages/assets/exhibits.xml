@@ -69,38 +69,34 @@
 	</exhibit>
 	<exhibit name="Bald Eagles" xpos="66" ypos="7" previous="Hybrid Wolves" next="Peregrine Falcon">
 		<content tag="Introduction" page="ExhibitContents/BaldEagles/baldEaglesIntro.html" />
-		<content tag="Ms. Jefferson" page="ExhibitContents/BaldEagles/baldEaglesMsJefferson.html" />
+		<content tag="Miss Jefferson" page="ExhibitContents/BaldEagles/baldEaglesMsJefferson.html" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-2.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-3.jpg" />
 		<content tag="Squeaky" page="ExhibitContents/BaldEagles/baldEaglesSqueaky.html" />
 		<content tag="Haggis" page="ExhibitContents/BaldEagles/baldEaglesHaggis.html" />
+		<content tag="Defiance" page="ExhibitContents/BaldEagles/baldEaglesDefiance.html" />
 		<content tag="Fun Facts" page="ExhibitContents/BaldEagles/baldEaglesFunFacts.html" />
 	</exhibit>
 	<exhibit name="Peregrine Falcon" previous="Bald Eagles" next="Western Screech Owl">
 		<content tag="Introduction" page="ExhibitContents/PeregrineFalcon/peregrineFalconIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/PeregrineFalcon/peregrineFalconHabitat.html" />
 		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/PeregrineFalcon/peregrineFalconFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/PeregrineFalcon/peregrineFalconAudio.html" />
-		<content tag="Diet" page="ExhibitContents/PeregrineFalcon/peregrineFalconDiet.html" />
+		<content tag="Chase" page="ExhibitContents/PeregrineFalcon/peregrineFalconChase.html" />
 	</exhibit>
 	<exhibit name="Western Screech Owl" previous="Peregrine Falcon" next="Golden Eagles">
 		<content tag="Introduction" page="ExhibitContents/WesternScreechOwl/westernScreechOwlIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/WesternScreechOwl/westernScreechOwlHabitat.html" />
+		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough.jpg" />
 		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/WesternScreechOwl/westernScreechOwlFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/WesternScreechOwl/westernScreechOwlAudio.html" />
-		<content tag="Diet" page="ExhibitContents/WesternScreechOwl/westernScreechOwlDiet.html" />
+		<content tag="Van Gough" page="ExhibitContents/WesternScreechOwl/westernScreechOwlVanGough.html" />
 	</exhibit>
 	<exhibit name="Golden Eagles" previous="Western Screech Owl" next="Great Horned Owl">
 		<content tag="Introduction" page="ExhibitContents/GoldenEagles/goldenEaglesIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/GoldenEagles/goldenEaglesHabitat.html" />
+		<content tag="Duchess" page="ExhibitContents/GoldenEagles/goldenEaglesDuchess.html" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-1.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-2.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/GoldenEagles/goldenEaglesFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/GoldenEagles/goldenEaglesAudio.html" />
+		<content tag="Phoenix" page="ExhibitContents/GoldenEagles/goldenEaglesPhoenix.html" />
+		<content tag="Sundance" page="ExhibitContents/GoldenEagles/goldenEaglesSundance.html" />
 		<content tag="Diet" page="ExhibitContents/GoldenEagles/goldenEaglesDiet.html" />
 	</exhibit>
 	<exhibit name="Great Horned Owl" previous="Golden Eagles" next="Sandhill Crane">
