@@ -1,37 +1,27 @@
 <?xml version="1.0"?>
 <exhibit_list>
-	<exhibit name="Brown Bear 1" xpos="25" ypos="86" next="Brown Bear 2">
+	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bear 1">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BrownBears/brownBearHabitat.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Codi.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/BrownBears/brownBearFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BrownBears/brownBearAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BrownBears/brownBearDiet.html" />
+		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi.jpg" />
+		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
+		<alias name="Brown Bears 1" xpos="25" ypos="86" />
+		<alias name="Brown Bears 2" xpos="9" ypos="80" />
 	</exhibit>
-	<exhibit name="Brown Bear 2" xpos="9" ypos="80" previous="Brown Bear 1"
-		next="Black Bear 1">
-		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BrownBears/brownBearHabitat.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Codi.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/BrownBears/brownBearFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BrownBears/brownBearAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BrownBears/brownBearDiet.html" />
-	</exhibit>
-	<exhibit name="Black Bear 1" xpos="22" ypos="58" previous="Brown Bear 2"
-		next="Lynx">
+	<exhibit name="Black Bears" xpos="-1" ypos="-1" previous="Brown Bears" next="Lynx">
 		<content tag="Introduction" page="ExhibitContents/BlackBears/blackBearIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BlackBears/blackBearHabitat.html" />
+		<content tag="Boggs" page="ExhibitContents/BlackBears/blackBearBoggs.html" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/BlackBears/blackBearFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BlackBears/blackBearAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BlackBears/blackBearDiet.html" />
+		<content tag="Jane" page="ExhibitContents/BlackBears/blackBearJane.html" />
+		<content tag="Ted E. Bear" page="ExhibitContents/BlackBears/blackBearTedEBear.html" />
+		<content tag="Yogi" page="ExhibitContents/BlackBears/blackBearYogi.html" />
+		<content tag="Black Bears" page="ExhibitContents/BlackBears/blackBears.html" />
+		<alias name="Black Bear 1" xpos="22" ypos="58" />
 		<alias name="Black Bear 2" xpos="9" ypos="52" />
 	</exhibit>
-	
-	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bear 1"
-		next="Cougar">
+	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bear 1" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Lynx/lynxHabitat.html" />
 		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
@@ -41,101 +31,84 @@
 		<content tag="Audio" page="ExhibitContents/Lynx/lynxAudio.html" />
 		<content tag="Diet" page="ExhibitContents/Lynx/lynxDiet.html" />
 	</exhibit>
-	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx"
-		next="Badger">
+	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx" next="Badger">
 		<content tag="Introduction" page="ExhibitContents/Cougar/cougarIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Cougar/cougarHabitat.html" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" />
 		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
-		<content tag="Audio" page="ExhibitContents/Cougar/cougarAudio.html" />
-		<content tag="Fun Facts" page="ExhibitContents/Cougar/cougarFunFacts.html" />
+		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
 	</exhibit>
-	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
-		next="Wolves">
+	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar" next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/Badger/badgerHabitat.html" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-1.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-2.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-3.jpg" />
+		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
-		<content tag="Diet" page="ExhibitContents/Badger/badgerDiet.html" />
-		<content tag="Audio" page="ExhibitContents/Badger/badgerAudio.html" />
-		<content tag="Fun Facts" page="ExhibitContents/Badger/badgerFunFacts.html" />
+		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 	</exhibit>
-	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger"
-		next="Wolf Pups">
+	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger" next="Hybrid Wolves">
 		<content tag="Introduction" page="ExhibitContents/Wolves/wolvesIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/Wolves/wolvesHabitat.html" />
+		<content tag="Lakota" page="ExhibitContents/Wolves/wolvesLakota.html" />
 		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/Wolves/wolvesFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/Wolves/wolvesAudio.html" />
-		<content tag="Diet" page="ExhibitContents/Wolves/wolvesDiet.html" />
+		<content tag="Tundra" page="ExhibitContents/Wolves/wolvesTundra.html" />
+		<content tag="Wolves" page="ExhibitContents/Wolves/wolves.html" />
+		<content tag="Pack" page="ExhibitContents/Wolves/wolvesPack.html" />
 	</exhibit>
-	<exhibit name="Wolf Pups" xpos="24" ypos="34" previous="Wolves" next="Bald Eagles">
-		<content tag="Introduction" page="ExhibitContents/WolfPups/wolfPupsIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/WolfPups/wolfPupsHabitat.html" />
-		<photo page="ExhibitContents/WolfPups/WolfPups-Kelsi-1.jpg" />
-		<photo page="ExhibitContents/WolfPups/WolfPups-Argo-1.jpg" />
-		<photo page="ExhibitContents/WolfPups/WolfPups-ArgoAndKelsi-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/WolfPups/wolfPupsFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/WolfPups/wolfPupsAudio.html" />
-		<content tag="Diet" page="ExhibitContents/WolfPups/wolfPupsDiet.html" />
+	<exhibit name="Hybrid Wolves" xpos="24" ypos="34" previous="Wolves" next="Bald Eagles">
+		<content tag="Introduction" page="ExhibitContents/HybridWolves/hybridWolvesIntro.html" />
+		<photo page="ExhibitContents/HybridWolves/HybridWolves-Kelsi-1.jpg" />
+		<photo page="ExhibitContents/HybridWolves/HybridWolves-Argo-1.jpg" />
+		<photo page="ExhibitContents/HybridWolves/HybridWolves-ArgoAndKelsi-1.jpg" />
 	</exhibit>
-	<exhibit name="Bald Eagles" xpos="66" ypos="7" previous="Wolf Pups" next="Peregrine Falcon">
+	<exhibit name="Bald Eagles" xpos="66" ypos="7" previous="Hybrid Wolves" next="Peregrine Falcon">
 		<content tag="Introduction" page="ExhibitContents/BaldEagles/baldEaglesIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BaldEagles/baldEaglesHabitat.html" />
+		<content tag="Miss Jefferson" page="ExhibitContents/BaldEagles/baldEaglesMsJefferson.html" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-2.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-3.jpg" />
+		<content tag="Squeaky" page="ExhibitContents/BaldEagles/baldEaglesSqueaky.html" />
+		<content tag="Haggis" page="ExhibitContents/BaldEagles/baldEaglesHaggis.html" />
+		<content tag="Defiance" page="ExhibitContents/BaldEagles/baldEaglesDefiance.html" />
 		<content tag="Fun Facts" page="ExhibitContents/BaldEagles/baldEaglesFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BaldEagles/baldEaglesAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BaldEagles/baldEaglesDiet.html" />
 	</exhibit>
 	<exhibit name="Peregrine Falcon" previous="Bald Eagles" next="Western Screech Owl">
 		<content tag="Introduction" page="ExhibitContents/PeregrineFalcon/peregrineFalconIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/PeregrineFalcon/peregrineFalconHabitat.html" />
 		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/PeregrineFalcon/peregrineFalconFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/PeregrineFalcon/peregrineFalconAudio.html" />
-		<content tag="Diet" page="ExhibitContents/PeregrineFalcon/peregrineFalconDiet.html" />
+		<content tag="Chase" page="ExhibitContents/PeregrineFalcon/peregrineFalconChase.html" />
 	</exhibit>
 	<exhibit name="Western Screech Owl" previous="Peregrine Falcon" next="Golden Eagles">
 		<content tag="Introduction" page="ExhibitContents/WesternScreechOwl/westernScreechOwlIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/WesternScreechOwl/westernScreechOwlHabitat.html" />
+		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough.jpg" />
 		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/WesternScreechOwl/westernScreechOwlFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/WesternScreechOwl/westernScreechOwlAudio.html" />
-		<content tag="Diet" page="ExhibitContents/WesternScreechOwl/westernScreechOwlDiet.html" />
+		<content tag="Van Gough" page="ExhibitContents/WesternScreechOwl/westernScreechOwlVanGough.html" />
 	</exhibit>
 	<exhibit name="Golden Eagles" previous="Western Screech Owl" next="Great Horned Owl">
 		<content tag="Introduction" page="ExhibitContents/GoldenEagles/goldenEaglesIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/GoldenEagles/goldenEaglesHabitat.html" />
+		<content tag="Duchess" page="ExhibitContents/GoldenEagles/goldenEaglesDuchess.html" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-1.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-2.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/GoldenEagles/goldenEaglesFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/GoldenEagles/goldenEaglesAudio.html" />
+		<content tag="Phoenix" page="ExhibitContents/GoldenEagles/goldenEaglesPhoenix.html" />
+		<content tag="Sundance" page="ExhibitContents/GoldenEagles/goldenEaglesSundance.html" />
 		<content tag="Diet" page="ExhibitContents/GoldenEagles/goldenEaglesDiet.html" />
 	</exhibit>
 	<exhibit name="Great Horned Owl" previous="Golden Eagles" next="Sandhill Crane">
 		<content tag="Introduction" page="ExhibitContents/GreatHornedOwl/greatHornedOwlIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/GreatHornedOwl/greatHornedOwlHabitat.html" />
+		<content tag="Buddy" page="ExhibitContents/GreatHornedOwl/greatHornedOwlBuddy.html" />
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
+		<content tag="Snoozer" page="ExhibitContents/GreatHornedOwl/greatHornedOwlSnoozer.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GreatHornedOwl/greatHornedOwlFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/GreatHornedOwl/greatHornedOwlAudio.html" />
-		<content tag="Diet" page="ExhibitContents/GreatHornedOwl/greatHornedOwlDiet.html" />
 	</exhibit>
 	<exhibit name="Sandhill Crane" xpos="63" ypos="35" previous="Great Horned Owl">
 		<content tag="Introduction" page="ExhibitContents/SandhillCrane/sandhillCraneIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/SandhillCrane/sandhillCraneHabitat.html" />
+		<content tag="Niles" page="ExhibitContents/SandhillCrane/sandhillCraneNiles.html" />
 		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/SandhillCrane/sandhillCraneFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/SandhillCrane/sandhillCraneAudio.html" />
-		<content tag="Diet" page="ExhibitContents/SandhillCrane/sandhillCraneDiet.html" />
+		<content tag="Daphne" page="ExhibitContents/SandhillCrane/sandhillCraneDaphne.html" />
 	</exhibit>
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
