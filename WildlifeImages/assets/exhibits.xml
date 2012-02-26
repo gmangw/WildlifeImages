@@ -31,8 +31,7 @@
 		<content tag="Audio" page="ExhibitContents/Lynx/lynxAudio.html" />
 		<content tag="Diet" page="ExhibitContents/Lynx/lynxDiet.html" />
 	</exhibit>
-	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx"
-		next="Badger">
+	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx" next="Badger">
 		<content tag="Introduction" page="ExhibitContents/Cougar/cougarIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Cougar/cougarHabitat.html" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
@@ -40,8 +39,7 @@
 		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
 		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
 	</exhibit>
-	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
-		next="Wolves">
+	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar" next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
@@ -101,19 +99,16 @@
 	</exhibit>
 	<exhibit name="Great Horned Owl" previous="Golden Eagles" next="Sandhill Crane">
 		<content tag="Introduction" page="ExhibitContents/GreatHornedOwl/greatHornedOwlIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/GreatHornedOwl/greatHornedOwlHabitat.html" />
+		<content tag="Buddy" page="ExhibitContents/GreatHornedOwl/greatHornedOwlBuddy.html" />
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
+		<content tag="Snoozer" page="ExhibitContents/GreatHornedOwl/greatHornedOwlSnoozer.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GreatHornedOwl/greatHornedOwlFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/GreatHornedOwl/greatHornedOwlAudio.html" />
-		<content tag="Diet" page="ExhibitContents/GreatHornedOwl/greatHornedOwlDiet.html" />
 	</exhibit>
 	<exhibit name="Sandhill Crane" xpos="63" ypos="35" previous="Great Horned Owl">
 		<content tag="Introduction" page="ExhibitContents/SandhillCrane/sandhillCraneIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/SandhillCrane/sandhillCraneHabitat.html" />
+		<content tag="Niles" page="ExhibitContents/SandhillCrane/sandhillCraneNiles.html" />
 		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/SandhillCrane/sandhillCraneFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/SandhillCrane/sandhillCraneAudio.html" />
-		<content tag="Diet" page="ExhibitContents/SandhillCrane/sandhillCraneDiet.html" />
+		<content tag="Daphne" page="ExhibitContents/SandhillCrane/sandhillCraneDaphne.html" />
 	</exhibit>
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
