@@ -55,6 +55,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
 import org.wildlifeimages.tools.update.ExhibitInfo.Alias;
+import org.wildlifeimages.tools.update.ExhibitLoader.ExhibitGroup;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -271,7 +272,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 		JPanel mapPanel = new JPanel(new GridLayout(1,1)){
 			private static final long serialVersionUID = -2662027617645159327L;
-
+			
 			@Override
 			public void paint(Graphics g){
 				super.paint(g);
@@ -281,7 +282,6 @@ public class ZipManager extends JFrame implements ActionListener{
 				int h;
 				int offsetX = 0;
 				int offsetY = 0;
-
 
 				if (myAspect > mapAspect){
 					w = (int)(getWidth() * (mapAspect / myAspect));
@@ -312,6 +312,15 @@ public class ZipManager extends JFrame implements ActionListener{
 						int stringWidth = g.getFontMetrics().stringWidth(a.name);
 						g.drawString(a.name, x-stringWidth/2, y);
 					}
+				}
+				for(String groupName : exhibitParser.getGroupNames()){
+					ExhibitGroup group = exhibitParser.getGroup(groupName);
+					int exhibitX = group.xPos;
+					int exhibitY = group.yPos;
+					int x = w * exhibitX/100 + offsetX;
+					int y = h * exhibitY/100 + offsetY; //+fontHeight/2; //TODO
+					int stringWidth = g.getFontMetrics().stringWidth(groupName);
+					g.drawString(groupName, x-stringWidth/2, y);
 				}
 			}
 		};
@@ -519,7 +528,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			}
 			out.putNextEntry(new ZipEntry("exhibits.xml"));
 
-			exhibitParser.writeExhibits(out);
+			exhibitParser.writeExhibitXML(out);
 
 			out.closeEntry();
 

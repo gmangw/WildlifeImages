@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.zip.ZipOutputStream;
 
+import org.wildlifeimages.tools.update.ExhibitInfo.Alias;
 import org.wildlifeimages.tools.update.Parser.ExhibitDataHolder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 public class ExhibitLoader implements Parser.ExhibitInterface{
-	ArrayList<ExhibitInfo> exhibits = new ArrayList<ExhibitInfo>();
-	Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
+	private ArrayList<ExhibitInfo> exhibits = new ArrayList<ExhibitInfo>();
+	private Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
 
 	public ExhibitLoader(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 		new Parser(xmlBox, this);
@@ -21,7 +22,7 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 		return exhibits;
 	}
 
-	public void writeExhibits(ZipOutputStream out) {
+	public void writeExhibitXML(ZipOutputStream out) {
 		try {
 			StringBuffer sb = new StringBuffer();
 			sb.append("<?xml version=\"1.0\"?>\n<exhibit_list>");
@@ -45,7 +46,28 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 					appendValue(sb, "page", photo);
 					sb.append("/>");
 				}
+				for (Alias a : e.getAliases()){
+					sb.append("\n\t\t<alias ");
+					appendValue(sb, "name", a.name);
+					appendValue(sb, "xpos", ""+a.xPos);
+					appendValue(sb, "ypos", ""+a.yPos);
+					sb.append("/>");
+				}
 				sb.append("\n\t</exhibit> ");
+			}
+			for (String groupName : groupList.keySet()){
+				ExhibitGroup group = groupList.get(groupName);
+				sb.append("\n\t<group ");
+				appendValue(sb, "name", groupName);
+				appendValue(sb, "xpos", ""+group.xPos);
+				appendValue(sb, "ypos", ""+group.yPos);
+				sb.append(">");
+				for (String member : group.exhibits){
+					sb.append("\n\t\t<member ");
+					appendValue(sb, "exhibit", member);
+					sb.append("/>");
+				}
+				sb.append("\n\t</group> ");
 			}
 
 			sb.append("\n</exhibit_list>");
@@ -75,10 +97,18 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 			yPos = y;
 		}
 	}
+	
+	public String[] getGroupNames(){
+		return groupList.keySet().toArray(new String[0]);
+	}
+	
+	public ExhibitGroup getGroup(String name){
+		return groupList.get(name);
+	}
 
 	@Override
 	public void addGroup(String groupName, String[] data, int x, int y) {
-		//TODO
+		groupList.put(groupName, new ExhibitGroup(data, x, y));
 	}
 
 	@Override
@@ -90,5 +120,9 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 		for(String photo : data.photoList){
 			e.addPhoto(photo);
 		}
+		for(int i=0; i<data.aliasList.size(); i++){
+			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i));
+		}
+		exhibits.add(e);
 	}
 }
