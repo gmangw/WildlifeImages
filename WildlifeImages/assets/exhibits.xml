@@ -1,37 +1,27 @@
 <?xml version="1.0"?>
 <exhibit_list>
-	<exhibit name="Brown Bear 1" xpos="25" ypos="86" next="Brown Bear 2">
+	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bear 1">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BrownBears/brownBearHabitat.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Codi.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/BrownBears/brownBearFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BrownBears/brownBearAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BrownBears/brownBearDiet.html" />
+		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi.jpg" />
+		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
+		<alias name="Brown Bears 1" xpos="25" ypos="86" />
+		<alias name="Brown Bears 2" xpos="9" ypos="80" />
 	</exhibit>
-	<exhibit name="Brown Bear 2" xpos="9" ypos="80" previous="Brown Bear 1"
-		next="Black Bear 1">
-		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BrownBears/brownBearHabitat.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Codi.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/BrownBears/brownBearFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BrownBears/brownBearAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BrownBears/brownBearDiet.html" />
-	</exhibit>
-	<exhibit name="Black Bear 1" xpos="22" ypos="58" previous="Brown Bear 2"
-		next="Lynx">
+	<exhibit name="Black Bears" xpos="-1" ypos="-1" previous="Brown Bears" next="Lynx">
 		<content tag="Introduction" page="ExhibitContents/BlackBears/blackBearIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/BlackBears/blackBearHabitat.html" />
+		<content tag="Boggs" page="ExhibitContents/BlackBears/blackBearBoggs.html" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/BlackBears/blackBearFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/BlackBears/blackBearAudio.html" />
-		<content tag="Diet" page="ExhibitContents/BlackBears/blackBearDiet.html" />
+		<content tag="Jane" page="ExhibitContents/BlackBears/blackBearJane.html" />
+		<content tag="Ted E. Bear" page="ExhibitContents/BlackBears/blackBearTedEBear.html" />
+		<content tag="Yogi" page="ExhibitContents/BlackBears/blackBearYogi.html" />
+		<content tag="Black Bears" page="ExhibitContents/BlackBears/blackBears.html" />
+		<alias name="Black Bear 1" xpos="22" ypos="58" />
 		<alias name="Black Bear 2" xpos="9" ypos="52" />
 	</exhibit>
-	
-	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bear 1"
-		next="Cougar">
+	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bear 1" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Lynx/lynxHabitat.html" />
 		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
@@ -54,14 +44,12 @@
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
 		next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/Badger/badgerHabitat.html" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-1.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-2.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubbs-3.jpg" />
+		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
-		<content tag="Diet" page="ExhibitContents/Badger/badgerDiet.html" />
-		<content tag="Audio" page="ExhibitContents/Badger/badgerAudio.html" />
-		<content tag="Fun Facts" page="ExhibitContents/Badger/badgerFunFacts.html" />
+		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 	</exhibit>
 	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger"
 		next="Wolf Pups">
