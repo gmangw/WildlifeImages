@@ -31,6 +31,11 @@ import android.widget.ImageView;
  */
 class MapView extends ImageView {
 
+	private static final float MAP_LEFT = 0.10f;
+	private static final float MAP_TOP = 0.215f;
+	private static final float MAP_RIGHT = 0.80f;
+	private static final float MAP_BOTTOM = 0.63f;
+	
 	private static final boolean DEBUG = false;
 
 	private boolean doZoom = false;
@@ -230,23 +235,23 @@ class MapView extends ImageView {
 		float[] position = {originX, originY};
 		return position;
 	}
-
+	
 	public void processScroll(float distanceX, float distanceY){
 		if (Math.abs(distanceX) > 1.0f || Math.abs(distanceY) > 1.0f){
 			doZoom = true;
 		}
 		if (doZoom){
-			if (originX + distanceX < getXFromFraction(0.10f)){
-				originX = originX - (originX - getXFromFraction(0.10f))/2.0f;
-			}else if(originX + distanceX > getXFromFraction(0.80f)){
-				originX = originX + (getXFromFraction(0.80f) - originX)/2.0f;
+			if (originX + distanceX < getXFromFraction(MAP_LEFT)){
+				originX = originX - (originX - getXFromFraction(MAP_LEFT))/2.0f;
+			}else if(originX + distanceX > getXFromFraction(MAP_RIGHT)){
+				originX = originX + (getXFromFraction(MAP_RIGHT) - originX)/2.0f;
 			}else{
 				originX = originX + distanceX;
 			}
-			if (originY + distanceY < getYFromFraction(0.215f)){
-				originY = originY - (originY - getYFromFraction(0.215f))/2.0f;
-			}else if(originY + distanceY > getYFromFraction(0.63f)){
-				originY = originY + (getYFromFraction(0.63f) - originY)/2.0f;
+			if (originY + distanceY < getYFromFraction(MAP_TOP)){
+				originY = originY - (originY - getYFromFraction(MAP_TOP))/2.0f;
+			}else if(originY + distanceY > getYFromFraction(MAP_BOTTOM)){
+				originY = originY + (getYFromFraction(MAP_BOTTOM) - originY)/2.0f;
 			}else{
 				originY = originY + distanceY;
 			}
