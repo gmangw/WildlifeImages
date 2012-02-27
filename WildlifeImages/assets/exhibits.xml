@@ -59,13 +59,23 @@
 		<content tag="Wolves" page="ExhibitContents/Wolves/wolves.html" />
 		<content tag="Pack" page="ExhibitContents/Wolves/wolvesPack.html" />
 	</exhibit>
-	<exhibit name="Hybrid Wolves" xpos="24" ypos="34" previous="Wolves" next="Bald Eagles">
+	<exhibit name="Hybrid Wolves" xpos="24" ypos="34" previous="Wolves" next="River Otter">
 		<content tag="Introduction" page="ExhibitContents/HybridWolves/hybridWolvesIntro.html" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-Kelsi-1.jpg" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-Argo-1.jpg" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-ArgoAndKelsi-1.jpg" />
 	</exhibit>
-	<exhibit name="Bald Eagles" xpos="66" ypos="7" previous="Hybrid Wolves" next="Peregrine Falcon">
+	<exhibit name="River Otter" xpos="17" ypos="9" previous="Hybrid Wolves" next="Bald Eagles">
+		<content tag="Introduction" page="ExhibitContents/RiverOtter/riverOtterIntro.html" />
+		<content tag="Nestle" page="ExhibitContents/RiverOtter/riverOtterNestle.html" />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-1.jpg" />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-2.jpg" />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-3.jpg" />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-4.jpg" />
+		<content tag="River Otters" page="ExhibitContents/RiverOtter/riverOtters.html" />
+		<content tag="Diet" page="ExhibitContents/RiverOtter/riverOtterDiet.html" />
+	</exhibit>
+	<exhibit name="Bald Eagles" xpos="66" ypos="7" previous="River Otter" next="Peregrine Falcon">
 		<content tag="Introduction" page="ExhibitContents/BaldEagles/baldEaglesIntro.html" />
 		<content tag="Miss Jefferson" page="ExhibitContents/BaldEagles/baldEaglesMsJefferson.html" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
