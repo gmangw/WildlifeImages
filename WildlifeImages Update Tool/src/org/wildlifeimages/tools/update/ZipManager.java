@@ -547,6 +547,11 @@ public class ZipManager extends JFrame implements ActionListener{
 			out.closeEntry();
 
 			out.close();
+			
+			for(ExhibitInfo e : exhibitParser.getExhibits()){
+				File output = new File(e.getName()+".png");
+				CreateQR.writeExhibitQR(e.getName(), output);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			//TODO

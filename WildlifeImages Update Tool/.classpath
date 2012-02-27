@@ -23,5 +23,7 @@
 	<classpathentry kind="lib" path="libs/batik-script.jar"/>
 	<classpathentry kind="lib" path="libs/xml-apis.jar"/>
 	<classpathentry kind="lib" path="libs/xml-apis-ext.jar"/>
+	<classpathentry kind="lib" path="libs/core.jar"/>
+	<classpathentry kind="lib" path="libs/javase.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
