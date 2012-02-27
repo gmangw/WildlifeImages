@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <exhibit_list>
-	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bear 1">
+	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bears">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
 		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
 		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi.jpg" />
@@ -21,7 +21,7 @@
 		<alias name="Black Bear 1" xpos="22" ypos="58" />
 		<alias name="Black Bear 2" xpos="9" ypos="52" />
 	</exhibit>
-	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bear 1" next="Cougar">
+	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bears" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Lynx/lynxHabitat.html" />
 		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />

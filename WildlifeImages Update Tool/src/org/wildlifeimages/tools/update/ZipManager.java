@@ -64,7 +64,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class ZipManager extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
@@ -272,7 +272,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 		JPanel mapPanel = new JPanel(new GridLayout(1,1)){
 			private static final long serialVersionUID = -2662027617645159327L;
-			
+
 			@Override
 			public void paint(Graphics g){
 				super.paint(g);
@@ -293,24 +293,28 @@ public class ZipManager extends JFrame implements ActionListener{
 					offsetY = (getHeight() - h)/2;
 				}
 
-				//int fontHeight = g.getFontMetrics().getHeight();
+				ArrayList<String> names = new ArrayList<String>();
+				ArrayList<Integer> pointsX = new ArrayList<Integer>();
+				ArrayList<Integer> pointsY = new ArrayList<Integer>();
 
 				for(ExhibitInfo e : exhibitParser.getExhibits()){
 					int exhibitX = e.getxCoord();
 					int exhibitY = e.getyCoord();
 					if (exhibitX != -1 || exhibitY != -1){
 						int x = w * exhibitX/100 + offsetX;
-						int y = h * exhibitY/100 + offsetY; //+fontHeight/2; //TODO
-						int stringWidth = g.getFontMetrics().stringWidth(e.getName());
-						g.drawString(e.getName(), x-stringWidth/2, y);
+						int y = h * exhibitY/100 + offsetY;
+						names.add(e.getName());
+						pointsX.add(x);
+						pointsY.add(y);
 					}
 					for (Alias a : e.getAliases()){
 						exhibitX = a.xPos;
 						exhibitY = a.yPos;
 						int x = w * exhibitX/100 + offsetX;
-						int y = h * exhibitY/100 + offsetY; //+fontHeight/2; //TODO
-						int stringWidth = g.getFontMetrics().stringWidth(a.name);
-						g.drawString(a.name, x-stringWidth/2, y);
+						int y = h * exhibitY/100 + offsetY;
+						names.add(a.name);
+						pointsX.add(x);
+						pointsY.add(y);
 					}
 				}
 				for(String groupName : exhibitParser.getGroupNames()){
@@ -319,8 +323,18 @@ public class ZipManager extends JFrame implements ActionListener{
 					int exhibitY = group.yPos;
 					int x = w * exhibitX/100 + offsetX;
 					int y = h * exhibitY/100 + offsetY; //+fontHeight/2; //TODO
-					int stringWidth = g.getFontMetrics().stringWidth(groupName);
-					g.drawString(groupName, x-stringWidth/2, y);
+					names.add(groupName);
+					pointsX.add(x);
+					pointsY.add(y);
+				}
+
+				int fontHeight = g.getFontMetrics().getHeight();
+				for (int i=0; i<names.size(); i++){
+					int stringWidth = g.getFontMetrics().stringWidth(names.get(i));
+					g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.5f));
+					g.fillRect(pointsX.get(i)-stringWidth/2 - 1, pointsY.get(i)-fontHeight+1, stringWidth + 2, fontHeight+2);
+					g.setColor(Color.WHITE);
+					g.drawString(names.get(i), pointsX.get(i)-stringWidth/2, pointsY.get(i));
 				}
 			}
 		};
