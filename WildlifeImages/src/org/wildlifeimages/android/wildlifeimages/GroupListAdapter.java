@@ -48,9 +48,6 @@ public class GroupListAdapter extends BaseAdapter{
 		itemLabel.setText(entry.getName());
 
 		itemLabel.setTextColor(0xFFFFFFFF);
-		if (exhibitList.getCurrent().equals(entry)){
-			itemLabel.setTextColor(0xFF085FFF);
-		}
 
 		return convertView;
 	}
