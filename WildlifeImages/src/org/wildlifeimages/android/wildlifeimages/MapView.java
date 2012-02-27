@@ -243,8 +243,8 @@ class MapView extends ImageView {
 			}else{
 				originX = originX + distanceX;
 			}
-			if (originY + distanceY < getYFromFraction(0.25f)){
-				originY = originY - (originY - getYFromFraction(0.25f))/2.0f;
+			if (originY + distanceY < getYFromFraction(0.215f)){
+				originY = originY - (originY - getYFromFraction(0.215f))/2.0f;
 			}else if(originY + distanceY > getYFromFraction(0.63f)){
 				originY = originY + (getYFromFraction(0.63f) - originY)/2.0f;
 			}else{
