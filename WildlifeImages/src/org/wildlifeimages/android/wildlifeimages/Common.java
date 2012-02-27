@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 /**
  * All the static functions that are not start are kept here.
@@ -57,11 +58,15 @@ public class Common {
 			String contents = intent.getStringExtra(context.loadString(R.string.intent_extra_result));
 			String format = intent.getStringExtra(context.loadString(R.string.intent_extra_result_format));
 			if (format.equals(context.loadString(R.string.intent_result_qr))){
-				String potential_key = Common.processResultQR(context, contents);
-				ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-				if (true == exhibitList.containsKey(potential_key)){
-					exhibitList.setCurrent(potential_key, Exhibit.TAG_AUTO);
-					ExhibitActivity.start(context);
+				String potentialKey = Common.processResultQR(context, contents);
+				if (potentialKey != null){
+					ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+					if (true == exhibitList.containsKey(potentialKey)){
+						exhibitList.setCurrent(potentialKey, Exhibit.TAG_AUTO);
+						ExhibitActivity.start(context);
+					}
+				}else{
+					//TODO error handling
 				}
 			}
 		} else if (requestCode == R.integer.CAPTURE_IMAGE_ACTIVITY_REQUEST && resultCode == Activity.RESULT_OK) {	

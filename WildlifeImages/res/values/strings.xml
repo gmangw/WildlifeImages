@@ -32,7 +32,7 @@
     <string name="intent_qr_mode">QR_CODE_MODE</string>
     <string name="scan_app_missing">Install Barcode Scanner or Google Goggles first.</string>
     <string name="invalid_qr_result">Sorry, this is not a valid Wildlife Images QR code. </string>
-    <string name="qr_prefix">market://search?q=pname:org.xbmc.android.remote&amp;extra=Wildlife_Images_Exhibit_</string>
+    <string name="qr_prefix">market://search?q=pname:org.wildlifeimages.android.wildlifeimages&amp;extra=Wildlife_Images_Exhibit_</string>
     <string name="exit_question">Are you sure you want to exit?</string>
     <string name="exit_option_yes">Yes</string>
     <string name="exit_option_no">No</string>
