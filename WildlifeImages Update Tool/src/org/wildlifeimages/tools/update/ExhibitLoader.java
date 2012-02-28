@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.zip.ZipOutputStream;
 
-import org.wildlifeimages.tools.update.ExhibitInfo.Alias;
-import org.wildlifeimages.tools.update.Parser.ExhibitDataHolder;
+import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
+import org.wildlifeimages.android.wildlifeimages.Parser;
+import org.wildlifeimages.android.wildlifeimages.Parser.ExhibitDataHolder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -20,82 +21,6 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 
 	public ArrayList<ExhibitInfo> getExhibits(){
 		return exhibits;
-	}
-
-	public void writeExhibitXML(ZipOutputStream out) {
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("<?xml version=\"1.0\"?>\n<exhibit_list>");
-
-			for (ExhibitInfo e : exhibits){
-				sb.append("\n\t<exhibit ");
-				appendValue(sb, "name", e.getName());
-				appendValue(sb, "xpos", e.getxCoord()+"");
-				appendValue(sb, "ypos", e.getyCoord()+"");
-				appendValue(sb, "previous", e.getPrevious());
-				appendValue(sb, "next", e.getNext());
-				sb.append(">");
-				for (int i=0; i<e.getTagCount(); i++){
-					sb.append("\n\t\t<content ");
-					appendValue(sb, "tag", e.getTag(i));
-					appendValue(sb, "page", e.getContents(e.getTag(i)));
-					sb.append("/>");
-				}
-				for (String photo : e.getPhotos()){
-					sb.append("\n\t\t<photo ");
-					appendValue(sb, "page", photo);
-					sb.append("/>");
-				}
-				for (Alias a : e.getAliases()){
-					sb.append("\n\t\t<alias ");
-					appendValue(sb, "name", a.name);
-					appendValue(sb, "xpos", ""+a.xPos);
-					appendValue(sb, "ypos", ""+a.yPos);
-					sb.append("/>");
-				}
-				sb.append("\n\t</exhibit> ");
-			}
-			for (String groupName : groupList.keySet()){
-				ExhibitGroup group = groupList.get(groupName);
-				sb.append("\n\t<group ");
-				appendValue(sb, "name", groupName);
-				appendValue(sb, "xpos", ""+group.xPos);
-				appendValue(sb, "ypos", ""+group.yPos);
-				sb.append(">");
-				for (String member : group.exhibits){
-					sb.append("\n\t\t<member ");
-					appendValue(sb, "exhibit", member);
-					sb.append("/>");
-				}
-				sb.append("\n\t</group> ");
-			}
-
-			sb.append("\n</exhibit_list>");
-
-			out.write(sb.toString().getBytes());
-		} catch (IOException e) {
-		}
-	}
-
-	private void appendValue(StringBuffer sb, String name, String value){
-		if (value != null){
-			sb.append(name);
-			sb.append("=\"");
-			sb.append(value);
-			sb.append("\" ");
-		}
-	}
-
-	public class ExhibitGroup{
-		public final String[] exhibits;
-		public final int xPos;
-		public final int yPos;
-
-		public ExhibitGroup(String[] list, int x, int y){
-			exhibits = list;
-			xPos = x;
-			yPos = y;
-		}
 	}
 	
 	public String[] getGroupNames(){
@@ -124,5 +49,9 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i));
 		}
 		exhibits.add(e);
+	}
+
+	public void writeXML(ZipOutputStream out) {
+		Parser.writeExhibitXML(out, exhibits, groupList);
 	}
 }

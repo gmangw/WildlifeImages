@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="libs/xml-apis-ext.jar"/>
 	<classpathentry kind="lib" path="libs/core.jar"/>
 	<classpathentry kind="lib" path="libs/javase.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WildlifeImages"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

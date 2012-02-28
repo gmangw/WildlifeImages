@@ -8,8 +8,6 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 /**
  * A collection of {@link Exhibit} instances.
  * 
@@ -204,18 +202,6 @@ public class ExhibitList implements Parser.ExhibitInterface{
 			return groupList.get(groupName).exhibits;
 		}else{
 			return new String[0];
-		}
-	}
-
-	public class ExhibitGroup{
-		public final String[] exhibits;
-		public final int xPos;
-		public final int yPos;
-
-		public ExhibitGroup(String[] list, int x, int y){
-			exhibits = list;
-			xPos = x;
-			yPos = y;
 		}
 	}
 }

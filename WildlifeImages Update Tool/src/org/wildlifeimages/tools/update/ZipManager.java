@@ -54,8 +54,9 @@ import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
-import org.wildlifeimages.tools.update.ExhibitInfo.Alias;
-import org.wildlifeimages.tools.update.ExhibitLoader.ExhibitGroup;
+import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
+import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
+import org.wildlifeimages.android.wildlifeimages.Parser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -298,8 +299,8 @@ public class ZipManager extends JFrame implements ActionListener{
 				ArrayList<Integer> pointsY = new ArrayList<Integer>();
 
 				for(ExhibitInfo e : exhibitParser.getExhibits()){
-					int exhibitX = e.getxCoord();
-					int exhibitY = e.getyCoord();
+					int exhibitX = e.getX();
+					int exhibitY = e.getY();
 					if (exhibitX != -1 || exhibitY != -1){
 						int x = w * exhibitX/100 + offsetX;
 						int y = h * exhibitY/100 + offsetY;
@@ -397,9 +398,9 @@ public class ZipManager extends JFrame implements ActionListener{
 		for (ListSelectionListener l : contentList.getListSelectionListeners()){
 			l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
 		}
-		exhibitXCoordField.setValue(currentExhibit.getxCoord());
+		exhibitXCoordField.setValue(currentExhibit.getX());
 		exhibitXCoordOrig.setText("X coordinate: (was " + currentExhibit.origXCoord + ")");
-		exhibitYCoordField.setValue(currentExhibit.getyCoord());
+		exhibitYCoordField.setValue(currentExhibit.getY());
 		exhibitYCoordOrig.setText("Y coordinate: (was " + currentExhibit.origYCoord + ")");
 
 		exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
@@ -434,7 +435,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		currentTag = (String)contentList.getSelectedValue();
 		ExhibitInfo e = currentExhibit;
 		String tag = (String)currentTag;
-		String data = e.getContents(tag);
+		String data = e.getContent(tag);
 		exhibitContentLabel.setText(e.getOrigContents(tag));
 		newContentDropdown.setSelectedItem(data);
 	}
@@ -479,9 +480,9 @@ public class ZipManager extends JFrame implements ActionListener{
 				val = Integer.parseInt(arg0.toString());
 				for (ChangeListener l : listeners){
 					if (type.equals("x")){
-						currentExhibit.setxCoord(val);
+						currentExhibit.setCoords(val, currentExhibit.getY());
 					}else if (type.equals("y")){
-						currentExhibit.setyCoord(val);
+						currentExhibit.setCoords(currentExhibit.getX(), val);
 					}
 					l.stateChanged(new ChangeEvent(this));
 				}
@@ -542,12 +543,12 @@ public class ZipManager extends JFrame implements ActionListener{
 			}
 			out.putNextEntry(new ZipEntry("exhibits.xml"));
 
-			exhibitParser.writeExhibitXML(out);
+			exhibitParser.writeXML(out);
 
 			out.closeEntry();
 
 			out.close();
-			
+
 			for(ExhibitInfo e : exhibitParser.getExhibits()){
 				File output = new File(e.getName()+".png");
 				CreateQR.writeExhibitQR(e.getName(), output);
@@ -592,7 +593,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				}
 			}
 		}else if (event.getSource().equals(newContentDropdown)){
-			currentExhibit.addContent(currentTag, (String)newContentDropdown.getSelectedItem());
+			currentExhibit.setContent(currentTag, (String)newContentDropdown.getSelectedItem());
 		}else if (event.getSource().equals(exhibitPreviousDropdown)){
 			String prev = (String)exhibitPreviousDropdown.getSelectedItem();
 			if (prev != null){
@@ -606,7 +607,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		}else if (event.getSource().equals(newTagButton)){
 			String newName = JOptionPane.showInputDialog("Name of new content:"); //TODO
 			if (newName != null && localPathPattern.matcher(newName).matches()){
-				currentExhibit.addContent(newName, originalFiles[0]);
+				currentExhibit.setContent(newName, originalFiles[0]);
 				contentListModel.notifyChange();
 			}else{
 				System.out.println("Invalid tag name " + newName);
@@ -617,7 +618,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				String newContentName = JOptionPane.showInputDialog("Name of first new content:");
 				if (newContentName != null && localPathPattern.matcher(newContentName).matches()){
 					ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
-					newE.addContent(newContentName, originalFiles[0]);
+					newE.setContent(newContentName, originalFiles[0]);
 					exhibitParser.getExhibits().add(newE);
 					exhibitNextDropdown.addItem(newName);
 					exhibitPreviousDropdown.addItem(newName);

@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Parser</name>
+			<type>2</type>
+			<location>C:/Users/Graham/git/WildlifeImages/WildlifeImages/src/org/wildlifeimages/android/wildlifeimages/Parser</location>
+		</link>
+	</linkedResources>
 </projectDescription>

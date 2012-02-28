@@ -160,4 +160,21 @@ public class Exhibit{
 			yPos = aliasY;
 		}
 	}
+	
+	public String[] getPhotos(){
+		String photos = contents.get(Exhibit.TAG_PHOTOS);
+		if (photos != null){
+			return photos.split(",");
+		}else{
+			return new String[0];
+		}
+	}
+	
+	public int getTagCount(){
+		return tagList.size();
+	}
+	
+	public String getTag(int index){
+		return tagList.get(index);
+	}
 }
