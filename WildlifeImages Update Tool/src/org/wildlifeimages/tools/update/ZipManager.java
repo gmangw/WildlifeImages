@@ -56,7 +56,6 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
-import org.wildlifeimages.android.wildlifeimages.Parser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -115,6 +114,8 @@ public class ZipManager extends JFrame implements ActionListener{
 	private final ModifiedListModel modifiedFilesListModel = new ModifiedListModel();
 	private final ExhibitPhotosModel exhibitPhotosModel = new ExhibitPhotosModel();
 
+	private File apkFile = null;
+
 	private final String EXHIBITSFILENAME = "exhibits.xml";
 
 	private ExhibitInfo currentExhibit;
@@ -126,18 +127,28 @@ public class ZipManager extends JFrame implements ActionListener{
 	}
 
 	public ZipInputStream getZipStream(){
-		//TODO
+		if (apkFile != null){
+			try {
+				return new ZipInputStream(new FileInputStream(apkFile));
+			} catch (FileNotFoundException e) {}
+		}
 		return new ZipInputStream(getClass().getResourceAsStream("/resources/WildlifeImages.apk"));
 	}
 
 	public ZipManager(){
+		init();
+	}
+
+	private void init(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		try {
-			originalFiles = this.readAPK(getZipStream());
+			ArrayList<String> files = new ArrayList<String>();
+			exhibitParser = this.readAPK(getZipStream(), files);
+			originalFiles = files.toArray(new String[files.size()]);
 		} catch (XmlPullParserException e) {
-			//TODO
-			originalFiles = null;
+			JOptionPane.showMessageDialog(this, "Error: could not read exhibit data.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		final Dimension mapDimension = new Dimension();
@@ -490,10 +501,9 @@ public class ZipManager extends JFrame implements ActionListener{
 		}
 	}
 
-	public String[] readAPK(ZipInputStream zf) throws XmlPullParserException{
+	public ExhibitLoader readAPK(ZipInputStream zf, ArrayList<String> files) throws XmlPullParserException{
+		ExhibitLoader loader = null;
 		try {
-
-			ArrayList<String> files = new ArrayList<String>();
 			for (ZipEntry item = zf.getNextEntry(); item != null; item = zf.getNextEntry()){
 				String zipEntryName = (item).getName();
 				if (false == item.isDirectory() && zipEntryName.startsWith(assetPath)){
@@ -508,12 +518,12 @@ public class ZipManager extends JFrame implements ActionListener{
 
 						xmlBox.setInput(in);
 						System.out.println("Creating parser");
-						exhibitParser = new ExhibitLoader(xmlBox);
+						loader = new ExhibitLoader(xmlBox);
 					}
 				}
 			}
 			zf.close();
-			return files.toArray(new String[files.size()]);
+			return loader;
 		} catch (IOException e) {
 			e.printStackTrace();
 			//TODO

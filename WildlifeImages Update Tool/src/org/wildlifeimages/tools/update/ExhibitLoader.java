@@ -22,11 +22,11 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	public ArrayList<ExhibitInfo> getExhibits(){
 		return exhibits;
 	}
-	
+
 	public String[] getGroupNames(){
 		return groupList.keySet().toArray(new String[0]);
 	}
-	
+
 	public ExhibitGroup getGroup(String name){
 		return groupList.get(name);
 	}

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
@@ -15,21 +14,22 @@ public class Parser {
 
 	public Parser(XmlPullParser xmlBox, ExhibitInterface handler) throws XmlPullParserException, IOException {
 		int eventType;
+		if (xmlBox != null){
+			eventType = xmlBox.getEventType();
 
-		eventType = xmlBox.getEventType();
-
-		while (eventType != XmlPullParser.END_DOCUMENT) {
-			if(eventType == XmlPullParser.START_TAG) {
-				if (xmlBox.getName().equalsIgnoreCase("exhibit")){
-					readExhibit(xmlBox, handler);
-				}else if(xmlBox.getName().equalsIgnoreCase("group")){
-					readGroup(xmlBox, handler);
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				if(eventType == XmlPullParser.START_TAG) {
+					if (xmlBox.getName().equalsIgnoreCase("exhibit")){
+						readExhibit(xmlBox, handler);
+					}else if(xmlBox.getName().equalsIgnoreCase("group")){
+						readGroup(xmlBox, handler);
+					}
 				}
+				eventType = xmlBox.next();
 			}
-			eventType = xmlBox.next();
 		}
 	}
-	
+
 	private void readExhibitTag(XmlPullParser xmlBox, ExhibitDataHolder e, ExhibitInterface handler) throws XmlPullParserException, IOException{
 		if (xmlBox.getName().equalsIgnoreCase("content")){
 			String url = xmlBox.getAttributeValue(null, "page");
@@ -62,7 +62,7 @@ public class Parser {
 			members.add(name);
 		}
 	}
-	
+
 	private void readGroup(XmlPullParser xmlBox, ExhibitInterface handler) throws XmlPullParserException, IOException{
 		int eventType;
 		String groupName = xmlBox.getAttributeValue(null, "name");//TODO error check
@@ -77,7 +77,7 @@ public class Parser {
 		if (tmp != null){
 			yCoord = Integer.decode(tmp);
 		}		
-		
+
 		eventType = xmlBox.getEventType();
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
@@ -91,10 +91,10 @@ public class Parser {
 		}
 		handler.addGroup(groupName, members.toArray(new String[0]), xCoord, yCoord);
 	}
-	
+
 	private void readExhibit(XmlPullParser xmlBox, ExhibitInterface handler) throws XmlPullParserException, IOException{
 		int eventType;
-		
+
 		String name = xmlBox.getAttributeValue(null, "name");//TODO error check
 
 		String tmp = xmlBox.getAttributeValue(null, "xpos");
@@ -125,7 +125,7 @@ public class Parser {
 		}
 		handler.addExhibit(name, xCoord, yCoord, next, previous, e);
 	}
-	
+
 	private static void appendValue(StringBuffer sb, String name, String value){
 		if (value != null){
 			sb.append(name);
@@ -134,7 +134,7 @@ public class Parser {
 			sb.append("\" ");
 		}
 	}
-	
+
 	public static void writeExhibitXML(ZipOutputStream out, ArrayList<? extends Exhibit> exhibits, Hashtable<String, ExhibitGroup> groupList) {
 		try {
 			StringBuffer sb = new StringBuffer();
@@ -190,7 +190,7 @@ public class Parser {
 		} catch (IOException e) {
 		}
 	}
-	
+
 	public class ExhibitDataHolder{
 		public ArrayList<String> contentNameList = new ArrayList<String>();
 		public ArrayList<String> contentValueList = new ArrayList<String>();
@@ -199,11 +199,11 @@ public class Parser {
 		public ArrayList<Integer> aliasXList = new ArrayList<Integer>();
 		public ArrayList<Integer> aliasYList = new ArrayList<Integer>();
 	}
-	
+
 	public interface ExhibitInterface {
 
 		public void addGroup(String groupName, String[] data, int x, int y);
-		
+
 		public void addExhibit(String name, int xCoord, int yCoord, String next, String previous, ExhibitDataHolder data);
 	}
 }

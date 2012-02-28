@@ -27,7 +27,7 @@ public class ExhibitList implements Parser.ExhibitInterface{
 	private float zoomFactor = 0.75f;
 	private float zoomMinimum = 1.00f;
 	private float zoomExponent = 1.00f;
-	private float[][] anchorPoints = { 
+	private float[][] anchorPoints = { //TODO move this data somewhere else
 			{0.00f, 0.00f, 1.90f},
 			{0.00f, 0.25f, 2.50f}, 
 			{0.00f, 0.50f, 1.80f},
