@@ -16,7 +16,7 @@ import android.util.Log;
  */	
 public class BitmapCache {	
 	private static final int SIZE = 96;
-	public static final int CACHE_MAX = 8; //TODO
+	public static final int CACHE_MAX = 8;
 
 	private HashMap<String, Bitmap> cachedBitmaps;
 	private HashMap<String, Bitmap> cachedThumbs;

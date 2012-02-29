@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 /**
  * All the static functions that are not start are kept here.
@@ -65,13 +66,9 @@ public class Common {
 						ExhibitActivity.start(context);
 					}
 				}else{
-					//TODO error handling
+					Toast.makeText(context, "Unfamiliar QR code "+ contents, Toast.LENGTH_SHORT);
 				}
 			}
-		} else if (requestCode == R.integer.CAPTURE_IMAGE_ACTIVITY_REQUEST && resultCode == Activity.RESULT_OK) {	
-			//ImageView v = new ImageView(this);
-			//v.setImageURI(imageUri); //TODO
-			//setContentView(v);
 		}
 	}
 
@@ -114,13 +111,7 @@ public class Common {
 	 * @param a URI imageUri that contains the location of where the image will be stored. 
 	 */
 	public static void startCamera(Activity context, Uri imageUri){
-		//String fileName = "file://mnt/sdcard/pic.jpg"; //TODO filename
-		//imageUri = Uri.parse(fileName);
-		//Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //TODO check availability first
-
-		Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA); //TODO if we don't want image back
-		//intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		//intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+		Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
 		context.startActivity(intent);
 	}
 

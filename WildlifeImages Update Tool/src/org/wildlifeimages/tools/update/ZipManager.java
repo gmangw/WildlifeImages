@@ -68,6 +68,8 @@ public class ZipManager extends JFrame implements ActionListener{
 	private static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
+	
+	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
 
 	private static final String assetPath = "assets/";
 
@@ -147,7 +149,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			exhibitParser = this.readAPK(getZipStream(), files);
 			originalFiles = files.toArray(new String[files.size()]);
 		} catch (XmlPullParserException e) {
-			JOptionPane.showMessageDialog(this, "Error: could not read exhibit data.", "Error", JOptionPane.ERROR_MESSAGE);
+			showError("Could not load APK file.");
 			return;
 		}
 
@@ -334,7 +336,7 @@ public class ZipManager extends JFrame implements ActionListener{
 					int exhibitX = group.xPos;
 					int exhibitY = group.yPos;
 					int x = w * exhibitX/100 + offsetX;
-					int y = h * exhibitY/100 + offsetY; //+fontHeight/2; //TODO
+					int y = h * exhibitY/100 + offsetY;
 					names.add(groupName);
 					pointsX.add(x);
 					pointsY.add(y);
@@ -375,9 +377,8 @@ public class ZipManager extends JFrame implements ActionListener{
 				entry = null;
 			}
 			if (entry == null){
-				throw new IOException("Could not load map.svg");
+				throw new IOException("Error: Could not load map.svg");
 			}
-
 
 			String parser = XMLResourceDescriptor.getXMLParserClassName();
 			SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
@@ -394,7 +395,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 			stream.close();
 		}catch(IOException e){
-			//TODO
+			System.out.println(e.getMessage());
 		}
 
 		return svgCanvas;
@@ -525,10 +526,13 @@ public class ZipManager extends JFrame implements ActionListener{
 			zf.close();
 			return loader;
 		} catch (IOException e) {
-			e.printStackTrace();
-			//TODO
+			showError("Error: Could not load APK file.");
 			return null;
 		}
+	}
+	
+	public void showError(String message){
+		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void saveFile(File outFile){
@@ -547,8 +551,7 @@ public class ZipManager extends JFrame implements ActionListener{
 					in.close();
 					out.closeEntry();
 				}catch(FileNotFoundException e){
-					//TODO
-					System.out.println("Error: Cannot read new file " + modifiedFiles.get(key));
+					showError("Error: Cannot read new file " + modifiedFiles.get(key));
 				}
 			}
 			out.putNextEntry(new ZipEntry("exhibits.xml"));
@@ -564,8 +567,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				CreateQR.writeExhibitQR(e.getName(), output);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			//TODO
+			showError("Unable to save update file.");
 		}
 	}
 
@@ -597,8 +599,12 @@ public class ZipManager extends JFrame implements ActionListener{
 				if (chooser.getSelectedFile().exists()){
 					this.saveFile(chooser.getSelectedFile());
 					String newName = JOptionPane.showInputDialog("Local name for new file (such as ExhibitContents/bear.html):");
-					if (newName != null){ //TODO format check
-						addFile(newName, chooser.getSelectedFile());
+					if (newName != null){
+						if (newFileNamePattern.matcher(newName).matches()){
+							addFile(newName, chooser.getSelectedFile());
+						}else{
+							showError("Error: invalid filename.");
+						}
 					}
 				}
 			}
@@ -615,7 +621,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				currentExhibit.setNext(next);
 			}
 		}else if (event.getSource().equals(newTagButton)){
-			String newName = JOptionPane.showInputDialog("Name of new content:"); //TODO
+			String newName = JOptionPane.showInputDialog("Name of new content:");
 			if (newName != null && localPathPattern.matcher(newName).matches()){
 				currentExhibit.setContent(newName, originalFiles[0]);
 				contentListModel.notifyChange();
