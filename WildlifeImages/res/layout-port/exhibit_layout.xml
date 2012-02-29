@@ -16,29 +16,30 @@
             android:id="@+id/exhibit"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:scrollbars="none" />
+            android:scrollbars="none" >
+
+            <Button
+                android:id="@+id/exhibit_photo_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:onClick="exhibitProcessSidebar"
+                android:text="Photos" />
+        </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
     <HorizontalScrollView
         android:id="@+id/exhibit_sidebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="8" 
-        android:fillViewport="true">
+        android:layout_weight="8"
+        android:fillViewport="true" >
 
         <LinearLayout
             android:id="@+id/exhibit_sidebar_linear"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/exhibit_sidebar_map"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:onClick="exhibitProcessSidebar"
-                android:text="Map"
-                android:visibility="gone" />
         </LinearLayout>
     </HorizontalScrollView>
 

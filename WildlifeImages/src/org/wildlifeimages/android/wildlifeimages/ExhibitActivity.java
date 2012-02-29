@@ -48,13 +48,13 @@ public class ExhibitActivity extends WireActivity{
 			remakeButtons(e); //TODO
 			showExhibit(e, tag);
 		}
-		
+
 	}
 
 	public void processSlider(View v){
 		Log.d(this.getClass().getName(), "Slid");
 	}
-	
+
 	/**
 	 * This will display the given exhibit.
 	 * 
@@ -100,18 +100,21 @@ public class ExhibitActivity extends WireActivity{
 		int index = 0;
 		while (tagList.hasNext()){
 			if (null != findViewById(R.id.exhibitframe_land)){
-				Button button = makeStyledButton(tagList.next(), buttonList.getContext(), params, listen);
+				String tag = tagList.next();
+				Button button = makeStyledButton(tag, buttonList.getContext(), params, listen);
 
 				/* Add each button after the previous one, keeping any xml buttons at the end */
 				buttonList.addView(button, index);
 				index++;
-			} else{
+			}else{
 				LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
 				buttonPair.setLayoutParams(params);
 				buttonPair.setOrientation(LinearLayout.VERTICAL);
 				for(int i=0; i<2; i++){
 					if (tagList.hasNext()){
-						Button button = makeStyledButton(tagList.next(), buttonPair.getContext(), params, listen);
+						String tag = tagList.next();
+
+						Button button = makeStyledButton(tag, buttonPair.getContext(), params, listen);
 						buttonPair.addView(button);
 					} else {
 						Button filler = makeStyledButton("", buttonPair.getContext(), params, null);
@@ -156,10 +159,6 @@ public class ExhibitActivity extends WireActivity{
 	public void exhibitProcessSidebar(View v){
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		switch (v.getId()) {
-		case R.id.exhibit_sidebar_map:
-			Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
-			this.startActivity(mapIntent);
-			break;
 		default:
 			showExhibit(exhibitList.getCurrent(), ((Button)v).getText().toString());
 			break;

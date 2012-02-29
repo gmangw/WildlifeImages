@@ -17,7 +17,16 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@android:color/white"
-            android:scrollbars="none" />
+            android:scrollbars="none" >
+
+            <Button
+                android:id="@+id/exhibit_photo_button"
+                android:onClick="exhibitProcessSidebar"
+                android:text="Photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right" />
+        </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
     <ScrollView
@@ -33,14 +42,6 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" >
-
-            <Button
-                android:id="@+id/exhibit_sidebar_map"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:onClick="exhibitProcessSidebar"
-                android:text="Map"
-                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

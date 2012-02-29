@@ -69,7 +69,9 @@ public class Exhibit{
 
 	public void setContent(String contentTag, String content) {
 		if (false == contents.containsKey(contentTag)){
-			tagList.add(contentTag);
+			if (false == contentTag.equals(Exhibit.TAG_PHOTOS)){
+				tagList.add(contentTag);
+			}
 		}
 		contents.put(contentTag, content);
 		if (currentTag == null){
@@ -135,7 +137,7 @@ public class Exhibit{
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode(){
 		return name.hashCode();
@@ -144,23 +146,23 @@ public class Exhibit{
 	public void addAlias(String aliasName, int xPos, int yPos) {
 		aliasList.add(new Alias(aliasName, xPos, yPos));
 	}
-	
+
 	public Alias[] getAliases(){
 		return aliasList.toArray(new Alias[aliasList.size()]);
 	}
-	
+
 	public class Alias{
 		public final String name;
 		public final int xPos;
 		public final int yPos;
-		
+
 		public Alias(String aliasName, int aliasX, int aliasY){
 			name = aliasName;
 			xPos = aliasX;
 			yPos = aliasY;
 		}
 	}
-	
+
 	public String[] getPhotos(){
 		String photos = contents.get(Exhibit.TAG_PHOTOS);
 		if (photos != null){
@@ -169,11 +171,11 @@ public class Exhibit{
 			return new String[0];
 		}
 	}
-	
+
 	public int getTagCount(){
 		return tagList.size();
 	}
-	
+
 	public String getTag(int index){
 		return tagList.get(index);
 	}
