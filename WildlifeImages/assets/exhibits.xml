@@ -114,16 +114,24 @@
 		<content tag="Snoozer" page="ExhibitContents/GreatHornedOwl/greatHornedOwlSnoozer.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GreatHornedOwl/greatHornedOwlFunFacts.html" />
 	</exhibit>
-	<exhibit name="Sandhill Crane" xpos="63" ypos="35" previous="Great Horned Owl">
+	<exhibit name="Sandhill Crane" xpos="63" ypos="35" previous="Great Horned Owl" next="Augur Buzzards">
 		<content tag="Introduction" page="ExhibitContents/SandhillCrane/sandhillCraneIntro.html" />
 		<content tag="Niles" page="ExhibitContents/SandhillCrane/sandhillCraneNiles.html" />
 		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
 		<content tag="Daphne" page="ExhibitContents/SandhillCrane/sandhillCraneDaphne.html" />
+	</exhibit>
+	<exhibit name="Augur Buzzards" previous="Great Horned Owl">
+		<content tag="Introduction" page="ExhibitContents/AugurBuzzards/augurBuzzardsIntro.html" />
+		<content tag="Augi" page="ExhibitContents/AugurBuzzards/augurBuzzardsAugi.html" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-1.jpg" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-2.jpg" />
+		<content tag="Beruti" page="ExhibitContents/AugurBuzzards/augurBuzzardsBeruti.html" />
 	</exhibit>
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
 		<member exhibit="Western Screech Owl"></member>
 		<member exhibit="Golden Eagles"></member>
 		<member exhibit="Great Horned Owl"></member>
+		<member exhibit="Augur Buzzards"></member>
 	</group>
 </exhibit_list>
