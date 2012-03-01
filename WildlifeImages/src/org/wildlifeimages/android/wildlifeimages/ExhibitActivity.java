@@ -98,6 +98,12 @@ public class ExhibitActivity extends WireActivity{
 				exhibitProcessSidebar(v);
 			}
 		};
+		for(int i=buttonList.getChildCount()-1; i>=0; i--){
+			View child = buttonList.getChildAt(i);
+			if (child.getId() != R.id.exhibit_photo_button_layout){
+				buttonList.removeView(child);
+			}
+		}
 		while (tagList.hasNext()){
 			if (null != findViewById(R.id.exhibitframe_land)){
 				String tag = tagList.next();
@@ -107,7 +113,7 @@ public class ExhibitActivity extends WireActivity{
 				LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
 				buttonPair.setLayoutParams(params);
 				buttonPair.setOrientation(LinearLayout.VERTICAL);
-				for(int i=0; i<2; i++){
+				for(int i=0; i<3; i++){
 					if (tagList.hasNext()){
 						String tag = tagList.next();
 
@@ -161,6 +167,9 @@ public class ExhibitActivity extends WireActivity{
 		case R.id.exhibit_photo_button:
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_PHOTOS);
 			//b.setVisibility(View.INVISIBLE);
+			break;
+		case R.id.exhibit_home_button:
+			IntroActivity.start(this);
 			break;
 		default:
 			showExhibit(exhibitList.getCurrent(), ((Button)v).getText().toString());

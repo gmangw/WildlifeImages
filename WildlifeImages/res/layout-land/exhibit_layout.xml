@@ -21,7 +21,7 @@
         </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
-    <ScrollView
+    <FrameLayout
         android:id="@+id/exhibit_sidebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -40,29 +40,34 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:orientation="horizontal" >
+                android:background="@drawable/android_button"
+                android:orientation="horizontal" 
+                android:layout_margin="0dp">
 
                 <ImageButton
                     android:id="@+id/exhibit_photo_button"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/android_button"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:onClick="exhibitProcessSidebar"
                     android:text="Photos"
-                    android:textColor="@android:color/transparent"
-                    android:adjustViewBounds="true" />
+                    android:scaleType="centerInside"
+                    android:textColor="@android:color/transparent" />
 
                 <ImageButton
+                    android:id="@+id/exhibit_home_button"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/android_button"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="exhibitProcessSidebar"
                     android:scaleType="centerInside"
-                    android:src="@drawable/home2"
-                    android:adjustViewBounds="true" />
+                    android:src="@drawable/home2" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </FrameLayout>
 
 </LinearLayout>

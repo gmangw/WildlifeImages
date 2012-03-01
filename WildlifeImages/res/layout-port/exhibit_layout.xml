@@ -10,37 +10,61 @@
         android:id="@+id/exhibitframe_port"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="2" >
+        android:layout_weight="3" >
 
         <org.wildlifeimages.android.wildlifeimages.ExhibitView
             android:id="@+id/exhibit"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scrollbars="none" >
-
-            <ImageButton
-                android:id="@+id/exhibit_photo_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:onClick="exhibitProcessSidebar"
-                android:text="Photos" />
         </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
-    <HorizontalScrollView
+    <LinearLayout
         android:id="@+id/exhibit_sidebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="8"
-        android:fillViewport="true" >
+        android:orientation="horizontal" >
 
         <LinearLayout
             android:id="@+id/exhibit_sidebar_linear"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_weight="2"
             android:orientation="horizontal" >
         </LinearLayout>
-    </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/exhibit_photo_button_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="7"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/exhibit_photo_button"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/android_button"
+                android:onClick="exhibitProcessSidebar"
+                android:scaleType="centerInside"
+                android:text="Photos"
+                android:textColor="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/exhibit_home_button"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/android_button"
+                android:onClick="exhibitProcessSidebar"
+                android:scaleType="centerInside"
+                android:src="@drawable/home2" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
