@@ -1,0 +1,25 @@
+t1, t2
+
+t1 { 
+	font-weight: bold;
+	font-size: 120%;
+	vertical-align: center;
+	text-align: center;
+	color: black;
+}
+
+t2 {
+	font-weight: normal;
+	font-size: 100%;
+	vertical-align: center;
+	text-align: center;
+	color: black;
+}
+
+body {
+	font-weight: normal;
+	vertical-align: center;
+	text-align: center;
+	font-size: 100%;
+	color: black;
+}

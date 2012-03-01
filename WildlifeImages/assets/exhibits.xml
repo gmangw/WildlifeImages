@@ -3,7 +3,9 @@
 	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bears">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
 		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
 		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
 		<alias name="Brown Bears 1" xpos="25" ypos="86" />
 		<alias name="Brown Bears 2" xpos="9" ypos="80" />
@@ -101,6 +103,7 @@
 		<content tag="Introduction" page="ExhibitContents/GoldenEagles/goldenEaglesIntro.html" />
 		<content tag="Duchess" page="ExhibitContents/GoldenEagles/goldenEaglesDuchess.html" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-2.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-1.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-2.jpg" />
 		<content tag="Phoenix" page="ExhibitContents/GoldenEagles/goldenEaglesPhoenix.html" />
