@@ -28,7 +28,8 @@
             android:layout_toRightOf="@+id/listitemphoto"
             android:gravity="center"
             android:textSize="20sp"
-            android:typeface="sans" />
+            android:typeface="sans" 
+            android:textColor="@android:color/white"/>
     </RelativeLayout>
 
 </LinearLayout>

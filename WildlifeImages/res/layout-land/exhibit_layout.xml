@@ -18,14 +18,6 @@
             android:layout_height="fill_parent"
             android:background="@android:color/white"
             android:scrollbars="none" >
-
-            <Button
-                android:id="@+id/exhibit_photo_button"
-                android:onClick="exhibitProcessSidebar"
-                android:text="Photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right" />
         </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
@@ -42,6 +34,34 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/exhibit_photo_button_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
+
+                <ImageButton
+                    android:id="@+id/exhibit_photo_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/android_button"
+                    android:onClick="exhibitProcessSidebar"
+                    android:text="Photos"
+                    android:textColor="@android:color/transparent"
+                    android:adjustViewBounds="true" />
+
+                <ImageButton
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/android_button"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/home2"
+                    android:adjustViewBounds="true" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

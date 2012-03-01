@@ -55,11 +55,6 @@ public class ExhibitListAdapter extends BaseAdapter{
 		TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
 		itemLabel.setText(entry.getName());
 
-		itemLabel.setTextColor(0xFFFFFFFF);
-		if (backingList.getCurrent().equals(entry)){
-			itemLabel.setTextColor(0xFF085FFF);
-		}
-
 		return convertView;
 	}
 

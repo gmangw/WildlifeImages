@@ -48,14 +48,18 @@ public class BitmapCache {
 	public void putThumb(String shortUrl, Bitmap bmp) {
 		//Log.i(this.getClass().getName(), "Caching thumb " + shortUrl);
 		Bitmap thumb;
-		float aspect = 1.0f * bmp.getWidth() / bmp.getHeight();
+		int width = bmp.getWidth();
+		int height = bmp.getHeight();
+		float aspect = 1.0f * width / height;
 
 		if (aspect < 1.0f){
-			thumb = Bitmap.createScaledBitmap(bmp, SIZE, (int)(SIZE/aspect), true);
+			int newHeight = (int)(SIZE/aspect);
+			thumb = Bitmap.createScaledBitmap(bmp, SIZE, newHeight, true);
 			thumb = Bitmap.createBitmap(thumb, 0, 0, SIZE, SIZE);
 		}else{
-			thumb = Bitmap.createScaledBitmap(bmp, (int)(SIZE*aspect), SIZE, true);
-			thumb = Bitmap.createBitmap(thumb, 0, 0, SIZE, SIZE);
+			int newWidth = (int)(SIZE*aspect);
+			thumb = Bitmap.createScaledBitmap(bmp, newWidth, SIZE, true);
+			thumb = Bitmap.createBitmap(thumb, (newWidth - SIZE)/2, 0, SIZE, SIZE);
 		}
 		cachedThumbs.put(shortUrl, thumb);
 	}

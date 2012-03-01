@@ -5,12 +5,15 @@ import java.util.Iterator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 /**
@@ -95,17 +98,11 @@ public class ExhibitActivity extends WireActivity{
 				exhibitProcessSidebar(v);
 			}
 		};
-		buttonList.removeAllViews();
-		buttonList.setVisibility(View.GONE);
-		int index = 0;
 		while (tagList.hasNext()){
 			if (null != findViewById(R.id.exhibitframe_land)){
 				String tag = tagList.next();
 				Button button = makeStyledButton(tag, buttonList.getContext(), params, listen);
-
-				/* Add each button after the previous one, keeping any xml buttons at the end */
-				buttonList.addView(button, index);
-				index++;
+				buttonList.addView(button);
 			}else{
 				LinearLayout buttonPair = new LinearLayout(buttonList.getContext());
 				buttonPair.setLayoutParams(params);
@@ -122,12 +119,13 @@ public class ExhibitActivity extends WireActivity{
 						buttonPair.addView(filler);
 					}
 				}
-				/* Add each button after the previous one, keeping any xml buttons at the end */
-				buttonList.addView(buttonPair, index);
-				index++; 
+				buttonList.addView(buttonPair); 
 			}
 		}
-		buttonList.setVisibility(View.VISIBLE);
+		ImageButton photoButton = (ImageButton)findViewById(R.id.exhibit_photo_button);
+		String shortUrl = e.getContent(Exhibit.TAG_PHOTOS).split(",")[0];
+		Bitmap b = ContentManager.getSelf().getBitmapThumb(shortUrl, getAssets());
+		photoButton.setImageBitmap(b);
 	}
 
 	/**
@@ -158,9 +156,15 @@ public class ExhibitActivity extends WireActivity{
 	 */
 	public void exhibitProcessSidebar(View v){
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ImageButton b = (ImageButton)findViewById(R.id.exhibit_photo_button);
 		switch (v.getId()) {
+		case R.id.exhibit_photo_button:
+			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_PHOTOS);
+			//b.setVisibility(View.INVISIBLE);
+			break;
 		default:
 			showExhibit(exhibitList.getCurrent(), ((Button)v).getText().toString());
+			//b.setVisibility(View.VISIBLE); //TODO
 			break;
 		}
 	}

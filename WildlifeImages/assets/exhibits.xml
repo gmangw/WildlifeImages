@@ -42,10 +42,10 @@
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar" next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
+		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 	</exhibit>
 	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger" next="Hybrid Wolves">
