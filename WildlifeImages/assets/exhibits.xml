@@ -39,16 +39,19 @@
 		<content tag="Habitat" page="ExhibitContents/Cougar/cougarHabitat.html" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" />
 		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
 		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar" next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
-		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 	</exhibit>
 	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger" next="Hybrid Wolves">
@@ -85,6 +88,7 @@
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-2.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-3.jpg" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-Defiance-1.jpg" />
 		<content tag="Squeaky" page="ExhibitContents/BaldEagles/baldEaglesSqueaky.html" />
 		<content tag="Haggis" page="ExhibitContents/BaldEagles/baldEaglesHaggis.html" />
 		<content tag="Defiance" page="ExhibitContents/BaldEagles/baldEaglesDefiance.html" />
@@ -115,6 +119,7 @@
 	<exhibit name="Great Horned Owl" previous="Golden Eagles" next="Sandhill Crane">
 		<content tag="Introduction" page="ExhibitContents/GreatHornedOwl/greatHornedOwlIntro.html" />
 		<content tag="Buddy" page="ExhibitContents/GreatHornedOwl/greatHornedOwlBuddy.html" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" />
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
 		<content tag="Snoozer" page="ExhibitContents/GreatHornedOwl/greatHornedOwlSnoozer.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GreatHornedOwl/greatHornedOwlFunFacts.html" />
