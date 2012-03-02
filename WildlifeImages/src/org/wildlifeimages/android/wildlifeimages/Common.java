@@ -1,5 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,8 +11,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -230,5 +236,28 @@ public class Common {
 		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
 		// Evaluate polynomial
 		return x*x*x*(x*(x*6 - 15) + 10);
+	}
+	
+	public static void testBitmapMax(AssetManager assets){
+		Bitmap[] list = new Bitmap[4000];
+		int i;
+		for(i=0; i<list.length; i++){
+			try{
+				InputStream stream = assets.open("ExhibitContents/Badger/Badger-Boogie-1.jpg");
+				list[i] = BitmapFactory.decodeStream(stream);
+				stream.close();
+			}catch(OutOfMemoryError e){
+				break;
+			} catch (IOException e) {
+				Log.e(Common.class.getName(), "Failed to load");
+			}
+			if (i % 100 == 0){
+				Log.e(Common.class.getName(), "Loaded " + i + " bitmaps");
+			}
+		}
+		Log.e(Common.class.getName(), "Loaded " + i + " bitmaps");
+		for (int k = 0; k<i; k++){
+			list[k].recycle();
+		}
 	}
 }

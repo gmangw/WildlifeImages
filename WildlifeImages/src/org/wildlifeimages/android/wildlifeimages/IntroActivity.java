@@ -181,12 +181,6 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, ContentManager.getSelf());
 			activeHomeId = viewId;
 			break;
-		case R.id.intro_sidebar_app:
-			((ExhibitView) findViewById(R.id.intro)).loadData("Map only scrolls 1 direction currently and doesn't zoom.<br><br>" +
-					"QR code scan requires that <a href=\"market://search?q=pname:com.google.zxing.client.android\">Barcode Scanner</a>" +
-			" or <a href=\"market://search?q=pname:com.google.android.apps.unveil\">Google Goggles</a> be installed already.<br><br>"); //TODO
-			activeHomeId = viewId;
-			break;
 		case R.id.intro_sidebar_exhibitlist:
 			showList();
 			break;

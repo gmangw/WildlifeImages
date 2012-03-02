@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -41,7 +41,7 @@ public class ContentManager {
 
 	public static final String ASSET_PREFIX = "file:///android_asset/";
 
-	private Hashtable<String, String> cachedFiles = new Hashtable<String, String>();
+	private HashSet<String> cachedFiles = new HashSet<String>();
 
 	private ExhibitList exhibitList;
 
@@ -68,31 +68,14 @@ public class ContentManager {
 		prepareExhibits(assets);
 	}
 
-	private void testBitmapMax(AssetManager assets){
-		Bitmap[] list = new Bitmap[4000];
-		int i;
-		for(i=0; i<list.length; i++){
-			try{
-				InputStream stream = assets.open("ExhibitContents/Badger/Badger-Boogie-1.jpg");
-				list[i] = BitmapFactory.decodeStream(stream);
-				stream.close();
-			}catch(OutOfMemoryError e){
-				break;
-			} catch (IOException e) {
-				Log.e(this.getClass().getName(), "Failed to load");
-			}
-			if (i % 100 == 0){
-				Log.e(this.getClass().getName(), "Loaded " + i + " bitmaps");
-			}
-		}
-		Log.e(this.getClass().getName(), "Loaded " + i + " bitmaps");
-		for (int k = 0; k<i; k++){
-			list[k].recycle();
-		}
-	}
-
 	public void prepareExhibits(AssetManager assets){
-		exhibitList = buildExhibitList(assets);
+		try {
+			exhibitList = buildExhibitList(assets);
+		} catch (XmlPullParserException e) {
+			Log.e(this.getClass().getName(), "XmlPullParserException: " + e.getMessage());
+		} catch (IOException e) {
+			Log.e(this.getClass().getName(), "IOException: " + e.getMessage());
+		}
 		cacheThumbs(assets);
 	}
 
@@ -111,8 +94,6 @@ public class ContentManager {
 	}
 
 	public void clearCache(){
-		/* This function scares me a little */
-		//TODO check that this does not crash when cache is empty
 		File[] list = cacheDir.listFiles();
 		for(int i=0; i<list.length; i++){
 			FileFetcher.recursiveRemove(list[i]); 
@@ -122,7 +103,7 @@ public class ContentManager {
 
 	public String getBestUrl(String shortUrl) {
 		timekeeper.put(shortUrl, accessTime++);
-		if (cachedFiles.containsKey(shortUrl)){
+		if (cachedFiles.contains(shortUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + shortUrl);
 			return cacheDir.toURI().toString() + shortUrl;
 		}else{
@@ -150,9 +131,9 @@ public class ContentManager {
 	}
 
 	public AssetFileDescriptor getFileDescriptor(String shortUrl, AssetManager assets){
-		AssetFileDescriptor afd = null;
 		String longUrl = getBestUrl(shortUrl);
 		try{
+			AssetFileDescriptor afd = null;
 			if (longUrl.startsWith(ASSET_PREFIX)){
 				afd = assets.openFd(shortUrl);
 			}else{
@@ -161,12 +142,13 @@ public class ContentManager {
 				afd = new AssetFileDescriptor(pfd, -1, 0);
 			}
 			timekeeper.put(shortUrl, accessTime++);
+			return afd;
 		} catch (IOException e){
-			// TODO
+			return null;
 		} catch (URISyntaxException e) {
-			// TODO
+			return null;
 		}
-		return afd;
+
 	}
 
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
@@ -185,7 +167,7 @@ public class ContentManager {
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
 			if (bmp != null){
-				imgCache.putBitmap(shortUrl, bmp); //TODO may want to limit cache size
+				imgCache.putBitmap(shortUrl, bmp);
 			}
 		}
 	}
@@ -195,7 +177,7 @@ public class ContentManager {
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
 			if (bmp != null){
-				imgCache.putThumb(shortUrl, bmp); //TODO may want to limit cache size
+				imgCache.putThumb(shortUrl, bmp);
 			}
 		}
 	}
@@ -209,7 +191,7 @@ public class ContentManager {
 		}else{
 			String path = file.getAbsolutePath();
 			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
-			cachedFiles.put(path, "");
+			cachedFiles.add(path);
 			Log.d(this.getClass().getName(), "Found in cache: " + path);
 		}
 	}
@@ -228,7 +210,7 @@ public class ContentManager {
 	}
 
 	private boolean populateCache(String shortUrl, ContentUpdater progress){
-		if (false == cachedFiles.containsKey(shortUrl)){
+		if (false == cachedFiles.contains(shortUrl)){
 			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
 			try{
 				FileFetcher.mkdirForFile(f);
@@ -242,7 +224,7 @@ public class ContentManager {
 					FileFetcher.writeBytesToFile(newContent, f);
 
 					imgCache.removeBitmap(shortUrl);
-					cachedFiles.put(shortUrl, ""); //TODO
+					cachedFiles.add(shortUrl);
 					Log.d(this.getClass().getName(), "File cached: " + shortUrl);
 					return true;
 				} catch (FileNotFoundException e) {
@@ -261,10 +243,13 @@ public class ContentManager {
 	}
 
 	public boolean updateCache(ContentUpdater progress){
-		ArrayList<String> lines = new ArrayList<String>();
-
 		try{
-			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + "update.zip");
+			URL url;
+			try{
+				url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/update.zip");
+			}catch(MalformedURLException e){
+				return false;
+			}
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			InputStream webStream = conn.getInputStream();
 			ZipInputStream zipStream = new ZipInputStream(webStream);
@@ -281,7 +266,7 @@ public class ContentManager {
 				try{
 					FileFetcher.mkdirForFile(f);
 				}catch(IOException e){
-					//TODO
+					continue;
 				}
 				FileOutputStream fout = new FileOutputStream(f);
 
@@ -293,17 +278,13 @@ public class ContentManager {
 					}
 				}
 				imgCache.removeBitmap(ze.getName());
-				cachedFiles.put(ze.getName(), ""); //TODO
+				cachedFiles.add(ze.getName());
 				zipStream.closeEntry();
 				fout.close();
 			}
 			zipStream.close();
 			return true;
-		}catch(MalformedURLException e){
-			//TODO
-			return false;
 		} catch (IOException e) {
-			// TODO
 			return false;
 		}
 	}
@@ -312,20 +293,14 @@ public class ContentManager {
 		return exhibitList;
 	}
 
-	private ExhibitList buildExhibitList(AssetManager assetManager){
-		try{
-			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-			XmlPullParser xmlBox = factory.newPullParser();
-			InputStream istr = streamAssetOrFile("exhibits.xml", assetManager);
-			BufferedReader in = new BufferedReader(new InputStreamReader(istr));
-			xmlBox.setInput(in);
-			Log.i(this.getClass().getName(), "Input has been set.");
-			return new ExhibitList(xmlBox);
-		}catch(XmlPullParserException e){
-			throw(null); //TODO
-		} catch (IOException e) {
-			throw(null);
-		}
+	private ExhibitList buildExhibitList(AssetManager assetManager) throws XmlPullParserException, IOException{
+		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+		XmlPullParser xmlBox = factory.newPullParser();
+		InputStream istr = streamAssetOrFile("exhibits.xml", assetManager);
+		BufferedReader in = new BufferedReader(new InputStreamReader(istr));
+		xmlBox.setInput(in);
+		Log.i(this.getClass().getName(), "Input has been set.");
+		return new ExhibitList(xmlBox);
 	}
 
 	public static void setSelf(ContentManager contentManager) {

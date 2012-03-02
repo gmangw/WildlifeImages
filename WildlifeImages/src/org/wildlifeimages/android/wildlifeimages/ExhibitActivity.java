@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,12 +42,12 @@ public class ExhibitActivity extends WireActivity{
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
-			remakeButtons(exhibitList.getCurrent()); //TODO
+			remakeButtons(exhibitList.getCurrent());
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 		} else { /* Use saved state info if app just restarted */
 			Exhibit e = exhibitList.get(savedState.getString(loadString(R.string.save_current_exhibit)));
 			String tag = savedState.getString(loadString(R.string.save_current_exhibit_tag));
-			remakeButtons(e); //TODO
+			remakeButtons(e);
 			showExhibit(e, tag);
 		}
 
@@ -150,7 +149,6 @@ public class ExhibitActivity extends WireActivity{
 		button.setTextSize(16);
 		button.setPadding(10,8,10,8);
 		button.setMinEms(5);
-		//button.setFocusable(true); //TODO focusable elements for keyboard nav?
 		button.setBackgroundResource(R.drawable.android_button);
 		return button;
 	}
@@ -162,18 +160,15 @@ public class ExhibitActivity extends WireActivity{
 	 */
 	public void exhibitProcessSidebar(View v){
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-		ImageButton b = (ImageButton)findViewById(R.id.exhibit_photo_button);
 		switch (v.getId()) {
 		case R.id.exhibit_photo_button:
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_PHOTOS);
-			//b.setVisibility(View.INVISIBLE);
 			break;
 		case R.id.exhibit_home_button:
 			IntroActivity.start(this);
 			break;
 		default:
 			showExhibit(exhibitList.getCurrent(), ((Button)v).getText().toString());
-			//b.setVisibility(View.VISIBLE); //TODO
 			break;
 		}
 	}

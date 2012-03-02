@@ -63,21 +63,21 @@ public class Parser {
 		}
 	}
 
+	private static String getXMLAttribute(XmlPullParser xmlBox, String name, String defaultString){
+		String result = xmlBox.getAttributeValue(null, name);
+		if (result == null){
+			return defaultString;
+		}else{
+			return result;
+		}
+	}
+
 	private void readGroup(XmlPullParser xmlBox, ExhibitInterface handler) throws XmlPullParserException, IOException{
 		int eventType;
-		String groupName = xmlBox.getAttributeValue(null, "name");//TODO error check
+		String groupName = getXMLAttribute(xmlBox, "name", "Unnamed Group");
 		ArrayList<String> members = new ArrayList<String>();
-		String tmp = xmlBox.getAttributeValue(null, "xpos");
-		int xCoord = -1;
-		int yCoord = -1;
-		if (tmp != null){
-			xCoord = Integer.decode(tmp);
-		}
-		tmp = xmlBox.getAttributeValue(null, "ypos");
-		if (tmp != null){
-			yCoord = Integer.decode(tmp);
-		}		
-
+		int xCoord = Integer.decode(getXMLAttribute(xmlBox, "xpos", "-1"));
+		int yCoord = Integer.decode(getXMLAttribute(xmlBox, "ypos", "-1"));
 		eventType = xmlBox.getEventType();
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
@@ -95,21 +95,12 @@ public class Parser {
 	private void readExhibit(XmlPullParser xmlBox, ExhibitInterface handler) throws XmlPullParserException, IOException{
 		int eventType;
 
-		String name = xmlBox.getAttributeValue(null, "name");//TODO error check
-
-		String tmp = xmlBox.getAttributeValue(null, "xpos");
-		int xCoord = -1;
-		int yCoord = -1;
-		if (tmp != null){
-			xCoord = Integer.decode(tmp);
-		}
-		tmp = xmlBox.getAttributeValue(null, "ypos");
-		if (tmp != null){
-			yCoord = Integer.decode(tmp);
-		}
-		String previous = xmlBox.getAttributeValue(null, "previous");
-		String next = xmlBox.getAttributeValue(null, "next");
-		//TODO null handling
+		String name = getXMLAttribute(xmlBox, "name", "Unnamed Exhibit");
+		int xCoord = Integer.decode(getXMLAttribute(xmlBox, "xpos", "-1"));
+		int yCoord = Integer.decode(getXMLAttribute(xmlBox, "xpos", "-1"));
+		
+		String previous = getXMLAttribute(xmlBox, "previous", null);
+		String next = getXMLAttribute(xmlBox, "next", null);
 
 		ExhibitDataHolder e = new ExhibitDataHolder();
 		eventType = xmlBox.getEventType();
