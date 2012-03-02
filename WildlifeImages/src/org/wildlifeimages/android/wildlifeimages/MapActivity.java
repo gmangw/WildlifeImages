@@ -25,7 +25,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 public class MapActivity extends WireActivity{
 
 	private static final float ZOOM_FACTOR_START = 0.5f;
-
+	
 	/**
 	 * Invoked when the Activity is created.
 	 * 
@@ -52,8 +52,8 @@ public class MapActivity extends WireActivity{
 		slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				float zoomFactor = (.25f + progress/200.0f)*1.5f;
-				ContentManager.getSelf().getExhibitList().setZoomFactor(zoomFactor);
 				MapView mMapView = (MapView) findViewById(R.id.map);
+				mMapView.setZoomFactor(zoomFactor);
 				mMapView.processScroll(0.0f, 0.0f);
 			}
 
@@ -61,8 +61,6 @@ public class MapActivity extends WireActivity{
 
 			public void onStopTrackingTouch(SeekBar seekBar) {}
 		});
-
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -72,7 +70,7 @@ public class MapActivity extends WireActivity{
 			int size = Math.max(ht, wt);
 			float zoomFactor = size / 800.0f;
 			Log.d(this.getClass().getName(), wt + "," + ht + ": " + zoomFactor);
-			exhibitList.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
+			mMapView.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
 	}
 	
@@ -152,7 +150,7 @@ public class MapActivity extends WireActivity{
 		AlertDialog alert = builder.create();
 		return alert;
 	}
-
+	
 	/**
 	 * When you click on the map or gesture, this will interpret your input.
 	 */

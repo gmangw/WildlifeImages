@@ -23,41 +23,6 @@ public class ExhibitList implements Parser.ExhibitInterface{
 	Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
 
 	private Exhibit current = null;
-
-	private float zoomFactor = 0.75f;
-	private float zoomMinimum = 1.00f;
-	private float zoomExponent = 1.00f;
-	private float[][] anchorPoints = { //TODO move this data somewhere else
-			{0.00f, 0.00f, 1.90f},
-			{0.00f, 0.25f, 2.50f}, 
-			{0.00f, 0.50f, 1.80f},
-			{0.00f, 0.75f, 1.70f},
-			{0.00f, 1.00f, 1.60f},
-
-			{0.25f, 0.00f, 2.00f},
-			{0.25f, 0.25f, 3.00f}, 
-			{0.25f, 0.50f, 1.80f},
-			{0.25f, 0.75f, 1.70f},
-			{0.25f, 1.00f, 1.60f}, 
-
-			{0.50f, 0.00f, 1.90f},
-			{0.50f, 0.25f, 2.50f}, 
-			{0.50f, 0.50f, 1.30f},
-			{0.50f, 0.75f, 1.30f},
-			{0.50f, 1.00f, 1.60f},
-
-			{0.75f, 0.00f, 1.90f},
-			{0.75f, 0.25f, 2.60f}, 
-			{0.75f, 0.50f, 1.60f},
-			{0.75f, 0.75f, 1.50f},
-			{0.75f, 1.00f, 1.40f},
-
-			{1.00f, 0.00f, 1.90f},
-			{1.00f, 0.25f, 1.80f},
-			{1.00f, 0.50f, 1.70f},
-			{1.00f, 0.75f, 1.60f},
-			{1.00f, 1.00f, 1.60f},
-	};
 	
 	public void addGroup(String groupName, String[] data, int x, int y){
 		groupList.put(groupName, new ExhibitGroup(data, x, y));
@@ -146,35 +111,6 @@ public class ExhibitList implements Parser.ExhibitInterface{
 
 	public Exhibit getExhibitAt(int position) {
 		return get(keyList.get(position));
-	}
-
-	public float[][] getAnchorPoints() {
-		return anchorPoints;
-	}
-
-	public float getScale(float xFraction, float yFraction) {
-		float newScale = 0.0f;
-
-		for (int i=0; i<anchorPoints.length; i++){
-			float distance = (float)Math.pow(Common.distance(xFraction, yFraction, anchorPoints[i][0], anchorPoints[i][1]), zoomExponent);
-			float zoomCandidate = (anchorPoints[i][2]+zoomMinimum)-(zoomMinimum + (anchorPoints[i][2]-zoomMinimum)*(float)Common.smoothStep(0f, 0.75f, distance));
-			newScale = Math.max(newScale, zoomCandidate);
-		}
-
-		//Log.i(this.getClass().getName(), ""+newScale);
-		return zoomFactor * newScale;
-	}
-
-	public void setZoomFactor(float zoomFactor) {
-		this.zoomFactor = zoomFactor;
-	}
-
-	public void setZoomMinimum(float zoomMinimum) {
-		this.zoomMinimum = zoomMinimum;
-	}
-
-	public void setZoomExponent(float zoomExponent) {
-		this.zoomExponent = zoomExponent;
 	}
 
 	public String[] getGroupNames(){

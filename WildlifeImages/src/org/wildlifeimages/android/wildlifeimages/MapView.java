@@ -33,8 +33,6 @@ class MapView extends ImageView {
 	private static final float MAP_TOP = 0.215f;
 	private static final float MAP_RIGHT = 0.80f;
 	private static final float MAP_BOTTOM = 0.63f;
-	
-	private static final boolean DEBUG = false;
 
 	private boolean doZoom = false;
 
@@ -55,6 +53,41 @@ class MapView extends ImageView {
 	private float[] transformedPoints;
 	private String[] displayNames;
 	private static String activeName = "";
+	
+	private float zoomFactor = 0.75f;
+	private float zoomMinimum = 1.00f;
+	private float zoomExponent = 1.00f;
+	private float[][] anchorPoints = {
+			{0.00f, 0.00f, 1.90f},
+			{0.00f, 0.25f, 2.50f}, 
+			{0.00f, 0.50f, 1.80f},
+			{0.00f, 0.75f, 1.70f},
+			{0.00f, 1.00f, 1.60f},
+
+			{0.25f, 0.00f, 2.00f},
+			{0.25f, 0.25f, 3.00f}, 
+			{0.25f, 0.50f, 1.80f},
+			{0.25f, 0.75f, 1.70f},
+			{0.25f, 1.00f, 1.60f}, 
+
+			{0.50f, 0.00f, 1.90f},
+			{0.50f, 0.25f, 2.50f}, 
+			{0.50f, 0.50f, 1.30f},
+			{0.50f, 0.75f, 1.30f},
+			{0.50f, 1.00f, 1.60f},
+
+			{0.75f, 0.00f, 1.90f},
+			{0.75f, 0.25f, 2.60f}, 
+			{0.75f, 0.50f, 1.60f},
+			{0.75f, 0.75f, 1.50f},
+			{0.75f, 1.00f, 1.40f},
+
+			{1.00f, 0.00f, 1.90f},
+			{1.00f, 0.25f, 1.80f},
+			{1.00f, 0.50f, 1.70f},
+			{1.00f, 0.75f, 1.60f},
+			{1.00f, 1.00f, 1.60f},
+	};
 
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -207,16 +240,6 @@ class MapView extends ImageView {
 				canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], smallP);
 			}
 		}
-		if (DEBUG){
-			float[][] anchorPoints = ContentManager.getSelf().getExhibitList().getAnchorPoints();
-			for (int i=0; i<anchorPoints.length; i++){
-				float[] pts = {anchorPoints[i][0]*mapWidth, anchorPoints[i][1]*mapHeight};
-				getImageMatrix().mapPoints(pts);
-				float l = pts[0];
-				float t = pts[1];
-				canvas.drawCircle(l, t, anchorPoints[i][2]*10, activeP); 
-			}
-		}
 	}
 
 	public void setGestureDetector(GestureDetector gestureListener) {
@@ -257,9 +280,7 @@ class MapView extends ImageView {
 			float xFraction = (float)Math.max(0.0f, getXFraction(originX));
 			float yFraction = (float)Math.max(0.0f, getYFraction(originY));
 
-			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-
-			scale = exhibitList.getScale(xFraction, yFraction);
+			scale = getScale(xFraction, yFraction);
 
 			doTransform();
 		}
@@ -303,5 +324,34 @@ class MapView extends ImageView {
 		}else{
 			return null;
 		}
+	}
+	
+	public float[][] getAnchorPoints() {
+		return anchorPoints;
+	}
+
+	public float getScale(float xFraction, float yFraction) {
+		float newScale = 0.0f;
+
+		for (int i=0; i<anchorPoints.length; i++){
+			float distance = (float)Math.pow(Common.distance(xFraction, yFraction, anchorPoints[i][0], anchorPoints[i][1]), zoomExponent);
+			float zoomCandidate = (anchorPoints[i][2]+zoomMinimum)-(zoomMinimum + (anchorPoints[i][2]-zoomMinimum)*(float)Common.smoothStep(0f, 0.75f, distance));
+			newScale = Math.max(newScale, zoomCandidate);
+		}
+
+		//Log.i(this.getClass().getName(), ""+newScale);
+		return zoomFactor * newScale;
+	}
+
+	public void setZoomFactor(float zoomFactor) {
+		this.zoomFactor = zoomFactor;
+	}
+
+	public void setZoomMinimum(float zoomMinimum) {
+		this.zoomMinimum = zoomMinimum;
+	}
+
+	public void setZoomExponent(float zoomExponent) {
+		this.zoomExponent = zoomExponent;
 	}
 }
