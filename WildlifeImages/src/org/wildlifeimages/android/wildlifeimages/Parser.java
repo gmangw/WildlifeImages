@@ -97,7 +97,7 @@ public class Parser {
 
 		String name = getXMLAttribute(xmlBox, "name", "Unnamed Exhibit");
 		int xCoord = Integer.decode(getXMLAttribute(xmlBox, "xpos", "-1"));
-		int yCoord = Integer.decode(getXMLAttribute(xmlBox, "xpos", "-1"));
+		int yCoord = Integer.decode(getXMLAttribute(xmlBox, "ypos", "-1"));
 		
 		String previous = getXMLAttribute(xmlBox, "previous", null);
 		String next = getXMLAttribute(xmlBox, "next", null);
