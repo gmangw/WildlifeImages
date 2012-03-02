@@ -26,6 +26,7 @@
 	</exhibit>
 	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bears" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
+		<content tag="Audio" page="ExhibitContents/Lynx/lynxAudio.html" />
 		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
 		<photo page="ExhibitContents/Lynx/Lynx-2.jpg" />
 		<photo page="ExhibitContents/Lynx/Lynx-3.jpg" />
