@@ -133,19 +133,6 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		 * will try to exit the application and we do not want that. 
 		 */
 		updateDialogManager.dismiss();
-
-		/* Here we are saving state, so saving the items we had open. */
-		/*Iterator<String> keyList = exhibitList.keys();
-		ArrayList<String> currentExhibitList = new ArrayList<String>();
-		ArrayList<String> currentTagList = new ArrayList<String>();
-		while(keyList.hasNext()){
-			String exhibitName = keyList.next();
-			currentExhibitList.add(exhibitName);
-			currentTagList.add(exhibitList.get(exhibitName).getCurrentTag());
-		}
-		outState.putStringArrayList(loadString(R.string.save_current_exhibit_names), currentExhibitList);
-		outState.putStringArrayList(loadString(R.string.save_current_exhibit_tag), currentTagList);
-		*/
 	}
 
 	/**

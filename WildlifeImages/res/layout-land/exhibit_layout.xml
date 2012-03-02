@@ -16,8 +16,7 @@
             android:id="@+id/exhibit"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@android:color/white"
-            android:scrollbars="none" >
+            android:background="@android:color/white" >
         </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
@@ -39,10 +38,10 @@
                 android:id="@+id/exhibit_photo_button_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:layout_margin="0dp"
                 android:layout_weight="1"
                 android:background="@drawable/android_button"
-                android:orientation="horizontal" 
-                android:layout_margin="0dp">
+                android:orientation="horizontal" >
 
                 <ImageButton
                     android:id="@+id/exhibit_photo_button"
@@ -52,8 +51,8 @@
                     android:adjustViewBounds="true"
                     android:background="@android:color/transparent"
                     android:onClick="exhibitProcessSidebar"
-                    android:text="Photos"
                     android:scaleType="centerInside"
+                    android:text="Photos"
                     android:textColor="@android:color/transparent" />
 
                 <ImageButton

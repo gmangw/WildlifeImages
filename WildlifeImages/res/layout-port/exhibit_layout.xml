@@ -15,8 +15,7 @@
         <org.wildlifeimages.android.wildlifeimages.ExhibitView
             android:id="@+id/exhibit"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scrollbars="none" >
+            android:layout_height="fill_parent" >
         </org.wildlifeimages.android.wildlifeimages.ExhibitView>
     </FrameLayout>
 
