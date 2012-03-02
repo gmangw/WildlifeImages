@@ -3,7 +3,9 @@
 	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bears">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
 		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
 		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
 		<alias name="Brown Bears 1" xpos="25" ypos="86" />
 		<alias name="Brown Bears 2" xpos="9" ypos="80" />
@@ -14,6 +16,7 @@
 		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-3.jpg" />
 		<content tag="Jane" page="ExhibitContents/BlackBears/blackBearJane.html" />
 		<content tag="Ted E. Bear" page="ExhibitContents/BlackBears/blackBearTedEBear.html" />
 		<content tag="Yogi" page="ExhibitContents/BlackBears/blackBearYogi.html" />
@@ -36,22 +39,26 @@
 		<content tag="Habitat" page="ExhibitContents/Cougar/cougarHabitat.html" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" />
 		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
 		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar" next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
-		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 	</exhibit>
 	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger" next="Hybrid Wolves">
 		<content tag="Introduction" page="ExhibitContents/Wolves/wolvesIntro.html" />
 		<content tag="Lakota" page="ExhibitContents/Wolves/wolvesLakota.html" />
 		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" />
+		<photo page="ExhibitContents/Wolves/Wolves-Lakota-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
@@ -81,6 +88,7 @@
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-2.jpg" />
 		<photo page="ExhibitContents/BaldEagles/BaldEagle-3.jpg" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-Defiance-1.jpg" />
 		<content tag="Squeaky" page="ExhibitContents/BaldEagles/baldEaglesSqueaky.html" />
 		<content tag="Haggis" page="ExhibitContents/BaldEagles/baldEaglesHaggis.html" />
 		<content tag="Defiance" page="ExhibitContents/BaldEagles/baldEaglesDefiance.html" />
@@ -101,6 +109,7 @@
 		<content tag="Introduction" page="ExhibitContents/GoldenEagles/goldenEaglesIntro.html" />
 		<content tag="Duchess" page="ExhibitContents/GoldenEagles/goldenEaglesDuchess.html" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-2.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-1.jpg" />
 		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-2.jpg" />
 		<content tag="Phoenix" page="ExhibitContents/GoldenEagles/goldenEaglesPhoenix.html" />
@@ -110,6 +119,7 @@
 	<exhibit name="Great Horned Owl" previous="Golden Eagles" next="Sandhill Crane">
 		<content tag="Introduction" page="ExhibitContents/GreatHornedOwl/greatHornedOwlIntro.html" />
 		<content tag="Buddy" page="ExhibitContents/GreatHornedOwl/greatHornedOwlBuddy.html" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" />
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
 		<content tag="Snoozer" page="ExhibitContents/GreatHornedOwl/greatHornedOwlSnoozer.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GreatHornedOwl/greatHornedOwlFunFacts.html" />
