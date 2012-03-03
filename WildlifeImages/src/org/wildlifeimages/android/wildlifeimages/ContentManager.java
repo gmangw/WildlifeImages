@@ -91,7 +91,7 @@ public class ContentManager {
 	public void clearCache(){
 		File[] list = cacheDir.listFiles();
 		for(int i=0; i<list.length; i++){
-			FileFetcher.recursiveRemove(list[i]); 
+			Common.recursiveRemove(list[i]); 
 		}
 		cachedFiles.clear();
 	}
@@ -226,7 +226,7 @@ public class ContentManager {
 				File f  = new File(cacheDir.getAbsolutePath() + "/" + ze.getName());
 				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
 				try{
-					FileFetcher.mkdirForFile(f);
+					Common.mkdirForFile(f);
 				}catch(IOException e){
 					continue;
 				}
