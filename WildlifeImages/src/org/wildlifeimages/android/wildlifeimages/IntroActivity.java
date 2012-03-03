@@ -3,7 +3,6 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,17 +17,11 @@ import android.view.View;
  * @author Naveen Nanja
  * 	
  */
-public class IntroActivity extends WireActivity implements UpdateListener {
+public class IntroActivity extends WireActivity{
 
 	private static final int EXIT_DIALOG = 0;
 	
 	private int activeHomeId = R.id.intro_sidebar_intro;
-
-	/*
-	 * This progress manager will handle the update button when pressed.
-	 * It will be what you see when you are updating the app.
-	 */
-	private ProgressManager updateDialogManager = new ProgressManager();
 
 	/**
 	 * Invoked when the Activity is created.
@@ -127,12 +120,6 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 		}
 		
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
-
-		/* 
-		 * Here we are dismissing since if you have a dialog open and rotate the device it
-		 * will try to exit the application and we do not want that. 
-		 */
-		updateDialogManager.dismiss();
 	}
 
 	/**
@@ -172,25 +159,10 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 			showList();
 			break;
 		case R.id.intro_sidebar_map:
-			MapActivity.start(this);
-			break;
+			//MapActivity.start(this); TODO
+			//break;
 		case R.id.intro_sidebar_update:
-			//TODO onCreateDialog()
-			final ProgressDialog progressDialog = new ProgressDialog(this);
-			progressDialog.setMessage("Getting updated content...");
-			//progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			progressDialog.setCancelable(true);
-			progressDialog.show();
-
-			updateDialogManager.setDialog(progressDialog);
-
-			ContentManager contentManager = ContentManager.getSelf();
-			contentManager.clearCache();
-
-			updateDialogManager.registerUpdateListener(this);
-
-			contentManager.startUpdate(updateDialogManager);
-			break;
+			UpdateActivity.start(this);
 		}
 	}
 	
@@ -226,9 +198,5 @@ public class IntroActivity extends WireActivity implements UpdateListener {
 	public static void start(Activity context) {
 		Intent introIntent = new Intent(context, IntroActivity.class);
 		context.startActivityIfNeeded(introIntent, 0);
-	}
-
-	public void onUpdateCompleted() {
-		ContentManager.getSelf().prepareExhibits(this.getAssets());
 	}
 }

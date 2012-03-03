@@ -11,7 +11,7 @@ import java.net.URL;
 import android.util.Log;
 
 public class FileFetcher {
-	public static byte[] getWebContent(String shortUrl, ContentUpdater progress){
+	public static byte[] getWebContent(String shortUrl, UpdateActivity.ContentUpdater progress){
 		URL url;
 		try {
 			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
@@ -29,10 +29,6 @@ public class FileFetcher {
 			if (lengthGuess == -1){
 				lengthGuess = 32768;
 				Log.e(FileFetcher.class.getName(), "File size unknown for " + shortUrl);
-			}
-
-			if (progress != null){
-				progress.setText(shortUrl);
 			}
 
 			buffer = new byte[lengthGuess];

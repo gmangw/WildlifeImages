@@ -53,14 +53,14 @@ public class ProgressManager implements OnCancelListener {
 		dialog.setOnCancelListener(this);
 	}
 
-	public void dismiss() {
+	public void dismiss(boolean result) {
 		if (dialog != null){
 			dialog.dismiss();
 			dialog = null;
 		}
 
 		if (finishListener != null){
-			finishListener.onUpdateCompleted();
+			finishListener.onUpdateCompleted(result);
 		}
 	}
 

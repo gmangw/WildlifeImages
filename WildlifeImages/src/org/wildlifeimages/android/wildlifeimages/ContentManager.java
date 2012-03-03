@@ -3,7 +3,6 @@ package org.wildlifeimages.android.wildlifeimages;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,10 +86,6 @@ public class ContentManager {
 				getBitmapThumb(photos[0], assets);
 			}
 		}
-	}
-
-	public void startUpdate(ProgressManager progress){
-		new ContentUpdater(this).execute(progress);
 	}
 
 	public void clearCache(){
@@ -209,44 +204,11 @@ public class ContentManager {
 		return resultIndex;
 	}
 
-	private boolean populateCache(String shortUrl, ContentUpdater progress){
-		if (false == cachedFiles.contains(shortUrl)){
-			File f  = new File(cacheDir.getAbsolutePath() + "/" + shortUrl);
-			try{
-				FileFetcher.mkdirForFile(f);
-			}catch(IOException e){
-				return false;
-			}
-
-			byte[] newContent = FileFetcher.getWebContent(shortUrl, progress);
-			if (null != newContent){
-				try {
-					FileFetcher.writeBytesToFile(newContent, f);
-
-					imgCache.removeBitmap(shortUrl);
-					cachedFiles.add(shortUrl);
-					Log.d(this.getClass().getName(), "File cached: " + shortUrl);
-					return true;
-				} catch (FileNotFoundException e) {
-					Log.w(this.getClass().getName(), "FileNotFoundException while trying to cache " + shortUrl);
-					return true;
-				} catch (IOException e) {
-					Log.w(this.getClass().getName(), "IOException while trying to cache " + shortUrl);
-					return false;
-				}
-			}else{
-				return false;
-			}
-		}else{
-			return true;
-		}
-	}
-
-	public boolean updateCache(ContentUpdater progress){
+	public boolean updateCache(UpdateActivity.ContentUpdater progress, String zipURL){
 		try{
 			URL url;
 			try{
-				url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/update.zip");
+				url = new URL(zipURL);
 			}catch(MalformedURLException e){
 				return false;
 			}
