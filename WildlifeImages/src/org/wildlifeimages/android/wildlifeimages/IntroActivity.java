@@ -159,8 +159,8 @@ public class IntroActivity extends WireActivity{
 			showList();
 			break;
 		case R.id.intro_sidebar_map:
-			//MapActivity.start(this); TODO
-			//break;
+			MapActivity.start(this);
+			break;
 		case R.id.intro_sidebar_update:
 			UpdateActivity.start(this);
 		}
