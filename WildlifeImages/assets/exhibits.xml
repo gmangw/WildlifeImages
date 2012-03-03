@@ -26,13 +26,10 @@
 	</exhibit>
 	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bears" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
-		<content tag="Habitat" page="ExhibitContents/Lynx/lynxHabitat.html" />
+		<content tag="Audio" page="ExhibitContents/Lynx/lynxAudio.html" />
 		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
 		<photo page="ExhibitContents/Lynx/Lynx-2.jpg" />
 		<photo page="ExhibitContents/Lynx/Lynx-3.jpg" />
-		<content tag="Fun Facts" page="ExhibitContents/Lynx/lynxFunFacts.html" />
-		<content tag="Audio" page="ExhibitContents/Lynx/lynxAudio.html" />
-		<content tag="Diet" page="ExhibitContents/Lynx/lynxDiet.html" />
 	</exhibit>
 	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx" next="Badger">
 		<content tag="Introduction" page="ExhibitContents/Cougar/cougarIntro.html" />
