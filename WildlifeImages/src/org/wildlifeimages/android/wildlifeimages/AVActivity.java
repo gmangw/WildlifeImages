@@ -2,6 +2,7 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.IOException;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;

@@ -1,5 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;

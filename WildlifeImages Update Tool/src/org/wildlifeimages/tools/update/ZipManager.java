@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,8 +53,6 @@ import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
-import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
-import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -66,75 +63,61 @@ public class ZipManager extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	private static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
-
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
-	
 	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
+	
+	private final String EXHIBITSFILENAME = "exhibits.xml";
 
 	private static final String assetPath = "assets/";
 
-	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
-
-	private String[] originalFiles;
-
-	private final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
-
-	private JSVGCanvas map;
-
 	private final JButton newTagButton = new JButton("Add Content to Exhibit");
 	private final JButton newExhibitButton = new JButton("Create New Exhibit");
-
 	private final JButton saveButton = new JButton("Save Updates");
+	private final JButton newFileButton = new JButton("Add file to project");
+	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
+	
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
-
-	private final JPanel contentPanel = new JPanel(new GridLayout(1,2));
-	private final JLabel exhibitContentLabel = new JLabel();
-	private final JComboBox newContentDropdown = new JComboBox();
-
 	private final JList exhibitPhotosList = new JList();
-	private final JImage exhibitPhotosImage = new JImage();
-	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
-
 	private final JList modifiedFilesList = new JList();
-
-	private final JButton newFileButton = new JButton("Add file to project");
-
-	private ExhibitLoader exhibitParser = null;
-
+	
+	private final JPanel contentPanel = new JPanel(new GridLayout(1,2));
+	private final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
 	private final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
 	private final JLabel exhibitXCoordOrig = new JLabel();
-	private final JSpinner exhibitXCoordField = new JSpinner(new NumberSpinner("x"));
 	private final JLabel exhibitYCoordOrig = new JLabel();
-	private final JSpinner exhibitYCoordField = new JSpinner(new NumberSpinner("y"));
+	private final JLabel exhibitContentLabel = new JLabel();
 	private final JLabel exhibitNextOrig = new JLabel();
-	private final JComboBox exhibitNextDropdown = new JComboBox();
 	private final JLabel exhibitPreviousOrig = new JLabel();
+	
+	private final JComboBox newContentDropdown = new JComboBox();
 	private final JComboBox exhibitPreviousDropdown = new JComboBox();
-
+	private final JComboBox exhibitNextDropdown = new JComboBox();
+	
+	private final JImage exhibitPhotosImage = new JImage();
+	
+	private final JSpinner exhibitXCoordField = new JSpinner(new NumberSpinner("x"));
+	private final JSpinner exhibitYCoordField = new JSpinner(new NumberSpinner("y"));
+	
 	private final ContentListModel contentListModel = new ContentListModel();
 	private final ModifiedListModel modifiedFilesListModel = new ModifiedListModel();
 	private final ExhibitPhotosModel exhibitPhotosModel = new ExhibitPhotosModel();
 
+	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
+	
+	private JSVGCanvas map;
+	
+	private ExhibitLoader exhibitParser = null;
+	
 	private File apkFile = null;
 
-	private final String EXHIBITSFILENAME = "exhibits.xml";
-
+	private String[] originalFiles;
 	private ExhibitInfo currentExhibit;
 	private String currentTag;
 
 	public static void main(String[] args){
 		ZipManager zr = new ZipManager();
 		zr.setVisible(true);
-	}
-
-	public ZipInputStream getZipStream(){
-		if (apkFile != null){
-			try {
-				return new ZipInputStream(new FileInputStream(apkFile));
-			} catch (FileNotFoundException e) {}
-		}
-		return new ZipInputStream(getClass().getResourceAsStream("/resources/WildlifeImages.apk"));
 	}
 
 	public ZipManager(){
@@ -144,6 +127,11 @@ public class ZipManager extends JFrame implements ActionListener{
 	private void init(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		final Dimension mapDimension = new Dimension();
+		map = getMap(mapDimension);
+		
+		modifiedFiles.clear();
+		
 		try {
 			ArrayList<String> files = new ArrayList<String>();
 			exhibitParser = this.readAPK(getZipStream(), files);
@@ -152,10 +140,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			showError("Could not load APK file.");
 			return;
 		}
-
-		final Dimension mapDimension = new Dimension();
-		map = getMap(mapDimension);
-
+		
 		currentExhibit = exhibitParser.getExhibits().get(0);
 
 		exhibitNameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -198,6 +183,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.addItem(" ");
+		
 		for (String s : originalFiles){
 			if (false == modifiedFiles.containsKey(s)){
 				newContentDropdown.addItem(s);
@@ -284,74 +270,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		mainPanel.setBackground(Color.WHITE);
 
-		JPanel mapPanel = new JPanel(new GridLayout(1,1)){
-			private static final long serialVersionUID = -2662027617645159327L;
-
-			@Override
-			public void paint(Graphics g){
-				super.paint(g);
-				double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
-				double myAspect = 1.0*getWidth()/getHeight();
-				int w;
-				int h;
-				int offsetX = 0;
-				int offsetY = 0;
-
-				if (myAspect > mapAspect){
-					w = (int)(getWidth() * (mapAspect / myAspect));
-					h = getHeight();
-					offsetX = (getWidth() - w)/2;
-				}else{
-					w = getWidth();
-					h = (int)(getHeight() * (myAspect / mapAspect));
-					offsetY = (getHeight() - h)/2;
-				}
-
-				ArrayList<String> names = new ArrayList<String>();
-				ArrayList<Integer> pointsX = new ArrayList<Integer>();
-				ArrayList<Integer> pointsY = new ArrayList<Integer>();
-
-				for(ExhibitInfo e : exhibitParser.getExhibits()){
-					int exhibitX = e.getX();
-					int exhibitY = e.getY();
-					if (exhibitX != -1 || exhibitY != -1){
-						int x = w * exhibitX/100 + offsetX;
-						int y = h * exhibitY/100 + offsetY;
-						names.add(e.getName());
-						pointsX.add(x);
-						pointsY.add(y);
-					}
-					for (Alias a : e.getAliases()){
-						exhibitX = a.xPos;
-						exhibitY = a.yPos;
-						int x = w * exhibitX/100 + offsetX;
-						int y = h * exhibitY/100 + offsetY;
-						names.add(a.name);
-						pointsX.add(x);
-						pointsY.add(y);
-					}
-				}
-				for(String groupName : exhibitParser.getGroupNames()){
-					ExhibitGroup group = exhibitParser.getGroup(groupName);
-					int exhibitX = group.xPos;
-					int exhibitY = group.yPos;
-					int x = w * exhibitX/100 + offsetX;
-					int y = h * exhibitY/100 + offsetY;
-					names.add(groupName);
-					pointsX.add(x);
-					pointsY.add(y);
-				}
-
-				int fontHeight = g.getFontMetrics().getHeight();
-				for (int i=0; i<names.size(); i++){
-					int stringWidth = g.getFontMetrics().stringWidth(names.get(i));
-					g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.5f));
-					g.fillRect(pointsX.get(i)-stringWidth/2 - 1, pointsY.get(i)-fontHeight+1, stringWidth + 2, fontHeight+2);
-					g.setColor(Color.WHITE);
-					g.drawString(names.get(i), pointsX.get(i)-stringWidth/2, pointsY.get(i));
-				}
-			}
-		};
+		JMapPanel mapPanel = new JMapPanel(new GridLayout(1,1), mapDimension, exhibitParser);
 		mapPanel.add(map);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -361,6 +280,15 @@ public class ZipManager extends JFrame implements ActionListener{
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(tabbedPane);
+	}
+	
+	public ZipInputStream getZipStream(){
+		if (apkFile != null){
+			try {
+				return new ZipInputStream(new FileInputStream(apkFile));
+			} catch (FileNotFoundException e) {}
+		}
+		return new ZipInputStream(getClass().getResourceAsStream("/resources/WildlifeImages.apk"));
 	}
 
 	public JSVGCanvas getMap(Dimension d){

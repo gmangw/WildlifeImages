@@ -51,7 +51,7 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 		exhibits.add(e);
 	}
 
-	public void writeXML(ZipOutputStream out) {
+	public void writeXML(ZipOutputStream out) throws IOException {
 		Parser.writeExhibitXML(out, exhibits, groupList);
 	}
 }

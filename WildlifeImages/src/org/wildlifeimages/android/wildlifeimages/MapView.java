@@ -27,7 +27,7 @@ import android.widget.ImageView;
  * @author Graham Wilkinson 
  * 	
  */
-class MapView extends ImageView {
+public class MapView extends ImageView {
 
 	private static final float MAP_LEFT = 0.10f;
 	private static final float MAP_TOP = 0.215f;
