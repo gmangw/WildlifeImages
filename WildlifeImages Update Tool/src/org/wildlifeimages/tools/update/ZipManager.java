@@ -122,7 +122,12 @@ public class ZipManager extends JFrame implements ActionListener{
 		init();
 	}
 
+	private void makeChange(){
+		this.setTitle("Update Tool*");
+	}
+	
 	private void init(){
+		this.setTitle("Update Tool");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		final Dimension mapDimension = new Dimension();
@@ -377,6 +382,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		modifiedFiles.put(filename, newFile);
 		modifiedFilesListModel.notifyChange();
 		newContentDropdown.addItem(filename);
+		makeChange();
 	}
 
 	private class NumberSpinner implements SpinnerModel{
@@ -414,8 +420,14 @@ public class ZipManager extends JFrame implements ActionListener{
 				for (ChangeListener l : listeners){
 					if (type.equals("x")){
 						currentExhibit.setCoords(val, currentExhibit.getY());
+						if (currentExhibit.origXCoord != currentExhibit.getX()){
+							makeChange();
+						}
 					}else if (type.equals("y")){
 						currentExhibit.setCoords(currentExhibit.getX(), val);
+						if (currentExhibit.origYCoord != currentExhibit.getY()){
+							makeChange();
+						}
 					}
 					l.stateChanged(new ChangeEvent(this));
 				}
@@ -487,6 +499,8 @@ public class ZipManager extends JFrame implements ActionListener{
 				File output = new File(e.getName()+".png");
 				CreateQR.writeExhibitQR(e.getName(), output);
 			}
+			
+			this.setTitle("Update Tool");
 		} catch (IOException e) {
 			showError("Unable to save update file.");
 		}
@@ -531,21 +545,31 @@ public class ZipManager extends JFrame implements ActionListener{
 			}
 		}else if (event.getSource().equals(newContentDropdown)){
 			currentExhibit.setContent(currentTag, (String)newContentDropdown.getSelectedItem());
+			if (false == currentExhibit.getContent(currentTag).equals(currentExhibit.getOrigContents(currentTag))){
+				makeChange();
+			}
 		}else if (event.getSource().equals(exhibitPreviousDropdown)){
 			String prev = (String)exhibitPreviousDropdown.getSelectedItem();
 			if (prev != null){
 				currentExhibit.setPrevious(prev);
+				if (false == currentExhibit.origPrevious.equals(prev)){
+					makeChange();
+				}
 			}
 		}else if (event.getSource().equals(exhibitNextDropdown)){
 			String next = (String)exhibitNextDropdown.getSelectedItem();
 			if (next != null){
 				currentExhibit.setNext(next);
+				if (false == currentExhibit.origNext.equals(next)){
+					makeChange();
+				}
 			}
 		}else if (event.getSource().equals(newTagButton)){
 			String newName = JOptionPane.showInputDialog("Name of new content:");
 			if (newName != null && localPathPattern.matcher(newName).matches()){
 				currentExhibit.setContent(newName, originalFiles[0]);
 				contentListModel.notifyChange();
+				makeChange();
 			}else{
 				System.out.println("Invalid tag name " + newName);
 			}
@@ -561,6 +585,7 @@ public class ZipManager extends JFrame implements ActionListener{
 					exhibitPreviousDropdown.addItem(newName);
 					((ExhibitListModel)exhibitNameList.getModel()).notifyChange();
 					contentListModel.notifyChange();
+					makeChange();
 				}else{
 					System.out.println("Invalid tag name " + newContentName);
 				}
@@ -583,6 +608,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			if ((s != null) && (s.length() > 0)) {
 				currentExhibit.addPhoto(s);
 				exhibitPhotosModel.notifyChange();
+				makeChange();
 			}
 		}else if (event.getSource().equals(loadAPKButton)){
 			int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm APK Load", JOptionPane.YES_NO_OPTION);

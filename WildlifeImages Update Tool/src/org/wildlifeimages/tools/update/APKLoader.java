@@ -12,11 +12,9 @@ public class APKLoader {
 	public ZipInputStream getAPKStream(){
 		if (apkFile != null){
 			try {
-				System.out.println("Loading from " + apkFile.getPath());
 				return new ZipInputStream(new FileInputStream(apkFile));
 			} catch (FileNotFoundException e) {}
 		}
-		System.out.println("Loading from resource");
 		return new ZipInputStream(getClass().getResourceAsStream("/resources/WildlifeImages.apk"));
 	}
 
