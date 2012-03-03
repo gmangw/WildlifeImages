@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -75,6 +76,7 @@ public class ZipManager extends JFrame implements ActionListener{
 	private final JButton saveButton = new JButton("Save Updates");
 	private final JButton newFileButton = new JButton("Add file to project");
 	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
+	private final JButton loadAPKButton = new JButton("Load APK");
 	
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
@@ -109,23 +111,19 @@ public class ZipManager extends JFrame implements ActionListener{
 	
 	private ExhibitLoader exhibitParser = null;
 	
-	private File apkFile = null;
+	private final APKLoader apkLoader;
 
 	private String[] originalFiles;
 	private ExhibitInfo currentExhibit;
 	private String currentTag;
 
-	public static void main(String[] args){
-		ZipManager zr = new ZipManager();
-		zr.setVisible(true);
-	}
-
-	public ZipManager(){
+	public ZipManager(APKLoader loader){
+		apkLoader = loader;
 		init();
 	}
 
 	private void init(){
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		final Dimension mapDimension = new Dimension();
 		map = getMap(mapDimension);
@@ -134,7 +132,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		
 		try {
 			ArrayList<String> files = new ArrayList<String>();
-			exhibitParser = this.readAPK(getZipStream(), files);
+			exhibitParser = this.readAPK(apkLoader.getAPKStream(), files);
 			originalFiles = files.toArray(new String[files.size()]);
 		} catch (XmlPullParserException e) {
 			showError("Could not load APK file.");
@@ -180,6 +178,8 @@ public class ZipManager extends JFrame implements ActionListener{
 		newTagButton.addActionListener(this);
 
 		newImageButton.addActionListener(this);
+		
+		loadAPKButton.addActionListener(this);
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.addItem(" ");
@@ -237,6 +237,8 @@ public class ZipManager extends JFrame implements ActionListener{
 		newButtonsPanel.add(newImageButton);
 		newButtonsPanel.add(newFileButton);
 		newButtonsPanel.add(saveButton);
+		newButtonsPanel.add(loadAPKButton);
+		
 		for (Component c : newButtonsPanel.getComponents()){
 			c.setBackground(Color.WHITE);
 		}
@@ -281,18 +283,9 @@ public class ZipManager extends JFrame implements ActionListener{
 		this.setLayout(new GridLayout(1,1));
 		this.add(tabbedPane);
 	}
-	
-	public ZipInputStream getZipStream(){
-		if (apkFile != null){
-			try {
-				return new ZipInputStream(new FileInputStream(apkFile));
-			} catch (FileNotFoundException e) {}
-		}
-		return new ZipInputStream(getClass().getResourceAsStream("/resources/WildlifeImages.apk"));
-	}
 
 	public JSVGCanvas getMap(Dimension d){
-		ZipInputStream stream = getZipStream();
+		ZipInputStream stream = apkLoader.getAPKStream();
 
 		JSVGCanvas svgCanvas = new JSVGCanvas();
 
@@ -367,7 +360,7 @@ public class ZipManager extends JFrame implements ActionListener{
 		if (modifiedFiles.containsKey(shortUrl)){
 			exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
 		}else{
-			exhibitPhotosImage.setImage(shortUrl, getZipStream());
+			exhibitPhotosImage.setImage(shortUrl, apkLoader.getAPKStream());
 		}
 	}
 
@@ -502,11 +495,11 @@ public class ZipManager extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(saveButton)){
-			JFileChooser chooser = new JFileChooser();
+			JFileChooser chooser = new JFileChooser("../");
 			chooser.setFileFilter(new FileFilter(){
 				@Override
 				public boolean accept(File f) {
-					if (f.getName().endsWith(".zip")){
+					if (f.isDirectory() || f.getName().endsWith(".zip")){
 						return true;
 					}
 					return false;
@@ -521,7 +514,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				this.saveFile(chooser.getSelectedFile());
 			}
 		}else if (event.getSource().equals(newFileButton)){
-			JFileChooser chooser = new JFileChooser();
+			JFileChooser chooser = new JFileChooser("../");
 			chooser.setDialogTitle("Select new file to add.");
 			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 				if (chooser.getSelectedFile().exists()){
@@ -590,6 +583,35 @@ public class ZipManager extends JFrame implements ActionListener{
 			if ((s != null) && (s.length() > 0)) {
 				currentExhibit.addPhoto(s);
 				exhibitPhotosModel.notifyChange();
+			}
+		}else if (event.getSource().equals(loadAPKButton)){
+			int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm APK Load", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION){
+				JFileChooser chooser = new JFileChooser("../");
+				chooser.setFileFilter(new FileFilter(){
+					@Override
+					public boolean accept(File f) {
+						if (f.isDirectory() || f.getName().endsWith(".apk")){
+							return true;
+						}
+						return false;
+					}
+					@Override
+					public String getDescription() {
+						return "Android Applications (*.apk)";
+					}
+				});
+				chooser.setAcceptAllFileFilterUsed(false);
+				chooser.setDialogTitle("Select APK file");
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+					if (chooser.getSelectedFile().exists()){
+						apkLoader.setFile(chooser.getSelectedFile());
+						apkLoader.setNewState(true);
+						WindowEvent windowClosing = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+						this.dispatchEvent(windowClosing);
+					}
+				}
+				
 			}
 		}
 	}
