@@ -35,7 +35,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 
 	private boolean cancelled = false;
 	
-	private Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d\\.zip");
+	private Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d{12}\\.zip");
 
 	public void onCreate(Bundle inState){
 		super.onCreate(inState);
