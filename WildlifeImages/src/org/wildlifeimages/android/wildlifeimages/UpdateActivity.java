@@ -14,9 +14,12 @@ import java.util.regex.Pattern;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,10 +34,12 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	private static final int UPDATE_DIALOG = 1;
 
 	private boolean cancelled = false;
+	
+	private Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d\\.zip");
 
 	public void onCreate(Bundle inState){
 		super.onCreate(inState);
-
+		
 		if (inState == null){
 			if (Common.isNetworkConnected(this) == true){
 				showDialog(UPDATE_DIALOG);
@@ -82,7 +87,6 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	}
 
 	private String getZipUrl(){
-		Pattern zipNameExpression = Pattern.compile("http://.*?/[a-zA-Z0-9_]+\\.zip");
 		try{
 			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/update.html");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -120,7 +124,15 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			progress = arg0[0];
 
 			String url = getZipUrl();
-			Log.i(this.getClass().getName(), "Grabbing " + url);
+			
+			SharedPreferences preferences = getSharedPreferences("Update", Context.MODE_PRIVATE);
+			String oldUrl = preferences.getString("lastUpdate", "<none>");
+			Editor editablePreferences = preferences.edit();
+			editablePreferences.putString("lastUpdate", url);
+			editablePreferences.commit();
+			
+			Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
+			
 			if (url == null){
 				return false;
 			}else{

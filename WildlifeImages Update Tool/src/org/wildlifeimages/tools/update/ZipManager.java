@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
@@ -510,22 +512,15 @@ public class ZipManager extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(saveButton)){
 			JFileChooser chooser = new JFileChooser("../");
-			chooser.setFileFilter(new FileFilter(){
-				@Override
-				public boolean accept(File f) {
-					if (f.isDirectory() || f.getName().endsWith(".zip")){
-						return true;
-					}
-					return false;
-				}
-				@Override
-				public String getDescription() {
-					return "Zip files (*.zip)";
-				}
-			});
+			chooser.setAcceptAllFileFilterUsed(false);
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setDialogTitle("Select output zip file name.");
 			if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
-				this.saveFile(chooser.getSelectedFile());
+				Calendar now = Calendar.getInstance();
+				String filename = String.format("update_%1$tY%1$tm%1$td%1$tH%1$tM.zip", now);
+				File f = new File(chooser.getSelectedFile(), filename);
+				System.out.println(f.getPath());
+				this.saveFile(f);
 			}
 		}else if (event.getSource().equals(newFileButton)){
 			JFileChooser chooser = new JFileChooser("../");

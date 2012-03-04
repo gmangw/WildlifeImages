@@ -259,7 +259,7 @@ public class ContentManager {
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		XmlPullParser xmlBox = factory.newPullParser();
 		InputStream istr = streamAssetOrFile("exhibits.xml", assetManager);
-		BufferedReader in = new BufferedReader(new InputStreamReader(istr));
+		BufferedReader in = new BufferedReader(new InputStreamReader(istr), 1024);
 		xmlBox.setInput(in);
 		Log.i(this.getClass().getName(), "Input has been set.");
 		return new ExhibitList(xmlBox);
