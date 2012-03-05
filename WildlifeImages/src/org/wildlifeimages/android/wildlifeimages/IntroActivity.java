@@ -197,8 +197,6 @@ public class IntroActivity extends WireActivity{
 		case R.id.intro_sidebar_map:
 			MapActivity.start(this);
 			break;
-		case R.id.intro_sidebar_update:
-			UpdateActivity.start(this);
 		}
 	}
 
@@ -241,7 +239,7 @@ public class IntroActivity extends WireActivity{
 		@Override
 		protected String doInBackground(IntroActivity... arg0) {
 			if (Common.isNetworkConnected(getApplicationContext()) == true){
-				String url = Common.getZipUrl();
+				String url = Common.getZipUrl(loadString(R.string.update_page_url));
 
 				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
 				String oldUrl = preferences.getString(loadString(R.string.update_preferences_key_last), "<none>");

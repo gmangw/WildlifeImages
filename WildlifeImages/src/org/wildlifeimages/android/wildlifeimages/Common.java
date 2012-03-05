@@ -86,7 +86,8 @@ public class Common {
 						ExhibitActivity.start(context);
 					}
 				}else{
-					Toast.makeText(context, "Unfamiliar QR code "+ contents, Toast.LENGTH_SHORT);
+					Toast.makeText(context, context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
+					Log.w(Common.class.getName(), "Unrecognized QR code " + contents);
 				}
 			}
 		}
@@ -246,9 +247,7 @@ public class Common {
 
 	//http://en.wikipedia.org/wiki/Smoothstep
 	public static float smoothStep(float edge0, float edge1, float x){
-		// Scale, and clamp x to 0..1 range
 		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
-		// Evaluate polynomial
 		return x*x*x*(x*(x*6 - 15) + 10);
 	}
 	
@@ -273,60 +272,6 @@ public class Common {
 		for (int k = 0; k<i; k++){
 			list[k].recycle();
 		}
-	}
-	
-	public static byte[] getWebContent(String shortUrl, UpdateActivity.ContentUpdater progress){
-		URL url;
-		try {
-			url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/" + shortUrl);
-		}catch(MalformedURLException e){
-			Log.e(Common.class.getName(), "Caching of " + shortUrl + " failed with MalformedUrlException.");
-			return null;
-		}
-		int length = 0;
-		int read = 0;
-		byte[] buffer = null;
-		try {
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			InputStream webStream = conn.getInputStream();
-			int lengthGuess = conn.getContentLength();
-			if (lengthGuess == -1){
-				lengthGuess = 32768;
-				Log.e(Common.class.getName(), "File size unknown for " + shortUrl);
-			}
-
-			buffer = new byte[lengthGuess];
-			Log.i(Common.class.getName(), conn.getHeaderFields().toString());	
-			while (buffer.length - length > 0){
-				read = webStream.read(buffer, length, buffer.length - length);
-				if (read == -1){
-					break;
-				}else{
-					length += read;
-					if (progress != null){
-						progress.publish(100*length/lengthGuess);
-						if (progress.isCancelled()){
-							throw(new InterruptedException());
-						}
-					}
-				}
-			}
-			webStream.close();
-			conn.disconnect();
-		} catch (IOException e) {
-			Log.w(Common.class.getName(), "Caching of " + shortUrl + " failed with IOException: " + e.getMessage());
-		} catch (InterruptedException e) {
-			Log.d(Common.class.getName(), "Update cancelled.");
-			return null;
-		}
-
-		if (length > 0){
-			byte[] result = new byte[length];
-			System.arraycopy(buffer, 0, result, 0, result.length);
-			return result;
-		}else{
-			return null;
-		}	
 	}
 
 	public static void recursiveRemove(File f){
@@ -359,9 +304,9 @@ public class Common {
 		fOut.close();
 	}
 	
-	public static String getZipUrl(){
+	public static String getZipUrl(String page){
 		try{
-			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/update.html");
+			URL url = new URL(page);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			InputStream webStream = conn.getInputStream();
 			InputStreamReader r = new InputStreamReader(webStream);

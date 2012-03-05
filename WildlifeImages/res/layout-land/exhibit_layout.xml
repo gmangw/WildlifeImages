@@ -40,7 +40,6 @@
                 android:layout_height="fill_parent"
                 android:layout_margin="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/android_button"
                 android:orientation="horizontal" >
 
                 <ImageButton
@@ -49,11 +48,12 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/android_button"
                     android:onClick="exhibitProcessSidebar"
                     android:scaleType="centerInside"
                     android:text="Photos"
-                    android:textColor="@android:color/transparent" />
+                    android:textColor="@android:color/transparent"
+                    android:padding="3dp" />
 
                 <ImageButton
                     android:id="@+id/exhibit_home_button"
@@ -61,7 +61,7 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/android_button"
                     android:onClick="exhibitProcessSidebar"
                     android:scaleType="centerInside"
                     android:src="@drawable/home2" />

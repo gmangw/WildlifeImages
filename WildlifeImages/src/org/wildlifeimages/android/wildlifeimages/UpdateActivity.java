@@ -3,12 +3,9 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,18 +20,17 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	private static final int UPDATE_DIALOG = 1;
 
 	private boolean cancelled = false;
-	
-	
 
 	public void onCreate(Bundle inState){
 		super.onCreate(inState);
-		
-		if (inState == null){
-				showDialog(UPDATE_DIALOG);
-				ContentManager contentManager = ContentManager.getSelf();
-				contentManager.clearCache();
 
-				new ContentUpdater().execute("");//TODO
+		if (inState == null){
+			showDialog(UPDATE_DIALOG);
+			ContentManager contentManager = ContentManager.getSelf();
+			contentManager.clearCache();
+
+			Intent i = getIntent();
+			new ContentUpdater().execute(i.getStringExtra(""));//TODO
 		}else{
 			Log.w(this.getClass().getName(), "Update already in progress.");
 		}
@@ -59,9 +55,9 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	public void onUpdateCompleted(boolean result) {
 		ContentManager.getSelf().prepareExhibits(this.getAssets());
 		if (result == true){
-			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_toast_success), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_success), Toast.LENGTH_SHORT).show();
 		}else{
-			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_toast_failure), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_failure), Toast.LENGTH_SHORT).show();
 		}
 		finish();
 	}
@@ -69,14 +65,14 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	public void onCancel(DialogInterface dialog) {
 		cancelled = true;
 	}
-	
+
 	public class ContentUpdater extends AsyncTask<String, Integer, Boolean>{
 
 		@Override
 		protected Boolean doInBackground(String... arg0) {
 
-			String url = Common.getZipUrl();
-			
+			String url = Common.getZipUrl(loadString(R.string.update_page_url));
+
 			if (url == null){
 				return false;
 			}else{
@@ -115,6 +111,6 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			}
 		}
 	}
-	
+
 }
 
