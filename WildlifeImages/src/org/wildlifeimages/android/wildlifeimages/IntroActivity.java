@@ -48,7 +48,7 @@ public class IntroActivity extends WireActivity{
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
-			new UpdateChecker().execute(this);
+			//new UpdateChecker().execute(this);
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
 		}
