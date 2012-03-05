@@ -217,9 +217,13 @@ public class ContentManager {
 			ZipInputStream zipStream = new ZipInputStream(webStream);
 			ZipEntry ze = null;
 
-			int length = conn.getContentLength();
 			int lengthRead = 0;
 			while ((ze = zipStream.getNextEntry()) != null) {
+				progress.publish(0);
+				if (progress.isCancelled()){
+					zipStream.close();
+					return false;
+				}
 				if (progress.isCancelled() == true){
 					break;
 				}
@@ -235,9 +239,6 @@ public class ContentManager {
 				for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
 					fout.write(c);
 					lengthRead++;
-					if (length != -1){
-						progress.publish((int)(100*lengthRead/length));
-					}
 				}
 				imgCache.removeBitmap(ze.getName());
 				cachedFiles.add(ze.getName());
@@ -261,7 +262,6 @@ public class ContentManager {
 		InputStream istr = streamAssetOrFile("exhibits.xml", assetManager);
 		BufferedReader in = new BufferedReader(new InputStreamReader(istr), 1024);
 		xmlBox.setInput(in);
-		Log.i(this.getClass().getName(), "Input has been set.");
 		return new ExhibitList(xmlBox);
 	}
 

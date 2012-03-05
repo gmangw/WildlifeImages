@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.CharBuffer;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import android.app.Activity;
@@ -36,6 +40,8 @@ import android.widget.Toast;
  * 	
  */	
 public class Common {
+	private static final Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d{12}\\.zip");
+	
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
 	 * method queries the package manager for installed packages that can
@@ -269,16 +275,6 @@ public class Common {
 		}
 	}
 	
-	public static boolean isNetworkConnected(Context context){
-		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netData = manager.getActiveNetworkInfo();
-		if (netData != null && netData.isConnectedOrConnecting() == true){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
 	public static byte[] getWebContent(String shortUrl, UpdateActivity.ContentUpdater progress){
 		URL url;
 		try {
@@ -361,5 +357,39 @@ public class Common {
 		FileOutputStream fOut = new FileOutputStream(f);
 		fOut.write(content);
 		fOut.close();
+	}
+	
+	public static String getZipUrl(){
+		try{
+			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/update.html");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			InputStream webStream = conn.getInputStream();
+			InputStreamReader r = new InputStreamReader(webStream);
+
+			CharBuffer chars = CharBuffer.allocate(1024);
+			r.read(chars);
+			String fileContents = chars.rewind().toString();
+
+			Matcher m = zipNameExpression.matcher(fileContents);
+			if (m.find() == true){
+				return m.group();
+			}else{
+				return null;
+			}
+		} catch(MalformedURLException e){
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	public static boolean isNetworkConnected(Context context){
+		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netData = manager.getActiveNetworkInfo();
+		if (netData != null && netData.isConnectedOrConnecting() == true){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

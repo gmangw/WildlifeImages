@@ -1,13 +1,18 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.
@@ -21,7 +26,9 @@ import android.view.View;
 public class IntroActivity extends WireActivity{
 
 	private static final int EXIT_DIALOG = 0;
-	
+
+	private static final int UPDATE_DIALOG = 1;
+
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
 	/**
@@ -41,6 +48,7 @@ public class IntroActivity extends WireActivity{
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
+			new UpdateChecker().execute(this);
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
 		}
@@ -78,10 +86,17 @@ public class IntroActivity extends WireActivity{
 
 	protected Dialog onCreateDialog(int id){
 		super.onCreateDialog(id);
-		
-		return createExitDialog();
+
+		switch(id){
+		case EXIT_DIALOG:
+			return createExitDialog();
+		case UPDATE_DIALOG:
+			return createUpdateDialog();
+		default: 
+			return null;
+		}
 	}
-	
+
 	/**
 	 * Create the exit dialog box with yes/no option.
 	 */
@@ -105,6 +120,26 @@ public class IntroActivity extends WireActivity{
 		return builder.create();
 	}
 
+	private AlertDialog createUpdateDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final IntroActivity me = this;
+		builder.setMessage(loadString(R.string.update_available_message))
+		.setCancelable(false)
+		.setPositiveButton(loadString(R.string.update_available_message_yes),
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				UpdateActivity.start(me);
+			}
+		})
+		.setNegativeButton(loadString(R.string.update_available_message_no),
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		return builder.create();
+	}
+
 	/**
 	 * Notification that something is about to happen, to give the Activity a
 	 * chance to save state.
@@ -114,12 +149,12 @@ public class IntroActivity extends WireActivity{
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		if (activeHomeId == R.id.intro_sidebar_photos){
 			ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
 			exView.clear();
 		}
-		
+
 		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 	}
 
@@ -160,22 +195,22 @@ public class IntroActivity extends WireActivity{
 			showList();
 			break;
 		case R.id.intro_sidebar_map:
-			//MapActivity.start(this);
-			//TODO break;
+			MapActivity.start(this);
+			break;
 		case R.id.intro_sidebar_update:
 			UpdateActivity.start(this);
 		}
 	}
-	
+
 	@Override
 	protected void onResume(){
 		super.onResume();
-		
+
 		if (activeHomeId == R.id.intro_sidebar_photos){
 			introProcessSidebar(activeHomeId);
 		}
 	}
-		
+
 
 	/**
 	 * Will show the exit dialog if we are in the main part of the program.
@@ -199,5 +234,41 @@ public class IntroActivity extends WireActivity{
 	public static void start(Activity context) {
 		Intent introIntent = new Intent(context, IntroActivity.class);
 		context.startActivityIfNeeded(introIntent, 0);
+	}
+
+	public class UpdateChecker extends AsyncTask<IntroActivity, Integer, String>{
+		
+		@Override
+		protected String doInBackground(IntroActivity... arg0) {
+			if (Common.isNetworkConnected(getApplicationContext()) == true){
+				String url = Common.getZipUrl();
+
+				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
+				String oldUrl = preferences.getString(loadString(R.string.update_preferences_key_last), "<none>");
+				if (url != null){
+					Editor editablePreferences = preferences.edit();
+					editablePreferences.putString(loadString(R.string.update_preferences_key_last), url);
+					editablePreferences.commit();
+				}
+
+				Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
+				return url;
+			}else{
+				Toast.makeText(getApplicationContext(), loadString(R.string.update_result_toast_network_error), Toast.LENGTH_SHORT).show();
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result){
+			if (result != null){
+				showDialog(UPDATE_DIALOG);
+			}
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... amount) {
+
+		}
 	}
 }

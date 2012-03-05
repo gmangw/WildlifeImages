@@ -1,16 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.CharBuffer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -35,22 +24,17 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 
 	private boolean cancelled = false;
 	
-	private Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d{12}\\.zip");
+	
 
 	public void onCreate(Bundle inState){
 		super.onCreate(inState);
 		
 		if (inState == null){
-			if (Common.isNetworkConnected(this) == true){
 				showDialog(UPDATE_DIALOG);
 				ContentManager contentManager = ContentManager.getSelf();
 				contentManager.clearCache();
 
-				new ContentUpdater(contentManager).execute(this);
-			}else{
-				Toast.makeText(getApplicationContext(), "Cannot update: No internet connection available.", Toast.LENGTH_SHORT).show();
-				finish();
-			}
+				new ContentUpdater().execute("");//TODO
 		}else{
 			Log.w(this.getClass().getName(), "Update already in progress.");
 		}
@@ -65,7 +49,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 		super.onCreateDialog(id);
 
 		final ProgressDialog progressDialog = new ProgressDialog(this);
-		progressDialog.setMessage("Getting updated content...");
+		progressDialog.setMessage(loadString(R.string.update_dialog_message));
 		progressDialog.show();
 		progressDialog.setOnCancelListener(this);
 
@@ -75,9 +59,9 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	public void onUpdateCompleted(boolean result) {
 		ContentManager.getSelf().prepareExhibits(this.getAssets());
 		if (result == true){
-			Toast.makeText(this.getApplicationContext(), "Update Complete", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_toast_success), Toast.LENGTH_SHORT).show();
 		}else{
-			Toast.makeText(this.getApplicationContext(), "Update Failed - Check internet connection", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_toast_failure), Toast.LENGTH_SHORT).show();
 		}
 		finish();
 	}
@@ -85,58 +69,18 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	public void onCancel(DialogInterface dialog) {
 		cancelled = true;
 	}
-
-	private String getZipUrl(){
-		try{
-			URL url = new URL("http://oregonstate.edu/~wilkinsg/wildlifeimages/update.html");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			InputStream webStream = conn.getInputStream();
-			InputStreamReader r = new InputStreamReader(webStream);
-
-			CharBuffer chars = CharBuffer.allocate(1024);
-			r.read(chars);
-			String fileContents = chars.rewind().toString();
-
-			Matcher m = zipNameExpression.matcher(fileContents);
-			if (m.find() == true){
-				return m.group();
-			}else{
-				return null;
-			}
-		} catch(MalformedURLException e){
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
-	}
 	
-	public class ContentUpdater extends AsyncTask<UpdateActivity, Integer, Boolean>{
-
-		private UpdateActivity progress;
-		private ContentManager content;
-
-		public ContentUpdater(ContentManager manager){
-			content = manager;
-		}
+	public class ContentUpdater extends AsyncTask<String, Integer, Boolean>{
 
 		@Override
-		protected Boolean doInBackground(UpdateActivity... arg0) {
-			progress = arg0[0];
+		protected Boolean doInBackground(String... arg0) {
 
-			String url = getZipUrl();
-			
-			SharedPreferences preferences = getSharedPreferences("Update", Context.MODE_PRIVATE);
-			String oldUrl = preferences.getString("lastUpdate", "<none>");
-			Editor editablePreferences = preferences.edit();
-			editablePreferences.putString("lastUpdate", url);
-			editablePreferences.commit();
-			
-			Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
+			String url = Common.getZipUrl();
 			
 			if (url == null){
 				return false;
 			}else{
-				return content.updateCache(this, url);
+				return ContentManager.getSelf().updateCache(this, url);
 			}
 		}
 
@@ -147,7 +91,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			}catch(IllegalArgumentException e){
 				Log.e(this.getClass().getName(), "Could not dismiss dialog.");
 			}
-			progress.onUpdateCompleted(result);
+			onUpdateCompleted(result);
 		}
 
 		public void publish(int amount){
@@ -156,8 +100,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 
 		@Override
 		protected void onCancelled(){
-			Log.w(this.getClass().getName(), "onCancelled");
-			cancelled = true;
+			finish();
 		}
 
 		@Override
@@ -168,9 +111,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			if (amount[0] == -1){
 
 			}else{
-				if (progress != null){
-					progress.setProgress(amount[0]);
-				}	
+				setProgress(amount[0]);	
 			}
 		}
 	}

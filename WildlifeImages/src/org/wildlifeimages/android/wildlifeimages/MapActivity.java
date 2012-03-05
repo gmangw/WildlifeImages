@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ListAdapter;
@@ -70,7 +69,6 @@ public class MapActivity extends WireActivity{
 		if (wt > 0){
 			int size = Math.max(ht, wt);
 			float zoomFactor = size / 800.0f;
-			Log.d(this.getClass().getName(), wt + "," + ht + ": " + zoomFactor);
 			mMapView.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
 	}

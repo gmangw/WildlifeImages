@@ -45,6 +45,15 @@
     <string name="intro_url_about">intro.html</string>
     <string name="intro_url_support">donate.html</string>
     <string name="intro_url_events">events.html</string>
+    <string name="update_preferences">Update</string>
+    <string name="update_preferences_key_last">lastUpdate</string>
+    <string name="update_result_toast_success">Update Complete</string>
+    <string name="update_result_toast_failure">Update Failed - Check network connection</string>
+    <string name="update_dialog_message">Getting updated content...</string>
+    <string name="update_result_toast_network_error">Cannot update: No network connection available.</string>
+    <string name="update_available_message">Updated content is available. Download?</string>
+    <string name="update_available_message_yes">Download</string>
+    <string name="update_available_message_no">Not now</string>
         
     <string-array name="intro_image_list">
         <item>shoshoni.jpg</item>
