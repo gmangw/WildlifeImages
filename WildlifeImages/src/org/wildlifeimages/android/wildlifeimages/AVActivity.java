@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 /**
@@ -40,13 +41,38 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		setContentView(R.layout.media_progress_layout);
+		
+		Object instance = getLastNonConfigurationInstance();
+		if (instance == null){
+			String url = getIntent().getStringExtra("URL");
 
-		String url = getIntent().getStringExtra("URL");
-
-		soundPlayer = playSound(url, ContentManager.getSelf(), getAssets());
-		soundPlayer.setOnCompletionListener(this);
-		updater = new MediaThread();
-		updater.execute(soundPlayer);
+			soundPlayer = playSound(url, ContentManager.getSelf(), getAssets());
+			soundPlayer.setOnCompletionListener(this);
+			updater = new MediaThread();
+			updater.execute(soundPlayer);
+		}else{
+			soundPlayer = (MediaPlayer)instance;
+			updater = new MediaThread();
+			updater.execute(soundPlayer);
+			mediaPause(null);
+			if (bundle != null){
+				if (false == bundle.getBoolean("Playing")){
+					mediaPause(null);
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putBoolean("Playing", soundPlayer.isPlaying());
+	}
+	
+	@Override
+	public Object onRetainNonConfigurationInstance(){
+		return soundPlayer;
 	}
 
 	/**
@@ -93,6 +119,22 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		context.startActivity(avIntent);
 	}
 
+	@Override
+	protected void onPause(){
+		super.onPause();
+		Button b = (Button)findViewById(R.id.media_pause_button);
+		if (soundPlayer.isPlaying()){
+			soundPlayer.pause();
+			b.setBackgroundResource(R.drawable.play_button);
+		}
+		updater.cancel(true);
+	}
+	
+	@Override
+	public void onBackPressed(){
+		mediaStop(null);
+	}
+	
 	/**
 	 * Pauses playing media and starts paused media.
 	 * 
@@ -100,13 +142,16 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	 * 
 	 */
 	public void mediaPause(View v){
+		Button b = (Button)findViewById(R.id.media_pause_button);
 		if (soundPlayer.isPlaying()){
 			soundPlayer.pause();
+			b.setBackgroundResource(R.drawable.play_button);
 		}else{
 			soundPlayer.start();
+			b.setBackgroundResource(R.drawable.pause_button);
 		}
 	}
-
+	
 	/**
 	 * Stops the playing media.
 	 * 
@@ -115,7 +160,6 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	 */
 	public void mediaStop(View v){
 		soundPlayer.stop();
-		
 		/* Cancel the thread showing the progress bar. */
 		updater.cancel(true);
 		
