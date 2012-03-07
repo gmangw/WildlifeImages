@@ -197,7 +197,8 @@ public class IntroActivity extends WireActivity{
 			showList();
 			break;
 		case R.id.intro_sidebar_map:
-			MapActivity.start(this);
+			//MapActivity.start(this);
+			setContentView(R.layout.splash_layout);
 			break;
 		}
 	}
