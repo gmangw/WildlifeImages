@@ -48,7 +48,7 @@ public class IntroActivity extends WireActivity{
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
-			//new UpdateChecker().execute(this);
+			new UpdateChecker().execute(this);
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
 		}
@@ -243,6 +243,9 @@ public class IntroActivity extends WireActivity{
 
 				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
 				String oldUrl = preferences.getString(loadString(R.string.update_preferences_key_last), "<none>");
+				if (oldUrl.equals(url)){
+					return null;
+				}
 				if (url != null){
 					Editor editablePreferences = preferences.edit();
 					editablePreferences.putString(loadString(R.string.update_preferences_key_last), url);
