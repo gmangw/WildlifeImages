@@ -30,7 +30,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private int xScrollOffset = 0;
 
 	RectF bmpRect = new RectF();
-
+	
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		gestures = new GestureDetector(context, this);

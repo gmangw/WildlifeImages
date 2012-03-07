@@ -14,7 +14,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 /**
  * For playing audio and video.
@@ -28,7 +31,7 @@ import android.widget.ProgressBar;
 public class AVActivity extends WireActivity implements OnCompletionListener{
 
 	private MediaPlayer soundPlayer = null;
-	
+
 	private MediaThread updater;
 
 	/**
@@ -41,11 +44,14 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		setContentView(R.layout.media_progress_layout);
-		
+
+		String imageUrl = getIntent().getStringExtra("Image");
+		ImageView v = (ImageView)findViewById(R.id.audio_image);
+		v.setImageBitmap(ContentManager.getSelf().getBitmapThumb(imageUrl, getAssets()));
+
 		Object instance = getLastNonConfigurationInstance();
 		if (instance == null){
 			String url = getIntent().getStringExtra("URL");
-
 			soundPlayer = playSound(url, ContentManager.getSelf(), getAssets());
 			soundPlayer.setOnCompletionListener(this);
 			updater = new MediaThread();
@@ -61,15 +67,18 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 				}
 			}
 		}
+
+		SeekBar progress = (SeekBar)findViewById(R.id.media_progress);
+		progress.setOnSeekBarChangeListener(updater);
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		outState.putBoolean("Playing", soundPlayer.isPlaying());
 	}
-	
+
 	@Override
 	public Object onRetainNonConfigurationInstance(){
 		return soundPlayer;
@@ -108,13 +117,14 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	 * @param a String url that has the url to the AV item.
 	 * 
 	 */
-	public static void start(Context context, String url) {
+	public static void start(Context context, String url, String imageUrl) {
 		/* The AVActivity needs to know what the context is, so we add it to the intent here. */
 		Intent avIntent = new Intent(context, AVActivity.class);
-		
+
 		/* Add the URL we have to the hash table of the intent with the key URL. */
 		avIntent.putExtra("URL", url);
-		
+		avIntent.putExtra("Image", imageUrl);
+
 		/* Start the activity. */
 		context.startActivity(avIntent);
 	}
@@ -129,12 +139,12 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		}
 		updater.cancel(true);
 	}
-	
+
 	@Override
 	public void onBackPressed(){
 		mediaStop(null);
 	}
-	
+
 	/**
 	 * Pauses playing media and starts paused media.
 	 * 
@@ -151,7 +161,7 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 			b.setBackgroundResource(R.drawable.pause_button);
 		}
 	}
-	
+
 	/**
 	 * Stops the playing media.
 	 * 
@@ -162,11 +172,11 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		soundPlayer.stop();
 		/* Cancel the thread showing the progress bar. */
 		updater.cancel(true);
-		
+
 		/* Exits the activity and returns to the previous page. */
 		finish();
 	}
-	
+
 	/**
 	 * On completion of the media stop the media playing.
 	 * 
@@ -176,14 +186,14 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	public void onCompletion(MediaPlayer mp) {
 		mediaStop(null);
 	}
-	
+
 	/**
 	 * Runs n the background and periodically gets into the user interface thread and perform tasks on the stop and end.
 	 * Has a publish progress that will show the progress of the AV item.
 	 */
-	public class MediaThread extends AsyncTask<MediaPlayer, Integer, Integer>{
+	public class MediaThread extends AsyncTask<MediaPlayer, Integer, Integer> implements OnSeekBarChangeListener{
 
-		private MediaPlayer player;
+		private boolean allowProgress = true;
 
 		public MediaThread(){
 		}
@@ -204,13 +214,13 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		 */
 		@Override
 		protected Integer doInBackground(MediaPlayer... params) {
-			player = params[0];
+			MediaPlayer player = params[0];
 			while(isCancelled() == false){
 				if (player.isPlaying()){
 					publishProgress(100 * player.getCurrentPosition()/player.getDuration());
 				}
 				try {
-					Thread.sleep(10);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {;
 				}
 			}
@@ -225,10 +235,24 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		 */
 		@Override
 		protected void onProgressUpdate(Integer... amount) {
-			ProgressBar progress = (ProgressBar)findViewById(R.id.media_progress);
-			if (progress != null){
+			SeekBar progress = (SeekBar)findViewById(R.id.media_progress);
+			if (allowProgress == true){
 				progress.setProgress(amount[0]);
 			}
+		}
+
+		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+			if (fromUser){
+				soundPlayer.seekTo(progress*soundPlayer.getDuration()/100);
+			}
+		}
+
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			allowProgress = false;
+		}
+
+		public void onStopTrackingTouch(SeekBar seekBar) {	
+			allowProgress = true;
 		}
 	}
 }

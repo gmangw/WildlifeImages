@@ -77,8 +77,13 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		Log.d(this.getClass().getName(), "Clicked link with type " + mimetype); //TODO
 		url = url.replaceAll(ContentManager.ASSET_PREFIX, "");
 		Log.w(this.getClass().getName(), url);
-
-		AVActivity.start(context, url);
+		
+		String[] shortUrls = ContentManager.getSelf().getExhibitList().getCurrent().getPhotos();
+		String thumbUrl = "";
+		if (shortUrls.length > 0){
+			thumbUrl = shortUrls[0];
+		}
+		AVActivity.start(context, url, thumbUrl);
 	}
 
 	public void clear() {

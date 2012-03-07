@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="15dp" >
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:background="@drawable/sharedbg_tile" >
+
+    <ImageView
+        android:id="@+id/audio_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -14,7 +22,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="15dp" >
 
             <Button
                 android:id="@+id/media_pause_button"
@@ -33,12 +43,13 @@
                 android:onClick="mediaStop" />
         </LinearLayout>
 
-        <ProgressBar
+        <SeekBar
             android:id="@+id/media_progress"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4" />
+            android:layout_weight="1"
+            android:padding="10dp" />
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
