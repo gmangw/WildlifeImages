@@ -29,6 +29,8 @@ public class IntroActivity extends WireActivity{
 
 	private static final int UPDATE_DIALOG = 1;
 
+	private static final int NETWORK_ERROR = 1;
+
 	private int activeHomeId = R.id.intro_sidebar_intro;
 
 	/**
@@ -235,7 +237,7 @@ public class IntroActivity extends WireActivity{
 	}
 
 	public class UpdateChecker extends AsyncTask<IntroActivity, Integer, String>{
-		
+
 		@Override
 		protected String doInBackground(IntroActivity... arg0) {
 			if (Common.isNetworkConnected(getApplicationContext()) == true){
@@ -255,7 +257,7 @@ public class IntroActivity extends WireActivity{
 				Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
 				return url;
 			}else{
-				//Toast.makeText(getApplicationContext(), loadString(R.string.update_result_toast_network_error), Toast.LENGTH_SHORT).show();
+				publishProgress(NETWORK_ERROR);
 				return null;
 			}
 		}
@@ -269,7 +271,11 @@ public class IntroActivity extends WireActivity{
 
 		@Override
 		protected void onProgressUpdate(Integer... amount) {
-
+			switch(amount[0]){
+			case NETWORK_ERROR:
+				//TODO make this info known if necessary
+				//Toast.makeText(getApplicationContext(), loadString(R.string.update_result_toast_network_error), Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 }
