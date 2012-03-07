@@ -255,7 +255,7 @@ public class IntroActivity extends WireActivity{
 				Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
 				return url;
 			}else{
-				Toast.makeText(getApplicationContext(), loadString(R.string.update_result_toast_network_error), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getApplicationContext(), loadString(R.string.update_result_toast_network_error), Toast.LENGTH_SHORT).show();
 				return null;
 			}
 		}
