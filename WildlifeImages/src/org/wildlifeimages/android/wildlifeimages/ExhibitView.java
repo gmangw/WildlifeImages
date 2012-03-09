@@ -21,7 +21,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	private MultiImageView picView;
 	private Context context = this.getContext();
 
-	public ExhibitView(Context context, AttributeSet attrs) {
+	public ExhibitView(final Context context, AttributeSet attrs) {
 		super(context, attrs);
 		htmlView = new WebView(context, attrs);
 		htmlView.setVisibility(View.VISIBLE);
@@ -72,12 +72,11 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		picView.setVisibility(View.INVISIBLE);
 	}
 
-	public void onDownloadStart(String url, String userAgent,
-			String contentDisposition, String mimetype, long contentLength) {
+	public void onDownloadStart(String clickedUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 		Log.d(this.getClass().getName(), "Clicked link with type " + mimetype); //TODO
-		url = url.replaceAll(ContentManager.ASSET_PREFIX, "");
-		Log.w(this.getClass().getName(), url);
-		
+		String url = clickedUrl.replaceAll(ContentManager.ASSET_PREFIX, "");
+		Log.w(this.getClass().getName(), "Playing " + url);
+
 		String[] shortUrls = ContentManager.getSelf().getExhibitList().getCurrent().getPhotos();
 		String thumbUrl = "";
 		if (shortUrls.length > 0){

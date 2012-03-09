@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.
@@ -181,10 +180,9 @@ public class IntroActivity extends WireActivity{
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			//((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), ContentManager.getSelf());
-			//activeHomeId = viewId;
-			//setContentView(R.layout.splash_layout);
-			VideoActivity.start(this);
+			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), ContentManager.getSelf());
+			activeHomeId = viewId;
+			setContentView(R.layout.splash_layout);
 			break;
 		case R.id.intro_sidebar_events:
 			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), ContentManager.getSelf());
@@ -200,6 +198,9 @@ public class IntroActivity extends WireActivity{
 			break;
 		case R.id.intro_sidebar_map:
 			MapActivity.start(this);
+			break;
+		case R.id.intro_sidebar_video:
+			VideoActivity.start(this, R.raw.video);
 			break;
 		}
 	}

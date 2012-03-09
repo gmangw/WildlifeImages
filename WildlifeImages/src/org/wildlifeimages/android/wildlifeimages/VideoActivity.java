@@ -1,6 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -14,6 +14,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.SeekBar;
 import android.widget.VideoView;
 
@@ -23,30 +24,43 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 
 	@Override
 	public void onCreate(Bundle inState){
+		//TODO mediaController
 		super.onCreate(inState);
 		setContentView(R.layout.video_layout);
 
 		VideoView videoView = (VideoView) findViewById(R.id.video_view);  
 		videoView.setOnCompletionListener(this);
-		
-		Uri pathToVideo = Uri.parse("android.resource://org.wildlifeimages.android.wildlifeimages/" + R.raw.video);  
+
+		int id = getIntent().getIntExtra("ID", -1);
+		Uri pathToVideo = Uri.parse("android.resource://org.wildlifeimages.android.wildlifeimages/" + id);  
+	
 		videoView.setVideoURI(pathToVideo);  
 
-		videoView.requestFocus();  
-		//videoView.start();
+		videoView.setMediaController(new MediaController(this));
+		
+		videoView.requestFocus();
+		if (inState == null){
+			Button b = (Button)findViewById(R.id.media_pause_button);
+			b.setBackgroundResource(R.drawable.pause_button);
+			videoView.start();
+		}
 
 		thread.execute(-1);
 	}
 
-	public static void start(Activity context) {
+	public static void start(Context context, int id) {
 		Intent videoIntent = new Intent(context, VideoActivity.class);
-		context.startActivityIfNeeded(videoIntent, 0);
+
+		videoIntent.putExtra("ID", id);
+
+		/* Start the activity. */
+		context.startActivity(videoIntent);
 	}
 
 	@Override
 	public void onResume(){
 		super.onResume();
-		
+
 		Button b = (Button)findViewById(R.id.media_pause_button);
 		VideoView videoView = (VideoView) findViewById(R.id.video_view);
 		if (videoView.isPlaying()){
@@ -55,10 +69,13 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 			b.setBackgroundResource(R.drawable.play_button);
 		}
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event){
 		LinearLayout controls = (LinearLayout) findViewById(R.id.video_controls);  
+		if (controls != null){
+			return false;
+		}
 		if (controls.getVisibility() == View.INVISIBLE){
 			Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 			fadeInAnimation.setAnimationListener(new FadeInListener());
@@ -69,11 +86,11 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 			return true;
 		}
 	}
-	
+
 	public void mediaPause(View v){
 		Button b = (Button)findViewById(R.id.media_pause_button);
 
-		
+
 		VideoView videoView = (VideoView) findViewById(R.id.video_view);
 		if (videoView.isPlaying()){
 			videoView.pause();
@@ -85,7 +102,7 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 			b.setBackgroundResource(R.drawable.pause_button);
 		}
 	}
-	
+
 	public void mediaStop(View v){
 		thread.setCountdown(-1);
 		VideoView videoView = (VideoView) findViewById(R.id.video_view);
@@ -99,6 +116,13 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 		Animation fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 		controls.startAnimation(fadeOutAnimation);
 		fadeOutAnimation.setAnimationListener(new FadeOutListener());
+	}
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		
+		thread.cancel(true);
 	}
 
 	private class FadeInListener implements AnimationListener{
@@ -139,7 +163,7 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 		protected Boolean doInBackground(Integer... arg0) {
 			countdown = arg0[0];
 			VideoView videoView = (VideoView) findViewById(R.id.video_view);
-			while (true){
+			while (isCancelled() == false){
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -152,6 +176,7 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 					}
 				}
 			}
+			return true;
 		}
 
 		public void setCountdown(int time){
@@ -171,12 +196,12 @@ public class VideoActivity extends WireActivity implements OnCompletionListener 
 		@Override
 		protected void onProgressUpdate(Integer... amount) {
 			for (int p : amount)
-			if (p == -1){
-				fadeOut();
-			}else{
-				SeekBar progress = (SeekBar)findViewById(R.id.media_progress);
-				progress.setProgress(p);
-			}
+				if (p == -1){
+					fadeOut();
+				}else{
+					SeekBar progress = (SeekBar)findViewById(R.id.media_progress);
+					progress.setProgress(p);
+				}
 		}
 	}
 
