@@ -181,8 +181,10 @@ public class IntroActivity extends WireActivity{
 			activeHomeId = viewId;
 			break;
 		case R.id.intro_sidebar_donations:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), ContentManager.getSelf());
-			activeHomeId = viewId;
+			//((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), ContentManager.getSelf());
+			//activeHomeId = viewId;
+			//setContentView(R.layout.splash_layout);
+			VideoActivity.start(this);
 			break;
 		case R.id.intro_sidebar_events:
 			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), ContentManager.getSelf());
@@ -197,8 +199,7 @@ public class IntroActivity extends WireActivity{
 			showList();
 			break;
 		case R.id.intro_sidebar_map:
-			//MapActivity.start(this);
-			setContentView(R.layout.splash_layout);
+			MapActivity.start(this);
 			break;
 		}
 	}
