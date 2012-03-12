@@ -8,12 +8,16 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -26,11 +30,14 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
  * @author Naveen Nanja
  *
  */
-public class AVActivity extends WireActivity implements OnCompletionListener{
+public class AVActivity extends WireActivity implements OnCompletionListener, OnPreparedListener{
 
 	private MediaPlayer soundPlayer = null;
+	private MediaController mController;
 
-	private MediaThread updater;
+	private Handler handler = new Handler();
+
+	//private MediaThread updater;
 
 	/**
 	 * This will happen when the activity actually starts.
@@ -51,23 +58,29 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		if (instance == null){
 			String url = getIntent().getStringExtra("URL");
 			soundPlayer = playSound(url, ContentManager.getSelf(), getAssets());
-			soundPlayer.setOnCompletionListener(this);
-			updater = new MediaThread();
-			updater.execute(soundPlayer);
+			mController = new MediaController(this);
+			soundPlayer.setOnCompletionListener(this); //TODO remove
+			soundPlayer.setOnPreparedListener(this);
+			//updater = new MediaThread();
+			//updater.execute(soundPlayer);
 		}else{
 			soundPlayer = (MediaPlayer)instance;
-			updater = new MediaThread();
-			updater.execute(soundPlayer);
-			mediaPause(null);
+			mController = new MediaController(this);
+			onPrepared(soundPlayer);
 			if (bundle != null){
-				if (false == bundle.getBoolean("Playing")){
-					mediaPause(null);
+				if (true == bundle.getBoolean("Playing")){
+					soundPlayer.start();
 				}
 			}
 		}
+	}
 
-		SeekBar progress = (SeekBar)findViewById(R.id.media_progress);
-		progress.setOnSeekBarChangeListener(updater);
+	@Override
+	protected void onStop() {
+		super.onStop();
+		mController.hide();
+		//soundPlayer.stop();
+		//soundPlayer.release();//TODO figure out when to call
 	}
 
 	@Override
@@ -82,6 +95,43 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		return soundPlayer;
 	}
 
+	private class MediaPlayerController implements MediaController.MediaPlayerControl{
+		private final MediaPlayer mPlayer;
+		public MediaPlayerController(MediaPlayer player){
+			mPlayer = player;
+		}
+		public boolean canPause() {
+			return true;
+		}
+		public boolean canSeekBackward() {
+			return true;
+		}
+		public boolean canSeekForward() {
+			return true;
+		}
+		public int getBufferPercentage() {
+			return 0;
+		}
+		public int getCurrentPosition() {
+			return mPlayer.getCurrentPosition();
+		}
+		public int getDuration() {
+			return mPlayer.getDuration();
+		}
+		public boolean isPlaying() {
+			return mPlayer.isPlaying();
+		}
+		public void pause() {
+			mPlayer.pause();
+		}
+		public void seekTo(int pos) {
+			mPlayer.seekTo(pos);
+		}
+		public void start() {
+			mPlayer.start();
+		}
+	}
+
 	/**
 	 * This will play the audio file.
 	 * 
@@ -90,7 +140,8 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	 * @param an AssetManager assets that lets us know where the items in the assets folder are.
 	 */
 	public MediaPlayer playSound(String shortUrl, ContentManager contentManager, AssetManager assets){
-		MediaPlayer soundPlayer = new MediaPlayer();
+		MediaPlayer soundPlayer = new MediaPlayer();		
+
 		try{
 			AssetFileDescriptor fd = contentManager.getFileDescriptor((shortUrl), assets);
 			if (fd.getStartOffset() == -1){
@@ -135,43 +186,11 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 			soundPlayer.pause();
 			b.setBackgroundResource(R.drawable.play_button);
 		}
-		updater.cancel(true);
+		//updater.cancel(true);
 	}
 
 	@Override
 	public void onBackPressed(){
-		mediaStop(null);
-	}
-
-	/**
-	 * Pauses playing media and starts paused media.
-	 * 
-	 * @param a View v the button pressed.
-	 * 
-	 */
-	public void mediaPause(View v){
-		Button b = (Button)findViewById(R.id.media_pause_button);
-		if (soundPlayer.isPlaying()){
-			soundPlayer.pause();
-			b.setBackgroundResource(R.drawable.play_button);
-		}else{
-			soundPlayer.start();
-			b.setBackgroundResource(R.drawable.pause_button);
-		}
-	}
-
-	/**
-	 * Stops the playing media.
-	 * 
-	 * @param a View v the button pressed.
-	 * 
-	 */
-	public void mediaStop(View v){
-		soundPlayer.stop();
-		/* Cancel the thread showing the progress bar. */
-		updater.cancel(true);
-
-		/* Exits the activity and returns to the previous page. */
 		finish();
 	}
 
@@ -182,7 +201,25 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	 * 
 	 */
 	public void onCompletion(MediaPlayer mp) {
-		mediaStop(null);
+		//TODO
+	}
+
+	public void onPrepared(MediaPlayer mediaPlayer) {
+		mController.setMediaPlayer(new MediaPlayerController(soundPlayer));
+		mController.setAnchorView(findViewById(R.id.av_layout_frame));
+
+		handler.post(new Runnable() {
+			public void run() {
+				mController.setEnabled(true);
+				mController.show(0);
+			}
+		});
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		mController.show(0);
+		return false;
 	}
 
 	/**
