@@ -25,10 +25,10 @@
                 android:background="@android:color/transparent"
                 android:onClick="introProcessSidebar"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icon_map" />
+                android:src="@drawable/icon00001" />
 
             <ImageButton
-                android:id="@+id/intro_sidebar_video"
+                android:id="@+id/intro_sidebar_events"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -36,7 +36,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="introProcessSidebar"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icon_events" />
+                android:src="@drawable/icon00000" />
         </LinearLayout>
 
         <LinearLayout
@@ -54,7 +54,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="introProcessSidebar"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icon_photos" />
+                android:src="@drawable/icon00002" />
 
             <ImageButton
                 android:id="@+id/intro_sidebar_exhibitlist"
@@ -65,15 +65,17 @@
                 android:background="@android:color/transparent"
                 android:onClick="introProcessSidebar"
                 android:scaleType="fitCenter"
-                android:src="@drawable/wildlifeimages_logo" />
+                android:src="@drawable/icon00003" />
         </LinearLayout>
     </LinearLayout>
 
     <Button
+        android:id="@+id/update_unavailable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:text="Update Available"
-        android:visibility="gone" />
+        android:text="Cannot check for updates"
+        android:background="@android:color/transparent"
+        android:visibility="invisible" />
 
 </FrameLayout>

@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * This Android App is intended for visitors of Wildlife Images Rehabilitation and Education Center.
@@ -59,18 +60,18 @@ public class IntroActivity extends WireActivity{
 	 * Loads the page at intro_url_about.
 	 */
 	private void showIntro() {
-		setContentView(R.layout.intro_layout);
+		setContentView(R.layout.splash_layout);
 
-		ExhibitView mExhibitView;
-		mExhibitView = (ExhibitView) findViewById(R.id.intro);
-		mExhibitView.loadUrl(loadString(R.string.intro_url_about), ContentManager.getSelf());
+		//ExhibitView mExhibitView;
+		//mExhibitView = (ExhibitView) findViewById(R.id.intro);
+		//mExhibitView.loadUrl(loadString(R.string.intro_url_about), ContentManager.getSelf());
 	}
 
 	/**
 	 * Starts the ExhibitListActivity page.
 	 */
 	private void showList(){
-		ExhibitListActivity.start(this);
+		
 	}
 
 	/**
@@ -79,10 +80,10 @@ public class IntroActivity extends WireActivity{
 	 * * @param savedState a Bundle containing state saved from a previous execution.
 	 */
 	private void restoreState(Bundle savedState){
-		activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
+		//activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
 
 		showIntro();
-		introProcessSidebar(activeHomeId);
+		//introProcessSidebar(activeHomeId);
 	}
 
 	protected Dialog onCreateDialog(int id){
@@ -151,12 +152,12 @@ public class IntroActivity extends WireActivity{
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
-		if (activeHomeId == R.id.intro_sidebar_photos){
-			ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
-			exView.clear();
-		}
+		//if (activeHomeId == R.id.intro_sidebar_photos){
+		//	ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
+		//	exView.clear(); //TODO do this in photos view
+		//}
 
-		outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
+		//outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class IntroActivity extends WireActivity{
 	 */
 	private void introProcessSidebar(int viewId){
 		switch (viewId) {
-		case R.id.intro_sidebar_intro:
+		/*case R.id.intro_sidebar_intro:
 			showIntro();
 			activeHomeId = viewId;
 			break;
@@ -183,25 +184,27 @@ public class IntroActivity extends WireActivity{
 			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), ContentManager.getSelf());
 			activeHomeId = viewId;
 			setContentView(R.layout.splash_layout);
-			break;
+			break;*/
 		case R.id.intro_sidebar_events:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), ContentManager.getSelf());
-			activeHomeId = viewId;
+			//((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), ContentManager.getSelf());
+			//activeHomeId = viewId;
+			PhotosActivity.start(this, true);
 			break;
 		case R.id.intro_sidebar_photos:
-			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, ContentManager.getSelf());
-			activeHomeId = viewId;
+			//String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
+			//((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, ContentManager.getSelf());
+			//activeHomeId = viewId;
+			PhotosActivity.start(this, false);
 			break;
 		case R.id.intro_sidebar_exhibitlist:
-			showList();
+			ExhibitListActivity.start(this);
 			break;
 		case R.id.intro_sidebar_map:
 			MapActivity.start(this);
 			break;
-		case R.id.intro_sidebar_video:
-			VideoActivity.start(this, R.raw.video);
-			break;
+		//case R.id.intro_sidebar_video:
+		//	VideoActivity.start(this, R.raw.video);
+		//	break;
 		}
 	}
 
@@ -209,9 +212,9 @@ public class IntroActivity extends WireActivity{
 	protected void onResume(){
 		super.onResume();
 
-		if (activeHomeId == R.id.intro_sidebar_photos){
-			introProcessSidebar(activeHomeId);
-		}
+		//if (activeHomeId == R.id.intro_sidebar_photos){
+		//	introProcessSidebar(activeHomeId);
+		//}
 	}
 
 
@@ -248,18 +251,18 @@ public class IntroActivity extends WireActivity{
 
 				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
 				String oldUrl = preferences.getString(loadString(R.string.update_preferences_key_last), "<none>");
-				if (oldUrl.equals(url)){
+				if (true == oldUrl.equals(url)){
 					return null;
 				}
-				if (url != null){
-					Editor editablePreferences = preferences.edit();
-					editablePreferences.putString(loadString(R.string.update_preferences_key_last), url);
-					editablePreferences.commit();
+				if (url == null){
+					Log.d(this.getClass().getName(), "Update failed due to missing zip url.");
+					publishProgress(NETWORK_ERROR);
 				}
 
 				Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
 				return url;
 			}else{
+				Log.d(this.getClass().getName(), "Update failed due to unavailable network.");
 				publishProgress(NETWORK_ERROR);
 				return null;
 			}
@@ -276,8 +279,8 @@ public class IntroActivity extends WireActivity{
 		protected void onProgressUpdate(Integer... amount) {
 			switch(amount[0]){
 			case NETWORK_ERROR:
-				//TODO make this info known if necessary
-				//Toast.makeText(getApplicationContext(), loadString(R.string.update_result_toast_network_error), Toast.LENGTH_SHORT).show();
+				Button b = (Button)findViewById(R.id.update_unavailable);
+				b.setVisibility(View.VISIBLE);
 			}
 		}
 	}
