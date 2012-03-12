@@ -217,6 +217,7 @@ public class ContentManager {
 			ZipInputStream zipStream = new ZipInputStream(webStream);
 			ZipEntry ze = null;
 
+			boolean result = true;
 			int lengthRead = 0;
 			while ((ze = zipStream.getNextEntry()) != null) {
 				progress.publish(0);
@@ -227,7 +228,9 @@ public class ContentManager {
 				if (progress.isCancelled() == true){
 					break;
 				}
-				File f  = new File(cacheDir.getAbsolutePath() + "/" + ze.getName());
+				String outputFilename = cacheDir.getAbsolutePath() + "/" + ze.getName();
+				String tempFilename = outputFilename + ".part";
+				File f  = new File(tempFilename);
 				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
 				try{
 					Common.mkdirForFile(f);
@@ -240,13 +243,18 @@ public class ContentManager {
 					fout.write(c);
 					lengthRead++;
 				}
-				imgCache.removeBitmap(ze.getName());
-				cachedFiles.add(ze.getName());
-				zipStream.closeEntry();
 				fout.close();
+				zipStream.closeEntry();
+				boolean renameResult = f.renameTo(new File(outputFilename));
+				if (false == renameResult){
+					Log.e(this.getClass().getName(), "Could not rename the .part file for " +ze.getName());
+					result = false;
+				}
+				imgCache.removeBitmap(ze.getName()); //TODO make sure thumbs update
+				cachedFiles.add(ze.getName());
 			}
 			zipStream.close();
-			return true;
+			return result;
 		} catch (IOException e) {
 			return false;
 		}

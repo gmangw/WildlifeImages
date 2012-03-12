@@ -3,8 +3,11 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.SharedPreferences.Editor;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,6 +60,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 		if (result == true){
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_success), Toast.LENGTH_SHORT).show();
 		}else{
+			ContentManager.getSelf().clearCache();
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_failure), Toast.LENGTH_SHORT).show();
 		}
 		finish();
@@ -76,7 +80,14 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			if (url == null){
 				return false;
 			}else{
-				return ContentManager.getSelf().updateCache(this, url);
+				boolean result =  ContentManager.getSelf().updateCache(this, url);
+				if (true == result){
+					SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
+					Editor editablePreferences = preferences.edit();
+					editablePreferences.putString(loadString(R.string.update_preferences_key_last), url);
+					editablePreferences.commit();
+				}
+				return result;
 			}
 		}
 
