@@ -7,11 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 
 /**
@@ -31,7 +31,7 @@ public class IntroActivity extends WireActivity{
 
 	private static final int NETWORK_ERROR = 1;
 
-	private int activeHomeId = R.id.intro_sidebar_intro;
+	//private int activeHomeId = R.id.intro_sidebar_intro;
 
 	/**
 	 * Invoked when the Activity is created.
@@ -68,21 +68,20 @@ public class IntroActivity extends WireActivity{
 	}
 
 	/**
-	 * Starts the ExhibitListActivity page.
-	 */
-	private void showList(){
-		
-	}
-
-	/**
 	 * Shows the intro and loads the proper sidebar.
 	 * 
 	 * * @param savedState a Bundle containing state saved from a previous execution.
 	 */
 	private void restoreState(Bundle savedState){
 		//activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
-
 		showIntro();
+
+		Button b = (Button)findViewById(R.id.update_status);
+		String updateStatus = savedState.getString("UpdateStatus");
+		if (updateStatus.length() > 0){
+			b.setText(updateStatus);
+			b.setVisibility(View.VISIBLE);
+		}
 		//introProcessSidebar(activeHomeId);
 	}
 
@@ -126,7 +125,7 @@ public class IntroActivity extends WireActivity{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final IntroActivity me = this;
 		builder.setMessage(loadString(R.string.update_available_message))
-		.setCancelable(false)
+		.setCancelable(true)
 		.setPositiveButton(loadString(R.string.update_available_message_yes),
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
@@ -154,10 +153,12 @@ public class IntroActivity extends WireActivity{
 
 		//if (activeHomeId == R.id.intro_sidebar_photos){
 		//	ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
-		//	exView.clear(); //TODO do this in photos view
+		//	exView.clear();
 		//}
 
 		//outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
+		Button b = (Button)findViewById(R.id.update_status);
+		outState.putString("UpdateStatus", b.getText().toString());
 	}
 
 	/**
@@ -202,9 +203,9 @@ public class IntroActivity extends WireActivity{
 		case R.id.intro_sidebar_map:
 			MapActivity.start(this);
 			break;
-		//case R.id.intro_sidebar_video:
-		//	VideoActivity.start(this, R.raw.video);
-		//	break;
+			//case R.id.intro_sidebar_video:
+			//	VideoActivity.start(this, R.raw.video);
+			//	break;
 		}
 	}
 
@@ -271,16 +272,27 @@ public class IntroActivity extends WireActivity{
 		@Override
 		protected void onPostExecute(String result){
 			if (result != null){
-				showDialog(UPDATE_DIALOG);
+
+				Button b = (Button)findViewById(R.id.update_status);
+				b.setText("Update Available");
+				b.setOnClickListener(new OnClickListener(){
+					public void onClick(View v) {
+						showDialog(UPDATE_DIALOG); //TODO
+					}
+				});
+				b.setVisibility(View.VISIBLE);
 			}
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... amount) {
-			switch(amount[0]){
-			case NETWORK_ERROR:
-				Button b = (Button)findViewById(R.id.update_unavailable);
-				b.setVisibility(View.VISIBLE);
+			for (int i : amount){
+				switch(i){
+				case NETWORK_ERROR:
+					Button b = (Button)findViewById(R.id.update_status);
+					b.setText("Cannot check for updates");
+					b.setVisibility(View.VISIBLE);
+				}
 			}
 		}
 	}

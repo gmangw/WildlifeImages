@@ -70,12 +70,11 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/update_unavailable"
+        android:id="@+id/update_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:background="@android:color/transparent"
-        android:text="Cannot check for updates"
         android:visibility="invisible" />
 
 </FrameLayout>
