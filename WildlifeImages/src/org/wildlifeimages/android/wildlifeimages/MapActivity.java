@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ListAdapter;
@@ -25,7 +26,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 public class MapActivity extends WireActivity{
 
 	private static final float ZOOM_FACTOR_START = 0.5f;
-	
+
 	/**
 	 * Invoked when the Activity is created.
 	 * 
@@ -47,7 +48,7 @@ public class MapActivity extends WireActivity{
 				mMapView.toggleZoom();
 			}
 		}
-		
+
 		SeekBar slider = (SeekBar)findViewById(R.id.seek);
 		slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -72,11 +73,11 @@ public class MapActivity extends WireActivity{
 			mMapView.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
 	}
-	
+
 	protected void onSaveInstanceState(Bundle out){
 		MapView mMapView = (MapView) findViewById(R.id.map);
 		float[] position = mMapView.getPosition();
-		
+
 		out.putFloat(loadString(R.string.save_map_x), position[0]);
 		out.putFloat(loadString(R.string.save_map_y), position[1]);
 		out.putBoolean(loadString(R.string.save_map_zoom), mMapView.isZoomed());
@@ -109,19 +110,19 @@ public class MapActivity extends WireActivity{
 	private class GroupListListener implements DialogInterface.OnClickListener{
 		private final String name;
 		private final MapActivity self;
-		
+
 		public GroupListListener(String groupName, MapActivity parent){
 			name = groupName;
 			self = parent;
 		}
-		
+
 		public void onClick(DialogInterface dialog, int item) {
 			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 			exhibitList.setCurrent(exhibitList.getGroup(name)[item], Exhibit.TAG_AUTO);
 			ExhibitActivity.start(self);	
 		}
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id){
 		super.onCreateDialog(id);
@@ -144,18 +145,28 @@ public class MapActivity extends WireActivity{
 		ListAdapter adapter = new GroupListAdapter(groupName);
 
 		DialogInterface.OnClickListener listener = new GroupListListener(groupName, this);
-		
+
 		builder.setAdapter(adapter, listener);
 		AlertDialog alert = builder.create();
 		return alert;
 	}
-	
+
+	@Override
+	public boolean onTouchEvent(MotionEvent e){
+		return false;
+	}
+
 	/**
 	 * When you click on the map or gesture, this will interpret your input.
 	 */
-	private class MapGestureListener implements GestureDetector.OnGestureListener, 
-	GestureDetector.OnDoubleTapListener {  
-		WireActivity parent;
+	private class MapGestureListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {  
+		private WireActivity parent;
+
+		private boolean currentlyScrolling = false;
+		private float previousX0 = -0.0f;
+		private float previousY0 = -0.0f;
+		private float previousX1 = -0.0f;
+		private float previousY1 = -0.0f;
 
 		public MapGestureListener(MapActivity context) { 
 			parent = context;
@@ -193,6 +204,7 @@ public class MapActivity extends WireActivity{
 			if(selectedExhibit != null){
 				mMapView.showPress(selectedExhibit);
 			}
+			currentlyScrolling = false;
 			return true;
 		}
 
@@ -206,7 +218,31 @@ public class MapActivity extends WireActivity{
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			mMapView.processScroll(distanceX, distanceY);
+			if (e2.getPointerCount() == 2){
+				if (currentlyScrolling == false){
+					currentlyScrolling = true;
+				}else{
+					float previousDistance = Common.distance(previousX0, previousY0,previousX1, previousY1);
+					float newDistance = Common.distance(e2.getX(0), e2.getY(0), e2.getX(1), e2.getY(1));
+					Log.d(this.getClass().getName(), "Distance " +Math.abs(previousDistance - newDistance));
+					if (Math.abs(previousDistance - newDistance) > 1.0f){
+
+						if (previousDistance < newDistance){
+							mMapView.setZoomFactor(mMapView.getZoomFactor()* 1.1f);
+						}else{
+							mMapView.setZoomFactor(mMapView.getZoomFactor()* 0.9f);
+						}
+					}
+				}
+				mMapView.processScroll(0, 0);
+				previousX0 = e2.getX(0);
+				previousY0 = e2.getY(0);
+				previousX1 = e2.getX(1);
+				previousY1 = e2.getY(1);
+			}else{
+				mMapView.processScroll(distanceX, distanceY);
+			}
+
 
 			return true;
 		}

@@ -343,6 +343,10 @@ public class MapView extends ImageView {
 		return zoomFactor * newScale;
 	}
 
+	public float getZoomFactor(){
+		return zoomFactor;
+	}
+	
 	public void setZoomFactor(float zoomFactor) {
 		this.zoomFactor = zoomFactor;
 	}
