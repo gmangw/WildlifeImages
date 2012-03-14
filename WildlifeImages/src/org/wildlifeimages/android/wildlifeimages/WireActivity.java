@@ -15,7 +15,7 @@ import android.view.Window;
  * The parent for the other activities allowing for fun helper functions.
  */
 public abstract class WireActivity extends Activity{
-	
+
 	AlertDialog scanDialog;
 
 	@Override
@@ -23,7 +23,7 @@ public abstract class WireActivity extends Activity{
 		super.onCreate(bundle);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		scanDialog = Common.createScanDialog(this);
 	}
 
@@ -56,18 +56,22 @@ public abstract class WireActivity extends Activity{
 	String loadString(int resId){
 		return getResources().getString(resId); 
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		scanDialog.dismiss();
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event){
+		super.onKeyDown(keyCode, event);
 		if (keyCode == KeyEvent.KEYCODE_CAMERA){
 			Common.startCamera(this, null);
+			return true;
+		}else if (keyCode == KeyEvent.KEYCODE_BACK){
+			onBackPressed();
 			return true;
 		}else{
 			return false;
