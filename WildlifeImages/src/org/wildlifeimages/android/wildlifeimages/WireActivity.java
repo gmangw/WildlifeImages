@@ -4,7 +4,9 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,5 +62,15 @@ public abstract class WireActivity extends Activity{
 		super.onSaveInstanceState(outState);
 		
 		scanDialog.dismiss();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if (keyCode == KeyEvent.KEYCODE_CAMERA){
+			Common.startCamera(this, null);
+			return true;
+		}else{
+			return false;
+		}
 	}
 }
