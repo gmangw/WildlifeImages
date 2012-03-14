@@ -243,7 +243,6 @@ public class MapActivity extends WireActivity{
 				mMapView.processScroll(distanceX, distanceY);
 			}
 
-
 			return true;
 		}
 
