@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
@@ -28,6 +29,10 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 		htmlView.getSettings().setJavaScriptEnabled(true);
 		htmlView.getSettings().setPluginsEnabled(true);
+		htmlView.getSettings().setSupportZoom(true);
+		htmlView.getSettings().setBuiltInZoomControls(true);
+		htmlView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.CLOSE); //TODO vary based on size
+		htmlView.getSettings().setDefaultFontSize(getResources().getInteger(R.integer.content_text_size));
 
 		htmlView.setDownloadListener(this);
 

@@ -6,9 +6,12 @@ import java.util.Iterator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -143,14 +146,11 @@ public class ExhibitActivity extends WireActivity{
 	 * @param an OnClickListener listen that listens for clicks.
 	 */
 	private Button makeStyledButton(String label, Context c, LayoutParams params, OnClickListener listen){
-		Button button = new Button(c);
-		button.setText(label);
+		LayoutInflater inflater = LayoutInflater.from(this);
+		Button button = (Button)inflater.inflate(R.layout.button_template, null);
 		button.setLayoutParams(params);
+		button.setText(label);
 		button.setOnClickListener(listen);
-		button.setTextSize(16);
-		button.setPadding(10,8,10,8);
-		button.setMinEms(5);
-		button.setBackgroundResource(R.drawable.android_button);
 		return button;
 	}
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="ButtonText">
+		<item name="android:textSize">26dp</item>
+	</style>
+	<item type="integer" format="integer" name="content_text_size">26</item>
+</resources>
