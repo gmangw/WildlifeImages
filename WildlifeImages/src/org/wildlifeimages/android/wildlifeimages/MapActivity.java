@@ -239,7 +239,7 @@ public class MapActivity extends WireActivity{
 				previousY0 = e2.getY(0);
 				previousX1 = e2.getX(1);
 				previousY1 = e2.getY(1);
-			}else{
+			}else if (currentlyScrolling == false){
 				mMapView.processScroll(distanceX, distanceY);
 			}
 
