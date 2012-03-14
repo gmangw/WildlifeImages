@@ -127,12 +127,17 @@
 		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
 		<content tag="Daphne" page="ExhibitContents/SandhillCrane/sandhillCraneDaphne.html" />
 	</exhibit>
-	<exhibit name="Augur Buzzards" previous="Great Horned Owl">
+	<exhibit name="Augur Buzzards" previous="Great Horned Owl" next="Sacred Ibis">
 		<content tag="Introduction" page="ExhibitContents/AugurBuzzards/augurBuzzardsIntro.html" />
 		<content tag="Augi" page="ExhibitContents/AugurBuzzards/augurBuzzardsAugi.html" />
 		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-1.jpg" />
 		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-2.jpg" />
 		<content tag="Beruti" page="ExhibitContents/AugurBuzzards/augurBuzzardsBeruti.html" />
+	</exhibit>
+	<exhibit name="Sacred Ibis" xpos="63" ypos="37" previous="Augur Buzzards">
+		<content tag="Introduction" page="ExhibitContents/SacredIbis/sacredIbisIntro.html" />
+		<content tag="Pinnochio and Gepetto" page="ExhibitContents/SacredIbis/sacredIbisPinnochioAndGepetto.html" />
+		<photo page="ExhibitContents/SacredIbis/SacredIbis-PinnochioAndGeppeto-1.jpg" />
 	</exhibit>
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
