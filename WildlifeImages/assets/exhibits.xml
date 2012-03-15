@@ -134,10 +134,24 @@
 		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-2.jpg" />
 		<content tag="Beruti" page="ExhibitContents/AugurBuzzards/augurBuzzardsBeruti.html" />
 	</exhibit>
-	<exhibit name="Sacred Ibis" xpos="63" ypos="37" previous="Augur Buzzards">
+	<exhibit name="Sacred Ibis" xpos="63" ypos="37" previous="Augur Buzzards" next="Turkey Vulture">
 		<content tag="Introduction" page="ExhibitContents/SacredIbis/sacredIbisIntro.html" />
 		<content tag="Pinnochio and Gepetto" page="ExhibitContents/SacredIbis/sacredIbisPinnochioAndGepetto.html" />
 		<photo page="ExhibitContents/SacredIbis/SacredIbis-PinnochioAndGeppeto-1.jpg" />
+	</exhibit>
+	<exhibit name="Turkey Vulture" xpos="66" ypos="9" previous="Sacred Ibis" next="Red-Tailed Hawk">
+		<content tag="Introduction" page="ExhibitContents/TurkeyVulture/turkeyVultureIntro.html" />
+		<content tag="Igor" page="ExhibitContents/TurkeyVulture/turkeyVultureIgor.html" />
+		<photo page="ExhibitContents/TurkeyVulture/TurkeyVulture-Sigmond-1.jpg" />
+		<photo page="ExhibitContents/TurkeyVulture/TurkeyVulture-Sigmond-2.jpg" />
+		<content tag="Habitat" page="ExhibitContents/TurkeyVulture/turkeyVultureHabitat.html" />
+	</exhibit>
+	<exhibit name="Red-Tailed Hawk" previous="Turkey Vulture">
+		<content tag="Introduction" page="ExhibitContents/Red-TailedHawk/red-TailedHawkIntro.html" />
+		<content tag="Cazadero" page="ExhibitContents/Red-TailedHawk/red-TailedHawkCazadero.html" />
+		<photo page="ExhibitContents/Red-TailedHawk/Red-TailedHawk-Cazadero-1.jpg" />
+		<photo page="ExhibitContents/Red-TailedHawk/Red-TailedHawk-Cazadero-2.jpg" />
+		<content tag="Diet" page="ExhibitContents/Red-TailedHawk/red-TailedHawkDiet.html" />
 	</exhibit>
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
@@ -145,5 +159,6 @@
 		<member exhibit="Golden Eagles"></member>
 		<member exhibit="Great Horned Owl"></member>
 		<member exhibit="Augur Buzzards"></member>
+		<member exhibit="Red-Tailed Hawk"></member>
 	</group>
 </exhibit_list>
