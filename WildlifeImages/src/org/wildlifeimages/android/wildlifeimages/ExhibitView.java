@@ -30,8 +30,8 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		htmlView.getSettings().setJavaScriptEnabled(true);
 		htmlView.getSettings().setPluginsEnabled(true);
 		htmlView.getSettings().setSupportZoom(true);
-		htmlView.getSettings().setBuiltInZoomControls(true);
-		htmlView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.CLOSE); //TODO vary based on size
+		htmlView.getSettings().setBuiltInZoomControls(false);
+		htmlView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.CLOSE);
 		htmlView.getSettings().setDefaultFontSize(getResources().getInteger(R.integer.content_text_size));
 
 		htmlView.setDownloadListener(this);
@@ -51,8 +51,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	}
 
 	public void loadUrlList(String[] shortUrlList, ContentManager contentManager){
-		String[] extensionList = this.getContext().getResources().getStringArray(R.array.image_extensions);
-		if (Common.isImageUrl(shortUrlList[0], extensionList)){
+		if (Common.isImageUrl(shortUrlList[0])){
 			loadImageUrl(shortUrlList, contentManager);
 		} else {
 			loadHtmlUrl(shortUrlList[0], contentManager);

@@ -31,7 +31,7 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	private MediaPlayer soundPlayer = null;
 
 	private MediaThread updater;
-	
+
 	private boolean isPlaying = false;
 
 	/**
@@ -46,13 +46,21 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 		setContentView(R.layout.media_progress_layout);
 
 		String imageUrl = getIntent().getStringExtra("Image");
-		ImageView v = (ImageView)findViewById(R.id.audio_image);
-		v.setImageBitmap(ContentManager.getSelf().getBitmapThumb(imageUrl, getAssets()));
+		if (imageUrl != null){
+			ImageView v = (ImageView)findViewById(R.id.audio_image);
+			v.setImageBitmap(ContentManager.getSelf().getBitmapThumb(imageUrl, getAssets()));
+		}
 
 		Object instance = getLastNonConfigurationInstance();
 		if (instance == null){
 			String url = getIntent().getStringExtra("URL");
+			if (url == null){
+				url = "";
+			}
 			soundPlayer = playSound(url, ContentManager.getSelf(), getAssets());
+			if (soundPlayer == null){
+				soundPlayer = new MediaPlayer();
+			}
 			soundPlayer.setOnCompletionListener(this);
 			updater = new MediaThread();
 			updater.execute(soundPlayer);
@@ -81,7 +89,7 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 			mediaPause(null);
 		}
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -115,6 +123,10 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 			soundPlayer.start();			
 		} catch (IOException e){
 			Log.e(this.getClass().getName(), Log.getStackTraceString(e));
+			return null;
+		} catch (NullPointerException e){
+			Log.e(this.getClass().getName(), Log.getStackTraceString(e));
+			return null;
 		}
 		return soundPlayer;
 	}

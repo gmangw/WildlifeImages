@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dalvik.annotation.TestTarget;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,7 +43,7 @@ import android.widget.Toast;
  */	
 public class Common {
 	private static final Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d{12}\\.zip");
-	
+	private static final Pattern imageExtensionExpression = Pattern.compile(".+(.jpg|.jpeg|.bmp|.png|.gif)");
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
 	 * method queries the package manager for installed packages that can
@@ -57,12 +59,17 @@ public class Common {
 	 *         responded to, false otherwise.
 	 */
 	public static boolean isIntentAvailable(Context context, String action) {
-		final PackageManager packageManager = context.getPackageManager();
-		final Intent intent = new Intent(action);
-		List<ResolveInfo> list =
-			packageManager.queryIntentActivities(intent,
-					PackageManager.MATCH_DEFAULT_ONLY);
-		return list.size() > 0;
+		if (context == null){
+			Log.e(Common.class.getName(), "Context given to isIntentAvailable() was null.");
+			return false;
+		}else{
+			final PackageManager packageManager = context.getPackageManager();
+			final Intent intent = new Intent(action);
+			List<ResolveInfo> list =
+				packageManager.queryIntentActivities(intent,
+						PackageManager.MATCH_DEFAULT_ONLY);
+			return list.size() > 0;
+		}
 	}
 
 	/**
@@ -222,14 +229,9 @@ public class Common {
 	 * @param a String url containing the URL of the supposed image.
 	 * @param a String[] extensionlist that is an array of the acceptable extensions.
 	 */
-	public static boolean isImageUrl(String url, String[] extensionList){
+	public static boolean isImageUrl(String url){
 		String lower = url.toLowerCase();
-		for (int i=0; i<extensionList.length; i++){
-			if (lower.endsWith(extensionList[i])){
-				return true;
-			}
-		}
-		return false;
+		return imageExtensionExpression.matcher(lower).matches();
 	}
 
 	public static float distance(float x1, float y1, float x2, float y2){
@@ -237,6 +239,11 @@ public class Common {
 	}
 
 	public static float clamp(float value, float min, float max){
+		if (max < min){
+			float temp = min;
+			min = max;
+			max = temp;
+		}
 		if (value < min){
 			value = min;
 		}else if (value > max){
@@ -250,7 +257,7 @@ public class Common {
 		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
 		return x*x*x*(x*(x*6 - 15) + 10);
 	}
-	
+
 	public static void testBitmapMax(AssetManager assets){
 		Bitmap[] list = new Bitmap[4000];
 		int i;
@@ -303,7 +310,7 @@ public class Common {
 		fOut.write(content);
 		fOut.close();
 	}
-	
+
 	public static String getZipUrl(String page){
 		try{
 			URL url = new URL(page);
@@ -327,7 +334,7 @@ public class Common {
 			return null;
 		}
 	}
-	
+
 	public static boolean isNetworkConnected(Context context){
 		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netData = manager.getActiveNetworkInfo();

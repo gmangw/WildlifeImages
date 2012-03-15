@@ -43,11 +43,6 @@ public class IntroActivity extends WireActivity{
 	protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);		
 
-		/* Create a new content manager if there is none. */
-		if (ContentManager.getSelf() == null){
-			new ContentManager(this.getCacheDir(), this.getAssets());
-		}
-
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
 			new UpdateChecker().execute(this);
