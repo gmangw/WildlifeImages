@@ -146,13 +146,39 @@
 		<photo page="ExhibitContents/TurkeyVulture/TurkeyVulture-Sigmond-2.jpg" />
 		<content tag="Habitat" page="ExhibitContents/TurkeyVulture/turkeyVultureHabitat.html" />
 	</exhibit>
-	<exhibit name="Red-Tailed Hawk" previous="Turkey Vulture">
+	<exhibit name="Red-Tailed Hawk" previous="Turkey Vulture" mext="American Kestrel">
 		<content tag="Introduction" page="ExhibitContents/Red-TailedHawk/red-TailedHawkIntro.html" />
 		<content tag="Cazadero" page="ExhibitContents/Red-TailedHawk/red-TailedHawkCazadero.html" />
 		<photo page="ExhibitContents/Red-TailedHawk/Red-TailedHawk-Cazadero-1.jpg" />
 		<photo page="ExhibitContents/Red-TailedHawk/Red-TailedHawk-Cazadero-2.jpg" />
 		<content tag="Diet" page="ExhibitContents/Red-TailedHawk/red-TailedHawkDiet.html" />
 	</exhibit>
+	<exhibit name="American Kestrel" previous="Red-Tailed Hawk">
+		<content tag="Introduction" page="ExhibitContents/AmericanKestrel/americanKestrelIntro.html" />
+		<content tag="Jack" page="ExhibitContents/AmericanKestrel/americanKestrelJack.html" />
+		<content tag="Jill" page="ExhibitContents/AmericanKestrel/americanKestrelJill.html" />
+		<content tag="Habitat" page="ExhibitContents/AmericanKestrel/americanKestrelHabitat.html" />
+		<content tag="Diet" page="ExhibitContents/AmericanKestrel/americanKestrelDiet.html" />
+		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-1.jpg" />
+		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-2.jpg" />
+	</exhibit>
+	
+	<exhibit name="Raccoon">
+		<content tag="Introduction" page="ExhibitContents/Raccoon/raccoonIntro.html" />
+		<content tag="Ruby" page="ExhibitContents/Raccoon/raccoonRuby.html" />
+		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" />
+		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" />
+	</exhibit>
+	
+	<exhibit name="American Mink">
+		<content tag="Introduction" page="ExhibitContents/AmericanMink/americanMinkIntro.html" />
+		<content tag="American Minks" page="ExhibitContents/AmericanMink/americanMinks.html" />
+		<content tag="Jasmine" page="ExhibitContents/AmericanMink/americanMinkJasmine.html" />
+		<content tag="Habitat" page="ExhibitContents/AmericanMink/americanMinkHabitat.html" />
+		<content tag="Diet" page="ExhibitContents/AmericanMink/americanMinkDiet.html" />
+		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-1.jpg" />
+	</exhibit>
+	
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
 		<member exhibit="Western Screech Owl"></member>
@@ -160,5 +186,10 @@
 		<member exhibit="Great Horned Owl"></member>
 		<member exhibit="Augur Buzzards"></member>
 		<member exhibit="Red-Tailed Hawk"></member>
+		<member exhibit="American Kestrel"></member>
+	</group>
+	<group name="Small Mammals" xpos="33" ypos="15">
+		<member exhibit="Raccoon"></member>
+		<member exhibit="American Mink"></member>
 	</group>
 </exhibit_list>
