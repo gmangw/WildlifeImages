@@ -63,11 +63,5 @@
         <item>carson.jpg</item>
         <item>missjefferson.jpg</item>
     </string-array>
-    <string-array name="image_extensions">
-        <item>jpg</item>
-        <item>jpeg</item>
-        <item>png</item>
-        <item>gif</item>
-    </string-array>
 
 </resources>

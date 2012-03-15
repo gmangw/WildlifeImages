@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+        android:id="@integer/MENU_HOME"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_home"/>
+
+    <item
+        android:id="@integer/MENU_PREVIOUS"
+        android:showAsAction="always"
+        android:title="@string/menu_previous"/>
+
+    <item
+        android:id="@integer/MENU_NEXT"
+        android:showAsAction="always"
+        android:title="@string/menu_next"/>
+
+    <item
+        android:id="@integer/MENU_MAP"
+        android:showAsAction="never"
+        android:title="@string/menu_map"/>
+
+    <item
+        android:id="@integer/MENU_SCAN"
+        android:showAsAction="never"
+        android:title="@string/menu_scan"/>
+    
+    <item
+        android:id="@integer/MENU_CAMERA"
+        android:showAsAction="never"
+        android:title="@string/menu_camera"/>
+
+</menu>

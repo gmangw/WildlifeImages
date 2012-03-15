@@ -22,7 +22,14 @@ public abstract class WireActivity extends Activity{
 	protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		/* Create a new content manager if there is none. */
+		if (ContentManager.getSelf() == null){
+			new ContentManager(this.getCacheDir(), this.getAssets());
+		}
+		
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
 
 		scanDialog = Common.createScanDialog(this);
 	}
@@ -38,6 +45,7 @@ public abstract class WireActivity extends Activity{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Common.menuItemProcess(this, item.getItemId(), ContentManager.getSelf().getExhibitList());
+		//TODO add menu bar for 3.0+ devices
 		return true;
 	}
 
@@ -53,7 +61,7 @@ public abstract class WireActivity extends Activity{
 		Common.processActivityResult(this, requestCode, resultCode, intent);
 	}
 
-	String loadString(int resId){
+	public String loadString(int resId){
 		return getResources().getString(resId); 
 	}
 

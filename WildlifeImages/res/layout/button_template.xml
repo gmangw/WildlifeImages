@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:minEms="5"
+    android:textColor="@android:color/black"
     android:paddingBottom="8dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
