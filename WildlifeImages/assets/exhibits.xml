@@ -27,6 +27,7 @@
 	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bears" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
 		<content tag="Nikki" page="ExhibitContents/Lynx/lynxNikki.html" />
+		<content tag="Fun Facts" page="ExhibitContents/Lynx/lynxFunFacts.html" />
 		<content tag="Audio" page="ExhibitContents/Lynx/lynxAudio.html" />
 		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
 		<photo page="ExhibitContents/Lynx/Lynx-2.jpg" />
@@ -170,7 +171,6 @@
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" />
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" />
 	</exhibit>
-	
 	<exhibit name="American Mink">
 		<content tag="Introduction" page="ExhibitContents/AmericanMink/americanMinkIntro.html" />
 		<content tag="American Minks" page="ExhibitContents/AmericanMink/americanMinks.html" />
@@ -178,6 +178,14 @@
 		<content tag="Habitat" page="ExhibitContents/AmericanMink/americanMinkHabitat.html" />
 		<content tag="Diet" page="ExhibitContents/AmericanMink/americanMinkDiet.html" />
 		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-1.jpg" />
+	</exhibit>
+	<exhibit name="Hedge Hogs">
+		<content tag="Introduction" page="ExhibitContents/HedgeHogs/hedgeHogIntro.html" />
+		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogSugarAndSpice.html" />
+		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogFunFacts.html" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Sugar-1.jpg" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-1.jpg" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-1.jpg" />
 	</exhibit>
 	
 	<group name="Birds" xpos="54" ypos="11">
