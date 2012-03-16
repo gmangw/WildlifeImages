@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dalvik.annotation.TestTarget;
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -176,6 +173,7 @@ public class Common {
 	 */
 	public static void menuItemProcess(WireActivity context, int id, ExhibitList exhibits){
 		switch (id) {
+		case android.R.id.home:
 		case R.integer.MENU_HOME:
 			IntroActivity.start(context);
 			break;

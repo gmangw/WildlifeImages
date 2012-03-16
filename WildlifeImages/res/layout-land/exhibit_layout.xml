@@ -42,29 +42,9 @@
                 android:layout_weight="1"
                 android:orientation="horizontal" >
 
-                <ImageButton
-                    android:id="@+id/exhibit_photo_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/android_button"
-                    android:onClick="exhibitProcessSidebar"
-                    android:scaleType="centerInside"
-                    android:text="Photos"
-                    android:textColor="@android:color/transparent"
-                    android:padding="3dp" />
+                <include layout="@layout/exhibit_photo_button" />
 
-                <ImageButton
-                    android:id="@+id/exhibit_home_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/android_button"
-                    android:onClick="exhibitProcessSidebar"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/home2" />
+                <include layout="@layout/exhibit_home_button" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
