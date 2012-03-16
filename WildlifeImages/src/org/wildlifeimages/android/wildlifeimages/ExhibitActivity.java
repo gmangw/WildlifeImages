@@ -29,7 +29,7 @@ import android.widget.LinearLayout;
  */
 public class ExhibitActivity extends WireActivity{
 
-	private Exhibit activityCurrentExhibit;
+	private Exhibit activityCurrentExhibit = null;
 
 	/**
 	 * This will happen when the activity actually starts.
@@ -42,23 +42,21 @@ public class ExhibitActivity extends WireActivity{
 		super.onCreate(savedState);
 
 		setContentView(R.layout.exhibit_layout);
-
+		Log.d("", "onCreate");
+		
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-
+		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			remakeButtons(exhibitList.getCurrent());
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 		} else { /* Use saved state info if app just restarted */
-			Exhibit e = exhibitList.get(savedState.getString(loadString(R.string.save_current_exhibit)));
+			String wasShowing = savedState.getString(loadString(R.string.save_current_exhibit));
+			Exhibit e = exhibitList.get(wasShowing);
 			String tag = savedState.getString(loadString(R.string.save_current_exhibit_tag));
 			remakeButtons(e);
 			showExhibit(e, tag);
 		}
 
-	}
-
-	public void processSlider(View v){
-		Log.d(this.getClass().getName(), "Slid");
 	}
 
 	/**
@@ -192,7 +190,7 @@ public class ExhibitActivity extends WireActivity{
 	@Override
 	protected void onResume(){
 		super.onResume();
-
+		Log.d("", "onResume");
 		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
 	}
 
@@ -204,7 +202,18 @@ public class ExhibitActivity extends WireActivity{
 	 */
 	public static void start(Activity context) {
 		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
-		//exhibitIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		context.startActivityIfNeeded(exhibitIntent, 0);
+		context.startActivity(exhibitIntent);
+	}
+	
+	public static void start(Activity context, Exhibit e){
+		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
+		exhibitIntent.putExtra("Exhibit", e.getName());
+		context.startActivity(exhibitIntent);
+	}
+	
+	public static void start(Activity context, String s){
+		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
+		exhibitIntent.putExtra("Exhibit", s);
+		context.startActivity(exhibitIntent);
 	}
 }

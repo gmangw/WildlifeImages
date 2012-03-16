@@ -25,9 +25,9 @@ import android.widget.Button;
  */
 public class IntroActivity extends WireActivity{
 
-	private static final int EXIT_DIALOG = 0;
+	private static final int EXIT_DIALOG = WireActivity.SCAN_DIALOG+1;
 
-	private static final int UPDATE_DIALOG = 1;
+	private static final int UPDATE_DIALOG = EXIT_DIALOG+1;
 
 	private static final int NETWORK_ERROR = 1;
 
@@ -45,7 +45,7 @@ public class IntroActivity extends WireActivity{
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
-			new UpdateChecker().execute(this);
+			//new UpdateChecker().execute(this);
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
 		}
@@ -81,7 +81,7 @@ public class IntroActivity extends WireActivity{
 	}
 
 	protected Dialog onCreateDialog(int id){
-		super.onCreateDialog(id);
+		Dialog parent = super.onCreateDialog(id);
 
 		switch(id){
 		case EXIT_DIALOG:
@@ -89,7 +89,7 @@ public class IntroActivity extends WireActivity{
 		case UPDATE_DIALOG:
 			return createUpdateDialog();
 		default: 
-			return null;
+			return parent;
 		}
 	}
 

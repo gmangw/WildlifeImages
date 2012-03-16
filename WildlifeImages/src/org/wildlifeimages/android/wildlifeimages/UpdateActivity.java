@@ -20,7 +20,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	 * This progress manager will handle the update button when pressed.
 	 * It will be what you see when you are updating the app.
 	 */
-	private static final int UPDATE_DIALOG = 1;
+	private static final int UPDATE_DIALOG = WireActivity.SCAN_DIALOG+1;
 
 	private boolean cancelled = false;
 
@@ -45,14 +45,18 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	}
 
 	protected Dialog onCreateDialog(int id){
-		super.onCreateDialog(id);
+		Dialog parent = super.onCreateDialog(id);
 
-		final ProgressDialog progressDialog = new ProgressDialog(this);
-		progressDialog.setMessage(loadString(R.string.update_dialog_message));
-		progressDialog.show();
-		progressDialog.setOnCancelListener(this);
-
-		return progressDialog;
+		switch(id){
+		case UPDATE_DIALOG:
+			final ProgressDialog progressDialog = new ProgressDialog(this);
+			progressDialog.setMessage(loadString(R.string.update_dialog_message));
+			progressDialog.show();
+			progressDialog.setOnCancelListener(this);
+			return progressDialog;
+		default:
+			return parent;
+		}
 	}
 
 	public void onUpdateCompleted(boolean result) {
