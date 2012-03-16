@@ -30,6 +30,7 @@ public class ExhibitListActivity extends ListActivity {
 		super.onCreate(bundle);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		
 		setContentView(R.layout.list_layout);
 		setListAdapter(new ExhibitListAdapter(this, ContentManager.getSelf().getExhibitList()));

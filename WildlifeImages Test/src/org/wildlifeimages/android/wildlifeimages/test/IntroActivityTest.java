@@ -31,10 +31,6 @@ public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroAct
 	public void testPreconditions() {
 		assertNotNull(mActivity);
 	}
-
-	public void testText() {
-		assertEquals("",((Button)mActivity.findViewById(org.wildlifeimages.android.wildlifeimages.R.id.update_status)).getText());
-	}
 	
 	public void testCommonIsIntentAvailable(){
 		assertFalse(Common.isIntentAvailable(null, null));
