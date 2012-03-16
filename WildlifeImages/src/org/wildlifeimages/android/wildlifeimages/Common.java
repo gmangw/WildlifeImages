@@ -86,11 +86,10 @@ public class Common {
 				if (potentialKey != null){
 					ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 					if (true == exhibitList.containsKey(potentialKey)){
-						exhibitList.setCurrent(potentialKey, Exhibit.TAG_AUTO);
-						ExhibitActivity.start(context);
+						ExhibitActivity.start(context, potentialKey);
 					}
 				}else{
-					Toast.makeText(context, context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
+					Toast.makeText(context.getApplicationContext(), context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
 					Log.w(Common.class.getName(), "Unrecognized QR code " + contents);
 				}
 			}
@@ -188,7 +187,7 @@ public class Common {
 				intent.putExtra(context.loadString(R.string.intent_extra_scan_mode), context.loadString(R.string.intent_qr_mode));
 				context.startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
 			} else {
-				context.scanDialog.show();
+				context.showDialog(WireActivity.SCAN_DIALOG);
 			}
 			break;
 		case R.integer.MENU_CAMERA:

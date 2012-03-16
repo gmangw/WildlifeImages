@@ -3,6 +3,7 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,8 +16,8 @@ import android.view.Window;
  * The parent for the other activities allowing for fun helper functions.
  */
 public abstract class WireActivity extends Activity{
-
-	AlertDialog scanDialog;
+	
+	public static final int SCAN_DIALOG = 0;
 
 	@Override
 	protected void onCreate(Bundle bundle){
@@ -30,8 +31,17 @@ public abstract class WireActivity extends Activity{
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
-
-		scanDialog = Common.createScanDialog(this);
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id){
+		super.onCreateDialog(id);
+		
+		if (id == SCAN_DIALOG){
+			return Common.createScanDialog(this);
+		}else{
+			return null;
+		}
 	}
 
 	@Override
@@ -63,13 +73,6 @@ public abstract class WireActivity extends Activity{
 
 	public String loadString(int resId){
 		return getResources().getString(resId); 
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-
-		scanDialog.dismiss();
 	}
 
 	@Override

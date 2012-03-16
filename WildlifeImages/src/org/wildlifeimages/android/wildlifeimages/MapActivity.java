@@ -125,8 +125,12 @@ public class MapActivity extends WireActivity{
 
 	@Override
 	protected Dialog onCreateDialog(int id){
-		super.onCreateDialog(id);
+		Dialog parent = super.onCreateDialog(id);
 
+		if (parent != null){
+			return parent;
+		}
+		
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		String groupName = null;
 		String[] names = exhibitList.getGroupNames();
