@@ -25,9 +25,11 @@
     <string name="intro_sidebar_map">Map</string>
     <string name="intro_sidebar_photos">Photos</string>
     <string name="intent_action_scan">com.google.zxing.client.android.SCAN</string>
+    <string name="intent_action_scan_2">la.droid.qr.scan</string>
     <string name="intent_extra_scan_mode">com.google.zxing.client.android.SCAN.SCAN_MODE</string>
-    <string name="intent_extra_result">SCAN_RESULT</string>
-    <string name="intent_extra_result_format">SCAN_RESULT_FORMAT</string>
+    <string name="intent_scan_extra_result">SCAN_RESULT</string>
+    <string name="intent_scan_2_extra_result">la.droid.qr.result</string>
+    <string name="intent_scan_extra_result_format">SCAN_RESULT_FORMAT</string>
     <string name="intent_result_qr">QR_CODE</string>
     <string name="intent_qr_mode">QR_CODE_MODE</string>
     <string name="scan_app_missing">Install Barcode Scanner or Google Goggles first.</string>

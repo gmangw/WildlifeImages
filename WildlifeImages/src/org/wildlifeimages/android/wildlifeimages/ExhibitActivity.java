@@ -47,6 +47,11 @@ public class ExhibitActivity extends WireActivity{
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
+			String name = getIntent().getStringExtra("Exhibit");
+			if (name != null){
+				exhibitList.setCurrent(name, Exhibit.TAG_AUTO);
+			}
+			
 			remakeButtons(exhibitList.getCurrent());
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 		} else { /* Use saved state info if app just restarted */
@@ -56,7 +61,6 @@ public class ExhibitActivity extends WireActivity{
 			remakeButtons(e);
 			showExhibit(e, tag);
 		}
-
 	}
 
 	/**
@@ -188,9 +192,9 @@ public class ExhibitActivity extends WireActivity{
 	}
 
 	@Override
-	protected void onResume(){
+	protected void onRestart(){
 		super.onResume();
-		Log.d("", "onResume");
+		Log.d("", "onRestart");
 		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
 	}
 

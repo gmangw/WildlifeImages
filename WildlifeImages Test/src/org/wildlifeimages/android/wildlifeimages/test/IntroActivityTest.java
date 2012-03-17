@@ -116,8 +116,8 @@ public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroAct
 	
 	public void testCommonProcessResultQR(){
 		int code_scan = R.integer.CODE_SCAN_ACTIVITY_REQUEST;
-		String extra_result = mActivity.loadString(R.string.intent_extra_result);
-		String extra_result_format = mActivity.loadString(R.string.intent_extra_result_format);
+		String extra_result = mActivity.loadString(R.string.intent_scan_extra_result);
+		String extra_result_format = mActivity.loadString(R.string.intent_scan_extra_result_format);
 		Intent intent = new Intent(mActivity, AVActivity.class);
 		intent.putExtra(extra_result, "");
 		intent.putExtra(extra_result_format, "");
@@ -126,6 +126,19 @@ public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroAct
 		
 		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_CANCELED, intent);
 		assertFalse(mActivity.isFinishing());
+		
+		
+		code_scan = R.integer.CODE_SCAN_2_ACTIVITY_REQUEST;
+		extra_result = mActivity.loadString(R.string.intent_scan_2_extra_result);
+		intent = new Intent(mActivity, AVActivity.class);
+		intent.putExtra(extra_result, "");
+		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_OK, intent);
+		assertFalse(mActivity.isFinishing());
+		
+		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_CANCELED, intent);
+		assertFalse(mActivity.isFinishing());
+		
+		
 		Common.processActivityResult(mActivity, code_scan+1, Activity.RESULT_OK, intent);
 		assertFalse(mActivity.isFinishing());
 		

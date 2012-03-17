@@ -78,38 +78,36 @@ public class Common {
 	 * @param a Intent intent that is the intent used to start the process.	
 	 */	
 	public static void processActivityResult(WireActivity context, int requestCode, int resultCode, Intent intent){
-		if (requestCode == R.integer.CODE_SCAN_ACTIVITY_REQUEST && resultCode == Activity.RESULT_OK) {
-			String contents = intent.getStringExtra(context.loadString(R.string.intent_extra_result));
-			String format = intent.getStringExtra(context.loadString(R.string.intent_extra_result_format));
-			if (format.equals(context.loadString(R.string.intent_result_qr))){
-				String potentialKey = Common.processResultQR(context, contents);
-				if (potentialKey != null){
-					ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-					if (true == exhibitList.containsKey(potentialKey)){
-						ExhibitActivity.start(context, potentialKey);
-					}
-				}else{
-					Toast.makeText(context.getApplicationContext(), context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
-					Log.w(Common.class.getName(), "Unrecognized QR code " + contents);
+		if (resultCode == Activity.RESULT_OK){
+			if (requestCode == R.integer.CODE_SCAN_ACTIVITY_REQUEST) {
+				String contents = intent.getStringExtra(context.loadString(R.string.intent_scan_extra_result));
+				String format = intent.getStringExtra(context.loadString(R.string.intent_scan_extra_result_format));
+				if (format.equals(context.loadString(R.string.intent_result_qr))){
+					processBarcodeContents(context, contents);
 				}
+			}else if (requestCode == R.integer.CODE_SCAN_2_ACTIVITY_REQUEST){
+				String contents = intent.getStringExtra(context.loadString(R.string.intent_scan_2_extra_result));
+				processBarcodeContents(context, contents);
 			}
 		}
 	}
 
-	/**
-	 * Will process the string gotten from a QR code.
-	 * 
-	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
-	 * @param a String textQR that contains the text returned from the QR scanner.
-	 */	
-	private static String processResultQR(WireActivity context, String textQR){
+	private static void processBarcodeContents(WireActivity context, String contents){
+		String potentialKey = null;
 		String prefix = context.loadString(R.string.qr_prefix);
-		textQR.substring(0, prefix.length());
-		if(textQR.substring(0, prefix.length()).equals(prefix)){
-			String potential_key = textQR.substring(prefix.length());
-			return potential_key;
+
+		if(contents.length() > prefix.length() && contents.substring(0, prefix.length()).equals(prefix)){
+			potentialKey = contents.substring(prefix.length());
+		}
+
+		if (potentialKey != null){
+			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			if (true == exhibitList.containsKey(potentialKey)){
+				ExhibitActivity.start(context, potentialKey);
+			}
 		}else{
-			return null;
+			Toast.makeText(context.getApplicationContext(), context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
+			Log.w(Common.class.getName(), "Unrecognized QR code " + contents);
 		}
 	}
 
@@ -120,11 +118,17 @@ public class Common {
 	 */
 	public static void startScan(WireActivity context){
 		boolean scanAvailable = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan));
+		boolean scan2Available = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan_2));
 
 		if (scanAvailable){
 			Intent intent = new Intent(context.loadString(R.string.intent_action_scan));
 			intent.putExtra(context.loadString(R.string.intent_extra_scan_mode), context.loadString(R.string.intent_qr_mode));
 			context.startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
+		}else if (scan2Available){
+			Intent intent = new Intent(context.loadString(R.string.intent_action_scan_2));
+			context.startActivityForResult(intent, R.integer.CODE_SCAN_2_ACTIVITY_REQUEST);
+		}else {
+			context.showDialog(WireActivity.SCAN_DIALOG);
 		}
 	}
 
@@ -180,15 +184,7 @@ public class Common {
 			MapActivity.start(context);
 			break;
 		case R.integer.MENU_SCAN:
-			boolean scanAvailable = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan));
-
-			if (scanAvailable){
-				Intent intent = new Intent(context.loadString(R.string.intent_action_scan));
-				intent.putExtra(context.loadString(R.string.intent_extra_scan_mode), context.loadString(R.string.intent_qr_mode));
-				context.startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
-			} else {
-				context.showDialog(WireActivity.SCAN_DIALOG);
-			}
+			startScan(context);
 			break;
 		case R.integer.MENU_CAMERA:
 			Common.startCamera(context, null);
