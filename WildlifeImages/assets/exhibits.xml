@@ -181,11 +181,20 @@
 		<content tag="Crowby" page="ExhibitContents/AmericanCrow/americanCrowCrowby.html" />
 		<photo page="ExhibitContents/AmericanCrow/AmericanCrow-Sid-1.jpg" />
 	</exhibit>
-	<exhibit name="Eurasian Eagle Owl" previous="American Crow">
+	<exhibit name="Eurasian Eagle Owl" previous="American Crow" next="Ferruginous Hawk">
 		<content tag="Introduction" page="ExhibitContents/EurasianEagleOwl/eurasianEagleOwlIntro.html" />
 		<content tag="Kokoro" page="ExhibitContents/EurasianEagleOwl/eurasianEagleOwlKokoro.html" />
 		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-1.jpg" />
 		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-1.jpg" />
+	</exhibit>
+	<exhibit name="Ferruginous Hawk" previous="Eurasian Eagle Owl">
+		<content tag="Introduction" page="ExhibitContents/FerruginousHawk/ferruginousHawkIntro.html" />
+		<content tag="Sage" page="ExhibitContents/FerruginousHawk/ferruginousHawkSage.html" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-1.jpg" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-2.jpg" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-3.jpg" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-4.jpg" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-5.jpg" />
 	</exhibit>
 	
 	<exhibit name="Raccoon">
@@ -215,7 +224,14 @@
 		<content tag="Shoshoni" page="ExhibitContents/Bobcats/bobcatsShoshoni.html" />
 		<content tag="Rufus" page="ExhibitContents/Bobcats/bobcatsRufus.html" />
 		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-1.jpg" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-2.jpg" />
 		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-1.jpg" />
+	</exhibit>
+	<exhibit name="Ground Squirrel">
+		<content tag="Introduction" page="ExhibitContents/GroundSquirrel/groundSquirrelIntro.html" />
+		<content tag="Cheerio" page="ExhibitContents/GroundSquirrel/groundSquirrelCheerio.html" />
+		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-1.jpg" />
+		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-2.jpg" />
 	</exhibit>
 	
 	<group name="Birds" xpos="54" ypos="11">
@@ -228,6 +244,8 @@
 		<member exhibit="American Kestrel"></member>
 		<member exhibit="Common Barn Owl"></member>
 		<member exhibit="American Crow"></member>
+		<member exhibit="Eurasian Eagle Owl"></member>
+		<member exhibit="Ferruginous Hawk"></member>
 	</group>
 	<group name="Eagle Flight" xpos="66" ypos="9">
 		<member exhibit="Bald Eagles"></member>
@@ -237,5 +255,6 @@
 		<member exhibit="Raccoon"></member>
 		<member exhibit="American Mink"></member>
 		<member exhibit="Bobcats"></member>
+		<member exhibit="Ground Squirrel"></member>
 	</group>
 </exhibit_list>
