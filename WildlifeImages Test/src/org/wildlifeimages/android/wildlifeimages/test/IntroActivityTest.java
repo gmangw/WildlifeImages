@@ -2,7 +2,7 @@ package org.wildlifeimages.android.wildlifeimages.test;
 
 import java.util.Random;
 
-import org.wildlifeimages.android.wildlifeimages.AVActivity;
+import org.wildlifeimages.android.wildlifeimages.AudioActivity;
 import org.wildlifeimages.android.wildlifeimages.Common;
 import org.wildlifeimages.android.wildlifeimages.IntroActivity;
 import org.wildlifeimages.android.wildlifeimages.R;
@@ -118,7 +118,7 @@ public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroAct
 		int code_scan = R.integer.CODE_SCAN_ACTIVITY_REQUEST;
 		String extra_result = mActivity.loadString(R.string.intent_scan_extra_result);
 		String extra_result_format = mActivity.loadString(R.string.intent_scan_extra_result_format);
-		Intent intent = new Intent(mActivity, AVActivity.class);
+		Intent intent = new Intent(mActivity, AudioActivity.class);
 		intent.putExtra(extra_result, "");
 		intent.putExtra(extra_result_format, "");
 		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_OK, intent);
@@ -130,7 +130,7 @@ public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroAct
 		
 		code_scan = R.integer.CODE_SCAN_2_ACTIVITY_REQUEST;
 		extra_result = mActivity.loadString(R.string.intent_scan_2_extra_result);
-		intent = new Intent(mActivity, AVActivity.class);
+		intent = new Intent(mActivity, AudioActivity.class);
 		intent.putExtra(extra_result, "");
 		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_OK, intent);
 		assertFalse(mActivity.isFinishing());

@@ -26,7 +26,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
  * @author Naveen Nanja
  *
  */
-public class AVActivity extends WireActivity implements OnCompletionListener{
+public class AudioActivity extends WireActivity implements OnCompletionListener{
 
 	private MediaPlayer soundPlayer = null;
 
@@ -141,7 +141,7 @@ public class AVActivity extends WireActivity implements OnCompletionListener{
 	 */
 	public static void start(Context context, String url, String imageUrl) {
 		/* The AVActivity needs to know what the context is, so we add it to the intent here. */
-		Intent avIntent = new Intent(context, AVActivity.class);
+		Intent avIntent = new Intent(context, AudioActivity.class);
 
 		/* Add the URL we have to the hash table of the intent with the key URL. */
 		avIntent.putExtra("URL", url);

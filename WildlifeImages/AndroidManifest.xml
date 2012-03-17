@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="AVActivity"
+            android:name=".AudioActivity"
             android:screenOrientation="landscape" >
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />

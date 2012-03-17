@@ -1,18 +1,18 @@
 package org.wildlifeimages.android.wildlifeimages.test;
 
-import org.wildlifeimages.android.wildlifeimages.AVActivity;
+import org.wildlifeimages.android.wildlifeimages.AudioActivity;
 import org.wildlifeimages.android.wildlifeimages.Common;
 import org.wildlifeimages.android.wildlifeimages.ContentManager;
 import org.wildlifeimages.android.wildlifeimages.IntroActivity;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-public class AVActivityTest extends ActivityInstrumentationTestCase2<AVActivity> {
+public class AudioActivityTest extends ActivityInstrumentationTestCase2<AudioActivity> {
 	
-	private AVActivity mActivity;
+	private AudioActivity mActivity;
 
-	public AVActivityTest() {
-		super("org.wildlifeimages.android.wildlifeimages", AVActivity.class);
+	public AudioActivityTest() {
+		super("org.wildlifeimages.android.wildlifeimages", AudioActivity.class);
 
 	}
 

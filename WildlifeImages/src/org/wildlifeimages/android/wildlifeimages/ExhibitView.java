@@ -86,7 +86,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		if (shortUrls.length > 0){
 			thumbUrl = shortUrls[0];
 		}
-		AVActivity.start(context, url, thumbUrl);
+		AudioActivity.start(context, url, thumbUrl);
 	}
 
 	public void clear() {
