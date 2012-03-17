@@ -175,11 +175,17 @@
 		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-1.jpg" />
 		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-2.jpg" />
 	</exhibit>
-	<exhibit name="American Crow" previous="Common Raven">
+	<exhibit name="American Crow" previous="Common Raven" next="Eurasian Eagle Owl">
 		<content tag="Introduction" page="ExhibitContents/AmericanCrow/americanCrowIntro.html" />
 		<content tag="Sid" page="ExhibitContents/AmericanCrow/americanCrowSid.html" />
 		<content tag="Crowby" page="ExhibitContents/AmericanCrow/americanCrowCrowby.html" />
 		<photo page="ExhibitContents/AmericanCrow/AmericanCrow-Sid-1.jpg" />
+	</exhibit>
+	<exhibit name="Eurasian Eagle Owl" previous="American Crow">
+		<content tag="Introduction" page="ExhibitContents/EurasianEagleOwl/eurasianEagleOwlIntro.html" />
+		<content tag="Kokoro" page="ExhibitContents/EurasianEagleOwl/eurasianEagleOwlKokoro.html" />
+		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-1.jpg" />
+		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-1.jpg" />
 	</exhibit>
 	
 	<exhibit name="Raccoon">
@@ -204,6 +210,13 @@
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-1.jpg" />
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-1.jpg" />
 	</exhibit>
+	<exhibit name="Bobcats">
+		<content tag="Introduction" page="ExhibitContents/Bobcats/bobcatsIntro.html" />
+		<content tag="Shoshoni" page="ExhibitContents/Bobcats/bobcatsShoshoni.html" />
+		<content tag="Rufus" page="ExhibitContents/Bobcats/bobcatsRufus.html" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-1.jpg" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-1.jpg" />
+	</exhibit>
 	
 	<group name="Birds" xpos="54" ypos="11">
 		<member exhibit="Peregrine Falcon"></member>
@@ -223,5 +236,6 @@
 	<group name="Small Mammals" xpos="33" ypos="15">
 		<member exhibit="Raccoon"></member>
 		<member exhibit="American Mink"></member>
+		<member exhibit="Bobcats"></member>
 	</group>
 </exhibit_list>
