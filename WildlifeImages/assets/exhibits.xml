@@ -157,17 +157,29 @@
 	</exhibit>
 	<exhibit name="American Kestrel" previous="Red-Tailed Hawk" next="Common Barn Owl">
 		<content tag="Introduction" page="ExhibitContents/AmericanKestrel/americanKestrelIntro.html" />
-		<content tag="Jack" page="ExhibitContents/AmericanKestrel/americanKestrelJack.html" />
+		<content tag="Jackson" page="ExhibitContents/AmericanKestrel/americanKestrelJack.html" />
 		<content tag="Jill" page="ExhibitContents/AmericanKestrel/americanKestrelJill.html" />
 		<content tag="Habitat" page="ExhibitContents/AmericanKestrel/americanKestrelHabitat.html" />
 		<content tag="Diet" page="ExhibitContents/AmericanKestrel/americanKestrelDiet.html" />
 		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-1.jpg" />
 		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-2.jpg" />
 	</exhibit>
-	<exhibit name="Common Barn Owl" previous="American Kestrel">
+	<exhibit name="Common Barn Owl" previous="American Kestrel" next="Common Raven">
 		<content tag="Introduction" page="ExhibitContents/CommonBarnOwl/commonBarnOwlIntro.html" />
 		<content tag="Petri" page="ExhibitContents/CommonBarnOwl/commonBarnOwlPetri.html" />
 		<photo page="ExhibitContents/CommonBarnOwl/BarnOwl-Petri-1.jpg" />
+	</exhibit>
+	<exhibit name="Common Raven" xpos="40" ypos="20" previous="Common Barn Owl" next="American Crow">
+		<content tag="Introduction" page="ExhibitContents/CommonRaven/commonRavenIntro.html" />
+		<content tag="Onyx" page="ExhibitContents/CommonRaven/commonRavenOnyx.html" />
+		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-1.jpg" />
+		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-2.jpg" />
+	</exhibit>
+	<exhibit name="American Crow" previous="Common Raven">
+		<content tag="Introduction" page="ExhibitContents/AmericanCrow/americanCrowIntro.html" />
+		<content tag="Sid" page="ExhibitContents/AmericanCrow/americanCrowSid.html" />
+		<content tag="Crowby" page="ExhibitContents/AmericanCrow/americanCrowCrowby.html" />
+		<photo page="ExhibitContents/AmericanCrow/AmericanCrow-Sid-1.jpg" />
 	</exhibit>
 	
 	<exhibit name="Raccoon">
@@ -202,6 +214,7 @@
 		<member exhibit="Red-Tailed Hawk"></member>
 		<member exhibit="American Kestrel"></member>
 		<member exhibit="Common Barn Owl"></member>
+		<member exhibit="American Crow"></member>
 	</group>
 	<group name="Eagle Flight" xpos="66" ypos="9">
 		<member exhibit="Bald Eagles"></member>
