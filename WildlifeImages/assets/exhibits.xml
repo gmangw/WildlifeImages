@@ -148,14 +148,14 @@
 		<photo page="ExhibitContents/TurkeyVulture/TurkeyVulture-Sigmond-2.jpg" />
 		<content tag="Habitat" page="ExhibitContents/TurkeyVulture/turkeyVultureHabitat.html" />
 	</exhibit>
-	<exhibit name="Red-Tailed Hawk" previous="Turkey Vulture" mext="American Kestrel">
+	<exhibit name="Red-Tailed Hawk" previous="Turkey Vulture" next="American Kestrel">
 		<content tag="Introduction" page="ExhibitContents/Red-TailedHawk/red-TailedHawkIntro.html" />
 		<content tag="Cazadero" page="ExhibitContents/Red-TailedHawk/red-TailedHawkCazadero.html" />
 		<photo page="ExhibitContents/Red-TailedHawk/Red-TailedHawk-Cazadero-1.jpg" />
 		<photo page="ExhibitContents/Red-TailedHawk/Red-TailedHawk-Cazadero-2.jpg" />
 		<content tag="Diet" page="ExhibitContents/Red-TailedHawk/red-TailedHawkDiet.html" />
 	</exhibit>
-	<exhibit name="American Kestrel" previous="Red-Tailed Hawk">
+	<exhibit name="American Kestrel" previous="Red-Tailed Hawk" next="Common Barn Owl">
 		<content tag="Introduction" page="ExhibitContents/AmericanKestrel/americanKestrelIntro.html" />
 		<content tag="Jack" page="ExhibitContents/AmericanKestrel/americanKestrelJack.html" />
 		<content tag="Jill" page="ExhibitContents/AmericanKestrel/americanKestrelJill.html" />
@@ -163,6 +163,11 @@
 		<content tag="Diet" page="ExhibitContents/AmericanKestrel/americanKestrelDiet.html" />
 		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-1.jpg" />
 		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-2.jpg" />
+	</exhibit>
+	<exhibit name="Common Barn Owl" previous="American Kestrel">
+		<content tag="Introduction" page="ExhibitContents/CommonBarnOwl/commonBarnOwlIntro.html" />
+		<content tag="Petri" page="ExhibitContents/CommonBarnOwl/commonBarnOwlPetri.html" />
+		<photo page="ExhibitContents/CommonBarnOwl/BarnOwl-Petri-1.jpg" />
 	</exhibit>
 	
 	<exhibit name="Raccoon">
@@ -182,7 +187,7 @@
 	<exhibit name="Hedge Hogs">
 		<content tag="Introduction" page="ExhibitContents/HedgeHogs/hedgeHogIntro.html" />
 		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogSugarAndSpice.html" />
-		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogFunFacts.html" />
+		<content tag="Fun Facts" page="ExhibitContents/HedgeHogs/hedgeHogFunFacts.html" />
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Sugar-1.jpg" />
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-1.jpg" />
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-1.jpg" />
@@ -196,6 +201,7 @@
 		<member exhibit="Augur Buzzards"></member>
 		<member exhibit="Red-Tailed Hawk"></member>
 		<member exhibit="American Kestrel"></member>
+		<member exhibit="Common Barn Owl"></member>
 	</group>
 	<group name="Eagle Flight" xpos="66" ypos="9">
 		<member exhibit="Bald Eagles"></member>
