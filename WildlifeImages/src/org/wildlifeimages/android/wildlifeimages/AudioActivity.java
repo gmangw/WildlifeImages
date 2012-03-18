@@ -18,8 +18,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 /**
- * For playing audio and video.
- * Audio Video Activity.
+ * For playing audio.
  * 
  * @author Graham Wilkinson
  * @author Shady Glenn
@@ -38,7 +37,8 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	 * This will happen when the activity actually starts.
 	 * Will grab the latest state of the current AV file and show the AV player.
 	 * 
-	 * @param a bundle savedState that holds the current state.
+	 * @param bundle a savedState that holds the current state.
+	 * 
 	 */
 	@Override
 	public void onCreate(Bundle bundle){
@@ -80,6 +80,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		progress.setOnSeekBarChangeListener(updater);
 	}
 
+	//Override comment sufficient.
 	@Override
 	public void onRestart(){
 		super.onRestart();
@@ -90,6 +91,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		}
 	}
 
+	//Override comment sufficient.
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -97,6 +99,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		outState.putBoolean("Playing", soundPlayer.isPlaying());
 	}
 
+	//Override comment sufficient.
 	@Override
 	public Object onRetainNonConfigurationInstance(){
 		return soundPlayer;
@@ -105,9 +108,10 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	/**
 	 * This will play the audio file.
 	 * 
-	 * @param a String shortUrl that is a short Url to the AV file.
-	 * @param a ContentManager contentManager that keeps track of state, cached items, and open connections.
-	 * @param an AssetManager assets that lets us know where the items in the assets folder are.
+	 * @param shortUrl that is a short Url to the AV file.
+	 * @param contentManager that keeps track of state, cached items, and open connections.
+	 * @param assets that lets us know where the items in the assets folder are.
+	 * 
 	 */
 	public MediaPlayer playSound(String shortUrl, ContentManager contentManager, AssetManager assets){
 		MediaPlayer soundPlayer = new MediaPlayer();
@@ -135,8 +139,9 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	 * Bootstrapper that allows the launching of activities.
 	 * So will start the activity for this page.
 	 * 
-	 * @param a Context context 
-	 * @param a String url that has the url to the AV item.
+	 * @param context the activity that is calling this function, place to launch from.
+	 * @param url that has the URL to the AV item.
+	 * @param imageUrl the URL of the image.
 	 * 
 	 */
 	public static void start(Context context, String url, String imageUrl) {
@@ -151,8 +156,10 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		context.startActivity(avIntent);
 	}
 
+	//Override comment sufficient.
 	@Override
 	protected void onPause(){
+		/* Called when activity is paused: when return to home screen, or another activity starts, or when rotate. */
 		super.onPause();
 		Button b = (Button)findViewById(R.id.media_pause_button);
 		if (soundPlayer.isPlaying()){
@@ -165,15 +172,17 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		updater.cancel(true);
 	}
 
+	//Override comment sufficient.
 	@Override
 	public void onBackPressed(){
+		/* Calls mediaStop to stop the media ad return to the previos page. */
 		mediaStop(null);
 	}
 
 	/**
 	 * Pauses playing media and starts paused media.
 	 * 
-	 * @param a View v the button pressed.
+	 * @param v a View of the button pressed.
 	 * 
 	 */
 	public void mediaPause(View v){
@@ -188,9 +197,9 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	}
 
 	/**
-	 * Stops the playing media.
+	 * Stops the playing media and returns to the previous page.
 	 * 
-	 * @param a View v the button pressed.
+	 * @param v a View of the button pressed.
 	 * 
 	 */
 	public void mediaStop(View v){
@@ -203,9 +212,9 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	}
 
 	/**
-	 * On completion of the media stop the media playing.
+	 * On completion of the media, stop the media playing.
 	 * 
-	 * @param a MediaPlayer mp of the player playing the currently selected AV item.
+	 * @param mp a MediaPlayer of the player playing the currently selected AV item.
 	 * 
 	 */
 	public void onCompletion(MediaPlayer mp) {
@@ -215,26 +224,16 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	/**
 	 * Runs n the background and periodically gets into the user interface thread and perform tasks on the stop and end.
 	 * Has a publish progress that will show the progress of the AV item.
+	 * 
 	 */
 	public class MediaThread extends AsyncTask<MediaPlayer, Integer, Integer> implements OnSeekBarChangeListener{
 
 		private boolean allowProgress = true;
 
-		public MediaThread(){
-		}
-
-		@Override
-		protected void onPreExecute(){
-		}
-
-		@Override
-		protected void onPostExecute(Integer i){
-		}
-
 		/**
 		 * Will publish progress at certain times in the media player.
 		 * 
-		 * @param a MediaPlayer... params that takes in an array of mysterious size.
+		 * @param params a MediaPlayer... (list of media players) that takes in an array of mysterious size.
 		 * 
 		 */
 		@Override
@@ -254,8 +253,9 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 
 		/**
 		 * Will set the progress bar at certain times in the media player.
+		 * Called every time when publish progress is called, will update draggable thumb location while playing.
 		 * 
-		 * @param an Integer... amount that takes in an array of mysterious size.
+		 * @param amount an Integer... (integer list) that takes in an array of mysterious size.
 		 * 
 		 */
 		@Override
@@ -266,16 +266,38 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 			}
 		}
 
+		/**
+		 * Will seek to the selected location in the audio.
+		 * 
+		 * @param seekBar a SeekBar that allows the user to select a specific location in the audio.
+		 * @param progress an int showig the amount of progress of the track.
+		 * @param fromUser whether the user actually changed track position or if the program did.
+		 * 
+		 */
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			if (fromUser){
 				soundPlayer.seekTo(progress*soundPlayer.getDuration()/100);
 			}
 		}
 
+		/**
+		 * Allows the user to move the draggable thumb without trying to reset to current position.
+		 * Starts tracking movement and disables progress while tracking.
+		 * 
+		 * @param seekBar a SeekBar that allows the user to select a specific location in the audio.
+		 * 
+		 */
 		public void onStartTrackingTouch(SeekBar seekBar) {
 			allowProgress = false;
 		}
 
+		/**
+		 * Allows the user to move the draggable thumb without trying to reset to current position.
+		 * Stops tracking movement and enables progress after tracking complete.
+		 * 
+		 * @param seekBar a SeekBar that allows the user to select a specific location in the audio.
+		 * 
+		 */
 		public void onStopTrackingTouch(SeekBar seekBar) {	
 			allowProgress = true;
 		}
