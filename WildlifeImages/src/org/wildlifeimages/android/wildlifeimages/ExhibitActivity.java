@@ -43,16 +43,15 @@ public class ExhibitActivity extends WireActivity{
 
 		setContentView(R.layout.exhibit_layout);
 		Log.d("", "onCreate");
-		
+
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-		
+
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			String name = getIntent().getStringExtra("Exhibit");
 			if (name != null){
 				exhibitList.setCurrent(name, Exhibit.TAG_AUTO);
 			}
-			
-			remakeButtons(exhibitList.getCurrent());
+
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 		} else { /* Use saved state info if app just restarted */
 			String wasShowing = savedState.getString(loadString(R.string.save_current_exhibit));
@@ -70,22 +69,16 @@ public class ExhibitActivity extends WireActivity{
 	 * @param a String contentTag which is the name of the button selected.
 	 */
 	public void showExhibit(Exhibit e, String contentTag) {
-		boolean needRemakeButtons = false;
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
-		Exhibit previous = exhibitList.getCurrent();
-		String previousTag = previous.getCurrentTag();
 
 		exhibitList.setCurrent(e, contentTag);
 
-		if(false == previous.equals(e)){
-			remakeButtons(e);
-		}
-		if (needRemakeButtons || previousTag != contentTag){
-			ExhibitView exView;
-			exView = (ExhibitView) findViewById(R.id.exhibit);
-			String[] content = e.getContent(e.getCurrentTag()).split(",");
-			exView.loadUrlList(content, ContentManager.getSelf());
-		}
+		remakeButtons(e);
+
+		ExhibitView exView = (ExhibitView) findViewById(R.id.exhibit);
+		String[] content = e.getContent(e.getCurrentTag()).split(",");
+		exView.loadUrlList(content, ContentManager.getSelf());
+
 		activityCurrentExhibit = e;
 	}
 
@@ -196,6 +189,7 @@ public class ExhibitActivity extends WireActivity{
 		super.onResume();
 		Log.d("", "onRestart");
 		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
+		//TODO not called after screen unlock
 	}
 
 	/**
@@ -208,13 +202,13 @@ public class ExhibitActivity extends WireActivity{
 		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
 		context.startActivity(exhibitIntent);
 	}
-	
+
 	public static void start(Activity context, Exhibit e){
 		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
 		exhibitIntent.putExtra("Exhibit", e.getName());
 		context.startActivity(exhibitIntent);
 	}
-	
+
 	public static void start(Activity context, String s){
 		Intent exhibitIntent = new Intent(context, ExhibitActivity.class);
 		exhibitIntent.putExtra("Exhibit", s);

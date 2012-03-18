@@ -1,13 +1,18 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 
+import android.R.drawable;
 import android.content.Context;
+import android.graphics.Path.FillType;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 /**
@@ -20,6 +25,8 @@ import android.widget.FrameLayout;
 public class ExhibitView extends FrameLayout implements DownloadListener{
 	private WebView htmlView;
 	private MultiImageView picView;
+	private Button leftArrow;
+	private Button rightArrow;
 	private Context context = this.getContext();
 
 	public ExhibitView(final Context context, AttributeSet attrs) {
@@ -39,7 +46,17 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		picView = new MultiImageView(context, attrs);
 		picView.setBackgroundColor(0xFF000000);
 		picView.setVisibility(View.INVISIBLE);
-
+		
+		FrameLayout.LayoutParams paramsLeft = this.generateDefaultLayoutParams();
+		paramsLeft.gravity = Gravity.LEFT + Gravity.CENTER_VERTICAL;
+		paramsLeft.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+		paramsLeft.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+		
+		FrameLayout.LayoutParams paramsRight = this.generateDefaultLayoutParams();
+		paramsRight.gravity = Gravity.RIGHT + Gravity.CENTER_VERTICAL;
+		paramsRight.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+		paramsRight.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+		
 		this.addView(htmlView);
 		this.addView(picView);
 	}
@@ -66,7 +83,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 	public void loadImageUrl(String[] imgShortUrl, ContentManager contentManager){
 		picView.setImageBitmapList(imgShortUrl, contentManager);
-		picView.setVisibility(View.VISIBLE);
+		picView.setVisibility(View.VISIBLE);;
 		htmlView.setVisibility(View.INVISIBLE);
 	}
 

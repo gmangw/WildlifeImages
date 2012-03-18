@@ -1,9 +1,9 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -28,13 +29,27 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private int currentBitmapIndex;
 	private ContentManager contentManager = null;
 	private int xScrollOffset = 0;
+	private Paint labelPaint = new Paint();
+	private Paint labelTextPaint = new Paint();
+	
+	int gray = Color.argb(100, 255, 255, 255);
+
+	private View leftArrow = null;
+	private View rightArrow = null;
 
 	RectF bmpRect = new RectF();
-	
+
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		gestures = new GestureDetector(context, this);
 		this.setFocusable(true);
+		
+		labelPaint.setARGB(127, 0, 0, 0);
+		labelPaint.setAntiAlias(true);
+		
+		labelTextPaint.setARGB(165, 255, 255, 255);
+		labelTextPaint.setTextSize(30);
+		labelTextPaint.setAntiAlias(true);
 	}
 
 	private void reMeasureMatrix(){
@@ -46,6 +61,29 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		this.setImageMatrix(m);
 		baseMatrix = new Matrix(m);
 		this.setScaleType(ScaleType.MATRIX);
+	}
+
+	public void setLeftArrow(View v){
+		leftArrow = v;
+	}
+
+	public void setRightArrow(View v){
+		rightArrow = v;
+	}
+
+	@Override
+	protected void onVisibilityChanged(View changedView, int visibility){
+		super.onVisibilityChanged(changedView, visibility);
+
+		if (changedView.equals(this)){
+			if (leftArrow != null){
+				leftArrow.setVisibility(visibility);
+			}
+
+			if (rightArrow != null){
+				rightArrow.setVisibility(visibility);
+			}
+		}
 	}
 
 	@Override
@@ -146,20 +184,25 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 
-		Paint p = new Paint();
-		p.setARGB(127, 0, 0, 0);
-		p.setTextSize(30);
-		p.setAntiAlias(true);
-
 		String label = (currentBitmapIndex+1) + "/" + shortUrlList.length;
 
-		int bottom = canvas.getClipBounds().bottom;
+		Rect bounds = canvas.getClipBounds(); 
+		int bottom = bounds.bottom;
 
-		canvas.drawRect(0, bottom - p.getTextSize(), p.measureText(label)+2, bottom, p);
+		canvas.drawRect(0, bottom - labelTextPaint.getTextSize(), labelTextPaint.measureText(label)+2, bottom, labelPaint);
+		canvas.drawText(label, 1, bottom-1, labelTextPaint);
 
-		p.setARGB(165, 255, 255, 255);
+		float[] rightArrow = {bounds.right, bounds.exactCenterY(), bounds.right-50, bounds.exactCenterY()-30, bounds.right-50, bounds.exactCenterY()+30};
+		float[] leftArrow = {0, bounds.exactCenterY(), 50, bounds.exactCenterY()-30, 50, bounds.exactCenterY()+30};
 
-		canvas.drawText(label, 1, bottom-1, p);
+		int[] colors = {gray, gray, gray, gray, gray, gray};
+		
+		if (hasNextImage()){
+			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, rightArrow, 0, null, 0, colors, 0, null, 0, 0, labelPaint);
+		}
+		if (hasPreviousImage()){
+			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, leftArrow, 0, null, 0, colors, 0, null, 0, 0, labelPaint);
+		}
 	}
 
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
@@ -186,6 +229,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	public boolean onSingleTapUp(MotionEvent e) {
+		if (e.getX() > getWidth()*0.80f){
+			scrollRight();
+			return true;
+		}
+		if (e.getX() < getWidth()*0.20f){
+			scrollLeft();
+			return true;
+		}
 		return false;
 	} 
 }
