@@ -10,15 +10,16 @@ import org.wildlifeimages.android.wildlifeimages.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ActivityUnitTestCase;
 import android.util.Log;
 import android.widget.Button;
 
-public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroActivity> {
+public class IntroActivityInstrumentationTest extends ActivityInstrumentationTestCase2<IntroActivity> {
 
 	private IntroActivity mActivity;
 
-	public IntroActivityTest() {
-		super("org.wildlifeimages.android.wildlifeimages", IntroActivity.class);
+	public IntroActivityInstrumentationTest() {
+		super(IntroActivity.class);
 
 	}
 
@@ -112,51 +113,5 @@ public class IntroActivityTest extends ActivityInstrumentationTestCase2<IntroAct
 			assertTrue(result + "", Float.compare(result, 1.0f+TestHost.DELTA) <= +0.0f || 0.0f == Float.compare(value, Float.NaN) || 0.0f == Float.compare(clamp1, Float.NaN) || 0.0f == Float.compare(clamp2, Float.NaN));
 			assertTrue(result + "", Float.compare(result, 0.0f-TestHost.DELTA) >= +0.0f || 0.0f == Float.compare(value, Float.NaN) || 0.0f == Float.compare(clamp1, Float.NaN) || 0.0f == Float.compare(clamp2, Float.NaN));
 		}
-	}
-	
-	public void testCommonProcessResultQR(){
-		int code_scan = R.integer.CODE_SCAN_ACTIVITY_REQUEST;
-		String extra_result = mActivity.loadString(R.string.intent_scan_extra_result);
-		String extra_result_format = mActivity.loadString(R.string.intent_scan_extra_result_format);
-		Intent intent = new Intent(mActivity, AudioActivity.class);
-		intent.putExtra(extra_result, "");
-		intent.putExtra(extra_result_format, "");
-		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_OK, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_CANCELED, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		
-		code_scan = R.integer.CODE_SCAN_2_ACTIVITY_REQUEST;
-		extra_result = mActivity.loadString(R.string.intent_scan_2_extra_result);
-		intent = new Intent(mActivity, AudioActivity.class);
-		intent.putExtra(extra_result, "");
-		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_OK, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_CANCELED, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		
-		Common.processActivityResult(mActivity, code_scan+1, Activity.RESULT_OK, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		intent.putExtra(extra_result, "");
-		intent.putExtra(extra_result_format, mActivity.loadString(R.string.intent_result_qr));
-		Common.processActivityResult(mActivity, code_scan+1, Activity.RESULT_OK, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		intent.putExtra(extra_result, "Lynx");
-		intent.putExtra(extra_result_format, mActivity.loadString(R.string.intent_result_qr));
-		Common.processActivityResult(mActivity, code_scan+1, Activity.RESULT_OK, intent);
-		assertFalse(mActivity.isFinishing());
-		
-		String prefix = "market://search?q=pname:org.wildlifeimages.android.wildlifeimages&extra=Wildlife_Images_Exhibit_";
-		intent.putExtra(extra_result, prefix + "Lynx");
-		Log.e(this.getClass().getName(), mActivity.loadString(R.string.qr_prefix) + "Lynx");
-		intent.putExtra(extra_result_format, mActivity.loadString(R.string.intent_result_qr));
-		Common.processActivityResult(mActivity, code_scan+1, Activity.RESULT_OK, intent);
-		assertFalse(mActivity.isFinishing());
 	}
 }
