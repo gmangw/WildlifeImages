@@ -32,6 +32,8 @@ import android.util.Log;
  * This class handles the caching and updating of exhibit content.
  * 
  * @author Graham Wilkinson 
+ * @author Shady Glenn
+ * @author Naveen Nanja
  * 		
  */
 public class ContentManager {
@@ -51,10 +53,21 @@ public class ContentManager {
 
 	private Hashtable<String, Integer> timekeeper = new Hashtable<String, Integer>();
 
+	/**
+	 * This will return the instance that is currently alive.
+	 * 
+	 */
 	public static ContentManager getSelf(){
 		return self;
 	}
 
+	/**
+	 * Constructor that builds our content manager.
+	 * 
+	 * @param cacheDir the directory that holds the cached items.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 */
 	public ContentManager(File cacheDir, AssetManager assets){
 		//testBitmapMax(assets);
 
@@ -67,6 +80,12 @@ public class ContentManager {
 		prepareExhibits(assets);
 	}
 
+	/**
+	 * Create the exhibit list and cache the thumbs.
+	 * 
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 */
 	public void prepareExhibits(AssetManager assets){
 		try {
 			exhibitList = buildExhibitList(assets);
@@ -78,6 +97,12 @@ public class ContentManager {
 		cacheThumbs(assets);
 	}
 
+	/**
+	 * Will go through the exhibit list and get the bitmap for each thumb, then cache it.
+	 * 
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 */
 	private void cacheThumbs(AssetManager assets){
 		for(int i=0; i<exhibitList.getCount(); i++){
 			Exhibit entry = exhibitList.getExhibitAt(i);
@@ -88,6 +113,10 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * This will clear the cache.
+	 * 
+	 */
 	public void clearCache(){
 		File[] list = cacheDir.listFiles();
 		for(int i=0; i<list.length; i++){
@@ -96,6 +125,15 @@ public class ContentManager {
 		cachedFiles.clear();
 	}
 
+	/**
+	 * This will give us the correct URL to the file, so if cached one exists from an update grab that or grab the original.
+	 * Used for web things.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * 
+	 * @return The correct URL for the most up-to-date file.
+	 * 
+	 */
 	public String getBestUrl(String shortUrl) {
 		timekeeper.put(shortUrl, accessTime++);
 		if (cachedFiles.contains(shortUrl)){
@@ -106,6 +144,16 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * Will get the input stream from the shortURL, useful for images.
+	 * Used for streaming data.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 * @return An input string of the current file.
+	 * 
+	 */
 	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) { 
 		InputStream istr = null;
 		String longUrl = getBestUrl(shortUrl);
@@ -125,6 +173,16 @@ public class ContentManager {
 		return istr;
 	}
 
+	/**
+	 * Another way of getting access to a file, but using a file descriptor.
+	 * Audio uses this file access style.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 * @return A file descriptor of the file or null on fail.
+	 * 
+	 */
 	public AssetFileDescriptor getFileDescriptor(String shortUrl, AssetManager assets){
 		String longUrl = getBestUrl(shortUrl);
 		try{
@@ -146,17 +204,42 @@ public class ContentManager {
 
 	}
 
+	/**
+	 * This will call many functions and get the fullsize bitmap image from memory.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 * @return The fullsize image bitmap.
+	 * 
+	 */
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
 		timekeeper.put(shortUrl, accessTime++);
 		populateBitmap(shortUrl, assets);
 		return imgCache.getBitmap(shortUrl);
 	}
 
+	/**
+	 * This will call the function to populate the thumbnail bitmap and return the bitmap once populated.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 * @return The thumbnail bitmap.
+	 * 
+	 */
 	public Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
 		populateBitmapThumb(shortUrl, assets);
 		return imgCache.getThumb(shortUrl);
 	}
 
+	/**
+	 * This will convert an image into a fullsize bitmap and store it in memory
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 */
 	private void populateBitmap(String shortUrl, AssetManager assets){
 		if (imgCache.containsBitmap(shortUrl)){
 		}else{
@@ -167,6 +250,13 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * This will convert an image into a bitmap thumb and store it in memory.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * @param assets all the stuff in the assets folder that we need.
+	 * 
+	 */
 	private void populateBitmapThumb(String shortUrl, AssetManager assets){
 		if (imgCache.containsThumb(shortUrl)){
 		}else{
@@ -177,6 +267,13 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * This will look at everything in that folder and let itself know that these files exist.
+	 * Used to populate the cache list of tiles.
+	 * 
+	 * @param file a directory which will have all of its files and subdirectories and their files added to the list.
+	 * 
+	 */
 	private void addAllToMap(File file){
 		if (file.isDirectory()){
 			File[] list = file.listFiles();
@@ -191,6 +288,14 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * This will get the most recently accessed URL in the shortUrlList you pass in.
+	 * 
+	 * @param shortUrlList a list of all the shortURLs, so the list of all the most recent URLs recently viewed. 
+	 * 
+	 * @return The most recent URL in the shortUrlList
+	 * 
+	 */
 	public int getMostRecentIndex(String[] shortUrlList){
 		int resultIndex = 0;
 		int mostRecent = 0;
@@ -204,6 +309,15 @@ public class ContentManager {
 		return resultIndex;
 	}
 
+	/**
+	 * This function will update the cache.
+	 * 
+	 * @param progress thread doing the updating, can communicate if it wants to stop updating.
+	 * @param zipURL URL location of the zip file used for updating.
+	 * 
+	 * @return True if the entire update completed successfully.
+	 * 
+	 */
 	public boolean updateCache(UpdateActivity.ContentUpdater progress, String zipURL){
 		try{
 			URL url;
@@ -260,10 +374,27 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * This will return the exhibit list.
+	 * 
+	 * @return The exhibit list.
+	 * 
+	 */
 	public ExhibitList getExhibitList(){
 		return exhibitList;
 	}
 
+	/**
+	 * This will build the current exhibit list.
+	 * 
+	 * @param assetManager an assetManager giving us access to the assets.
+	 * 
+	 * @return A current exhibit list.
+	 * 
+	 * @throws XmlPullParserException when XML parsing fails.
+	 * @throws IOException if SD card read fails, could be a corrupt file system.
+	 * 
+	 */
 	private ExhibitList buildExhibitList(AssetManager assetManager) throws XmlPullParserException, IOException{
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		XmlPullParser xmlBox = factory.newPullParser();
@@ -273,6 +404,12 @@ public class ContentManager {
 		return new ExhibitList(xmlBox);
 	}
 
+	/**
+	 * This will set self to be the current content manager.
+	 * 
+	 * @param contentManager the contentManger to set self to.
+	 * 
+	 */
 	public static void setSelf(ContentManager contentManager) {
 		self = contentManager;
 	}
