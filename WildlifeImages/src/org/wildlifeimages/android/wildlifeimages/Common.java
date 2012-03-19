@@ -251,29 +251,6 @@ public class Common {
 		return x*x*x*(x*(x*6 - 15) + 10);
 	}
 
-	public static void testBitmapMax(AssetManager assets){
-		Bitmap[] list = new Bitmap[4000];
-		int i;
-		for(i=0; i<list.length; i++){
-			try{
-				InputStream stream = assets.open("ExhibitContents/Badger/Badger-Boogie-1.jpg");
-				list[i] = BitmapFactory.decodeStream(stream);
-				stream.close();
-			}catch(OutOfMemoryError e){
-				break;
-			} catch (IOException e) {
-				Log.e(Common.class.getName(), "Failed to load");
-			}
-			if (i % 100 == 0){
-				Log.e(Common.class.getName(), "Loaded " + i + " bitmaps");
-			}
-		}
-		Log.e(Common.class.getName(), "Loaded " + i + " bitmaps");
-		for (int k = 0; k<i; k++){
-			list[k].recycle();
-		}
-	}
-
 	public static void recursiveRemove(File f){
 		if (f.isDirectory()){
 			File[] list = f.listFiles();

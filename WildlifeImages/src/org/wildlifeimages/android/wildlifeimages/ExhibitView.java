@@ -94,7 +94,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	}
 
 	public void onDownloadStart(String clickedUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-		Log.d(this.getClass().getName(), "Clicked link with type " + mimetype); //TODO
+		Log.d(this.getClass().getName(), "Clicked link with type " + mimetype);
 		String url = clickedUrl.replaceAll(ContentManager.ASSET_PREFIX, "");
 		Log.w(this.getClass().getName(), "Playing " + url);
 
