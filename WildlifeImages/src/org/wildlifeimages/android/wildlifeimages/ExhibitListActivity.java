@@ -61,6 +61,6 @@ public class ExhibitListActivity extends ListActivity {
 	 */
 	public static void start(Activity context) {
 		Intent listIntent = new Intent(context, ExhibitListActivity.class);
-		context.startActivityIfNeeded(listIntent, 0);
+		context.startActivity(listIntent);
 	}
 }
