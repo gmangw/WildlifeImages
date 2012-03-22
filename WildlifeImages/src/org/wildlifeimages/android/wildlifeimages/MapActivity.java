@@ -195,10 +195,8 @@ public class MapActivity extends WireActivity{
 			MapView mMapView = (MapView) findViewById(R.id.map);
 			String selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
 
-			if (MotionEvent.ACTION_POINTER_DOWN == e.getAction()){
-				if(selectedExhibit != null){
-					mMapView.showPress(selectedExhibit);
-				}
+			if(selectedExhibit != null){
+				mMapView.showPress(selectedExhibit);
 			}
 			return true;
 		}
