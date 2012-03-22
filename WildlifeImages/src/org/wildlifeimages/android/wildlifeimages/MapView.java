@@ -18,6 +18,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -44,6 +45,12 @@ public class MapView extends ImageView {
 
 	public final int mapWidth;
 	public final int mapHeight;
+	
+	private boolean currentlyScrolling = false;
+	private float previousX0 = -0.0f;
+	private float previousY0 = -0.0f;
+	private float previousX1 = -0.0f;
+	private float previousY1 = -0.0f;
 
 	private static final Paint p = new Paint();
 	private static final Paint smallP = new Paint();
@@ -206,10 +213,42 @@ public class MapView extends ImageView {
 	public boolean onTouchEvent(MotionEvent event) { 
 		if (event.getAction() == MotionEvent.ACTION_UP){
 			activeName = "";
+			currentlyScrolling = false;
 		}
 		invalidate();
+		if (event.getAction() == MotionEvent.ACTION_MOVE){
+			if (event.getPointerCount() == 2){
+				performPinchZoom(event);
+				return true;
+			}
+		}
 		return gestures.onTouchEvent(event);  
 	}  
+	
+	private void performPinchZoom(MotionEvent e){
+		if (e.getPointerCount() == 2){
+			if (currentlyScrolling == false){
+				currentlyScrolling = true;
+			}else{
+				float previousDistance = Common.distance(previousX0, previousY0,previousX1, previousY1);
+				float newDistance = Common.distance(e.getX(0), e.getY(0), e.getX(1), e.getY(1));
+				if (Math.abs(previousDistance - newDistance) > 1.0f){
+					doZoom = true;
+					processScroll(0.0f, 0.0f);
+					if (previousDistance < newDistance){
+						setZoomFactor(getZoomFactor()* 1.1f);
+					}else{
+						setZoomFactor(getZoomFactor()* 0.9f);
+					}
+				}
+			}
+			processScroll(0, 0);
+			previousX0 = e.getX(0);
+			previousY0 = e.getY(0);
+			previousX1 = e.getX(1);
+			previousY1 = e.getY(1);
+		}
+	}
 
 	@Override
 	public void onDraw(Canvas canvas){

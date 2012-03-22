@@ -130,7 +130,7 @@ public class MapActivity extends WireActivity{
 		if (parent != null){
 			return parent;
 		}
-		
+
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		String groupName = null;
 		String[] names = exhibitList.getGroupNames();
@@ -155,22 +155,11 @@ public class MapActivity extends WireActivity{
 		return alert;
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent e){
-		return false;
-	}
-
 	/**
 	 * When you click on the map or gesture, this will interpret your input.
 	 */
 	private class MapGestureListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {  
 		private WireActivity parent;
-
-		private boolean currentlyScrolling = false;
-		private float previousX0 = -0.0f;
-		private float previousY0 = -0.0f;
-		private float previousX1 = -0.0f;
-		private float previousY1 = -0.0f;
 
 		public MapGestureListener(MapActivity context) { 
 			parent = context;
@@ -205,15 +194,16 @@ public class MapActivity extends WireActivity{
 		public boolean onDown(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
 			String selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
-			if(selectedExhibit != null){
-				mMapView.showPress(selectedExhibit);
+
+			if (MotionEvent.ACTION_POINTER_DOWN == e.getAction()){
+				if(selectedExhibit != null){
+					mMapView.showPress(selectedExhibit);
+				}
 			}
-			currentlyScrolling = false;
 			return true;
 		}
 
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			return false;
 		}
 
@@ -222,30 +212,8 @@ public class MapActivity extends WireActivity{
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			if (e2.getPointerCount() == 2){
-				if (currentlyScrolling == false){
-					currentlyScrolling = true;
-				}else{
-					float previousDistance = Common.distance(previousX0, previousY0,previousX1, previousY1);
-					float newDistance = Common.distance(e2.getX(0), e2.getY(0), e2.getX(1), e2.getY(1));
-					Log.d(this.getClass().getName(), "Distance " +Math.abs(previousDistance - newDistance));
-					if (Math.abs(previousDistance - newDistance) > 1.0f){
 
-						if (previousDistance < newDistance){
-							mMapView.setZoomFactor(mMapView.getZoomFactor()* 1.1f);
-						}else{
-							mMapView.setZoomFactor(mMapView.getZoomFactor()* 0.9f);
-						}
-					}
-				}
-				mMapView.processScroll(0, 0);
-				previousX0 = e2.getX(0);
-				previousY0 = e2.getY(0);
-				previousX1 = e2.getX(1);
-				previousY1 = e2.getY(1);
-			}else if (currentlyScrolling == false){
-				mMapView.processScroll(distanceX, distanceY);
-			}
+			mMapView.processScroll(distanceX, distanceY);
 
 			return true;
 		}
