@@ -10,73 +10,88 @@
         android:layout_gravity="center"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-            <ImageButton
-                android:id="@+id/intro_sidebar_exhibitlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon00003" />
-
-            <ImageButton
-                android:id="@+id/intro_sidebar_photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon00002" />
-        </LinearLayout>
+            android:layout_gravity="center"
+            android:text="Wildlife Images"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/black" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
+            android:layout_gravity="center"
+            android:orientation="vertical" >
 
-            <ImageButton
-                android:id="@+id/intro_sidebar_events"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon00000" />
+                android:orientation="horizontal" >
 
-            <ImageButton
-                android:id="@+id/intro_sidebar_map"
+                <ImageButton
+                    android:id="@+id/intro_sidebar_exhibitlist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon00003" />
+
+                <ImageButton
+                    android:id="@+id/intro_sidebar_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon00002" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon00001" />
+                android:orientation="horizontal" >
+
+                <ImageButton
+                    android:id="@+id/intro_sidebar_events"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon00000" />
+
+                <ImageButton
+                    android:id="@+id/intro_sidebar_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon00001" />
+            </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/update_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:background="@android:color/white"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/update_text_size"
+            android:visibility="invisible" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/update_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:background="@android:color/white"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/update_text_size"
-        android:visibility="invisible" />
 
 </FrameLayout>
