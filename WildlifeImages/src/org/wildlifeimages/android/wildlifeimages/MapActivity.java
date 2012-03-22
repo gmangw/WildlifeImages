@@ -44,9 +44,6 @@ public class MapActivity extends WireActivity{
 		mMapView.setGestureDetector(new GestureDetector(this, new MapGestureListener(this)));
 		if (savedState != null){
 			mMapView.processMove(savedState.getFloat(loadString(R.string.save_map_x)), savedState.getFloat(loadString(R.string.save_map_y)));
-			if (true == savedState.getBoolean(loadString(R.string.save_map_zoom))){
-				mMapView.toggleZoom();
-			}
 		}
 
 		SeekBar slider = (SeekBar)findViewById(R.id.seek);
@@ -80,7 +77,7 @@ public class MapActivity extends WireActivity{
 
 		out.putFloat(loadString(R.string.save_map_x), position[0]);
 		out.putFloat(loadString(R.string.save_map_y), position[1]);
-		out.putBoolean(loadString(R.string.save_map_zoom), mMapView.isZoomed());
+		//out.putBoolean(loadString(R.string.save_map_zoom), mMapView.isZoomed());
 	}
 
 	/**
@@ -166,9 +163,7 @@ public class MapActivity extends WireActivity{
 		}
 
 		public boolean onDoubleTap(MotionEvent e) {
-			MapView mMapView = (MapView) findViewById(R.id.map);
-			mMapView.toggleZoom();
-			return true;
+			return false;
 		}
 
 		public boolean onDoubleTapEvent(MotionEvent e) {
