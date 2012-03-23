@@ -15,7 +15,7 @@ public class IntroActivityInstrumentationTest extends ActivityInstrumentationTes
 	private IntroActivity mActivity;
 
 	public IntroActivityInstrumentationTest() {
-		super(IntroActivity.class);
+		super("org.wildlifeimages.android.wildlifeimages", IntroActivity.class);
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public class MapActivity extends WireActivity{
 		if (wt > 0){
 			int size = Math.max(ht, wt);
 			float zoomFactor = size / 800.0f;
-			mMapView.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
+			//mMapView.setZoomFactor(zoomFactor * ZOOM_FACTOR_START);
 		}
 	}
 

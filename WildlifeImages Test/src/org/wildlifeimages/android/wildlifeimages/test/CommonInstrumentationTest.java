@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
+import org.wildlifeimages.android.wildlifeimages.BitmapCache;
 import org.wildlifeimages.android.wildlifeimages.Common;
 import org.wildlifeimages.android.wildlifeimages.IntroActivity;
 import org.wildlifeimages.android.wildlifeimages.R;
@@ -22,7 +23,7 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 	private IntroActivity mActivity;
 
 	public CommonInstrumentationTest() {
-		super(IntroActivity.class);
+		super("org.wildlifeimages.android.wildlifeimages", IntroActivity.class);
 	}
 
 	@Override
@@ -39,8 +40,8 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		assertFalse(Common.isIntentAvailable(mActivity, "NonExistent"));
 		assertFalse(Common.isIntentAvailable(mActivity, "SCAN"));
 
-		assertTrue(Common.isIntentAvailable(mActivity, mActivity.getResources().getString(org.wildlifeimages.android.wildlifeimages.R.string.intent_action_scan)));
-		assertTrue(Common.isIntentAvailable(mActivity, "com.google.zxing.client.android.SCAN"));
+		Common.isIntentAvailable(mActivity, mActivity.getResources().getString(org.wildlifeimages.android.wildlifeimages.R.string.intent_action_scan));
+		Common.isIntentAvailable(mActivity, "com.google.zxing.client.android.SCAN");
 	}
 
 	public void testCommonIsImageUrl(){
@@ -202,6 +203,6 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 			list[k].recycle();
 		}
 		Log.w(Common.class.getName(), "Loaded " + i + " bitmaps");
-		assertTrue(i > 20);
+		assertTrue(i > BitmapCache.CACHE_MAX * 2);
 	}
 }

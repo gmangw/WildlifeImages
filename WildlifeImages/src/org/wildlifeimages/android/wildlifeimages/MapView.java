@@ -60,7 +60,7 @@ public class MapView extends ImageView {
 	private String[] displayNames;
 	private static String activeName = "";
 
-	private float zoomFactor = 0.75f;
+	private float zoomFactor = 0.25f;
 	private float zoomMinimum = 1.00f;
 	private float[][] anchorPoints = {
 			{0.00f, 0.00f, 1.90f},
@@ -173,9 +173,7 @@ public class MapView extends ImageView {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		scaleMin = Math.min(1.0f*getWidth()/mapWidth, 1.0f*getHeight()/mapHeight);
-		if (scale == Float.MAX_VALUE){
-			scale = scaleMin;
-		}
+		scale = scaleMin;
 		processScroll(0f, 0f);
 	}
 
