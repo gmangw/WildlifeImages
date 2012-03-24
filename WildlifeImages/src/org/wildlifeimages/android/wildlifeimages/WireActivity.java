@@ -49,6 +49,18 @@ public abstract class WireActivity extends Activity{
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
+		if (this.getClass().equals(MapActivity.class)){
+			menu.removeItem(R.integer.MENU_MAP);
+		}
+		if (this.getClass().equals(IntroActivity.class)){
+			menu.removeItem(R.integer.MENU_HOME);
+		}
+		if (ContentManager.getSelf().getExhibitList().getCurrent().getNext() == null){
+			menu.findItem(R.integer.MENU_NEXT).setEnabled(false);
+		}
+		if (ContentManager.getSelf().getExhibitList().getCurrent().getPrevious() == null){
+			menu.findItem(R.integer.MENU_PREVIOUS).setEnabled(false);
+		}
 		return true;
 	}
 

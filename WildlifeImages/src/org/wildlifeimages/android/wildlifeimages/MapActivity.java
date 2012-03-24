@@ -69,14 +69,10 @@ public class MapActivity extends WireActivity{
 	}
 
 	private String findClickedExhibit(MapView mMapView, float x, float y){
-		Matrix m = new Matrix();
-		mMapView.getImageMatrix().invert(m);
+		float[] result = mMapView.getFractionFromTouch(x, y);
 
-		float[] xy = {x,y};
-		m.mapPoints(xy);
-
-		float percentHoriz = xy[0]*100/mMapView.mapWidth;
-		float percentVert = xy[1]*100/mMapView.mapHeight;
+		float percentHoriz = result[0]*100.0f;
+		float percentVert = result[1]*100.0f;
 
 		String selectedExhibit = mMapView.findNearest((int)percentHoriz, (int)percentVert);
 		return selectedExhibit;
@@ -141,7 +137,14 @@ public class MapActivity extends WireActivity{
 		}
 
 		public boolean onDoubleTap(MotionEvent e) {
-			return false;
+			MapView mMapView = (MapView) findViewById(R.id.map);
+			float[] result = mMapView.getFractionFromTouch(e.getX(), e.getY());
+			float x = result[0];
+			float y = result[1];
+			for (int i=0; i<8; i++){
+				mMapView.zoomIn(x, y);
+			}
+			return true;
 		}
 
 		public boolean onDoubleTapEvent(MotionEvent e) {

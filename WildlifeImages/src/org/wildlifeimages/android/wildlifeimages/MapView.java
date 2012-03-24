@@ -14,11 +14,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,10 +31,12 @@ import android.widget.ZoomButtonsController.OnZoomListener;
  */
 public class MapView extends ImageView {
 
-	private static float mapLeft = 0.10f;
-	private static float mapTop = 0.215f;
-	private static float mapRight = 0.80f;
-	private static float mapBottom = 0.63f;
+	private static final float MAX_FONT_SIZE = 35.0f;
+	
+	private float mapLeft = 0.10f;
+	private float mapTop = 0.215f;
+	private float mapRight = 0.80f;
+	private float mapBottom = 0.63f;
 
 	private GestureDetector gestures;
 
@@ -49,6 +49,8 @@ public class MapView extends ImageView {
 	public final int mapHeight;
 
 	private boolean currentlyScrolling = false;
+	private float scrollRootX = 0.0f;
+	private float scrollRootY = 0.0f;
 	private float previousX0 = -0.0f;
 	private float previousY0 = -0.0f;
 	private float previousX1 = -0.0f;
@@ -71,7 +73,7 @@ public class MapView extends ImageView {
 			{1.00f, 1.00f, 1.50f},
 			{0.00f, 1.00f, 1.50f}
 	};
-	/*private float[][] anchorPoints = {
+	/*private float[][] anchorPoints = { //TODO hiding auto zoom
 			{0.00f, 0.00f, 1.90f},
 			{0.00f, 0.25f, 2.50f}, 
 			{0.00f, 0.50f, 1.80f},
@@ -148,7 +150,6 @@ public class MapView extends ImageView {
 				}else{
 					zoomOut();
 				}
-				processScroll(0, 0);
 			}
 		});
 	}
@@ -256,19 +257,21 @@ public class MapView extends ImageView {
 		if (e.getPointerCount() == 2){
 			if (currentlyScrolling == false){
 				currentlyScrolling = true;
+				float[] result = getFractionFromTouch((e.getX(0) + e.getX(1))/2.0f, (e.getY(0) + e.getY(1))/2.0f);
+				scrollRootX = result[0];
+				scrollRootY = result[1];
 			}else{
 				float previousDistance = Common.distance(previousX0, previousY0,previousX1, previousY1);
 				float newDistance = Common.distance(e.getX(0), e.getY(0), e.getX(1), e.getY(1));
 				if (Math.abs(previousDistance - newDistance) > 1.0f){
 					processScroll(0.0f, 0.0f);
 					if (previousDistance < newDistance){
-						zoomIn();
+						zoomIn(scrollRootX, scrollRootY);
 					}else{
-						zoomOut();
+						zoomOut(scrollRootX, scrollRootY);
 					}
 				}
 			}
-			processScroll(0, 0);
 			previousX0 = e.getX(0);
 			previousY0 = e.getY(0);
 			previousX1 = e.getX(1);
@@ -276,18 +279,47 @@ public class MapView extends ImageView {
 		}
 	}
 
+	public float[] getFractionFromTouch(float touchX, float touchY){
+		Matrix m = new Matrix();
+		getImageMatrix().invert(m);
+
+		float[] xy = {touchX, touchY};
+		m.mapPoints(xy);
+
+		float[] result = {xy[0]/mapWidth, xy[1]/mapHeight};
+		return result;
+	}
+	
+	public void zoomIn(float x, float y){
+		clampOriginXY(getXFromFraction(x) - originX, getYFromFraction(y) - originY);
+		zoomIn();
+	}
+	
+	public void zoomOut(float x, float y){
+		clampOriginXY(getXFromFraction(x) - originX, getYFromFraction(y) - originY);
+		zoomOut();
+	}
+	
 	public void zoomIn(){
-		setZoomFactor(getZoomFactor()* 1.075f);
+		zoomFactor = zoomFactor * 1.075f;
+		originX *= 1.075f;
+		originY *= 1.075f;
+		processScroll(0, 0);
 	}
 
 	public void zoomOut(){
-		setZoomFactor(getZoomFactor()* 0.925f);
+		zoomFactor = zoomFactor * 0.925f;
+		originX *= 0.925f;
+		originY *= 0.925f;
+		processScroll(0, 0);
 	}
 
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
-
+		
+		p.setTextSize(Math.min(getHeight()/25.0f * scale, MAX_FONT_SIZE));
+		
 		for(int i=0; i<points.length/2; i++){
 			Rect r = new Rect();
 			rectP.setTextAlign(Align.CENTER);
@@ -322,27 +354,32 @@ public class MapView extends ImageView {
 		return position;
 	}
 
+	private void clampOriginXY(float distanceX, float distanceY){
+		float temp = scale/scaleMin;
+		mapTop = 0.5f/temp;
+		mapBottom = 1.0f - 0.5f/temp;
+		mapLeft = 0.5f/temp;
+		mapRight = 1.0f - 0.5f/temp;
+		if (originX + distanceX < getXFromFraction(mapLeft)){
+			originX = originX - (originX - getXFromFraction(mapLeft))/2.0f;
+		}else if(originX + distanceX > getXFromFraction(mapRight)){
+			originX = originX + (getXFromFraction(mapRight) - originX)/2.0f;
+		}else{
+			originX = originX + distanceX;
+		}
+		if (originY + distanceY < getYFromFraction(mapTop)){
+			originY = originY - (originY - getYFromFraction(mapTop))/2.0f;
+		}else if(originY + distanceY > getYFromFraction(mapBottom)){
+			originY = originY + (getYFromFraction(mapBottom) - originY)/2.0f;
+		}else{
+			originY = originY + distanceY;
+		}
+	}
+	
 	public void processScroll(float distanceX, float distanceY){
-		for (int i = 0; i < 2; i++){
-			float temp = scale/scaleMin;
-			mapTop = 0.5f/temp;
-			mapBottom = 1.0f - 0.5f/temp;
-			mapLeft = 0.5f/temp;
-			mapRight = 1.0f - 0.5f/temp;
-			if (originX + distanceX < getXFromFraction(mapLeft)){
-				originX = originX - (originX - getXFromFraction(mapLeft))/2.0f;
-			}else if(originX + distanceX > getXFromFraction(mapRight)){
-				originX = originX + (getXFromFraction(mapRight) - originX)/2.0f;
-			}else{
-				originX = originX + distanceX;
-			}
-			if (originY + distanceY < getYFromFraction(mapTop)){
-				originY = originY - (originY - getYFromFraction(mapTop))/2.0f;
-			}else if(originY + distanceY > getYFromFraction(mapBottom)){
-				originY = originY + (getYFromFraction(mapBottom) - originY)/2.0f;
-			}else{
-				originY = originY + distanceY;
-			}
+		for (int i = 0; i < 2; i++){ //TODO see if necessary
+			
+			clampOriginXY(distanceX, distanceY);
 
 			float xFraction = (float)Math.max(0.0f, getXFraction(originX));
 			float yFraction = (float)Math.max(0.0f, getYFraction(originY));
@@ -355,19 +392,27 @@ public class MapView extends ImageView {
 		doTransform();
 	}
 
-	private float getXFraction(float x){
-		return x/scale/mapWidth+0.5f;
+	float getXFraction(float xOrigin){
+		return xOrigin/scale/mapWidth+0.5f;
 	}
 
-	private float getYFraction(float y){
-		return y/scale/mapHeight+0.5f;
+	float getYFraction(float yOrigin){
+		return yOrigin/scale/mapHeight+0.5f;
 	}
 
-	private float getXFromFraction(float xFraction){
+	/**
+	 * @param xFraction 0...1 From the left border of the map to the right border.
+	 * @return Corresponding X coordinate from -(scale*mapWidth) to +(scale*mapWidth) at the current zoom.
+	 */
+	float getXFromFraction(float xFraction){
 		return scale*mapWidth*(xFraction - 0.5f);
 	}
 
-	private float getYFromFraction(float yFraction){
+	/**
+	 * @param xFraction 0...1 From the top border of the map to the bottom border.
+	 * @return Corresponding Y coordinate from -(scale*mapHeight) to +(scale*mapHeight) at the current zoom.
+	 */
+	float getYFromFraction(float yFraction){
 		return scale*mapHeight*(yFraction - 0.5f);
 	}
 
@@ -403,17 +448,21 @@ public class MapView extends ImageView {
 		float newScale = 0.0f;
 
 		//TODO do this more efficiently?
-		for (int i=0; i<anchorPoints.length; i++){
+		/*for (int i=0; i<anchorPoints.length; i++){
 			float distance = Common.distance(xFraction, yFraction, anchorPoints[i][0], anchorPoints[i][1]);
 			//TODO I no longer remember what this next line is actually doing
 			float zoomCandidate = (anchorPoints[i][2]+zoomMinimum)-(zoomMinimum + (anchorPoints[i][2]-zoomMinimum)*(float)Common.smoothStep(0f, 0.75f, distance));
 			newScale = Math.max(newScale, zoomCandidate);
-		}
+		}*///TODO hiding auto zoom
+		newScale = anchorPoints[0][2];
 
 		float result = zoomFactor * newScale;
 		if (result < scaleMin){
 			zoomFactor = scaleMin / newScale;
+			zoomButtons.setZoomOutEnabled(false);
 			return scaleMin;
+		}else if (result > scaleMin){
+			zoomButtons.setZoomOutEnabled(true);
 		}
 		return result;
 	}

@@ -18,7 +18,7 @@
 
     <item
         android:id="@integer/MENU_MAP"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:title="@string/menu_map"/>
 
     <item
