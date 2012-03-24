@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +43,8 @@ public class IntroActivity extends WireActivity{
 	@Override
 	protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);		
-
+		getWindow().setFormat(PixelFormat.RGBA_8888);
+		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
 			//new UpdateChecker().execute(this);

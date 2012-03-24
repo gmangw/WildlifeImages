@@ -21,7 +21,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ZoomButtonsController;
+import android.widget.ZoomButtonsController.OnZoomListener;
 /**
  * This {@link SurfaceView} draws a map of the facility with clickable points from an {@link ExhibitList} 
  * 
@@ -30,10 +33,10 @@ import android.widget.ImageView;
  */
 public class MapView extends ImageView {
 
-	private static final float MAP_LEFT = 0.10f;
-	private static final float MAP_TOP = 0.215f;
-	private static final float MAP_RIGHT = 0.80f;
-	private static final float MAP_BOTTOM = 0.63f;
+	private static float mapLeft = 0.10f;
+	private static float mapTop = 0.215f;
+	private static float mapRight = 0.80f;
+	private static float mapBottom = 0.63f;
 
 	private GestureDetector gestures;
 
@@ -63,6 +66,12 @@ public class MapView extends ImageView {
 	private float zoomFactor = 0.25f;
 	private float zoomMinimum = 1.00f;
 	private float[][] anchorPoints = {
+			{0.00f, 0.00f, 1.50f},
+			{1.00f, 0.00f, 1.50f},
+			{1.00f, 1.00f, 1.50f},
+			{0.00f, 1.00f, 1.50f}
+	};
+	/*private float[][] anchorPoints = {
 			{0.00f, 0.00f, 1.90f},
 			{0.00f, 0.25f, 2.50f}, 
 			{0.00f, 0.50f, 1.80f},
@@ -92,7 +101,9 @@ public class MapView extends ImageView {
 			{1.00f, 0.50f, 1.70f},
 			{1.00f, 0.75f, 1.60f},
 			{1.00f, 1.00f, 1.60f},
-	};
+	};*/
+
+	private final ZoomButtonsController zoomButtons;
 
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -123,6 +134,35 @@ public class MapView extends ImageView {
 
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		setPoints(exhibitList);
+
+		zoomButtons = new ZoomButtonsController(this);
+		zoomButtons.setZoomSpeed(50);
+		zoomButtons.setOnZoomListener(new OnZoomListener(){
+
+			public void onVisibilityChanged(boolean visible) {
+			}
+
+			public void onZoom(boolean zoomIn) {
+				if (zoomIn){
+					zoomIn();
+				}else{
+					zoomOut();
+				}
+				processScroll(0, 0);
+			}
+		});
+	}
+
+	@Override
+	protected void onVisibilityChanged(View changedView, int visibility){
+		if (visibility != View.VISIBLE){
+			zoomButtons.setVisible(false);
+		}
+	}
+
+	@Override
+	protected void onDetachedFromWindow (){
+		zoomButtons.setVisible(false);
 	}
 
 	private void setPoints(ExhibitList exhibitList){
@@ -131,7 +171,7 @@ public class MapView extends ImageView {
 		ArrayList<Float> pointList = new ArrayList<Float>();
 		ArrayList<String> nameList = new ArrayList<String>();
 
-		for (; list.hasNext(); ){ 
+		while (list.hasNext()){ 
 			Exhibit e = exhibitList.get(list.next());
 			int x = e.getX();
 			int y = e.getY();
@@ -208,6 +248,7 @@ public class MapView extends ImageView {
 				return true;
 			}
 		}
+		zoomButtons.setVisible(true);
 		return gestures.onTouchEvent(event);  
 	}  
 
@@ -221,9 +262,9 @@ public class MapView extends ImageView {
 				if (Math.abs(previousDistance - newDistance) > 1.0f){
 					processScroll(0.0f, 0.0f);
 					if (previousDistance < newDistance){
-						setZoomFactor(getZoomFactor()* 1.1f);
+						zoomIn();
 					}else{
-						setZoomFactor(getZoomFactor()* 0.9f);
+						zoomOut();
 					}
 				}
 			}
@@ -233,6 +274,14 @@ public class MapView extends ImageView {
 			previousX1 = e.getX(1);
 			previousY1 = e.getY(1);
 		}
+	}
+
+	public void zoomIn(){
+		setZoomFactor(getZoomFactor()* 1.075f);
+	}
+
+	public void zoomOut(){
+		setZoomFactor(getZoomFactor()* 0.925f);
 	}
 
 	@Override
@@ -274,25 +323,34 @@ public class MapView extends ImageView {
 	}
 
 	public void processScroll(float distanceX, float distanceY){
-		if (originX + distanceX < getXFromFraction(MAP_LEFT)){
-			originX = originX - (originX - getXFromFraction(MAP_LEFT))/2.0f;
-		}else if(originX + distanceX > getXFromFraction(MAP_RIGHT)){
-			originX = originX + (getXFromFraction(MAP_RIGHT) - originX)/2.0f;
-		}else{
-			originX = originX + distanceX;
-		}
-		if (originY + distanceY < getYFromFraction(MAP_TOP)){
-			originY = originY - (originY - getYFromFraction(MAP_TOP))/2.0f;
-		}else if(originY + distanceY > getYFromFraction(MAP_BOTTOM)){
-			originY = originY + (getYFromFraction(MAP_BOTTOM) - originY)/2.0f;
-		}else{
-			originY = originY + distanceY;
-		}
+		for (int i = 0; i < 2; i++){
+			float temp = scale/scaleMin;
+			mapTop = 0.5f/temp;
+			mapBottom = 1.0f - 0.5f/temp;
+			mapLeft = 0.5f/temp;
+			mapRight = 1.0f - 0.5f/temp;
+			if (originX + distanceX < getXFromFraction(mapLeft)){
+				originX = originX - (originX - getXFromFraction(mapLeft))/2.0f;
+			}else if(originX + distanceX > getXFromFraction(mapRight)){
+				originX = originX + (getXFromFraction(mapRight) - originX)/2.0f;
+			}else{
+				originX = originX + distanceX;
+			}
+			if (originY + distanceY < getYFromFraction(mapTop)){
+				originY = originY - (originY - getYFromFraction(mapTop))/2.0f;
+			}else if(originY + distanceY > getYFromFraction(mapBottom)){
+				originY = originY + (getYFromFraction(mapBottom) - originY)/2.0f;
+			}else{
+				originY = originY + distanceY;
+			}
 
-		float xFraction = (float)Math.max(0.0f, getXFraction(originX));
-		float yFraction = (float)Math.max(0.0f, getYFraction(originY));
+			float xFraction = (float)Math.max(0.0f, getXFraction(originX));
+			float yFraction = (float)Math.max(0.0f, getYFraction(originY));
 
-		scale = getScale(xFraction, yFraction);
+			scale = getScale(xFraction, yFraction);
+			distanceX = 0.0f;
+			distanceY = 0.0f;
+		}
 
 		doTransform();
 	}
