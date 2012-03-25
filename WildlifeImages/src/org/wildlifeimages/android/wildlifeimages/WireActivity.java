@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,6 +61,9 @@ public abstract class WireActivity extends Activity{
 		}
 		if (ContentManager.getSelf().getExhibitList().getCurrent().getPrevious() == null){
 			menu.findItem(R.integer.MENU_PREVIOUS).setEnabled(false);
+		}
+		if (false == Common.isIntentAvailable(this, MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)){
+			menu.findItem(R.integer.MENU_CAMERA).setEnabled(false);
 		}
 		return true;
 	}
