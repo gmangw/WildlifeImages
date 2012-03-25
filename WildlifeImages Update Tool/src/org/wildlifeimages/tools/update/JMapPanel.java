@@ -4,10 +4,18 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.swing.JPanel;
 
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.svg.SVGDocument;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 
@@ -90,5 +98,42 @@ public class JMapPanel extends JPanel{
 			g.setColor(Color.WHITE);
 			g.drawString(names.get(i), pointsX.get(i)-stringWidth/2, pointsY.get(i));
 		}
+	}
+	
+	public static JSVGCanvas getMapCanvas(Dimension d, ZipInputStream stream){
+
+		JSVGCanvas svgCanvas = new JSVGCanvas();
+
+		try{
+			ZipEntry entry;
+			for (entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()){
+				if (entry.getName().equals("res/raw/map.svg")){
+					break;
+				}
+				entry = null;
+			}
+			if (entry == null){
+				throw new IOException("Error: Could not load map.svg");
+			}
+
+			String parser = XMLResourceDescriptor.getXMLParserClassName();
+			SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
+			SVGDocument doc = (SVGDocument)f.createDocument("myURI", stream);
+
+			String widthString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE);
+			String heightString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE);
+			int width = Integer.parseInt(widthString.substring(0, widthString.length()-3));
+			int height = Integer.parseInt(heightString.substring(0, heightString.length()-3));
+
+			d.setSize(width, height);
+
+			svgCanvas.setSVGDocument(doc);
+
+			stream.close();
+		}catch(IOException e){
+			System.out.println(e.getMessage());
+		}
+
+		return svgCanvas;
 	}
 }

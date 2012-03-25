@@ -1,8 +1,5 @@
 package org.wildlifeimages.tools.update;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -19,8 +16,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -28,34 +23,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.svg.SVGDocument;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -68,373 +44,120 @@ public class ZipManager extends JFrame implements ActionListener{
 	private static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
 	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
-	
+
 	private final String EXHIBITSFILENAME = "exhibits.xml";
 
 	private static final String assetPath = "assets/";
 
-	private final JButton newTagButton = new JButton("Add Content to Exhibit");
-	private final JButton newExhibitButton = new JButton("Create New Exhibit");
-	private final JButton saveButton = new JButton("Save Updates");
-	private final JButton newFileButton = new JButton("Add file to project");
-	private final JButton newImageButton = new JButton("Add Photo to Exhibit");
-	private final JButton loadAPKButton = new JButton("Load APK");
-	
-	private final JList exhibitNameList = new JList();
-	private final JList contentList = new JList();
-	private final JList exhibitPhotosList = new JList();
-	private final JList modifiedFilesList = new JList();
-	
-	private final JPanel contentPanel = new JPanel(new GridLayout(1,2));
-	private final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
-	private final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
-	private final JLabel exhibitXCoordOrig = new JLabel();
-	private final JLabel exhibitYCoordOrig = new JLabel();
-	private final JLabel exhibitContentLabel = new JLabel();
-	private final JLabel exhibitNextOrig = new JLabel();
-	private final JLabel exhibitPreviousOrig = new JLabel();
-	
-	private final JComboBox newContentDropdown = new JComboBox();
-	private final JComboBox exhibitPreviousDropdown = new JComboBox();
-	private final JComboBox exhibitNextDropdown = new JComboBox();
-	
-	private final JImage exhibitPhotosImage = new JImage();
-	
-	private final JSpinner exhibitXCoordField = new JSpinner(new NumberSpinner("x"));
-	private final JSpinner exhibitYCoordField = new JSpinner(new NumberSpinner("y"));
-	
-	private final ContentListModel contentListModel = new ContentListModel();
-	private final ModifiedListModel modifiedFilesListModel = new ModifiedListModel();
-	private final ExhibitPhotosModel exhibitPhotosModel = new ExhibitPhotosModel();
+	final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 
-	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
-	
-	private JSVGCanvas map;
-	
-	private ExhibitLoader exhibitParser = null;
-	
+	final JSVGCanvas map;
+
+	final Dimension mapDimension = new Dimension();
+
+	ExhibitLoader exhibitParser = null;
+
 	private final APKLoader apkLoader;
 
-	private String[] originalFiles;
-	private ExhibitInfo currentExhibit;
+	String[] originalFiles;
+	ExhibitInfo currentExhibit;
 	private String currentTag;
+
+	final ComponentHolder c;
 
 	public ZipManager(APKLoader loader){
 		apkLoader = loader;
-		init();
-	}
-
-	private void makeChange(){
-		this.setTitle("Update Tool*");
-	}
-	
-	private void init(){
+		map = JMapPanel.getMapCanvas(mapDimension, apkLoader.getAPKStream());
 		this.setTitle("Update Tool");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		final Dimension mapDimension = new Dimension();
-		map = getMap(mapDimension);
-		
 		modifiedFiles.clear();
-		
+
 		try {
 			ArrayList<String> files = new ArrayList<String>();
 			exhibitParser = this.readAPK(apkLoader.getAPKStream(), files);
 			originalFiles = files.toArray(new String[files.size()]);
 		} catch (XmlPullParserException e) {
 			showError("Could not load APK file.");
+			c = null;
 			return;
 		}
-		
+
 		currentExhibit = exhibitParser.getExhibits().get(0);
 
-		exhibitNameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		exhibitNameList.setModel(new ExhibitListModel());
-		exhibitNameList.addListSelectionListener(new ListSelectionListener(){
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				selectExhibit();
-			}
-		});
-
-		contentList.setModel(contentListModel);
-		contentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		contentList.addListSelectionListener(new ListSelectionListener(){
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				selectContent();
-			}
-		});
-
-		for (ExhibitInfo e : exhibitParser.getExhibits()){
-			if (false == e.getName().equals(currentExhibit.getName())){
-				exhibitPreviousDropdown.addItem(e.getName());
-				exhibitNextDropdown.addItem(e.getName());
-			}
-		}
-		exhibitNextDropdown.addActionListener(this);
-		exhibitPreviousDropdown.addActionListener(this);
-
-		saveButton.addActionListener(this);
-		saveButton.setSize(100, 20);
-
-		newFileButton.addActionListener(this);
-
-		newExhibitButton.addActionListener(this);
-
-		newTagButton.addActionListener(this);
-
-		newImageButton.addActionListener(this);
-		
-		loadAPKButton.addActionListener(this);
-
-		newContentDropdown.setEditable(false);
-		newContentDropdown.addItem(" ");
-		
-		for (String s : originalFiles){
-			if (false == modifiedFiles.containsKey(s)){
-				newContentDropdown.addItem(s);
-			}
-		}
-		newContentDropdown.addActionListener(this);
-
-		exhibitPhotosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		exhibitPhotosList.setModel(exhibitPhotosModel);
-		exhibitPhotosList.addListSelectionListener(new ListSelectionListener(){
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				selectPhoto();
-			}
-		});
-
-		exhibitContentLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		modifiedFilesList.setModel(modifiedFilesListModel);
-
-		modifiedFilesList.setSelectionInterval(0, 0);
-		exhibitNameList.setSelectionInterval(0, 0);
-		contentList.setSelectionInterval(0, 0);
-		exhibitPhotosList.setSelectionInterval(0, 0);
-
-		JPanel contentDropdownPanel = new JPanel(new GridLayout(4, 1));
-		contentDropdownPanel.add(new JLabel("Original content:"));
-		contentDropdownPanel.add(exhibitContentLabel);
-		contentDropdownPanel.add(new JLabel("Current content:"));
-		contentDropdownPanel.add(newContentDropdown);
-		//contentDropdownPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-		contentPanel.add(new JScrollPane(contentList));
-		contentPanel.add(contentDropdownPanel);
-		contentPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-		exhibitDataPanel.add(exhibitXCoordOrig);
-		exhibitDataPanel.add(exhibitXCoordField);
-		exhibitDataPanel.add(exhibitPreviousOrig);
-		exhibitDataPanel.add(exhibitPreviousDropdown);
-		exhibitDataPanel.add(exhibitYCoordOrig);
-		exhibitDataPanel.add(exhibitYCoordField);
-		exhibitDataPanel.add(exhibitNextOrig);
-		exhibitDataPanel.add(exhibitNextDropdown);
-		exhibitDataPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-		JPanel newButtonsPanel = new JPanel(new GridLayout(2,3));
-		newButtonsPanel.add(newExhibitButton);
-		newButtonsPanel.add(newTagButton);
-		newButtonsPanel.add(newImageButton);
-		newButtonsPanel.add(newFileButton);
-		newButtonsPanel.add(saveButton);
-		newButtonsPanel.add(loadAPKButton);
-		
-		for (Component c : newButtonsPanel.getComponents()){
-			c.setBackground(Color.WHITE);
-		}
-
-		JPanel listPanelTop = new JPanel(new BorderLayout());
-		listPanelTop.add(new JLabel("Exhibits:"), BorderLayout.NORTH);
-		listPanelTop.add(new JScrollPane(exhibitNameList), BorderLayout.CENTER);
-		JPanel listPanelBottom = new JPanel(new BorderLayout());
-		listPanelBottom.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
-		listPanelBottom.add(exhibitPhotosList, BorderLayout.CENTER);
-		JPanel listPanel = new JPanel(new GridLayout(2, 1));
-		listPanel.add(listPanelTop);
-		listPanel.add(listPanelBottom);
-		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-		JPanel subPanel1 = new JPanel(new GridLayout(1, 2, 2, 5));
-		JPanel subPanel2 = new JPanel(new GridLayout(2, 1, 2, 5));
-		JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
-
-		subPanel1.add(listPanel);
-		subPanel1.add(new JScrollPane(exhibitPhotosImage));
-		subPanel2.add(exhibitDataPanel);
-		subPanel2.add(contentPanel);
-		subPanel3.add(new JScrollPane(modifiedFilesList));
-		subPanel3.add(newButtonsPanel);
-
-		mainPanel.add(subPanel1);
-		mainPanel.add(subPanel2);
-		mainPanel.add(subPanel3);
-
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		mainPanel.setBackground(Color.WHITE);
-
-		JMapPanel mapPanel = new JMapPanel(new GridLayout(1,1), mapDimension, exhibitParser);
-		mapPanel.add(map);
+		c = new ComponentHolder(this);
+		c.init();
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Exhibit Stuff", mainPanel);
-		tabbedPane.addTab("Map", mapPanel);
+		tabbedPane.addTab("Exhibit Stuff", c.mainPanel);
+		tabbedPane.addTab("Map", c.mapPanel);
+		tabbedPane.addTab("Groups and Aliases", c.groupPanel);
 
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(tabbedPane);
 	}
 
-	public JSVGCanvas getMap(Dimension d){
-		ZipInputStream stream = apkLoader.getAPKStream();
-
-		JSVGCanvas svgCanvas = new JSVGCanvas();
-
-		try{
-			ZipEntry entry;
-			for (entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()){
-				if (entry.getName().equals("res/raw/map.svg")){
-					break;
-				}
-				entry = null;
-			}
-			if (entry == null){
-				throw new IOException("Error: Could not load map.svg");
-			}
-
-			String parser = XMLResourceDescriptor.getXMLParserClassName();
-			SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
-			SVGDocument doc = (SVGDocument)f.createDocument("myURI", stream);
-
-			String widthString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE);
-			String heightString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE);
-			int width = Integer.parseInt(widthString.substring(0, widthString.length()-3));
-			int height = Integer.parseInt(heightString.substring(0, heightString.length()-3));
-
-			d.setSize(width, height);
-
-			svgCanvas.setSVGDocument(doc);
-
-			stream.close();
-		}catch(IOException e){
-			System.out.println(e.getMessage());
-		}
-
-		return svgCanvas;
+	void makeChange(){
+		this.setTitle("Update Tool*");
 	}
 
-	private void selectExhibit(){
-		currentExhibit = exhibitParser.getExhibits().get(exhibitNameList.getSelectedIndex());
+	void selectExhibit(){
+		currentExhibit = exhibitParser.getExhibits().get(c.exhibitNameList.getSelectedIndex());
 
-		contentListModel.notifyChange();
-		exhibitPhotosModel.notifyChange();
-		contentList.setSelectionInterval(0, 0);
-		for (ListSelectionListener l : contentList.getListSelectionListeners()){
-			l.valueChanged(new ListSelectionEvent(contentList, 0, 0, false));
+		c.contentListModel.notifyChange();
+		c.exhibitPhotosModel.notifyChange();
+		c.contentList.setSelectionInterval(0, 0);
+		for (ListSelectionListener l : c.contentList.getListSelectionListeners()){
+			l.valueChanged(new ListSelectionEvent(c.contentList, 0, 0, false));
 		}
-		exhibitXCoordField.setValue(currentExhibit.getX());
-		exhibitXCoordOrig.setText("X coordinate: (was " + currentExhibit.origXCoord + ")");
-		exhibitYCoordField.setValue(currentExhibit.getY());
-		exhibitYCoordOrig.setText("Y coordinate: (was " + currentExhibit.origYCoord + ")");
+		c.exhibitXCoordField.getModel().setValue(currentExhibit.getX());
+		c.exhibitXCoordOrig.setText("X coordinate: (was " + currentExhibit.origXCoord + ")");
+		c.exhibitYCoordField.getModel().setValue(currentExhibit.getY());
+		c.exhibitYCoordOrig.setText("Y coordinate: (was " + currentExhibit.origYCoord + ")");
 
-		exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
+		c.exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
 		if (currentExhibit.getNext() != null){
-			exhibitNextOrig.setText("Next: (was " + currentExhibit.origNext+")");
+			c.exhibitNextOrig.setText("Next: (was " + currentExhibit.origNext+")");
 		}else{
-			exhibitPreviousOrig.setText("Next:");
+			c.exhibitPreviousOrig.setText("Next:");
 		}
-		exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
+		c.exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
 		if (currentExhibit.getPrevious() != null){
-			exhibitPreviousOrig.setText("Previous: (was " + currentExhibit.origPrevious+")");
+			c.exhibitPreviousOrig.setText("Previous: (was " + currentExhibit.origPrevious+")");
 		}else{
-			exhibitPreviousOrig.setText("Previous:");
+			c.exhibitPreviousOrig.setText("Previous:");
 		}
 
-		exhibitPhotosList.setSelectionInterval(0, 0);
+		c.exhibitPhotosList.setSelectionInterval(0, 0);
 		selectPhoto();
 	}
 
-	private void selectPhoto(){
-		int index = exhibitPhotosList.getSelectedIndex();
+	void selectPhoto(){
+		int index = c.exhibitPhotosList.getSelectedIndex();
 		String shortUrl = currentExhibit.getPhotos()[index];
 
 		if (modifiedFiles.containsKey(shortUrl)){
-			exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
+			c.exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
 		}else{
-			exhibitPhotosImage.setImage(shortUrl, apkLoader.getAPKStream());
+			c.exhibitPhotosImage.setImage(shortUrl, apkLoader.getAPKStream());
 		}
 	}
 
-	private void selectContent(){
-		currentTag = (String)contentList.getSelectedValue();
+	void selectContent(){
+		currentTag = (String)c.contentList.getSelectedValue();
 		ExhibitInfo e = currentExhibit;
 		String tag = (String)currentTag;
 		String data = e.getContent(tag);
-		exhibitContentLabel.setText(e.getOrigContents(tag));
-		newContentDropdown.setSelectedItem(data);
+		c.exhibitContentLabel.setText(e.getOrigContents(tag));
+		c.newContentDropdown.setSelectedItem(data);
 	}
 
 	public void addFile(String filename, File newFile){
 		modifiedFiles.put(filename, newFile);
-		modifiedFilesListModel.notifyChange();
-		newContentDropdown.addItem(filename);
+		c.modifiedFilesListModel.notifyChange();
+		c.newContentDropdown.addItem(filename);
 		makeChange();
-	}
-
-	private class NumberSpinner implements SpinnerModel{
-		private int val = 0;
-		private final String type;
-		ArrayList<ChangeListener> listeners = new ArrayList<ChangeListener>();
-
-		public NumberSpinner(String spinnerType) {
-			type = spinnerType;
-		}
-		@Override
-		public void addChangeListener(ChangeListener arg0) {
-			listeners.add(arg0);
-		}
-		@Override
-		public Object getNextValue() {
-			return ++val;
-		}
-		@Override
-		public Object getPreviousValue() {
-			return --val;
-		}
-		@Override
-		public Object getValue() {
-			return val;
-		}
-		@Override
-		public void removeChangeListener(ChangeListener arg0) {
-			listeners.remove(arg0);
-		}
-		@Override
-		public void setValue(Object arg0) {
-			try{
-				val = Integer.parseInt(arg0.toString());
-				for (ChangeListener l : listeners){
-					if (type.equals("x")){
-						currentExhibit.setCoords(val, currentExhibit.getY());
-						if (currentExhibit.origXCoord != currentExhibit.getX()){
-							makeChange();
-						}
-					}else if (type.equals("y")){
-						currentExhibit.setCoords(currentExhibit.getX(), val);
-						if (currentExhibit.origYCoord != currentExhibit.getY()){
-							makeChange();
-						}
-					}
-					l.stateChanged(new ChangeEvent(this));
-				}
-			}catch (NumberFormatException e){};
-		}
 	}
 
 	public ExhibitLoader readAPK(ZipInputStream zf, ArrayList<String> files) throws XmlPullParserException{
@@ -465,7 +188,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			return null;
 		}
 	}
-	
+
 	public void showError(String message){
 		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
@@ -501,7 +224,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				File output = new File(e.getName()+".png");
 				CreateQR.writeExhibitQR(e.getName(), output);
 			}
-			
+
 			this.setTitle("Update Tool");
 		} catch (IOException e) {
 			showError("Unable to save update file.");
@@ -510,7 +233,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource().equals(saveButton)){
+		if (event.getSource().equals(c.saveButton)){
 			JFileChooser chooser = new JFileChooser("../");
 			chooser.setAcceptAllFileFilterUsed(false);
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -522,7 +245,7 @@ public class ZipManager extends JFrame implements ActionListener{
 				System.out.println(f.getPath());
 				this.saveFile(f);
 			}
-		}else if (event.getSource().equals(newFileButton)){
+		}else if (event.getSource().equals(c.newFileButton)){
 			JFileChooser chooser = new JFileChooser("../");
 			chooser.setDialogTitle("Select new file to add.");
 			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
@@ -538,37 +261,37 @@ public class ZipManager extends JFrame implements ActionListener{
 					}
 				}
 			}
-		}else if (event.getSource().equals(newContentDropdown)){
-			currentExhibit.setContent(currentTag, (String)newContentDropdown.getSelectedItem());
+		}else if (event.getSource().equals(c.newContentDropdown)){
+			currentExhibit.setContent(currentTag, (String)c.newContentDropdown.getSelectedItem());
 			if (false == currentExhibit.getContent(currentTag).equals(currentExhibit.getOrigContents(currentTag))){
 				makeChange();
 			}
-		}else if (event.getSource().equals(exhibitPreviousDropdown)){
-			String prev = (String)exhibitPreviousDropdown.getSelectedItem();
+		}else if (event.getSource().equals(c.exhibitPreviousDropdown)){
+			String prev = (String)c.exhibitPreviousDropdown.getSelectedItem();
 			if (prev != null){
 				currentExhibit.setPrevious(prev);
 				if (false == currentExhibit.origPrevious.equals(prev)){
 					makeChange();
 				}
 			}
-		}else if (event.getSource().equals(exhibitNextDropdown)){
-			String next = (String)exhibitNextDropdown.getSelectedItem();
+		}else if (event.getSource().equals(c.exhibitNextDropdown)){
+			String next = (String)c.exhibitNextDropdown.getSelectedItem();
 			if (next != null){
 				currentExhibit.setNext(next);
 				if (false == currentExhibit.origNext.equals(next)){
 					makeChange();
 				}
 			}
-		}else if (event.getSource().equals(newTagButton)){
+		}else if (event.getSource().equals(c.newTagButton)){
 			String newName = JOptionPane.showInputDialog("Name of new content:");
 			if (newName != null && localPathPattern.matcher(newName).matches()){
 				currentExhibit.setContent(newName, originalFiles[0]);
-				contentListModel.notifyChange();
+				c.contentListModel.notifyChange();
 				makeChange();
 			}else{
 				System.out.println("Invalid tag name " + newName);
 			}
-		}else if (event.getSource().equals(newExhibitButton)){
+		}else if (event.getSource().equals(c.newExhibitButton)){
 			String newName = JOptionPane.showInputDialog("Name of new exhibit:");
 			if (newName != null && exhibitNamePattern.matcher(newName).matches()){
 				String newContentName = JOptionPane.showInputDialog("Name of first new content:");
@@ -576,10 +299,10 @@ public class ZipManager extends JFrame implements ActionListener{
 					ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
 					newE.setContent(newContentName, originalFiles[0]);
 					exhibitParser.getExhibits().add(newE);
-					exhibitNextDropdown.addItem(newName);
-					exhibitPreviousDropdown.addItem(newName);
-					((ExhibitListModel)exhibitNameList.getModel()).notifyChange();
-					contentListModel.notifyChange();
+					c.exhibitNextDropdown.addItem(newName);
+					c.exhibitPreviousDropdown.addItem(newName);
+					((ComponentHolder.ExhibitListModel)c.exhibitNameList.getModel()).notifyChange();
+					c.contentListModel.notifyChange();
 					makeChange();
 				}else{
 					System.out.println("Invalid tag name " + newContentName);
@@ -587,7 +310,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			}else{
 				System.out.println("Invalid exhibit name " + newName);
 			}
-		}else if (event.getSource().equals(newImageButton)){
+		}else if (event.getSource().equals(c.newImageButton)){
 			ArrayList<String> fileList = new ArrayList<String>();
 			for (String file : originalFiles){
 				if (false == modifiedFiles.containsKey(file)){
@@ -602,10 +325,10 @@ public class ZipManager extends JFrame implements ActionListener{
 
 			if ((s != null) && (s.length() > 0)) {
 				currentExhibit.addPhoto(s);
-				exhibitPhotosModel.notifyChange();
+				c.exhibitPhotosModel.notifyChange();
 				makeChange();
 			}
-		}else if (event.getSource().equals(loadAPKButton)){
+		}else if (event.getSource().equals(c.loadAPKButton)){
 			int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm APK Load", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION){
 				JFileChooser chooser = new JFileChooser("../");
@@ -632,138 +355,9 @@ public class ZipManager extends JFrame implements ActionListener{
 						this.dispatchEvent(windowClosing);
 					}
 				}
-				
 			}
+			
 		}
 	}
-
-	private class ExhibitListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
-		@Override
-		public Object getElementAt(int index) {
-			return exhibitParser.getExhibits().get(index).getName();
-		}
-
-		@Override
-		public int getSize() {
-			return exhibitParser.getExhibits().size();
-		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
-	}
-
-	private class ContentListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
-		@Override
-		public Object getElementAt(int index) {
-			if (this.getSize() > 0){
-				return currentExhibit.getTag(index);
-			}else{
-				return "";
-			}
-		}
-
-		@Override
-		public int getSize() {
-			return currentExhibit.getTagCount();
-		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
-	}
-
-	private class ModifiedListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
-		@Override
-		public Object getElementAt(int index) {
-			Enumeration<String> keys = modifiedFiles.keys();
-			String element = keys.nextElement();
-			for (int i=0; i<index; i++){
-				element = keys.nextElement();
-			}
-			File f = modifiedFiles.get(element);
-			return element + " - " + f.getPath();
-		}
-
-		@Override
-		public int getSize() {
-			return modifiedFiles.size();
-		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
-	}
-
-	private class ExhibitPhotosModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
-		@Override
-		public Object getElementAt(int index) {
-			return currentExhibit.getPhotos()[index];
-		}
-
-		@Override
-		public int getSize() {
-			return currentExhibit.getPhotos().length;
-		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
-	}
+	
 }
