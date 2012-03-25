@@ -1,15 +1,33 @@
 package org.wildlifeimages.tools.update;
 
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class APKLoader {
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+public class APKLoader implements PackageLoader{
+	private static final String EXHIBITSFILENAME = "exhibits.xml";
+
+	private static final String assetPath = "assets/";
+
 	private File apkFile = null;
 	private boolean isNew = false;
 
-	public ZipInputStream getAPKStream(){
+	public ZipInputStream getPackageStream(){
 		if (apkFile != null){
 			try {
 				return new ZipInputStream(new FileInputStream(apkFile));
@@ -25,12 +43,69 @@ public class APKLoader {
 	public File getFile() {
 		return apkFile;
 	}
-	
+
 	public void setNewState(boolean validity){
 		isNew = validity;
 	}
-	
+
 	public boolean isNew(){
 		return isNew;
+	}
+
+	public ExhibitLoader readPackage(ArrayList<String> files) throws IOException{
+		ZipInputStream zf = getPackageStream();
+		ExhibitLoader loader = null;
+
+		for (ZipEntry item = zf.getNextEntry(); item != null; item = zf.getNextEntry()){
+			String zipEntryName = (item).getName();
+			if (false == item.isDirectory() && zipEntryName.startsWith(assetPath)){
+				String shortUrl = zipEntryName.substring(assetPath.length());
+				files.add(shortUrl);
+				if (shortUrl.equals(EXHIBITSFILENAME)){						
+					InputStream stream = zf;
+					try{
+					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+					XmlPullParser xmlBox = factory.newPullParser();
+					BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+
+					xmlBox.setInput(in);
+					System.out.println("Creating parser");
+					loader = new ExhibitLoader(xmlBox);
+					}catch(XmlPullParserException e){
+						throw new IOException("Error parsing package." , e);
+					}
+				}
+			}
+		}
+		zf.close();
+		return loader;
+
+	}
+	
+	public boolean loadNewPackage(){
+		JFileChooser chooser = new JFileChooser("../");
+		chooser.setFileFilter(new FileFilter(){
+			@Override
+			public boolean accept(File f) {
+				if (f.isDirectory() || f.getName().endsWith(".apk")){
+					return true;
+				}
+				return false;
+			}
+			@Override
+			public String getDescription() {
+				return "Android Applications (*.apk)";
+			}
+		});
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setDialogTitle("Select package file");
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+			if (chooser.getSelectedFile().exists()){
+				setFile(chooser.getSelectedFile());
+				setNewState(true);
+				return true;
+			}
+		}
+		return false;
 	}
 }

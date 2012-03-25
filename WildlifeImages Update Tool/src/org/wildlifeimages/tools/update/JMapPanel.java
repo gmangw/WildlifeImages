@@ -25,14 +25,14 @@ public class JMapPanel extends JPanel{
 
 	private final Dimension mapDimension;
 	
-	private final ExhibitLoader exhibitParser;
+	private final ZipManager peer;
 	
-	public JMapPanel(LayoutManager layout, Dimension mapSize, ExhibitLoader parser) {
+	public JMapPanel(LayoutManager layout, Dimension mapSize, ZipManager manager) {
 		super(layout);
 		
 		mapDimension = mapSize;
 		
-		exhibitParser = parser;
+		peer = manager;
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class JMapPanel extends JPanel{
 		ArrayList<Integer> pointsX = new ArrayList<Integer>();
 		ArrayList<Integer> pointsY = new ArrayList<Integer>();
 
-		for(ExhibitInfo e : exhibitParser.getExhibits()){
+		for(ExhibitInfo e : peer.getExhibits()){
 			int exhibitX = e.getX();
 			int exhibitY = e.getY();
 			if (exhibitX != -1 || exhibitY != -1){
@@ -79,8 +79,8 @@ public class JMapPanel extends JPanel{
 				pointsY.add(y);
 			}
 		}
-		for(String groupName : exhibitParser.getGroupNames()){
-			ExhibitGroup group = exhibitParser.getGroup(groupName);
+		for(String groupName : peer.getGroupNames()){
+			ExhibitGroup group = peer.getGroup(groupName);
 			int exhibitX = group.xPos;
 			int exhibitY = group.yPos;
 			int x = w * exhibitX/100 + offsetX;

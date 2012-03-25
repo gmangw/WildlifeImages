@@ -1,8 +1,13 @@
 package org.wildlifeimages.tools.update;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
@@ -10,11 +15,14 @@ import org.wildlifeimages.android.wildlifeimages.Parser;
 import org.wildlifeimages.android.wildlifeimages.Parser.ExhibitDataHolder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 public class ExhibitLoader implements Parser.ExhibitInterface{
 	private ArrayList<ExhibitInfo> exhibits = new ArrayList<ExhibitInfo>();
 	private Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
 
+	
+	
 	public ExhibitLoader(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 		new Parser(xmlBox, this);
 	}
@@ -54,4 +62,6 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	public void writeXML(ZipOutputStream out) throws IOException {
 		Parser.writeExhibitXML(out, exhibits, groupList);
 	}
+	
+	
 }

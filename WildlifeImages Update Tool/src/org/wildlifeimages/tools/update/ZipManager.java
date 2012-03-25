@@ -27,11 +27,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.batik.swing.JSVGCanvas;
+import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -45,29 +44,25 @@ public class ZipManager extends JFrame implements ActionListener{
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
 	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
 
-	private final String EXHIBITSFILENAME = "exhibits.xml";
-
-	private static final String assetPath = "assets/";
-
-	final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
+	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 
 	final JSVGCanvas map;
 
 	final Dimension mapDimension = new Dimension();
 
-	ExhibitLoader exhibitParser = null;
+	private ExhibitLoader exhibitParser = null;
 
-	private final APKLoader apkLoader;
+	final PackageLoader packageLoader;
 
 	String[] originalFiles;
 	ExhibitInfo currentExhibit;
-	private String currentTag;
+	String currentTag;
 
 	final ComponentHolder c;
 
-	public ZipManager(APKLoader loader){
-		apkLoader = loader;
-		map = JMapPanel.getMapCanvas(mapDimension, apkLoader.getAPKStream());
+	public ZipManager(PackageLoader loader){
+		packageLoader = loader;
+		map = JMapPanel.getMapCanvas(mapDimension, packageLoader.getPackageStream());
 		this.setTitle("Update Tool");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -75,10 +70,10 @@ public class ZipManager extends JFrame implements ActionListener{
 
 		try {
 			ArrayList<String> files = new ArrayList<String>();
-			exhibitParser = this.readAPK(apkLoader.getAPKStream(), files);
+			exhibitParser = packageLoader.readPackage(files);
 			originalFiles = files.toArray(new String[files.size()]);
-		} catch (XmlPullParserException e) {
-			showError("Could not load APK file.");
+		} catch (Exception e) {
+			showError("Could not load original package.");
 			c = null;
 			return;
 		}
@@ -102,91 +97,11 @@ public class ZipManager extends JFrame implements ActionListener{
 		this.setTitle("Update Tool*");
 	}
 
-	void selectExhibit(){
-		currentExhibit = exhibitParser.getExhibits().get(c.exhibitNameList.getSelectedIndex());
-
-		c.contentListModel.notifyChange();
-		c.exhibitPhotosModel.notifyChange();
-		c.contentList.setSelectionInterval(0, 0);
-		for (ListSelectionListener l : c.contentList.getListSelectionListeners()){
-			l.valueChanged(new ListSelectionEvent(c.contentList, 0, 0, false));
-		}
-		c.exhibitXCoordField.getModel().setValue(currentExhibit.getX());
-		c.exhibitXCoordOrig.setText("X coordinate: (was " + currentExhibit.origXCoord + ")");
-		c.exhibitYCoordField.getModel().setValue(currentExhibit.getY());
-		c.exhibitYCoordOrig.setText("Y coordinate: (was " + currentExhibit.origYCoord + ")");
-
-		c.exhibitNextDropdown.setSelectedItem(currentExhibit.getNext());
-		if (currentExhibit.getNext() != null){
-			c.exhibitNextOrig.setText("Next: (was " + currentExhibit.origNext+")");
-		}else{
-			c.exhibitPreviousOrig.setText("Next:");
-		}
-		c.exhibitPreviousDropdown.setSelectedItem(currentExhibit.getPrevious());
-		if (currentExhibit.getPrevious() != null){
-			c.exhibitPreviousOrig.setText("Previous: (was " + currentExhibit.origPrevious+")");
-		}else{
-			c.exhibitPreviousOrig.setText("Previous:");
-		}
-
-		c.exhibitPhotosList.setSelectionInterval(0, 0);
-		selectPhoto();
-	}
-
-	void selectPhoto(){
-		int index = c.exhibitPhotosList.getSelectedIndex();
-		String shortUrl = currentExhibit.getPhotos()[index];
-
-		if (modifiedFiles.containsKey(shortUrl)){
-			c.exhibitPhotosImage.setImage(modifiedFiles.get(shortUrl));
-		}else{
-			c.exhibitPhotosImage.setImage(shortUrl, apkLoader.getAPKStream());
-		}
-	}
-
-	void selectContent(){
-		currentTag = (String)c.contentList.getSelectedValue();
-		ExhibitInfo e = currentExhibit;
-		String tag = (String)currentTag;
-		String data = e.getContent(tag);
-		c.exhibitContentLabel.setText(e.getOrigContents(tag));
-		c.newContentDropdown.setSelectedItem(data);
-	}
-
 	public void addFile(String filename, File newFile){
 		modifiedFiles.put(filename, newFile);
 		c.modifiedFilesListModel.notifyChange();
 		c.newContentDropdown.addItem(filename);
 		makeChange();
-	}
-
-	public ExhibitLoader readAPK(ZipInputStream zf, ArrayList<String> files) throws XmlPullParserException{
-		ExhibitLoader loader = null;
-		try {
-			for (ZipEntry item = zf.getNextEntry(); item != null; item = zf.getNextEntry()){
-				String zipEntryName = (item).getName();
-				if (false == item.isDirectory() && zipEntryName.startsWith(assetPath)){
-					String shortUrl = zipEntryName.substring(assetPath.length());
-					files.add(shortUrl);
-					if (shortUrl.equals(EXHIBITSFILENAME)){						
-						InputStream stream = zf;
-
-						XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-						XmlPullParser xmlBox = factory.newPullParser();
-						BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-
-						xmlBox.setInput(in);
-						System.out.println("Creating parser");
-						loader = new ExhibitLoader(xmlBox);
-					}
-				}
-			}
-			zf.close();
-			return loader;
-		} catch (IOException e) {
-			showError("Error: Could not load APK file.");
-			return null;
-		}
 	}
 
 	public void showError(String message){
@@ -229,6 +144,50 @@ public class ZipManager extends JFrame implements ActionListener{
 		} catch (IOException e) {
 			showError("Unable to save update file.");
 		}
+	}
+
+	public void setCurrentTag(String tag){
+		currentTag = tag;
+	}
+
+	public void setCurrentExhibit(ExhibitInfo e){
+		currentExhibit = e;
+	}
+
+	public ExhibitInfo getCurrentExhibit(){
+		return currentExhibit;
+	}
+
+	public String[] getGroupNames(){
+		return exhibitParser.getGroupNames();
+	}
+
+	public ExhibitGroup getGroup(String name){
+		return exhibitParser.getGroup(name);
+	}
+
+	public ZipInputStream getZipStream(){
+		return packageLoader.getPackageStream();
+	}
+
+	public boolean modifiedFileExists(String shortUrl){
+		return modifiedFiles.containsKey(shortUrl);
+	}
+
+	public File getModifiedFile(String shortUrl){
+		return modifiedFiles.get(shortUrl);
+	}
+
+	public String[] getModifiedFileNames(){
+		return modifiedFiles.keySet().toArray(new String[0]);
+	}
+
+	public JSVGCanvas getMap(){
+		return map;
+	}
+
+	public ArrayList<ExhibitInfo> getExhibits(){
+		return exhibitParser.getExhibits();
 	}
 
 	@Override
@@ -328,36 +287,16 @@ public class ZipManager extends JFrame implements ActionListener{
 				c.exhibitPhotosModel.notifyChange();
 				makeChange();
 			}
-		}else if (event.getSource().equals(c.loadAPKButton)){
-			int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm APK Load", JOptionPane.YES_NO_OPTION);
+		}else if (event.getSource().equals(c.loadPackageButton)){
+			int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm Package Load", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION){
-				JFileChooser chooser = new JFileChooser("../");
-				chooser.setFileFilter(new FileFilter(){
-					@Override
-					public boolean accept(File f) {
-						if (f.isDirectory() || f.getName().endsWith(".apk")){
-							return true;
-						}
-						return false;
-					}
-					@Override
-					public String getDescription() {
-						return "Android Applications (*.apk)";
-					}
-				});
-				chooser.setAcceptAllFileFilterUsed(false);
-				chooser.setDialogTitle("Select APK file");
-				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-					if (chooser.getSelectedFile().exists()){
-						apkLoader.setFile(chooser.getSelectedFile());
-						apkLoader.setNewState(true);
-						WindowEvent windowClosing = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-						this.dispatchEvent(windowClosing);
-					}
+				if (true == packageLoader.loadNewPackage()){
+					WindowEvent windowClosing = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+					this.dispatchEvent(windowClosing);
 				}
 			}
-			
+
 		}
 	}
-	
+
 }
