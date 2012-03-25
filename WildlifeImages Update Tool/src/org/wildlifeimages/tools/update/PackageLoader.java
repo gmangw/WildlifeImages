@@ -1,15 +1,18 @@
 package org.wildlifeimages.tools.update;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.zip.ZipInputStream;
 
 public interface PackageLoader {
-
-	ZipInputStream getPackageStream();
 
 	ExhibitLoader readPackage(ArrayList<String> files) throws IOException;
 
 	public boolean loadNewPackage();
+	
+	public InputStream getFileInputStream(String filename) throws IOException;
+
+	public boolean isNew();
+
+	public void setNewState(boolean b);
 }

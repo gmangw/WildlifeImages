@@ -6,35 +6,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-import javax.swing.filechooser.FileFilter;
 
 import org.apache.batik.swing.JSVGCanvas;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 
 public class ZipManager extends JFrame implements ActionListener{
 
@@ -62,7 +54,14 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	public ZipManager(PackageLoader loader){
 		packageLoader = loader;
-		map = JMapPanel.getMapCanvas(mapDimension, packageLoader.getPackageStream());
+		JSVGCanvas newMap = null;
+		try{
+			newMap = JMapPanel.getMapCanvas(mapDimension, packageLoader.getFileInputStream("res/raw/map.svg"));
+		}catch(IOException e){
+			newMap = new JSVGCanvas();
+		}finally{
+			map = newMap;
+		}
 		this.setTitle("Update Tool");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -166,10 +165,6 @@ public class ZipManager extends JFrame implements ActionListener{
 		return exhibitParser.getGroup(name);
 	}
 
-	public ZipInputStream getZipStream(){
-		return packageLoader.getPackageStream();
-	}
-
 	public boolean modifiedFileExists(String shortUrl){
 		return modifiedFiles.containsKey(shortUrl);
 	}
@@ -184,6 +179,15 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	public JSVGCanvas getMap(){
 		return map;
+	}
+
+	public InputStream getFileInputStream(String filename){
+		try{
+			return packageLoader.getFileInputStream(filename);
+		}catch(IOException e){
+			showError(e.getMessage());
+			return null;
+		}
 	}
 
 	public ArrayList<ExhibitInfo> getExhibits(){

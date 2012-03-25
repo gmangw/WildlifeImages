@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -314,7 +313,7 @@ public class ComponentHolder implements ChangeListener{
 		if (peer.modifiedFileExists(shortUrl)){
 			exhibitPhotosImage.setImage(peer.getModifiedFile(shortUrl));
 		}else{
-			exhibitPhotosImage.setImage(shortUrl, peer.getZipStream());
+			exhibitPhotosImage.setImage(shortUrl, peer.getFileInputStream("assets/" + shortUrl));
 		}
 	}
 	

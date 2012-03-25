@@ -1,6 +1,5 @@
-package org.wildlifeimages.tools.update;
+package org.wildlifeimages.tools.update.android;
 
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +14,8 @@ import java.util.zip.ZipInputStream;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import org.wildlifeimages.tools.update.ExhibitLoader;
+import org.wildlifeimages.tools.update.PackageLoader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -64,13 +65,13 @@ public class APKLoader implements PackageLoader{
 				if (shortUrl.equals(EXHIBITSFILENAME)){						
 					InputStream stream = zf;
 					try{
-					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-					XmlPullParser xmlBox = factory.newPullParser();
-					BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+						XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+						XmlPullParser xmlBox = factory.newPullParser();
+						BufferedReader in = new BufferedReader(new InputStreamReader(stream));
 
-					xmlBox.setInput(in);
-					System.out.println("Creating parser");
-					loader = new ExhibitLoader(xmlBox);
+						xmlBox.setInput(in);
+						System.out.println("Creating parser");
+						loader = new ExhibitLoader(xmlBox);
 					}catch(XmlPullParserException e){
 						throw new IOException("Error parsing package." , e);
 					}
@@ -81,7 +82,7 @@ public class APKLoader implements PackageLoader{
 		return loader;
 
 	}
-	
+
 	public boolean loadNewPackage(){
 		JFileChooser chooser = new JFileChooser("../");
 		chooser.setFileFilter(new FileFilter(){
@@ -107,5 +108,20 @@ public class APKLoader implements PackageLoader{
 			}
 		}
 		return false;
+	}
+
+	public InputStream getFileInputStream(String filename)throws IOException{
+		ZipEntry entry;
+		ZipInputStream stream = getPackageStream();
+		for (entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()){
+			if (entry.getName().equals(filename)){
+				break;
+			}
+			entry = null;
+		}
+		if (entry == null){
+			throw new IOException("Error: Could not load " + filename);
+		}
+		return stream;
 	}
 }

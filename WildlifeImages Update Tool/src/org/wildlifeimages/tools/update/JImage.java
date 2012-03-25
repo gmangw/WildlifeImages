@@ -7,8 +7,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -19,7 +18,7 @@ public class JImage extends JPanel{
 	private String lastShortUrl = null;
 	private String lastFile = null;
 	private BufferedImage image = null;
-	
+
 	public void setImage(File newImage){
 		if (lastFile == null || (false == lastFile.equals(newImage.getName()))){
 			try {
@@ -32,32 +31,21 @@ public class JImage extends JPanel{
 		}
 	}
 
-	public void setImage(String shortUrl, ZipInputStream source){
+	public void setImage(String shortUrl, InputStream source){
 		if (lastShortUrl == null || (false == lastShortUrl.equalsIgnoreCase(shortUrl))){
 			System.out.println("Loading image " + shortUrl);
-			try {
-				ZipEntry entry;
-				for (entry = source.getNextEntry(); entry != null; entry = source.getNextEntry()){
-					if (entry.getName().equals("assets/" + shortUrl)){
-						break;
-					}
-					entry = null;
-				}
-				if (entry == null){
-					throw new IOException("Could not load " + shortUrl);
-				}
+			try{
 				image = ImageIO.read(source);
-				lastFile = null;
-				lastShortUrl = shortUrl;
-				shrinkImage();
 				source.close();
+			}catch(IOException e){
 				
-			} catch (IOException e) {
-				System.out.println("Error loading image");
 			}
+			lastFile = null;
+			lastShortUrl = shortUrl;
+			shrinkImage();
 		}
 	}
-	
+
 	private void shrinkImage(){
 		BufferedImage smallImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_3BYTE_BGR);
 		Graphics2D g = smallImage.createGraphics();
@@ -68,7 +56,7 @@ public class JImage extends JPanel{
 		revalidate();
 		this.repaint();
 	}
-	
+
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);

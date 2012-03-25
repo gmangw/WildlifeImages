@@ -3,12 +3,14 @@ package org.wildlifeimages.tools.update;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import org.wildlifeimages.tools.update.android.APKLoader;
+
 public class Launcher implements WindowListener{
 	public static void main(String[] args){
 		new Launcher();
 	}
 	
-	private final APKLoader initialLoader = new APKLoader();
+	private final PackageLoader initialLoader = new APKLoader();
 	
 	public Launcher(){
 		ZipManager zr = new ZipManager(initialLoader);
