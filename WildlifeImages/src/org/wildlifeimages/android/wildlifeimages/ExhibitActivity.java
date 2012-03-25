@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
@@ -127,9 +128,29 @@ public class ExhibitActivity extends WireActivity{
 			}
 		}
 		ImageButton photoButton = (ImageButton)findViewById(R.id.exhibit_photo_button);
-		String shortUrl = e.getContent(Exhibit.TAG_PHOTOS).split(",")[0];
+		String[] urlList = e.getContent(Exhibit.TAG_PHOTOS).split(",");
+		String shortUrl = urlList[0];
 		Bitmap b = ContentManager.getSelf().getBitmapThumb(shortUrl, getAssets());
 		photoButton.setImageBitmap(b);
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){
+
+			LinearLayout container = (LinearLayout)photoButton.getParent();
+			container.setBackgroundResource(R.drawable.android_button);
+			container.removeAllViews();
+			container.addView(photoButton);
+			photoButton.setBackgroundColor(0);
+
+			for (int i=1; i<Math.min(urlList.length, 3); i++){
+				LayoutInflater inflater = LayoutInflater.from(this);
+				ImageButton button = (ImageButton)inflater.inflate(R.layout.exhibit_photo_button, null);
+				button.setLayoutParams(photoButton.getLayoutParams());
+				shortUrl = e.getContent(Exhibit.TAG_PHOTOS).split(",")[i];
+				b = ContentManager.getSelf().getBitmapThumb(shortUrl, getAssets());
+				button.setImageBitmap(b);
+				button.setBackgroundColor(0);
+				container.addView(button);
+			}
+		}
 	}
 
 	/**
