@@ -128,7 +128,7 @@ public class Exhibit{
 
 	@Override
 	public boolean equals(Object o){
-		if (o.getClass() == Exhibit.class){
+		if (o != null && o.getClass() == Exhibit.class){
 			if (((Exhibit)o).getName().equals(name)){
 				return true;
 			}else{
@@ -179,5 +179,10 @@ public class Exhibit{
 
 	public String getTag(int index){
 		return tagList.get(index);
+	}
+	
+	@Override
+	public String toString(){
+		return name;
 	}
 }

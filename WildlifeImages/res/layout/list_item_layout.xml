@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@android:color/background_dark"
-    android:orientation="horizontal" >
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+    android:layout_height="fill_parent" >
 
         <ImageView
             android:id="@+id/listitemphoto"
@@ -16,20 +10,18 @@
             android:layout_alignParentLeft="true"
             android:layout_margin="0dp"
             android:adjustViewBounds="true"
-            android:background="@android:color/white"
             android:minHeight="64dp"
             android:minWidth="64dp" />
 
         <TextView
             android:id="@+id/listitemlabel"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/listitemphoto"
-            android:gravity="center"
+            android:gravity="left|center_vertical"
             android:textSize="20sp"
             android:typeface="sans" 
             android:textColor="@android:color/white"/>
-    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
