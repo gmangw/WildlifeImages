@@ -47,7 +47,6 @@ public class ZipManager extends JFrame implements ActionListener{
 	final PackageLoader packageLoader;
 
 	String[] originalFiles;
-	ExhibitInfo currentExhibit;
 	String currentTag;
 
 	final ComponentHolder c;
@@ -77,19 +76,12 @@ public class ZipManager extends JFrame implements ActionListener{
 			return;
 		}
 
-		currentExhibit = exhibitParser.getExhibits().get(0);
-
 		c = new ComponentHolder(this);
 		c.init();
 
-		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Exhibit Stuff", c.mainPanel);
-		tabbedPane.addTab("Map", c.mapPanel);
-		tabbedPane.addTab("Groups and Aliases", c.groupPanel);
-
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
-		this.add(tabbedPane);
+		this.add(c.tabbedPane);
 	}
 
 	void makeChange(){
@@ -149,12 +141,20 @@ public class ZipManager extends JFrame implements ActionListener{
 		currentTag = tag;
 	}
 
-	public void setCurrentExhibit(ExhibitInfo e){
-		currentExhibit = e;
-	}
-
 	public ExhibitInfo getCurrentExhibit(){
-		return currentExhibit;
+		String name = (String)c.exhibitNameList.getSelectedValue();
+		int index = -1;
+		ArrayList<ExhibitInfo> exhibitList = exhibitParser.getExhibits();
+		for (int i=0; i<exhibitList.size(); i++){
+			if (exhibitList.get(i).getName().equals(name)){
+				index = i;
+			}
+		}
+		if (index == -1){
+			return exhibitList.get(0);
+		}else{
+			return exhibitList.get(index);
+		}
 	}
 
 	public String[] getGroupNames(){
@@ -179,6 +179,10 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	public JSVGCanvas getMap(){
 		return map;
+	}
+
+	public void addGroup(String name, ExhibitGroup group){
+		exhibitParser.addGroup(name, group.exhibits, group.xPos, group.yPos);
 	}
 
 	public InputStream getFileInputStream(String filename){
@@ -225,30 +229,30 @@ public class ZipManager extends JFrame implements ActionListener{
 				}
 			}
 		}else if (event.getSource().equals(c.newContentDropdown)){
-			currentExhibit.setContent(currentTag, (String)c.newContentDropdown.getSelectedItem());
-			if (false == currentExhibit.getContent(currentTag).equals(currentExhibit.getOrigContents(currentTag))){
+			getCurrentExhibit().setContent(currentTag, (String)c.newContentDropdown.getSelectedItem());
+			if (false == getCurrentExhibit().getContent(currentTag).equals(getCurrentExhibit().getOrigContents(currentTag))){
 				makeChange();
 			}
 		}else if (event.getSource().equals(c.exhibitPreviousDropdown)){
 			String prev = (String)c.exhibitPreviousDropdown.getSelectedItem();
 			if (prev != null){
-				currentExhibit.setPrevious(prev);
-				if (false == currentExhibit.origPrevious.equals(prev)){
+				getCurrentExhibit().setPrevious(prev);
+				if (getCurrentExhibit().origPrevious == null || false == getCurrentExhibit().origPrevious.equals(prev)){
 					makeChange();
 				}
 			}
 		}else if (event.getSource().equals(c.exhibitNextDropdown)){
 			String next = (String)c.exhibitNextDropdown.getSelectedItem();
 			if (next != null){
-				currentExhibit.setNext(next);
-				if (false == currentExhibit.origNext.equals(next)){
+				getCurrentExhibit().setNext(next);
+				if (getCurrentExhibit().origNext == null || false == getCurrentExhibit().origNext.equals(next)){
 					makeChange();
 				}
 			}
 		}else if (event.getSource().equals(c.newTagButton)){
 			String newName = JOptionPane.showInputDialog("Name of new content:");
 			if (newName != null && localPathPattern.matcher(newName).matches()){
-				currentExhibit.setContent(newName, originalFiles[0]);
+				getCurrentExhibit().setContent(newName, originalFiles[0]);
 				c.contentListModel.notifyChange();
 				makeChange();
 			}else{
@@ -287,7 +291,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			String s = (String)JOptionPane.showInputDialog(this, "File to use:", "New Photo",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
 
 			if ((s != null) && (s.length() > 0)) {
-				currentExhibit.addPhoto(s);
+				getCurrentExhibit().addPhoto(s);
 				c.exhibitPhotosModel.notifyChange();
 				makeChange();
 			}
