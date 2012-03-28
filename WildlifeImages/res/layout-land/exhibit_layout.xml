@@ -37,7 +37,7 @@
             <LinearLayout
                 android:id="@+id/exhibit_photo_button_layout"
                 android:layout_width="fill_parent"
-                android:layout_height="0dip"
+                android:layout_height="fill_parent"
                 android:layout_margin="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal" >
