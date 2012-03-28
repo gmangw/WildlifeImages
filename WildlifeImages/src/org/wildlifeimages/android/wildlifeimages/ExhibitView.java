@@ -1,18 +1,13 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-
-import android.R.drawable;
 import android.content.Context;
-import android.graphics.Path.FillType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 /**
@@ -25,8 +20,6 @@ import android.widget.FrameLayout;
 public class ExhibitView extends FrameLayout implements DownloadListener{
 	private WebView htmlView;
 	private MultiImageView picView;
-	private Button leftArrow;
-	private Button rightArrow;
 	private Context context = this.getContext();
 
 	public ExhibitView(final Context context, AttributeSet attrs) {
