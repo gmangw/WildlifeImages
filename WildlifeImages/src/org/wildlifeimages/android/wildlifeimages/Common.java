@@ -24,6 +24,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.FloatMath;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -225,7 +226,7 @@ public class Common {
 	}
 
 	public static float distance(float x1, float y1, float x2, float y2){
-		return (float)(Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)));
+		return (FloatMath.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)));
 	}
 
 	public static float clamp(float value, float min, float max){

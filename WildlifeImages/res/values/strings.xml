@@ -10,20 +10,9 @@
     <string name="menu_previous">Previous</string>
     <string name="save_current_exhibit">sce</string>
     <string name="save_current_exhibit_tag">scet</string>
-    <string name="save_current_page">scp</string>
-    <string name="save_current_home_id">schi</string>
-    <string name="save_current_exhibit_names">scen</string>
     <string name="save_map_x">smx</string>
     <string name="save_map_y">smy</string>
     <string name="save_map_zoom">smz</string>
-    <string name="intro_sidebar_update">Update</string>
-    <string name="intro_sidebar_about">About</string>
-    <string name="intro_sidebar_support">Support</string>
-    <string name="intro_sidebar_events">Events</string>
-    <string name="intro_sidebar_app">App Info</string>
-    <string name="intro_sidebar_exhibitlist">Exhibits</string>
-    <string name="intro_sidebar_map">Map</string>
-    <string name="intro_sidebar_photos">Photos</string>
     <string name="intent_action_scan">com.google.zxing.client.android.SCAN</string>
     <string name="intent_action_scan_2">la.droid.qr.scan</string>
     <string name="intent_extra_scan_mode">com.google.zxing.client.android.SCAN.SCAN_MODE</string>
@@ -32,8 +21,6 @@
     <string name="intent_scan_extra_result_format">SCAN_RESULT_FORMAT</string>
     <string name="intent_result_qr">QR_CODE</string>
     <string name="intent_qr_mode">QR_CODE_MODE</string>
-    <string name="scan_app_missing">Install Barcode Scanner or Google Goggles first.</string>
-    <string name="invalid_qr_result">Sorry, this is not a valid Wildlife Images QR code. </string>
     <string name="qr_prefix">market://search?q=pname:org.wildlifeimages.android.wildlifeimages&amp;extra=Wildlife_Images_Exhibit_</string>
     <string name="exit_question">Are you sure you want to exit?</string>
     <string name="exit_option_yes">Yes</string>
@@ -44,15 +31,12 @@
     <string name="scan_app_option_yes">Get From Market</string>
     <string name="scan_app_option_no">No Thanks</string>
     <string name="scan_app_url">market://search?q=pname:com.google.zxing.client.android</string>
-    <string name="intro_url_about">intro.html</string>
-    <string name="intro_url_support">donate.html</string>
     <string name="intro_url_events">events.html</string>
     <string name="update_preferences">Update</string>
     <string name="update_preferences_key_last">lastUpdate</string>
     <string name="update_result_success">Update Complete</string>
     <string name="update_result_failure">Update Failed - Check network connection</string>
-    <string name="update_dialog_message">Getting updated content...</string>
-    <string name="update_result_toast_network_error">Cannot update: No network connection available.</string>
+    <string name="update_dialog_message">Getting updated content&#8230;</string>
     <string name="update_available_message">Updated content is available. Download?</string>
     <string name="update_available_message_yes">Download</string>
     <string name="update_available_message_no">Not now</string>

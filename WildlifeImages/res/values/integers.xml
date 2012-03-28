@@ -1,6 +1,5 @@
 
     <resources>
-        <item type="integer" format="integer" name="CAPTURE_IMAGE_ACTIVITY_REQUEST">1024</item>
         <item type="integer" format="integer" name="CODE_SCAN_ACTIVITY_REQUEST">2048</item>
         <item type="integer" format="integer" name="CODE_SCAN_2_ACTIVITY_REQUEST">4096</item>
         <item type="integer" format="integer" name="MENU_SCAN">1</item>

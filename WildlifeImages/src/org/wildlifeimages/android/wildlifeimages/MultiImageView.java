@@ -34,9 +34,6 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	
 	int gray = Color.argb(100, 255, 255, 255);
 
-	private View leftArrow = null;
-	private View rightArrow = null;
-
 	RectF bmpRect = new RectF();
 
 	public MultiImageView(Context context, AttributeSet attrs) {
@@ -61,29 +58,6 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		this.setImageMatrix(m);
 		baseMatrix = new Matrix(m);
 		this.setScaleType(ScaleType.MATRIX);
-	}
-
-	public void setLeftArrow(View v){
-		leftArrow = v;
-	}
-
-	public void setRightArrow(View v){
-		rightArrow = v;
-	}
-
-	@Override
-	protected void onVisibilityChanged(View changedView, int visibility){
-		super.onVisibilityChanged(changedView, visibility);
-
-		if (changedView.equals(this)){
-			if (leftArrow != null){
-				leftArrow.setVisibility(visibility);
-			}
-
-			if (rightArrow != null){
-				rightArrow.setVisibility(visibility);
-			}
-		}
 	}
 
 	@Override
@@ -180,13 +154,15 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public void onLongPress(MotionEvent e) {
 	}
 
+	private final Rect bounds = new Rect();
+	
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 
 		String label = (currentBitmapIndex+1) + "/" + shortUrlList.length;
 
-		Rect bounds = canvas.getClipBounds(); 
+		canvas.getClipBounds(bounds); 
 		int bottom = bounds.bottom;
 
 		canvas.drawRect(0, bottom - labelTextPaint.getTextSize(), labelTextPaint.measureText(label)+2, bottom, labelPaint);

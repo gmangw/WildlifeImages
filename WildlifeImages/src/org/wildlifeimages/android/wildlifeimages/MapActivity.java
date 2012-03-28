@@ -110,7 +110,6 @@ public class MapActivity extends WireActivity{
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(groupName);
-		builder.setInverseBackgroundForced(false);
 
 		ListAdapter adapter = new GroupListAdapter(groupName);
 

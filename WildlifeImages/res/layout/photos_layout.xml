@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/SharedBackground"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <org.wildlifeimages.android.wildlifeimages.ExhibitView
         android:id="@+id/photos_view"
@@ -11,4 +8,4 @@
         android:background="@android:color/white" >
     </org.wildlifeimages.android.wildlifeimages.ExhibitView>
 
-</FrameLayout>
+</merge>

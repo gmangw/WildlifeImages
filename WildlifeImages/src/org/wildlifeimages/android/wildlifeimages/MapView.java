@@ -314,6 +314,8 @@ public class MapView extends ImageView {
 		processScroll(0, 0);
 	}
 
+	private final Rect r = new Rect(); //TODO move
+	
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
@@ -321,13 +323,11 @@ public class MapView extends ImageView {
 		p.setTextSize(Math.min(getHeight()/25.0f * scale, MAX_FONT_SIZE));
 		
 		for(int i=0; i<points.length/2; i++){
-			Rect r = new Rect();
 			rectP.setTextAlign(Align.CENTER);
 
 			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), r);
 			r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
 			r.inset(-3, -4);
-
 
 			if (displayNames[i].equals(activeName)){
 				canvas.drawRect(r, activeP);
