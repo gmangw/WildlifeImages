@@ -42,6 +42,7 @@
     <string name="update_available_message_no">Not now</string>
     <string name="update_page_url">http://oregonstate.edu/~wilkinsg/wildlifeimages/update.html</string>
     <string name="qr_unknown">QR code not recognized.</string>
+    <string name="exhibit_list_text">Choose an item below to learn more about an animal or facility.</string>
         
     <string-array name="intro_image_list">
         <item>shoshoni.jpg</item>

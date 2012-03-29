@@ -9,7 +9,6 @@
     android:onClick="exhibitProcessSidebar"
     android:padding="3dp"
     android:scaleType="centerInside"
-    android:text="Photos"
     android:textColor="@android:color/transparent" >
 
 </ImageButton>
