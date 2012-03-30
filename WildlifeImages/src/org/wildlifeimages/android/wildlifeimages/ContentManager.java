@@ -46,7 +46,8 @@ public class ContentManager {
 
 	private ExhibitList exhibitList;
 
-	private File cacheDir;
+	private final File cacheDir;
+	private final File filesDir;
 	BitmapCache imgCache;
 
 	private int accessTime = 0;
@@ -68,12 +69,13 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	public ContentManager(File cacheDir, AssetManager assets){
+	public ContentManager(File cacheDir, File filesDir, AssetManager assets){
 		//testBitmapMax(assets);
 
 		self = this;
 
 		this.cacheDir = cacheDir;
+		this.filesDir = filesDir;
 		imgCache = new BitmapCache();
 		addAllToMap(cacheDir);
 
@@ -342,27 +344,38 @@ public class ContentManager {
 				if (progress.isCancelled() == true){
 					break;
 				}
+				File f  = new File(cacheDir, ze.getName() + ".part");
+				File f2 = new File(filesDir, ze.getName() + ".part");
 				String outputFilename = cacheDir.getAbsolutePath() + "/" + ze.getName();
-				String tempFilename = outputFilename + ".part";
-				File f  = new File(tempFilename);
-				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath());
+				String outputFilename2 = filesDir.getAbsolutePath() + "/" + ze.getName();
+				
+				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath() + "and" + f2.getPath());
 				try{
 					Common.mkdirForFile(f);
 				}catch(IOException e){
 					continue;
 				}
 				FileOutputStream fout = new FileOutputStream(f);
+				FileOutputStream fout2 = new FileOutputStream(f2);
 
-				for (int c = zipStream.read(); c != -1; c = zipStream.read()) {
-					fout.write(c);
+				byte[] buffer = new byte[4];
+				for(int read = zipStream.read(buffer); read != -1; read = zipStream.read(buffer)) {
+					fout.write(buffer, 0, read);
+					fout2.write(buffer, 0, read);
 					lengthRead++;
 				}
 				fout.close();
+				fout2.close();
 				zipStream.closeEntry();
 				boolean renameResult = f.renameTo(new File(outputFilename));
 				if (false == renameResult){
 					Log.e(this.getClass().getName(), "Could not rename the .part file for " +ze.getName());
 					result = false;
+				}
+				boolean renameResult2 = f2.renameTo(new File(outputFilename2));
+				if (false == renameResult2){
+					Log.e(this.getClass().getName(), "Could not rename the .part file for " +ze.getName() + " in data.");
+					//result = false;
 				}
 				imgCache.removeBitmap(ze.getName()); //TODO make sure thumbs update
 				cachedFiles.add(ze.getName());

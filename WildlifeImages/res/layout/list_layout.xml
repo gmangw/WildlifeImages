@@ -8,9 +8,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"
-        android:textColor="@android:color/primary_text_light"
         android:gravity="center"
         android:text="@string/exhibit_list_text"
+        android:textColor="@android:color/primary_text_light"
         android:textSize="@dimen/update_text_size" />
 
     <ListView

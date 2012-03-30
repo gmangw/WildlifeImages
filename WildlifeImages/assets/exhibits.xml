@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <exhibit_list>
-	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bears">
+    <exhibit name="Wildlife Images" xpos="78" ypos="30" next="Brown Bears">
+		<content tag="Introduction" page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
+		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
+		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" />
+		<content tag="Visit" page="ExhibitContents/WildlifeImages/visit.html" />
+	</exhibit>
+	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bears" previous="Wildlife Images" >
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
 		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
 		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
