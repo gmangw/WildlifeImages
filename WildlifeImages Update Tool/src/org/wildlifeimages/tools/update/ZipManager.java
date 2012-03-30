@@ -217,13 +217,12 @@ public class ZipManager extends JFrame implements ActionListener{
 			chooser.setDialogTitle("Select new file to add.");
 			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 				if (chooser.getSelectedFile().exists()){
-					this.saveFile(chooser.getSelectedFile());
 					String newName = JOptionPane.showInputDialog("Local name for new file (such as ExhibitContents/bear.html):");
 					if (newName != null){
 						if (newFileNamePattern.matcher(newName).matches()){
 							addFile(newName, chooser.getSelectedFile());
 						}else{
-							showError("Error: invalid filename.");
+							showError("Error: invalid filename. Spaces and special characters are not allowed.");
 						}
 					}
 				}
