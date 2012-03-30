@@ -33,10 +33,10 @@ public class MapView extends ImageView {
 
 	private static final float MAX_FONT_SIZE = 35.0f;
 	
-	private float mapLeft = 0.10f;
-	private float mapTop = 0.215f;
-	private float mapRight = 0.80f;
-	private float mapBottom = 0.63f;
+	private float mapLeft = 0.0f;
+	private float mapTop = 0.0f;
+	private float mapRight = 0.0f;
+	private float mapBottom = 0.0f;
 
 	private GestureDetector gestures;
 
