@@ -3,32 +3,32 @@
     <exhibit name="Wildlife Images" xpos="78" ypos="30" next="Brown Bears">
 		<content tag="Introduction" page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
 		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
-		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" />
 		<content tag="Visit" page="ExhibitContents/WildlifeImages/visit.html" />
+		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" />
 	</exhibit>
 	<exhibit name="Brown Bears" xpos="-1" ypos="-1" next="Black Bears" previous="Wildlife Images" >
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
 		<content tag="Kodi and Yak" page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
 		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
 		<alias name="Brown Bears 1" xpos="25" ypos="86" />
 		<alias name="Brown Bears 2" xpos="9" ypos="80" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
 	</exhibit>
 	<exhibit name="Black Bears" xpos="-1" ypos="-1" previous="Brown Bears" next="Lynx">
 		<content tag="Introduction" page="ExhibitContents/BlackBears/blackBears.html" />
 		<content tag="Boggs" page="ExhibitContents/BlackBears/blackBearBoggs.html" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-3.jpg" />
 		<content tag="Jane" page="ExhibitContents/BlackBears/blackBearJane.html" />
 		<content tag="Ted E. Bear" page="ExhibitContents/BlackBears/blackBearTedEBear.html" />
 		<content tag="Yogi" page="ExhibitContents/BlackBears/blackBearYogi.html" />
 		<content tag="Bear Bear" page="ExhibitContents/BlackBears/blackBearBearBear.html" />
 		<alias name="Black Bear 1" xpos="22" ypos="58" />
 		<alias name="Black Bear 2" xpos="9" ypos="52" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-3.jpg" />
 	</exhibit>
 	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bears" next="Cougar">
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
@@ -41,40 +41,42 @@
 	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx" next="Badger">
 		<content tag="Introduction" page="ExhibitContents/Cougar/cougarIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Cougar/cougarHabitat.html" />
+		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
+		<content tag="Hunting" page="ExhibitContents/Cougar/cougarHunting.html" />
+		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
+		<content tag="Tendons" page="ExhibitContents/Cougar/cougarClipping.html" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" />
-		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
-		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
-		<content tag="Tendons" page="ExhibitContents/Cougar/cougarClipping.html" />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar" next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
+		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
-		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
 	</exhibit>
 	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger" next="Hybrid Wolves">
 		<content tag="Introduction" page="ExhibitContents/Wolves/wolvesIntro.html" />
 		<content tag="Lakota" page="ExhibitContents/Wolves/wolvesLakota.html" />
+		<content tag="Tundra" page="ExhibitContents/Wolves/wolvesTundra.html" />
+		<content tag="Wolves" page="ExhibitContents/Wolves/wolves.html" />
+		<content tag="Pack" page="ExhibitContents/Wolves/wolvesPack.html" />
+		<content tag="Territory" page="ExhibitContents/Wolves/wolvesTerritory.html" />
 		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Lakota-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
-		<content tag="Tundra" page="ExhibitContents/Wolves/wolvesTundra.html" />
-		<content tag="Wolves" page="ExhibitContents/Wolves/wolves.html" />
-		<content tag="Pack" page="ExhibitContents/Wolves/wolvesPack.html" />
-		<content tag="Hybrids" page="ExhibitContents/Wolves/wolvesPups.html" />
 	</exhibit>
 	<exhibit name="Hybrid Wolves" xpos="24" ypos="34" previous="Wolves" next="River Otter">
 		<content tag="Introduction" page="ExhibitContents/HybridWolves/hybridWolvesIntro.html" />
 		<content tag="Behavior" page="ExhibitContents/HybridWolves/hybridWolvesPersonality.html" />
+		<content tag="Integration" page="ExhibitContents/HybridWolves/hybridWolvesIntegration.html" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-Kelsi-1.jpg" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-Argo-1.jpg" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-ArgoAndKelsi-1.jpg" />
@@ -181,7 +183,7 @@
 		<content tag="Escape" page="ExhibitContents/CommonBarnOwl/commonBarnOwlEscape.html" />
 		<photo page="ExhibitContents/CommonBarnOwl/BarnOwl-Petri-1.jpg" />
 	</exhibit>
-	<exhibit name="Common Raven" xpos="40" ypos="20" previous="Common Barn Owl" next="American Crow">
+	<exhibit name="Common Raven" xpos="40" ypos="10" previous="Common Barn Owl" next="American Crow">
 		<content tag="Introduction" page="ExhibitContents/CommonRaven/commonRavenIntro.html" />
 		<content tag="Onyx" page="ExhibitContents/CommonRaven/commonRavenOnyx.html" />
 		<content tag="Speech" page="ExhibitContents/CommonRaven/commonRavenSpeech.html" />
@@ -201,7 +203,7 @@
 		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-1.jpg" />
 		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-1.jpg" />
 	</exhibit>
-	<exhibit name="Ferruginous Hawk" previous="Eurasian Eagle Owl" next="Raccoon">
+	<exhibit name="Ferruginous Hawk" previous="Eurasian Eagle Owl" next="Black Vulture">
 		<content tag="Introduction" page="ExhibitContents/FerruginousHawk/ferruginousHawkIntro.html" />
 		<content tag="Sage" page="ExhibitContents/FerruginousHawk/ferruginousHawkSage.html" />
 		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-1.jpg" />
@@ -210,13 +212,40 @@
 		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-4.jpg" />
 		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-5.jpg" />
 	</exhibit>
-	<exhibit name="Raccoon" previous="Ferruginous Hawk" next="American Mink">
+	<exhibit name="Black Vulture" previous="Ferruginous Hawk" next="Harlan Hawk">
+		<content tag="Introduction" page="ExhibitContents/BlackVulture/blackVultureIntro.html" />
+		<content tag="Solomon" page="ExhibitContents/BlackVulture/blackVultureSolomon.html" />
+		<content tag="Diet" page="ExhibitContents/BlackVulture/blackVultureDiet.html" />
+		<content tag="Hunting" page="ExhibitContents/BlackVulture/blackVultureHunting.html" />
+		<content tag="Social" page="ExhibitContents/BlackVulture/blackVultureSocial.html" />
+		<content tag="Senses" page="ExhibitContents/BlackVulture/blackVultureSenses.html" />
+		<photo page="ExhibitContents/BlackVulture/BlackVulture-1.jpg" />
+		<photo page="ExhibitContents/BlackVulture/BlackVulture-2.jpg" />
+	</exhibit>
+	<exhibit name="Harlan Hawk" previous="Black Vulture" next="Harris Hawk">
+		<content tag="Introduction" page="ExhibitContents/HarlanHawk/harlanHawkIntro.html" />
+		<content tag="Beauty" page="ExhibitContents/HarlanHawk/harlanHawkBeauty.html" />
+		<content tag="Beauty's Arrival" page="ExhibitContents/HarlanHawk/harlanHawkBeautyArrival.html" />
+		<photo page="ExhibitContents/HarlanHawk/HarlanHawk-Beauty-1.jpg" />
+	</exhibit>
+	<exhibit name="Harris Hawk" previous="Harlan Hawk" next="Raccoon">
+		<content tag="Introduction" page="ExhibitContents/HarrisHawk/harrisHawkIntro.html" />
+		<content tag="Wizard" page="ExhibitContents/HarrisHawk/harrisHawkWizard.html" />
+		<content tag="Characteristics" page="ExhibitContents/HarrisHawk/harrisHawkCharacteristics.html" />
+		<photo page="ExhibitContents/HarrisHawk/HarrisHawk-Wizard-1.jpg" />
+	</exhibit>
+	
+	
+	
+	
+	<exhibit name="Raccoon" xpos="56" ypos="17" previous="Ferruginous Hawk" next="Mink">
 		<content tag="Introduction" page="ExhibitContents/Raccoon/raccoonIntro.html" />
 		<content tag="Ruby" page="ExhibitContents/Raccoon/raccoonRuby.html" />
+		<content tag="Diet" page="ExhibitContents/Raccoon/raccoonDiet.html" />
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" />
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" />
 	</exhibit>
-	<exhibit name="American Mink" previous="Raccoon" next="Hedgehogs">
+	<exhibit name="Mink" xpos="41" ypos="22" previous="Raccoon" next="Hedgehogs">
 		<content tag="Introduction" page="ExhibitContents/AmericanMink/americanMinkIntro.html" />
 		<content tag="Species" page="ExhibitContents/AmericanMink/americanMinks.html" />
 		<content tag="Jasmine" page="ExhibitContents/AmericanMink/americanMinkJasmine.html" />
@@ -225,7 +254,7 @@
 		<content tag="Raising" page="ExhibitContents/AmericanMink/americanMinkRaising.html" />
 		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-1.jpg" />
 	</exhibit>
-	<exhibit name="Hedgehogs" previous="American Mink" next="Bobcats">
+	<exhibit name="Hedgehogs" previous="Mink" next="Bobcats">
 		<content tag="Introduction" page="ExhibitContents/HedgeHogs/hedgeHogIntro.html" />
 		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogSugarAndSpice.html" />
 		<content tag="Fun Facts" page="ExhibitContents/HedgeHogs/hedgeHogFunFacts.html" />
@@ -241,15 +270,21 @@
 		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-2.jpg" />
 		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-1.jpg" />
 	</exhibit>
-	<exhibit name="Ground Squirrel" previous="Bobcats">
+	<exhibit name="Ground Squirrel" previous="Bobcats" next="Coatis">
 		<content tag="Introduction" page="ExhibitContents/GroundSquirrel/groundSquirrelIntro.html" />
 		<content tag="Cheerio" page="ExhibitContents/GroundSquirrel/groundSquirrelCheerio.html" />
 		<content tag="Arrival" page="ExhibitContents/GroundSquirrel/groundSquirrelArrival.html" />
 		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-1.jpg" />
 		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-2.jpg" />
 	</exhibit>
+	<exhibit name="Coatis" previous="Ground Squirrel">
+		<content tag="Introduction" page="ExhibitContents/Coatis/coatisIntro.html" />
+		<content tag="Baby and Bentley" page="ExhibitContents/Coatis/coatisBabyAndBentley.html" />
+		<content tag="Diet" page="ExhibitContents/Coatis/coatisDiet.html" />
+		<photo page="ExhibitContents/Coatis/Coatis-Bentley-1.jpg" />
+	</exhibit>
 	
-	<group name="Birds" xpos="54" ypos="11">
+	<group name="Birds" xpos="54" ypos="10">
 		<member exhibit="Peregrine Falcon"></member>
 		<member exhibit="Western Screech Owl"></member>
 		<member exhibit="Golden Eagles"></member>
@@ -261,6 +296,9 @@
 		<member exhibit="American Crow"></member>
 		<member exhibit="Eurasian Eagle Owl"></member>
 		<member exhibit="Ferruginous Hawk"></member>
+		<member exhibit="Black Vulture"></member>
+		<member exhibit="Harlan Hawk"></member>
+		<member exhibit="Harris Hawk"></member>
 	</group>
 	<group name="Water Birds" xpos="63" ypos="36">
 		<member exhibit="Sacred Ibis"></member>
@@ -271,9 +309,10 @@
 		<member exhibit="Turkey Vulture"></member>
 	</group>
 	<group name="Small Mammals" xpos="33" ypos="15">
-		<member exhibit="Raccoon"></member>
-		<member exhibit="American Mink"></member>
-		<member exhibit="Bobcats"></member>
 		<member exhibit="Ground Squirrel"></member>
+		<member exhibit="Coatis"></member>
+	</group>
+	<group name="Fox/Bobcat" xpos="45" ypos="27">
+		<member exhibit="Bobcats"></member>
 	</group>
 </exhibit_list>
