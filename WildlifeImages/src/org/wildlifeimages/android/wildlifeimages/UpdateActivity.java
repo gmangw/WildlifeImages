@@ -38,12 +38,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			Log.w(this.getClass().getName(), "Update already in progress.");
 		}
 	}
-
-	public static void start(Activity context) {
-		Intent introIntent = new Intent(context, UpdateActivity.class);
-		context.startActivityIfNeeded(introIntent, 0);
-	}
-
+	
 	protected Dialog onCreateDialog(int id){
 		Dialog parent = super.onCreateDialog(id);
 
@@ -62,9 +57,11 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	public void onUpdateCompleted(boolean result) {
 		ContentManager.getSelf().prepareExhibits(this.getAssets());
 		if (result == true){
+			setResult(Activity.RESULT_OK);
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_success), Toast.LENGTH_SHORT).show();
 		}else{
 			ContentManager.getSelf().clearCache();
+			setResult(Activity.RESULT_CANCELED);
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_failure), Toast.LENGTH_SHORT).show();
 		}
 		finish();
@@ -111,6 +108,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 
 		@Override
 		protected void onCancelled(){
+			setResult(Activity.RESULT_CANCELED);
 			finish();
 		}
 

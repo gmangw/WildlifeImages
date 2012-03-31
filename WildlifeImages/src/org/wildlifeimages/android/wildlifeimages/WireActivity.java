@@ -23,7 +23,7 @@ public abstract class WireActivity extends Activity{
 
 		/* Create a new content manager if there is none. */
 		if (ContentManager.getSelf() == null){
-			new ContentManager(this.getCacheDir(), this.getFilesDir(), this.getAssets());
+			new ContentManager(this.getFilesDir(), this.getAssets());
 		}
 		
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){

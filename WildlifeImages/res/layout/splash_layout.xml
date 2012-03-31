@@ -1,79 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center"
-    android:background="@android:color/white"
-    android:orientation="vertical" >
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/namebar" />
+    android:background="@android:color/white" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-            <ImageButton
-                android:id="@+id/intro_sidebar_exhibitlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/explore_icon" />
-
-            <ImageButton
-                android:id="@+id/intro_sidebar_photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/photos_icon" />
-        </LinearLayout>
+            android:layout_gravity="center"
+            android:src="@drawable/namebar" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
+            android:layout_gravity="center"
+            android:orientation="vertical" >
 
-            <ImageButton
-                android:id="@+id/intro_sidebar_events"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/events_icon" />
+                android:orientation="horizontal" >
 
-            <ImageButton
-                android:id="@+id/intro_sidebar_map"
+                <ImageButton
+                    android:id="@+id/intro_sidebar_exhibitlist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/explore_icon" />
+
+                <ImageButton
+                    android:id="@+id/intro_sidebar_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/photos_icon" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="introProcessSidebar"
-                android:scaleType="fitCenter"
-                android:src="@drawable/map_icon" />
+                android:orientation="horizontal" >
+
+                <ImageButton
+                    android:id="@+id/intro_sidebar_events"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/events_icon" />
+
+                <ImageButton
+                    android:id="@+id/intro_sidebar_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="introProcessSidebar"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/map_icon" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -83,8 +88,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:background="@android:color/white"
+        android:onClick="updateClicked"
+        android:text="Update Available"
         android:textColor="@android:color/black"
         android:textSize="@dimen/update_text_size"
         android:visibility="invisible" />
 
-</LinearLayout>
+</FrameLayout>

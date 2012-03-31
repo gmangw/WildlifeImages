@@ -47,7 +47,7 @@ public class IntroActivity extends WireActivity{
 		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
-			//new UpdateChecker().execute(this);
+			new UpdateChecker().execute(this);
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
 		}
@@ -74,12 +74,14 @@ public class IntroActivity extends WireActivity{
 		showIntro();
 
 		Button b = (Button)findViewById(R.id.update_status);
-		String updateStatus = savedState.getString("UpdateStatus");
-		if (updateStatus.length() > 0){
-			b.setText(updateStatus);
+		if (savedState.getBoolean("UpdateStatus") == true){
 			b.setVisibility(View.VISIBLE);
 		}
 		//introProcessSidebar(activeHomeId);
+	}
+	
+	public void updateClicked(View v){
+		showDialog(UPDATE_DIALOG); //TODO
 	}
 
 	protected Dialog onCreateDialog(int id){
@@ -118,6 +120,16 @@ public class IntroActivity extends WireActivity{
 		return builder.create();
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent){
+		super.onActivityResult(requestCode, resultCode, intent);
+		
+		if (requestCode == R.integer.UPDATE_ACTIVITY_REQUEST && resultCode == Activity.RESULT_OK){
+			Button b = (Button)findViewById(R.id.update_status);
+			b.setVisibility(View.INVISIBLE);
+		}
+	}
+	
 	private AlertDialog createUpdateDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final IntroActivity me = this;
@@ -126,7 +138,8 @@ public class IntroActivity extends WireActivity{
 		.setPositiveButton(loadString(R.string.update_available_message_yes),
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				UpdateActivity.start(me);
+				Intent introIntent = new Intent(me, UpdateActivity.class);
+				me.startActivityForResult(introIntent, R.integer.UPDATE_ACTIVITY_REQUEST);
 			}
 		})
 		.setNegativeButton(loadString(R.string.update_available_message_no),
@@ -155,7 +168,7 @@ public class IntroActivity extends WireActivity{
 
 		//outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 		Button b = (Button)findViewById(R.id.update_status);
-		outState.putString("UpdateStatus", b.getText().toString());
+		outState.putBoolean("UpdateStatus", b.getVisibility() == View.VISIBLE);
 	}
 
 	/**
@@ -269,14 +282,7 @@ public class IntroActivity extends WireActivity{
 		@Override
 		protected void onPostExecute(String result){
 			if (result != null){
-
 				Button b = (Button)findViewById(R.id.update_status);
-				b.setText("Update Available");
-				b.setOnClickListener(new OnClickListener(){
-					public void onClick(View v) {
-						showDialog(UPDATE_DIALOG); //TODO
-					}
-				});
 				b.setVisibility(View.VISIBLE);
 			}
 		}
@@ -286,9 +292,10 @@ public class IntroActivity extends WireActivity{
 			for (int i : amount){
 				switch(i){
 				case NETWORK_ERROR:
-					Button b = (Button)findViewById(R.id.update_status);
-					b.setText("Cannot check for updates");
-					b.setVisibility(View.VISIBLE);
+					//Button b = (Button)findViewById(R.id.update_status);
+					//b.setText("Cannot check for updates");
+					//b.setVisibility(View.VISIBLE);
+					//TODO
 				}
 			}
 		}

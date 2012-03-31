@@ -46,7 +46,6 @@ public class ContentManager {
 
 	private ExhibitList exhibitList;
 
-	private final File cacheDir;
 	private final File filesDir;
 	BitmapCache imgCache;
 
@@ -69,15 +68,14 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	public ContentManager(File cacheDir, File filesDir, AssetManager assets){
+	public ContentManager(File filesDir, AssetManager assets){
 		//testBitmapMax(assets);
 
 		self = this;
 
-		this.cacheDir = cacheDir;
 		this.filesDir = filesDir;
 		imgCache = new BitmapCache();
-		addAllToMap(cacheDir);
+		addAllToMap(filesDir);
 
 		prepareExhibits(assets);
 	}
@@ -120,7 +118,7 @@ public class ContentManager {
 	 * 
 	 */
 	public void clearCache(){
-		File[] list = cacheDir.listFiles();
+		File[] list = filesDir.listFiles();
 		for(int i=0; i<list.length; i++){
 			Common.recursiveRemove(list[i]); 
 		}
@@ -140,7 +138,7 @@ public class ContentManager {
 		timekeeper.put(shortUrl, accessTime++);
 		if (cachedFiles.contains(shortUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + shortUrl);
-			return cacheDir.toURI().toString() + shortUrl;
+			return filesDir.toURI().toString() + shortUrl;
 		}else{
 			return "file:///android_asset/" + shortUrl;
 		}
@@ -284,7 +282,7 @@ public class ContentManager {
 			}
 		}else{
 			String path = file.getAbsolutePath();
-			path = path.replace(cacheDir.getAbsolutePath()+"/", "");
+			path = path.replace(filesDir.getAbsolutePath()+"/", "");
 			cachedFiles.add(path);
 			Log.d(this.getClass().getName(), "Found in cache: " + path);
 		}
@@ -344,38 +342,29 @@ public class ContentManager {
 				if (progress.isCancelled() == true){
 					break;
 				}
-				File f  = new File(cacheDir, ze.getName() + ".part");
 				File f2 = new File(filesDir, ze.getName() + ".part");
-				String outputFilename = cacheDir.getAbsolutePath() + "/" + ze.getName();
 				String outputFilename2 = filesDir.getAbsolutePath() + "/" + ze.getName();
 				
-				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f.getPath() + "and" + f2.getPath());
+				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f2.getPath());
 				try{
-					Common.mkdirForFile(f);
+					Common.mkdirForFile(f2);
 				}catch(IOException e){
+					result = false;
 					continue;
 				}
-				FileOutputStream fout = new FileOutputStream(f);
 				FileOutputStream fout2 = new FileOutputStream(f2);
 
 				byte[] buffer = new byte[4];
 				for(int read = zipStream.read(buffer); read != -1; read = zipStream.read(buffer)) {
-					fout.write(buffer, 0, read);
 					fout2.write(buffer, 0, read);
 					lengthRead++;
 				}
-				fout.close();
 				fout2.close();
 				zipStream.closeEntry();
-				boolean renameResult = f.renameTo(new File(outputFilename));
-				if (false == renameResult){
-					Log.e(this.getClass().getName(), "Could not rename the .part file for " +ze.getName());
-					result = false;
-				}
 				boolean renameResult2 = f2.renameTo(new File(outputFilename2));
 				if (false == renameResult2){
 					Log.e(this.getClass().getName(), "Could not rename the .part file for " +ze.getName() + " in data.");
-					//result = false;
+					result = false;
 				}
 				imgCache.removeBitmap(ze.getName()); //TODO make sure thumbs update
 				cachedFiles.add(ze.getName());
