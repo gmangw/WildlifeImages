@@ -80,7 +80,6 @@ public class APKLoader implements PackageLoader{
 		}
 		zf.close();
 		return loader;
-
 	}
 
 	public boolean loadNewPackage(){

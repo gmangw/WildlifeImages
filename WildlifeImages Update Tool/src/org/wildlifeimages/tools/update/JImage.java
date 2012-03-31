@@ -33,7 +33,6 @@ public class JImage extends JPanel{
 
 	public void setImage(String shortUrl, InputStream source){
 		if (lastShortUrl == null || (false == lastShortUrl.equalsIgnoreCase(shortUrl))){
-			System.out.println("Loading image " + shortUrl);
 			try{
 				image = ImageIO.read(source);
 				source.close();

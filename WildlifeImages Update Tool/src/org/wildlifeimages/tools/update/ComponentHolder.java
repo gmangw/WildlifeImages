@@ -3,6 +3,7 @@ package org.wildlifeimages.tools.update;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +30,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 
 public class ComponentHolder implements ChangeListener, ActionListener{
@@ -48,6 +50,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JList modifiedFilesList = new JList();
 	final JList groupNameList = new JList();
 	final JList groupExhibitsList = new JList();
+	final JList exhibitAliasesList = new JList();
 	
 	final JPanel contentPanel = new JPanel(new GridLayout(1,2));
 	final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
@@ -67,8 +70,11 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	
 	final JImage exhibitPhotosImage = new JImage();
 	
-	final NumberSpinner exhibitXSpinnerModel = new NumberSpinner("x");
-	final NumberSpinner exhibitYSpinnerModel = new NumberSpinner("y");
+	final NumberSpinner exhibitXSpinnerModel = new NumberSpinner();
+	final NumberSpinner exhibitYSpinnerModel = new NumberSpinner();
+	
+	final NumberSpinner aliasXSpinnerModel = new NumberSpinner();
+	final NumberSpinner aliasYSpinnerModel = new NumberSpinner();
 	
 	final ModifiedListModel modifiedFilesListModel;
 	final ContentListModel contentListModel;
@@ -76,6 +82,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final ExhibitListModel exhibitNameModel;
 	final GroupListModel groupListModel;
 	final GroupExhibitsModel groupExhibitsModel;
+	final ExhibitAliasesModel exhibitAliasesModel;
 	
 	final JTabbedPane tabbedPane = new JTabbedPane();
 	
@@ -88,17 +95,21 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JSpinner exhibitXCoordField = new JSpinner(exhibitXSpinnerModel);
 	final JSpinner exhibitYCoordField = new JSpinner(exhibitYSpinnerModel);
 	
+	final JSpinner aliasXCoordField = new JSpinner(aliasXSpinnerModel);
+	final JSpinner aliasYCoordField = new JSpinner(aliasYSpinnerModel);
+	
 	final ZipManager peer;
 	
 	public ComponentHolder(ZipManager manager){
 		peer = manager;
-		mapPanel = new JMapPanel(new GridLayout(1,1), peer.mapDimension, peer);
+		mapPanel = new JMapPanel(new GridLayout(1,1,0,0), peer.getMapDimension(), peer);
 		modifiedFilesListModel = new ModifiedListModel();
 		contentListModel = new ContentListModel();
 		exhibitPhotosModel = new ExhibitPhotosModel();
 		exhibitNameModel = new ExhibitListModel();
 		groupListModel = new GroupListModel();
 		groupExhibitsModel = new GroupExhibitsModel();
+		exhibitAliasesModel = new ExhibitAliasesModel();
 	}
 	
 	public void init(){		
@@ -110,6 +121,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 				JList src = (JList)arg0.getSource();
 				selectExhibit(src.getSelectedIndex());
 				selectPhoto();
+				selectAlias();
 			}
 		});
 
@@ -125,6 +137,15 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		
 		groupExhibitsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		groupExhibitsList.setModel(groupExhibitsModel);
+		
+		exhibitAliasesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		exhibitAliasesList.setModel(exhibitAliasesModel);
+		exhibitAliasesList.addListSelectionListener(new ListSelectionListener(){
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				selectAlias();
+			}
+		});
 		
 		groupNameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		groupNameList.setModel(groupListModel);
@@ -148,7 +169,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 
 		saveButton.addActionListener(peer);
 		saveButton.setSize(100, 20);
-
+		
 		newFileButton.addActionListener(peer);
 
 		newExhibitButton.addActionListener(peer);
@@ -165,6 +186,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		
 		exhibitXSpinnerModel.addChangeListener(this);
 		exhibitYSpinnerModel.addChangeListener(this);
+		
+		aliasXSpinnerModel.addChangeListener(this);
+		aliasYSpinnerModel.addChangeListener(this);
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.addItem(" ");
@@ -195,6 +219,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		contentList.setSelectionInterval(0, 0);
 		exhibitPhotosList.setSelectionInterval(0, 0);
 		groupNameList.setSelectionInterval(0, 0);
+		exhibitAliasesList.setSelectionInterval(0, 0);
 
 		JPanel contentDropdownPanel = new JPanel(new GridLayout(4, 1));
 		contentDropdownPanel.add(new JLabel("Original content:"));
@@ -240,12 +265,20 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		listPanel.add(listPanelBottom);
 		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
+		JPanel aliasPanel = new JPanel(new GridLayout(1,2));
+		JPanel aliasDataPanel = new JPanel(new GridLayout(2,1));
+		aliasDataPanel.add(aliasXCoordField);
+		aliasDataPanel.add(aliasYCoordField);
+		
+		aliasPanel.add(new JScrollPane(exhibitAliasesList));
+		aliasPanel.add(aliasDataPanel);
+		
 		subPanel1.add(listPanel);
 		subPanel1.add(new JScrollPane(exhibitPhotosImage));
 		subPanel2.add(exhibitDataPanel);
 		subPanel2.add(contentPanel);
 		
-		subPanel3.add(new JPanel());
+		subPanel3.add(aliasPanel);
 		subPanel3.add(newButtonsPanel);
 		
 		mainPanel.add(subPanel1);
@@ -254,8 +287,6 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		mainPanel.setBackground(Color.WHITE);
-
-		mapPanel.add(peer.getMap());
 		
 		subPanel4.add(new JScrollPane(groupNameList));
 		subPanel4.add(new JScrollPane(groupExhibitsList));
@@ -271,6 +302,20 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		tabbedPane.addTab("Exhibit Stuff", mainPanel);
 		tabbedPane.addTab("Map", mapPanel);
 		tabbedPane.addTab("Groups", groupPanel);
+	}
+	
+	void selectAlias(){
+		int index = exhibitAliasesList.getSelectedIndex();
+		if (index < peer.getCurrentExhibit().getAliases().length){
+			aliasXCoordField.setVisible(true);
+			aliasYCoordField.setVisible(true);
+			Alias alias = peer.getCurrentExhibit().getAliases()[index];
+			aliasXCoordField.getModel().setValue(alias.xPos);
+			aliasYCoordField.getModel().setValue(alias.yPos);
+		}else{
+			aliasXCoordField.setVisible(false);
+			aliasYCoordField.setVisible(false);
+		}
 	}
 	
 	void selectContent(String tag){
@@ -309,16 +354,12 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		}
 
 		exhibitPhotosList.setSelectionInterval(0, 0);
+		exhibitAliasesList.setSelectionInterval(0, 0);
+		
+		exhibitAliasesModel.notifyChange();
 	}
 	
-	class ModifiedListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-		
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
+	class ModifiedListModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
 			String[] keys = peer.getModifiedFileNames();
@@ -329,17 +370,6 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		@Override
 		public int getSize() {
 			return peer.getModifiedFileNames().length;
-		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
 		}
 	}
 	
@@ -354,14 +384,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		}
 	}
 	
-	class ExhibitListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-		
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
+	class ExhibitListModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
 			return peer.getExhibits().get(index).getName();
@@ -371,27 +394,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		public int getSize() {
 			return peer.getExhibits().size();
 		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
 	}
 	
-	class GroupListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-		
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
+	class GroupListModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
 			return peer.getGroupNames()[index];
@@ -401,27 +406,22 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		public int getSize() {
 			return peer.getGroupNames().length;
 		}
-
+	}
+	
+	
+	class ExhibitAliasesModel extends BasicListModel{
 		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
+		public Object getElementAt(int index) {
+			return peer.getCurrentExhibit().getAliases()[index].name;
 		}
 
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
+		@Override
+		public int getSize() {
+			return peer.getCurrentExhibit().getAliases().length;
 		}
 	}
 	
-	class GroupExhibitsModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-		
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
+	class GroupExhibitsModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
 			return peer.getGroup(groupNameList.getSelectedValue().toString()).exhibits[index];
@@ -431,27 +431,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		public int getSize() {
 			return peer.getGroup(groupNameList.getSelectedValue().toString()).exhibits.length;
 		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
 	}
 
-	class ContentListModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-		
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
+	class ContentListModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
 			if (this.getSize() > 0){
@@ -465,27 +447,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		public int getSize() {
 			return peer.getCurrentExhibit().getTagCount();
 		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
 	}
 
-	class ExhibitPhotosModel implements ListModel{
-		ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
-		
-		@Override
-		public void addListDataListener(ListDataListener newListener) {
-			listeners.add(newListener);
-		}
-
+	class ExhibitPhotosModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
 			return peer.getCurrentExhibit().getPhotos()[index];
@@ -494,17 +458,6 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		@Override
 		public int getSize() {
 			return peer.getCurrentExhibit().getPhotos().length;
-		}
-
-		@Override
-		public void removeListDataListener(ListDataListener oldListener) {
-			listeners.remove(oldListener);
-		}
-
-		public void notifyChange(){
-			for (ListDataListener listener : listeners){
-				listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
 		}
 	}
 	
@@ -523,6 +476,14 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 			if (e.origYCoord != e.getY()){
 				peer.makeChange();
 			}
+		}else if (arg0.getSource().equals(aliasXCoordField.getModel())){
+			int val = Integer.parseInt(aliasXCoordField.getModel().getValue().toString());
+			int index = exhibitAliasesList.getSelectedIndex();
+		}else if (arg0.getSource().equals(aliasYCoordField.getModel())){
+			int val = Integer.parseInt(aliasYCoordField.getModel().getValue().toString());
+			int index = exhibitAliasesList.getSelectedIndex();
+			Alias alias = e.getAliases()[index];
+			e.addAlias(alias.name, alias.xPos, alias.yPos);
 		}
 	}
 

@@ -4,7 +4,10 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +26,6 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import org.apache.batik.swing.JSVGCanvas;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
@@ -38,9 +40,9 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 
-	final JSVGCanvas map;
+	private JSVGCanvas map;
 
-	final Dimension mapDimension = new Dimension();
+	private final Dimension mapDimension = new Dimension();
 
 	private ExhibitLoader exhibitParser = null;
 
@@ -51,19 +53,12 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	final ComponentHolder c;
 
-	public ZipManager(PackageLoader loader){
+	public ZipManager(PackageLoader loader){	
 		packageLoader = loader;
-		JSVGCanvas newMap = null;
-		try{
-			newMap = JMapPanel.getMapCanvas(mapDimension, packageLoader.getFileInputStream("res/raw/map.svg"));
-		}catch(IOException e){
-			newMap = new JSVGCanvas();
-		}finally{
-			map = newMap;
-		}
+		
 		this.setTitle("Update Tool");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+		
 		modifiedFiles.clear();
 
 		try {
@@ -78,12 +73,31 @@ public class ZipManager extends JFrame implements ActionListener{
 
 		c = new ComponentHolder(this);
 		c.init();
-
+		
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(c.tabbedPane);
+		
+		
+		JSVGCanvas newMap = null;
+		try{
+			newMap = JMapPanel.getMapCanvas(mapDimension, packageLoader.getFileInputStream("res/raw/map.svg"));
+			System.out.println(mapDimension.getWidth() + ", " + mapDimension.getHeight());
+		}catch(IOException e){
+			newMap = new JSVGCanvas();
+		}finally{
+			map = newMap;
+		}
+		c.mapPanel.add(map);
+		c.tabbedPane.setSelectedIndex(1);
+		c.tabbedPane.setSelectedIndex(0);
+		this.setVisible(true);
 	}
 
+	Dimension getMapDimension(){
+		return mapDimension;
+	}
+	
 	void makeChange(){
 		this.setTitle("Update Tool*");
 	}
@@ -125,7 +139,14 @@ public class ZipManager extends JFrame implements ActionListener{
 			out.closeEntry();
 
 			out.close();
-
+			
+			File outPage = new File(outFile.getParent(), "update.html");
+			String contents = "<html>\n<a href=\"http://www.wildlifeimages.org\">Homepage</a>\n<!-- http://oregonstate.edu/~wilkinsg/wildlifeimages/" + outFile.getName() + " -->\n</html>";
+			
+			FileOutputStream pageStream = new FileOutputStream(outPage);
+			pageStream.write(contents.getBytes());
+			pageStream.close();
+			
 			for(ExhibitInfo e : exhibitParser.getExhibits()){
 				File output = new File(e.getName()+".png");
 				CreateQR.writeExhibitQR(e.getName(), output);
@@ -200,7 +221,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource().equals(c.saveButton)){
+		if (event.getSource().equals(c.saveButton)){			
 			JFileChooser chooser = new JFileChooser("../");
 			chooser.setAcceptAllFileFilterUsed(false);
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -209,7 +230,6 @@ public class ZipManager extends JFrame implements ActionListener{
 				Calendar now = Calendar.getInstance();
 				String filename = String.format("update_%1$tY%1$tm%1$td%1$tH%1$tM.zip", now);
 				File f = new File(chooser.getSelectedFile(), filename);
-				System.out.println(f.getPath());
 				this.saveFile(f);
 			}
 		}else if (event.getSource().equals(c.newFileButton)){
@@ -228,8 +248,9 @@ public class ZipManager extends JFrame implements ActionListener{
 				}
 			}
 		}else if (event.getSource().equals(c.newContentDropdown)){
-			getCurrentExhibit().setContent(currentTag, (String)c.newContentDropdown.getSelectedItem());
-			if (false == getCurrentExhibit().getContent(currentTag).equals(getCurrentExhibit().getOrigContents(currentTag))){
+			ExhibitInfo e = getCurrentExhibit();
+			e.setContent(currentTag, (String)c.newContentDropdown.getSelectedItem());
+			if (false == e.getContent(currentTag).equals(e.getOrigContents(currentTag))){
 				makeChange();
 			}
 		}else if (event.getSource().equals(c.exhibitPreviousDropdown)){

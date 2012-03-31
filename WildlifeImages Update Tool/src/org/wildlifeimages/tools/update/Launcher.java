@@ -13,9 +13,9 @@ public class Launcher implements WindowListener{
 	private final PackageLoader initialLoader = new APKLoader();
 	
 	public Launcher(){
+		//initialLoader.loadNewPackage();
 		ZipManager zr = new ZipManager(initialLoader);
 		zr.addWindowListener(this);
-		zr.setVisible(true);
 	}
 
 	@Override
@@ -27,7 +27,6 @@ public class Launcher implements WindowListener{
 			initialLoader.setNewState(false);
 			ZipManager zr = new ZipManager(initialLoader);
 			zr.addWindowListener(this);
-			zr.setVisible(true);
 		}else{
 			System.exit(0);
 		}

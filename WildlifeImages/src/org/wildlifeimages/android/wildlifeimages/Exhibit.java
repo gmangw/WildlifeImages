@@ -145,6 +145,12 @@ public class Exhibit{
 	}
 
 	public void addAlias(String aliasName, int xPos, int yPos) {
+		for (int i=0; i<aliasList.size(); i++){
+			if (aliasList.get(i).name.equals(aliasName)){
+				aliasList.set(i, new Alias(aliasName, xPos, yPos));
+				return;
+			}
+		}
 		aliasList.add(new Alias(aliasName, xPos, yPos));
 	}
 

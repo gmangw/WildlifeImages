@@ -8,12 +8,8 @@ import javax.swing.event.ChangeListener;
 
 public class NumberSpinner implements SpinnerModel{
 	private int val = 0;
-	public final String type;
 	ArrayList<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
-	public NumberSpinner(String spinnerType) {
-		type = spinnerType;
-	}
 	@Override
 	public void addChangeListener(ChangeListener arg0) {
 		listeners.add(arg0);

@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -100,21 +103,22 @@ public class JMapPanel extends JPanel{
 	}
 
 	public static JSVGCanvas getMapCanvas(Dimension d, InputStream stream) throws IOException{
-
+		
 		JSVGCanvas svgCanvas = new JSVGCanvas();
 
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 
 		SVGDocument doc = (SVGDocument)f.createDocument("myURI", stream);
+		
 		stream.close();
 		String widthString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE);
 		String heightString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE);
 		int width = Integer.parseInt(widthString.substring(0, widthString.length()-3));
 		int height = Integer.parseInt(heightString.substring(0, heightString.length()-3));
-
 		d.setSize(width, height);
 
+		
 		svgCanvas.setSVGDocument(doc);
 
 		return svgCanvas;
