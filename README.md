@@ -1,7 +1,8 @@
 Wildlife Images
 =============
 
-An Android app for visitors to the Wildlife Images Rehabilitation and Education Center.
+An Android app for visitors to the Wildlife Images Rehabilitation and Education Center. 
+Try it out on the [Android Market](https://play.google.com/store/apps/details?id=org.wildlifeimages.android.wildlifeimages).
 
 Current Build
 -------
