@@ -14,6 +14,6 @@ Contributors
 
 The following contributors are part of active development, as part of a Computer Science capstone project for Oregon State University:
 
-* Graham Wilkinson
-* Shady Glenn
+* [Graham Wilkinson](https://github.com/gmangw)
+* [Shady Glenn](https://github.com/shadyeglenn)
 * Naveen Nanja
