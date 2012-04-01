@@ -35,6 +35,22 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	public void addGroup(String groupName, String[] data, int x, int y) {
 		groupList.put(groupName, new ExhibitGroup(data, x, y));
 	}
+	
+	public void removeGroup(String groupName){
+		groupList.remove(groupName);
+	}
+	
+	public void removeGroupExhibit(String exhibitName, String groupName){
+		ExhibitGroup group = groupList.get(groupName);
+		ArrayList<String> newExhibits = new ArrayList<String>();
+		for (String s : group.exhibits){
+			if (s.equals(exhibitName) == false){
+				newExhibits.add(s);
+			}
+		}
+		ExhibitGroup newGroup = new ExhibitGroup(newExhibits.toArray(new String[0]), group.xPos, group.yPos);
+		groupList.put(groupName, newGroup);
+	}
 
 	@Override
 	public void addExhibit(String name, int xCoord, int yCoord, String next, String previous, ExhibitDataHolder data) {

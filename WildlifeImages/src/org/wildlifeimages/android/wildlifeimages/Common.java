@@ -38,7 +38,7 @@ import android.widget.Toast;
  */	
 public class Common {
 	private static final Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d{12}\\.zip");
-	private static final Pattern imageExtensionExpression = Pattern.compile(".+(.jpg|.jpeg|.bmp|.png|.gif)");
+	public static final Pattern imageExtensionExpression = Pattern.compile(".+(.jpg|.jpeg|.bmp|.png|.gif)");
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
 	 * method queries the package manager for installed packages that can

@@ -4,10 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyBoundsListener;
-import java.awt.event.HierarchyEvent;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,7 +74,6 @@ public class ZipManager extends JFrame implements ActionListener{
 		this.setSize(720, 640);
 		this.setLayout(new GridLayout(1,1));
 		this.add(c.tabbedPane);
-		
 		
 		JSVGCanvas newMap = null;
 		try{
@@ -201,6 +197,14 @@ public class ZipManager extends JFrame implements ActionListener{
 	public JSVGCanvas getMap(){
 		return map;
 	}
+	
+	public void removeGroup(String groupName) {
+		exhibitParser.removeGroup(groupName);
+	}
+	
+	public void removeGroupExhibit(String exhibitName, String groupName) {
+		exhibitParser.removeGroupExhibit(exhibitName, groupName);
+	}
 
 	public void addGroup(String name, ExhibitGroup group){
 		exhibitParser.addGroup(name, group.exhibits, group.xPos, group.yPos);
@@ -217,6 +221,11 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	public ArrayList<ExhibitInfo> getExhibits(){
 		return exhibitParser.getExhibits();
+	}
+	
+	public static boolean isImage(String filename){
+		final Pattern imageExtensionExpression = Pattern.compile(".+(.jpg|.jpeg|.bmp|.png|.gif)");
+		return imageExtensionExpression.matcher(filename.toLowerCase()).matches();
 	}
 
 	@Override
@@ -301,11 +310,15 @@ public class ZipManager extends JFrame implements ActionListener{
 			ArrayList<String> fileList = new ArrayList<String>();
 			for (String file : originalFiles){
 				if (false == modifiedFiles.containsKey(file)){
-					fileList.add(file);
+					if (isImage(file)){
+						fileList.add(file);
+					}
 				}
 			}
 			for (String file : modifiedFiles.keySet()){
-				fileList.add(file);
+				if (isImage(file)){
+					fileList.add(file);
+				}
 			}
 			Object[] files = fileList.toArray();
 			String s = (String)JOptionPane.showInputDialog(this, "File to use:", "New Photo",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
@@ -326,5 +339,4 @@ public class ZipManager extends JFrame implements ActionListener{
 
 		}
 	}
-
 }

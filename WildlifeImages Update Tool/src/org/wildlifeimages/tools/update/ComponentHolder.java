@@ -3,7 +3,6 @@ package org.wildlifeimages.tools.update;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,12 +20,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -42,6 +38,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JButton loadPackageButton = new JButton("Load Package");
 	final JButton addGroupButton = new JButton("New Group");
 	final JButton addGroupExhibitButton = new JButton("Add Exhibit To Group");
+	final JButton removeGroupExhibitButton = new JButton("Remove Exhibit From Group");
 	final JButton editFileButton = new JButton("View/Edit File");
 	
 	final JList exhibitNameList = new JList();
@@ -55,7 +52,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JPanel contentPanel = new JPanel(new GridLayout(1,2));
 	final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
 	final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
-	final JPanel groupPanel = new JPanel(new GridLayout(3,1));
+	final JPanel groupPanel = new JPanel(new GridLayout(4,1));
 	final JMapPanel mapPanel;
 	
 	final JLabel exhibitXCoordOrig = new JLabel();
@@ -72,9 +69,17 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	
 	final NumberSpinner exhibitXSpinnerModel = new NumberSpinner();
 	final NumberSpinner exhibitYSpinnerModel = new NumberSpinner();
-	
 	final NumberSpinner aliasXSpinnerModel = new NumberSpinner();
 	final NumberSpinner aliasYSpinnerModel = new NumberSpinner();
+	final NumberSpinner groupXSpinnerModel = new NumberSpinner();
+	final NumberSpinner groupYSpinnerModel = new NumberSpinner();
+	
+	final JSpinner exhibitXCoordField = new JSpinner(exhibitXSpinnerModel);
+	final JSpinner exhibitYCoordField = new JSpinner(exhibitYSpinnerModel);
+	final JSpinner aliasXCoordField = new JSpinner(aliasXSpinnerModel);
+	final JSpinner aliasYCoordField = new JSpinner(aliasYSpinnerModel);
+	final JSpinner groupXCoordField = new JSpinner(groupXSpinnerModel);
+	final JSpinner groupYCoordField = new JSpinner(groupYSpinnerModel);
 	
 	final ModifiedListModel modifiedFilesListModel;
 	final ContentListModel contentListModel;
@@ -90,13 +95,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JPanel subPanel2 = new JPanel(new GridLayout(2, 1, 2, 5));
 	final JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
 	final JPanel subPanel4 = new JPanel(new GridLayout(1, 2, 2, 5));
-	final JPanel subPanel5 = new JPanel(new GridLayout(1, 3, 2, 5));
-	
-	final JSpinner exhibitXCoordField = new JSpinner(exhibitXSpinnerModel);
-	final JSpinner exhibitYCoordField = new JSpinner(exhibitYSpinnerModel);
-	
-	final JSpinner aliasXCoordField = new JSpinner(aliasXSpinnerModel);
-	final JSpinner aliasYCoordField = new JSpinner(aliasYSpinnerModel);
+	final JPanel subPanel5 = new JPanel(new GridLayout(2, 2));
 	
 	final ZipManager peer;
 	
@@ -155,6 +154,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 				JList src = (JList)arg0.getSource();
 				ExhibitGroup group = peer.getGroup(src.getSelectedValue().toString());
 				groupExhibitsModel.notifyChange();
+				groupExhibitsList.setSelectionInterval(0, 0);
+				groupXSpinnerModel.setValue(group.xPos);
+				groupYSpinnerModel.setValue(group.yPos);
 			}
 		});
 
@@ -181,14 +183,23 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		loadPackageButton.addActionListener(peer);
 		
 		addGroupExhibitButton.addActionListener(this);
+		removeGroupExhibitButton.addActionListener(this);
 		addGroupButton.addActionListener(this);
 		editFileButton.addActionListener(this);
+		
+		addGroupExhibitButton.setBackground(Color.WHITE);
+		removeGroupExhibitButton.setBackground(Color.WHITE);
+		addGroupButton.setBackground(Color.WHITE);
+		editFileButton.setBackground(Color.WHITE);
 		
 		exhibitXSpinnerModel.addChangeListener(this);
 		exhibitYSpinnerModel.addChangeListener(this);
 		
 		aliasXSpinnerModel.addChangeListener(this);
 		aliasYSpinnerModel.addChangeListener(this);
+		
+		groupXSpinnerModel.addChangeListener(this);
+		groupYSpinnerModel.addChangeListener(this);
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.addItem(" ");
@@ -273,6 +284,10 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		aliasPanel.add(new JScrollPane(exhibitAliasesList));
 		aliasPanel.add(aliasDataPanel);
 		
+		JPanel groupDataPanel = new JPanel(new GridLayout(2,1));
+		groupDataPanel.add(groupXCoordField);
+		groupDataPanel.add(groupYCoordField);
+		
 		subPanel1.add(listPanel);
 		subPanel1.add(new JScrollPane(exhibitPhotosImage));
 		subPanel2.add(exhibitDataPanel);
@@ -294,8 +309,10 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		subPanel5.add(addGroupButton);
 		subPanel5.add(addGroupExhibitButton);
 		subPanel5.add(editFileButton);
+		subPanel5.add(removeGroupExhibitButton);
 		
 		groupPanel.add(subPanel4);
+		groupPanel.add(groupDataPanel);
 		groupPanel.add(new JScrollPane(modifiedFilesList));
 		groupPanel.add(subPanel5);
 		
@@ -479,11 +496,23 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		}else if (arg0.getSource().equals(aliasXCoordField.getModel())){
 			int val = Integer.parseInt(aliasXCoordField.getModel().getValue().toString());
 			int index = exhibitAliasesList.getSelectedIndex();
+			Alias alias = e.getAliases()[index];
+			e.addAlias(alias.name, val, alias.yPos);
 		}else if (arg0.getSource().equals(aliasYCoordField.getModel())){
 			int val = Integer.parseInt(aliasYCoordField.getModel().getValue().toString());
 			int index = exhibitAliasesList.getSelectedIndex();
 			Alias alias = e.getAliases()[index];
-			e.addAlias(alias.name, alias.xPos, alias.yPos);
+			e.addAlias(alias.name, alias.xPos, val);
+		}else if (arg0.getSource().equals(groupXCoordField.getModel())){
+			int val = Integer.parseInt(groupXCoordField.getModel().getValue().toString());
+			String name = groupNameList.getSelectedValue().toString();
+			ExhibitGroup group = peer.getGroup(name);
+			peer.addGroup(name, new ExhibitGroup(group.exhibits, val, group.yPos));
+		}else if (arg0.getSource().equals(groupYCoordField.getModel())){
+			int val = Integer.parseInt(groupYCoordField.getModel().getValue().toString());
+			String name = groupNameList.getSelectedValue().toString();
+			ExhibitGroup group = peer.getGroup(name);
+			peer.addGroup(name, new ExhibitGroup(group.exhibits,group.xPos, val));
 		}
 	}
 
@@ -498,11 +527,24 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 				peer.makeChange();
 			}
 		}else if (arg0.getSource().equals(addGroupExhibitButton)){
-			Object[] files = peer.getExhibits().toArray();
+			ArrayList<ExhibitInfo> filesList = new ArrayList<ExhibitInfo>();
+			for(ExhibitInfo e : peer.getExhibits()){
+				filesList.add(e);
+			}
+			String groupName = groupNameList.getSelectedValue().toString();
+			ExhibitGroup group = peer.getGroup(groupName);
+			
+			for (String name : group.exhibits){
+				for (int i=0; i<filesList.size(); i++){
+					if (filesList.get(i).getName().equals(name)){
+						filesList.remove(i);
+					}
+				}
+			}
+			Object[] files = filesList.toArray();
+			
 			ExhibitInfo e = (ExhibitInfo)JOptionPane.showInputDialog(peer, "Exhibit:", "Add which exhibit to group?",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
 			if (e != null){
-				String groupName = groupNameList.getSelectedValue().toString();
-				ExhibitGroup group = peer.getGroup(groupName);
 				String[] names = new String[group.exhibits.length + 1];
 				for(int i=0; i<names.length -1; i++){
 					names[i] = group.exhibits[i];
@@ -522,6 +564,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else if (arg0.getSource().equals(removeGroupExhibitButton)){
+			peer.removeGroupExhibit(groupExhibitsList.getSelectedValue().toString(), groupNameList.getSelectedValue().toString());
+			groupExhibitsModel.notifyChange();
 		}
 	}
 }
