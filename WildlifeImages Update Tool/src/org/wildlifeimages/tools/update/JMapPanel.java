@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,13 +23,16 @@ import org.w3c.dom.svg.SVGDocument;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 
-public class JMapPanel extends JPanel{
+public class JMapPanel extends JPanel implements MouseMotionListener{
 
 	private static final long serialVersionUID = -4146837675809312050L;
 
 	private final Dimension mapDimension;
 
 	private final ZipManager peer;
+	
+	private int mapX = -1;
+	private int mapY = -1;
 
 	public JMapPanel(LayoutManager layout, Dimension mapSize, ZipManager manager) {
 		super(layout);
@@ -100,6 +105,11 @@ public class JMapPanel extends JPanel{
 			g.setColor(Color.WHITE);
 			g.drawString(names.get(i), pointsX.get(i)-stringWidth/2, pointsY.get(i));
 		}
+		
+		g.setColor(Color.BLACK);
+		if (mapX != -1 || mapY != -1){
+			g.drawString(mapX + ", " + mapY, 0, 10);
+		}
 	}
 
 	public static JSVGCanvas getMapCanvas(Dimension d, InputStream stream) throws IOException{
@@ -122,5 +132,62 @@ public class JMapPanel extends JPanel{
 		svgCanvas.setSVGDocument(doc);
 
 		return svgCanvas;
+	}
+
+	public int getMapX(int x) {
+		double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
+		double myAspect = 1.0*getWidth()/getHeight();
+		int w;
+		int h;
+		int offsetX = 0;
+		int offsetY = 0;
+
+		if (myAspect > mapAspect){
+			w = (int)(getWidth() * (mapAspect / myAspect));
+			h = getHeight();
+			offsetX = (getWidth() - w)/2;
+			return (int)(100 * x / w);
+		}else{
+			w = getWidth();
+			h = (int)(getHeight() * (myAspect / mapAspect));
+			offsetY = (getHeight() - h)/2;
+			return (int)(100 * (x - offsetX) / w);
+		}			
+	}
+	
+	public int getMapY(int y) {
+		double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
+		double myAspect = 1.0*getWidth()/getHeight();
+		int w;
+		int h;
+		int offsetX = 0;
+		int offsetY = 0;
+
+		if (myAspect > mapAspect){
+			w = (int)(getWidth() * (mapAspect / myAspect));
+			h = getHeight();
+			offsetX = (getWidth() - w)/2;
+			return (int)(100 * y / h);
+		}else{
+			w = getWidth();
+			h = (int)(getHeight() * (myAspect / mapAspect));
+			offsetY = (getHeight() - h)/2;
+			return (int)(100 * (y - offsetY) / h);
+		}		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		mapX = getMapX(arg0.getX());
+		mapY = getMapY(arg0.getY());
+		if (mapX < 0 || mapX > 100 || mapY < 0 || mapY > 100){
+			mapX = -1;
+			mapY = -1;
+		}
+		this.repaint(0, 0, 100, 20);
 	}
 }

@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -41,7 +43,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	private final Dimension mapDimension = new Dimension();
 
-	private ExhibitLoader exhibitParser = null;
+	ExhibitLoader exhibitParser = null;
 
 	final PackageLoader packageLoader;
 
@@ -82,6 +84,7 @@ public class ZipManager extends JFrame implements ActionListener{
 			newMap = new JSVGCanvas();
 		}finally{
 			map = newMap;
+			map.addMouseMotionListener(c.mapPanel);
 		}
 		c.mapPanel.add(map);
 		c.tabbedPane.setSelectedIndex(1);

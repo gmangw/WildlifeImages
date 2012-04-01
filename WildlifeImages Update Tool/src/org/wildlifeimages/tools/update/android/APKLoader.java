@@ -23,12 +23,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class APKLoader implements PackageLoader{
 	private static final String EXHIBITSFILENAME = "exhibits.xml";
 
-	private static final String assetPath = "assets/";
+	private static final String ASSETPATH = "assets/";
 
 	private File apkFile = null;
 	private boolean isNew = false;
 
-	public ZipInputStream getPackageStream(){
+	private ZipInputStream getPackageStream(){
 		if (apkFile != null){
 			try {
 				return new ZipInputStream(new FileInputStream(apkFile));
@@ -53,15 +53,43 @@ public class APKLoader implements PackageLoader{
 		return isNew;
 	}
 
-	public ExhibitLoader readPackage(ArrayList<String> files) throws IOException{
+	public ExhibitLoader readUpdate(ZipInputStream zf, ArrayList<String> modFiles) throws IOException{
+		ExhibitLoader loader = null;
+
+		for (ZipEntry item = zf.getNextEntry(); item != null; item = zf.getNextEntry()){
+			String zipEntryName = item.getName();
+			if (false == item.isDirectory()){
+				String shortUrl = zipEntryName;
+				modFiles.add(shortUrl);
+				if (shortUrl.equals(EXHIBITSFILENAME)){						
+					InputStream stream = zf;
+					try{
+						XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+						XmlPullParser xmlBox = factory.newPullParser();
+						BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+
+						xmlBox.setInput(in);
+						System.out.println("Creating parser");
+						loader = new ExhibitLoader(xmlBox);
+					}catch(XmlPullParserException e){
+						throw new IOException("Error parsing package." , e);
+					}
+				}
+			}
+		}
+		zf.close();
+		return loader;
+	}
+	
+	public ExhibitLoader readPackage(ArrayList<String> origFiles) throws IOException{
 		ZipInputStream zf = getPackageStream();
 		ExhibitLoader loader = null;
 
 		for (ZipEntry item = zf.getNextEntry(); item != null; item = zf.getNextEntry()){
-			String zipEntryName = (item).getName();
-			if (false == item.isDirectory() && zipEntryName.startsWith(assetPath)){
-				String shortUrl = zipEntryName.substring(assetPath.length());
-				files.add(shortUrl);
+			String zipEntryName = item.getName();
+			if (false == item.isDirectory() && zipEntryName.startsWith(ASSETPATH)){
+				String shortUrl = zipEntryName.substring(ASSETPATH.length());
+				origFiles.add(shortUrl);
 				if (shortUrl.equals(EXHIBITSFILENAME)){						
 					InputStream stream = zf;
 					try{

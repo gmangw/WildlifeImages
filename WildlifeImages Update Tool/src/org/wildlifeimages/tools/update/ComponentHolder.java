@@ -6,10 +6,11 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.ZipInputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -196,7 +197,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		editFileButton.setBackground(Color.WHITE);
 		removeGroupButton.setBackground(Color.WHITE);
 		loadUpdateButton.setBackground(Color.WHITE);
-		
+
 		exhibitXSpinnerModel.addChangeListener(this);
 		exhibitYSpinnerModel.addChangeListener(this);
 
@@ -289,9 +290,11 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		aliasPanel.add(new JScrollPane(exhibitAliasesList));
 		aliasPanel.add(aliasDataPanel);
 
-		JPanel groupDataPanel = new JPanel(new GridLayout(2,1));
+		JPanel groupDataPanel = new JPanel(new GridLayout(2,2));
 		groupDataPanel.add(groupXCoordField);
 		groupDataPanel.add(groupYCoordField);
+		groupDataPanel.add(removeGroupButton);
+		groupDataPanel.add(removeGroupExhibitButton);
 
 		subPanel1.add(listPanel);
 		subPanel1.add(new JScrollPane(exhibitPhotosImage));
@@ -314,8 +317,6 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		subPanel5.add(addGroupButton);
 		subPanel5.add(addGroupExhibitButton);
 		subPanel5.add(editFileButton);
-		subPanel5.add(removeGroupExhibitButton);
-		subPanel5.add(removeGroupButton);
 		subPanel5.add(loadUpdateButton);
 
 		groupPanel.add(subPanel4);
@@ -624,7 +625,16 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 			chooser.setDialogTitle("Select update file");
 			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 				if (chooser.getSelectedFile().exists()){
-					System.out.println(chooser.getSelectedFile().getName());
+					try{
+						System.out.println(chooser.getSelectedFile().getName());
+						ArrayList<String> modFiles = new ArrayList<String>();
+						ExhibitLoader updateParser = peer.packageLoader.readUpdate(new ZipInputStream(new FileInputStream(chooser.getSelectedFile())), modFiles);
+						for (String s : modFiles){
+							System.out.println(s);
+						}
+					}catch(IOException e){
+						System.out.println("Could not load");
+					}
 				}
 			}
 		}
