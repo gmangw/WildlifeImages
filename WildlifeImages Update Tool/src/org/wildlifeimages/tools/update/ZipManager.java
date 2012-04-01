@@ -78,7 +78,6 @@ public class ZipManager extends JFrame implements ActionListener{
 		JSVGCanvas newMap = null;
 		try{
 			newMap = JMapPanel.getMapCanvas(mapDimension, packageLoader.getFileInputStream("res/raw/map.svg"));
-			System.out.println(mapDimension.getWidth() + ", " + mapDimension.getHeight());
 		}catch(IOException e){
 			newMap = new JSVGCanvas();
 		}finally{
@@ -336,7 +335,6 @@ public class ZipManager extends JFrame implements ActionListener{
 					this.dispatchEvent(windowClosing);
 				}
 			}
-
 		}
 	}
 }
