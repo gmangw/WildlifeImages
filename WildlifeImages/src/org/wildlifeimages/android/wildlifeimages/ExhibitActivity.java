@@ -129,7 +129,7 @@ public class ExhibitActivity extends WireActivity{
 		String shortUrl = urlList[0];
 		Bitmap b = ContentManager.getSelf().getBitmapThumb(shortUrl, getAssets());
 		photoButton.setImageBitmap(b);
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){
+		if (Common.isAtLeastHoneycomb()){
 
 			LinearLayout container = (LinearLayout)photoButton.getParent();
 			container.setBackgroundResource(R.drawable.android_button);
@@ -178,7 +178,7 @@ public class ExhibitActivity extends WireActivity{
 		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
 		switch (v.getId()) {
 		case R.id.exhibit_photo_button:
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){
+			if (Common.isAtLeastHoneycomb()){
 				LinearLayout photoButtons = (LinearLayout)findViewById(R.id.exhibit_photo_button_layout);
 				for (int i=0; i<photoButtons.getChildCount(); i++){
 					if (photoButtons.getChildAt(i).equals(v)){

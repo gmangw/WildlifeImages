@@ -302,6 +302,10 @@ public class Common {
 			return null;
 		}
 	}
+	
+	public static boolean isAtLeastHoneycomb(){
+		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+	}
 
 	public static boolean isNetworkConnected(Context context){
 		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
