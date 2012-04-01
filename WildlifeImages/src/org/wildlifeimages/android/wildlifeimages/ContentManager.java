@@ -48,6 +48,8 @@ public class ContentManager {
 
 	private final File filesDir;
 	BitmapCache imgCache;
+	
+	private boolean timeKeeperEnabled = true;
 
 	private int accessTime = 0;
 
@@ -135,7 +137,7 @@ public class ContentManager {
 	 * 
 	 */
 	public String getBestUrl(String shortUrl) {
-		timekeeper.put(shortUrl, accessTime++);
+		putTime(shortUrl);
 		if (cachedFiles.contains(shortUrl)){
 			Log.d(this.getClass().getName(), "Pulled from cache: " + shortUrl);
 			return filesDir.toURI().toString() + shortUrl;
@@ -143,7 +145,17 @@ public class ContentManager {
 			return "file:///android_asset/" + shortUrl;
 		}
 	}
+	
+	public void setTimeKeeperEnabled(boolean enabled){
+		timeKeeperEnabled = enabled;
+	}
 
+	private void putTime(String shortUrl){
+		if (timeKeeperEnabled == true){
+			timekeeper.put(shortUrl, accessTime++);
+		}
+	}
+	
 	/**
 	 * Will get the input stream from the shortURL, useful for images.
 	 * Used for streaming data.
@@ -164,7 +176,7 @@ public class ContentManager {
 				File f = new File(new URI(longUrl));
 				istr = new FileInputStream(f);
 			}
-			timekeeper.put(shortUrl, accessTime++);
+			putTime(shortUrl);
 		}catch(IOException e){
 			Log.w(this.getClass().getName(), "Asset " + longUrl + " is missing or corrupt.");
 		} catch (URISyntaxException e) {
@@ -194,7 +206,7 @@ public class ContentManager {
 				ParcelFileDescriptor pfd = ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
 				afd = new AssetFileDescriptor(pfd, -1, 0);
 			}
-			timekeeper.put(shortUrl, accessTime++);
+			putTime(shortUrl);
 			return afd;
 		} catch (IOException e){
 			return null;
@@ -214,7 +226,7 @@ public class ContentManager {
 	 * 
 	 */
 	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
-		timekeeper.put(shortUrl, accessTime++);
+		putTime(shortUrl);
 		populateBitmap(shortUrl, assets);
 		return imgCache.getBitmap(shortUrl);
 	}

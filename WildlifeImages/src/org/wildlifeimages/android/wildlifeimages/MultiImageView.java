@@ -27,7 +27,6 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private Matrix baseMatrix = new Matrix();
 	private String[] shortUrlList = new String[0];
 	private int currentBitmapIndex;
-	private ContentManager contentManager = null;
 	private int xScrollOffset = 0;
 	private Paint labelPaint = new Paint();
 	private Paint labelTextPaint = new Paint();
@@ -67,15 +66,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		reMeasureMatrix();
 	}
 
-	private Bitmap getBitmap(String shortUrl, ContentManager contentManager){
-		return contentManager.getBitmap(shortUrl, this.getContext().getAssets());
+	private Bitmap getBitmap(String shortUrl){
+		return ContentManager.getSelf().getBitmap(shortUrl, this.getContext().getAssets());
 	}
 
-	public void setImageBitmapList(String[] shortUrlList, ContentManager contentManager){
+	public void setImageBitmapList(String[] shortUrlList){
 		this.shortUrlList = shortUrlList;
-		currentBitmapIndex = contentManager.getMostRecentIndex(shortUrlList);
-		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
-		this.contentManager = contentManager;
+		currentBitmapIndex = ContentManager.getSelf().getMostRecentIndex(shortUrlList);
+		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex]));
 	}
 
 	@Override
@@ -122,14 +120,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private void scrollRight(){
 		if (hasNextImage()){
 			currentBitmapIndex++;
-			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
+			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex]));
 		}
 	}
 
 	private void scrollLeft(){
 		if (hasPreviousImage()){
 			currentBitmapIndex--;
-			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex], contentManager));
+			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex]));
 		}
 	}
 

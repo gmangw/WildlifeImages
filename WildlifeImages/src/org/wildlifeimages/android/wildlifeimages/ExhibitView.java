@@ -54,28 +54,28 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		this.addView(picView);
 	}
 
-	public void loadUrl(String shortUrl, ContentManager contentManager){
+	public void loadUrl(String shortUrl){
 		String[] urlList = new String[1];
 		urlList[0] = shortUrl;
-		loadUrlList(urlList, contentManager);
+		loadUrlList(urlList);
 	}
 
-	public void loadUrlList(String[] shortUrlList, ContentManager contentManager){
+	public void loadUrlList(String[] shortUrlList){
 		if (Common.isImageUrl(shortUrlList[0])){
-			loadImageUrl(shortUrlList, contentManager);
+			loadImageUrl(shortUrlList);
 		} else {
-			loadHtmlUrl(shortUrlList[0], contentManager);
+			loadHtmlUrl(shortUrlList[0]);
 		}
 	}
 
-	public void loadHtmlUrl(String htmlShortUrl, ContentManager contentManager){
-		htmlView.loadUrl(contentManager.getBestUrl(htmlShortUrl));
+	public void loadHtmlUrl(String htmlShortUrl){
+		htmlView.loadUrl(ContentManager.getSelf().getBestUrl(htmlShortUrl));
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
 	}
 
-	public void loadImageUrl(String[] imgShortUrl, ContentManager contentManager){
-		picView.setImageBitmapList(imgShortUrl, contentManager);
+	public void loadImageUrl(String[] imgShortUrl){
+		picView.setImageBitmapList(imgShortUrl);
 		picView.setVisibility(View.VISIBLE);;
 		htmlView.setVisibility(View.INVISIBLE);
 	}

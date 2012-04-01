@@ -12,11 +12,11 @@ public class PhotosActivity extends WireActivity {
 		super.onCreate(inState);
 		setContentView(R.layout.photos_layout);
 		if (true == getIntent().getBooleanExtra("showEvents", false)){
-			((ExhibitView) findViewById(R.id.photos_view)).loadUrl(loadString(R.string.intro_url_events), ContentManager.getSelf());
+			((ExhibitView) findViewById(R.id.photos_view)).loadUrl(loadString(R.string.intro_url_events));
 			showingEvents = true;
 		}else{
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			((ExhibitView) findViewById(R.id.photos_view)).loadUrlList(introPhotoList, ContentManager.getSelf());
+			((ExhibitView) findViewById(R.id.photos_view)).loadUrlList(introPhotoList);
 			showingEvents = false;
 		}
 	}
@@ -29,7 +29,7 @@ public class PhotosActivity extends WireActivity {
 		ExhibitView exView = (ExhibitView) findViewById(R.id.photos_view);
 		if (showingEvents == false){
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			exView.loadUrlList(introPhotoList, ContentManager.getSelf());
+			exView.loadUrlList(introPhotoList);
 		}
 	}
 
