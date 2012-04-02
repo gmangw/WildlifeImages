@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <exhibit_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="ExhibitsSchema.xsd">
+	xsi:noNamespaceSchemaLocation="../ExhibitsSchema.xsd">
 	<exhibit name="Wildlife Images" xpos="78" ypos="30" next="Brown Bears">
 		<content tag="Introduction"
 			page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
