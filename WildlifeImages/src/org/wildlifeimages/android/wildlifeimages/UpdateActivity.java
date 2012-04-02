@@ -29,8 +29,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 
 		if (inState == null){
 			showDialog(UPDATE_DIALOG);
-			ContentManager contentManager = ContentManager.getSelf();
-			contentManager.clearCache();
+			ContentManager.clearCache();
 
 			Intent i = getIntent();
 			new ContentUpdater().execute(i.getStringExtra(""));//TODO
@@ -55,12 +54,12 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	}
 
 	public void onUpdateCompleted(boolean result) {
-		ContentManager.getSelf().prepareExhibits(this.getAssets());
+		ContentManager.prepareExhibits(this.getAssets());
 		if (result == true){
 			setResult(Activity.RESULT_OK);
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_success), Toast.LENGTH_SHORT).show();
 		}else{
-			ContentManager.getSelf().clearCache();
+			ContentManager.clearCache();
 			setResult(Activity.RESULT_CANCELED);
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_failure), Toast.LENGTH_SHORT).show();
 		}
@@ -81,7 +80,7 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 			if (url == null){
 				return false;
 			}else{
-				boolean result =  ContentManager.getSelf().updateCache(this, url);
+				boolean result =  ContentManager.updateCache(this, url);
 				if (true == result){
 					SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
 					Editor editablePreferences = preferences.edit();

@@ -42,7 +42,7 @@ public class ExhibitActivity extends WireActivity{
 		setContentView(R.layout.exhibit_layout);
 		Log.d("", "onCreate");
 
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			String name = getIntent().getStringExtra("Exhibit");
@@ -67,7 +67,7 @@ public class ExhibitActivity extends WireActivity{
 	 * @param a String contentTag which is the name of the button selected.
 	 */
 	public void showExhibit(Exhibit e, String contentTag) {
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 
 		exhibitList.setCurrent(e, contentTag);
 
@@ -127,7 +127,7 @@ public class ExhibitActivity extends WireActivity{
 		ImageButton photoButton = (ImageButton)findViewById(R.id.exhibit_photo_button);
 		String[] urlList = e.getContent(Exhibit.TAG_PHOTOS).split(",");
 		String shortUrl = urlList[0];
-		Bitmap b = ContentManager.getSelf().getBitmapThumb(shortUrl, getAssets());
+		Bitmap b = ContentManager.getBitmapThumb(shortUrl, getAssets());
 		photoButton.setImageBitmap(b);
 		if (Common.isAtLeastHoneycomb()){
 
@@ -142,9 +142,9 @@ public class ExhibitActivity extends WireActivity{
 				ImageButton button = (ImageButton)inflater.inflate(R.layout.exhibit_photo_button, null);
 				button.setLayoutParams(photoButton.getLayoutParams());
 				shortUrl = e.getContent(Exhibit.TAG_PHOTOS).split(",")[i];
-				ContentManager.getSelf().setTimeKeeperEnabled(false);
-				b = ContentManager.getSelf().getBitmapThumb(shortUrl, getAssets());
-				ContentManager.getSelf().setTimeKeeperEnabled(true);
+				ContentManager.setTimeKeeperEnabled(false);
+				b = ContentManager.getBitmapThumb(shortUrl, getAssets());
+				ContentManager.setTimeKeeperEnabled(true);
 				button.setImageBitmap(b);
 				button.setBackgroundColor(0);
 				container.addView(button);
@@ -175,7 +175,7 @@ public class ExhibitActivity extends WireActivity{
 	 * @param a View v that is the current button.
 	 */
 	public void exhibitProcessSidebar(View v){
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 		switch (v.getId()) {
 		case R.id.exhibit_photo_button:
 			if (Common.isAtLeastHoneycomb()){
@@ -183,7 +183,7 @@ public class ExhibitActivity extends WireActivity{
 				for (int i=0; i<photoButtons.getChildCount(); i++){
 					if (photoButtons.getChildAt(i).equals(v)){
 						String content = exhibitList.getCurrent().getContent(Exhibit.TAG_PHOTOS).split(",")[i];
-						ContentManager.getSelf().getBitmap(content, getAssets());
+						ContentManager.getBitmap(content, getAssets());
 					}
 				}
 			}

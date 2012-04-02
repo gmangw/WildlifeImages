@@ -84,7 +84,7 @@ public class MapActivity extends WireActivity{
 		}
 
 		public void onClick(DialogInterface dialog, int item) {
-			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			ExhibitList exhibitList = ContentManager.getExhibitList();
 			exhibitList.setCurrent(exhibitList.getGroup(name)[item], Exhibit.TAG_AUTO);
 			ExhibitActivity.start(self);	
 		}
@@ -98,7 +98,7 @@ public class MapActivity extends WireActivity{
 			return parent;
 		}
 
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 		String groupName = null;
 		String[] names = exhibitList.getGroupNames();
 
@@ -148,7 +148,7 @@ public class MapActivity extends WireActivity{
 
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			MapView mMapView = (MapView) findViewById(R.id.map);
-			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			ExhibitList exhibitList = ContentManager.getExhibitList();
 			String selectedExhibit = findClickedExhibit(mMapView, e.getX(), e.getY());
 
 			if(selectedExhibit != null){

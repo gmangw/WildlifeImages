@@ -69,7 +69,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	}
 
 	public void loadHtmlUrl(String htmlShortUrl){
-		htmlView.loadUrl(ContentManager.getSelf().getBestUrl(htmlShortUrl));
+		htmlView.loadUrl(ContentManager.getBestUrl(htmlShortUrl));
 		htmlView.setVisibility(View.VISIBLE);
 		picView.setVisibility(View.INVISIBLE);
 	}
@@ -91,7 +91,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		String url = clickedUrl.replaceAll(ContentManager.ASSET_PREFIX, "");
 		Log.w(this.getClass().getName(), "Playing " + url);
 
-		String[] shortUrls = ContentManager.getSelf().getExhibitList().getCurrent().getPhotos();
+		String[] shortUrls = ContentManager.getExhibitList().getCurrent().getPhotos();
 		String thumbUrl = "";
 		if (shortUrls.length > 0){
 			thumbUrl = shortUrls[0];

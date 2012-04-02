@@ -33,7 +33,7 @@ public class ExhibitListActivity extends ListActivity {
 
 		
 		setContentView(R.layout.list_layout);
-		setListAdapter(new ExhibitListAdapter(this, ContentManager.getSelf().getExhibitList()));
+		setListAdapter(new ExhibitListAdapter(this, ContentManager.getExhibitList()));
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class ExhibitListActivity extends ListActivity {
 	 */
 	@Override
 	protected void onListItemClick(ListView list, View v, int position, long id){
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 		Exhibit e = (Exhibit)list.getItemAtPosition(position);
 		exhibitList.setCurrent(e, Exhibit.TAG_AUTO);
 		ExhibitActivity.start(this);

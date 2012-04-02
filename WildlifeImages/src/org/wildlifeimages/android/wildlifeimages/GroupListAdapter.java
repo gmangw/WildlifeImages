@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class GroupListAdapter extends BaseAdapter{
 	private final String groupName;
-	private final ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+	private final ExhibitList exhibitList = ContentManager.getExhibitList();
 	
 	public GroupListAdapter(String name){
 		groupName = name;
@@ -41,7 +41,7 @@ public class GroupListAdapter extends BaseAdapter{
 		if (entry.hasContent(Exhibit.TAG_PHOTOS)){
 			String[] photos = entry.getContent(Exhibit.TAG_PHOTOS).split(",");
 			ImageView thumb = (ImageView)convertView.findViewById(R.id.listitemphoto);
-			Bitmap bmp = ContentManager.getSelf().getBitmapThumb(photos[0], convertView.getContext().getAssets());
+			Bitmap bmp = ContentManager.getBitmapThumb(photos[0], convertView.getContext().getAssets());
 			thumb.setImageBitmap(bmp);
 		}
 

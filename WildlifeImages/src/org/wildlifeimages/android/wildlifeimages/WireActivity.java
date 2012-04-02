@@ -22,8 +22,8 @@ public abstract class WireActivity extends Activity{
 		super.onCreate(bundle);
 
 		/* Create a new content manager if there is none. */
-		if (ContentManager.getSelf() == null){
-			new ContentManager(this.getFilesDir(), this.getAssets());
+		if (ContentManager.isInitialized() == false){
+			ContentManager.init(this.getFilesDir(), this.getAssets());
 		}
 		
 		if (false == Common.isAtLeastHoneycomb()){
@@ -53,10 +53,10 @@ public abstract class WireActivity extends Activity{
 		if (this.getClass().equals(IntroActivity.class)){
 			menu.removeItem(R.integer.MENU_HOME);
 		}
-		if (ContentManager.getSelf().getExhibitList().getCurrent().getNext() == null){
+		if (ContentManager.getExhibitList().getCurrent().getNext() == null){
 			menu.findItem(R.integer.MENU_NEXT).setEnabled(false);
 		}
-		if (ContentManager.getSelf().getExhibitList().getCurrent().getPrevious() == null){
+		if (ContentManager.getExhibitList().getCurrent().getPrevious() == null){
 			menu.findItem(R.integer.MENU_PREVIOUS).setEnabled(false);
 		}
 		if (false == Common.isIntentAvailable(this, MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)){
@@ -68,8 +68,7 @@ public abstract class WireActivity extends Activity{
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Common.menuItemProcess(this, item.getItemId(), ContentManager.getSelf().getExhibitList());
-		//TODO add menu bar for 3.0+ devices
+		Common.menuItemProcess(this, item.getItemId(), ContentManager.getExhibitList());
 		return true;
 	}
 

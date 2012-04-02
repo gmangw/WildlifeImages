@@ -134,7 +134,7 @@ public class MapView extends ImageView {
 		rectP.setARGB(200, 128, 128, 128);
 		activeP.setARGB(255, 0, 128, 255);
 
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 		setPoints(exhibitList);
 
 		zoomButtons = new ZoomButtonsController(this);

@@ -99,7 +99,7 @@ public class Common {
 		}
 
 		if (potentialKey != null){
-			ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+			ExhibitList exhibitList = ContentManager.getExhibitList();
 			if (true == exhibitList.containsKey(potentialKey)){
 				ExhibitActivity.start(context, potentialKey);
 			}

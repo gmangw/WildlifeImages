@@ -37,32 +37,21 @@ import android.util.Log;
  * 		
  */
 public class ContentManager {
-
-	private static ContentManager self = null;
-
 	public static final String ASSET_PREFIX = "file:///android_asset/";
 
-	private HashSet<String> cachedFiles = new HashSet<String>();
+	private static HashSet<String> cachedFiles = null;
 
-	private ExhibitList exhibitList;
+	private static ExhibitList exhibitList;
 
-	private final File filesDir;
-	BitmapCache imgCache;
+	private static File filesDir = null;
+	static BitmapCache imgCache = null;
 	
-	private boolean timeKeeperEnabled = true;
+	private static boolean timeKeeperEnabled = true;
 
-	private int accessTime = 0;
+	private static int accessTime = 0;
 
-	private Hashtable<String, Integer> timekeeper = new Hashtable<String, Integer>();
-
-	/**
-	 * This will return the instance that is currently alive.
-	 * 
-	 */
-	public static ContentManager getSelf(){
-		return self;
-	}
-
+	private static Hashtable<String, Integer> timekeeper = null;
+	
 	/**
 	 * Constructor that builds our content manager.
 	 * 
@@ -70,16 +59,21 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	public ContentManager(File filesDir, AssetManager assets){
-		//testBitmapMax(assets);
-
-		self = this;
-
-		this.filesDir = filesDir;
+	public static void init(File files, AssetManager assets){
+		cachedFiles = new HashSet<String>();
 		imgCache = new BitmapCache();
+		timeKeeperEnabled = true;
+		accessTime = 0;
+		timekeeper = new Hashtable<String, Integer>();
+		
+		filesDir = files;
 		addAllToMap(filesDir);
 
 		prepareExhibits(assets);
+	}
+	
+	public static boolean isInitialized(){
+		return (filesDir != null);
 	}
 
 	/**
@@ -88,13 +82,13 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	public void prepareExhibits(AssetManager assets){
+	public static void prepareExhibits(AssetManager assets){
 		try {
 			exhibitList = buildExhibitList(assets);
 		} catch (XmlPullParserException e) {
-			Log.e(this.getClass().getName(), "XmlPullParserException: " + e.getMessage());
+			Log.e(ContentManager.class.getName(), "XmlPullParserException: " + e.getMessage());
 		} catch (IOException e) {
-			Log.e(this.getClass().getName(), "IOException: " + e.getMessage());
+			Log.e(ContentManager.class.getName(), "IOException: " + e.getMessage());
 		}
 		cacheThumbs(assets);
 	}
@@ -105,7 +99,7 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	private void cacheThumbs(AssetManager assets){
+	private static void cacheThumbs(AssetManager assets){
 		for(int i=0; i<exhibitList.getCount(); i++){
 			Exhibit entry = exhibitList.getExhibitAt(i);
 			if (entry.hasContent("Photos")){
@@ -119,7 +113,7 @@ public class ContentManager {
 	 * This will clear the cache.
 	 * 
 	 */
-	public void clearCache(){
+	public static void clearCache(){
 		File[] list = filesDir.listFiles();
 		for(int i=0; i<list.length; i++){
 			Common.recursiveRemove(list[i]); 
@@ -136,21 +130,21 @@ public class ContentManager {
 	 * @return The correct URL for the most up-to-date file.
 	 * 
 	 */
-	public String getBestUrl(String shortUrl) {
+	public static String getBestUrl(String shortUrl) {
 		putTime(shortUrl);
 		if (cachedFiles.contains(shortUrl)){
-			Log.d(this.getClass().getName(), "Pulled from cache: " + shortUrl);
+			Log.d(ContentManager.class.getName(), "Pulled from cache: " + shortUrl);
 			return filesDir.toURI().toString() + shortUrl;
 		}else{
 			return "file:///android_asset/" + shortUrl;
 		}
 	}
 	
-	public void setTimeKeeperEnabled(boolean enabled){
+	public static void setTimeKeeperEnabled(boolean enabled){
 		timeKeeperEnabled = enabled;
 	}
 
-	private void putTime(String shortUrl){
+	private static void putTime(String shortUrl){
 		if (timeKeeperEnabled == true){
 			timekeeper.put(shortUrl, accessTime++);
 		}
@@ -166,7 +160,7 @@ public class ContentManager {
 	 * @return An input string of the current file.
 	 * 
 	 */
-	public InputStream streamAssetOrFile(String shortUrl, AssetManager assets) { 
+	public static InputStream streamAssetOrFile(String shortUrl, AssetManager assets) { 
 		InputStream istr = null;
 		String longUrl = getBestUrl(shortUrl);
 		try{
@@ -178,9 +172,9 @@ public class ContentManager {
 			}
 			putTime(shortUrl);
 		}catch(IOException e){
-			Log.w(this.getClass().getName(), "Asset " + longUrl + " is missing or corrupt.");
+			Log.w(ContentManager.class.getName(), "Asset " + longUrl + " is missing or corrupt.");
 		} catch (URISyntaxException e) {
-			Log.w(this.getClass().getName(), "Bad url " + longUrl);
+			Log.w(ContentManager.class.getName(), "Bad url " + longUrl);
 		}
 		return istr;
 	}
@@ -195,7 +189,7 @@ public class ContentManager {
 	 * @return A file descriptor of the file or null on fail.
 	 * 
 	 */
-	public AssetFileDescriptor getFileDescriptor(String shortUrl, AssetManager assets){
+	public static AssetFileDescriptor getFileDescriptor(String shortUrl, AssetManager assets){
 		String longUrl = getBestUrl(shortUrl);
 		try{
 			AssetFileDescriptor afd = null;
@@ -225,7 +219,7 @@ public class ContentManager {
 	 * @return The fullsize image bitmap.
 	 * 
 	 */
-	public Bitmap getBitmap(String shortUrl, AssetManager assets) {	
+	public static Bitmap getBitmap(String shortUrl, AssetManager assets) {	
 		putTime(shortUrl);
 		populateBitmap(shortUrl, assets);
 		return imgCache.getBitmap(shortUrl);
@@ -240,7 +234,7 @@ public class ContentManager {
 	 * @return The thumbnail bitmap.
 	 * 
 	 */
-	public Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
+	public static Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
 		populateBitmapThumb(shortUrl, assets);
 		return imgCache.getThumb(shortUrl);
 	}
@@ -252,7 +246,7 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	private void populateBitmap(String shortUrl, AssetManager assets){
+	private static void populateBitmap(String shortUrl, AssetManager assets){
 		if (imgCache.containsBitmap(shortUrl)){
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
@@ -269,7 +263,7 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	private void populateBitmapThumb(String shortUrl, AssetManager assets){
+	private static void populateBitmapThumb(String shortUrl, AssetManager assets){
 		if (imgCache.containsThumb(shortUrl)){
 		}else{
 			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
@@ -286,7 +280,7 @@ public class ContentManager {
 	 * @param file a directory which will have all of its files and subdirectories and their files added to the list.
 	 * 
 	 */
-	private void addAllToMap(File file){
+	private static void addAllToMap(File file){
 		if (file.isDirectory()){
 			File[] list = file.listFiles();
 			for(int i=0; i<list.length; i++){
@@ -296,7 +290,7 @@ public class ContentManager {
 			String path = file.getAbsolutePath();
 			path = path.replace(filesDir.getAbsolutePath()+"/", "");
 			cachedFiles.add(path);
-			Log.d(this.getClass().getName(), "Found in cache: " + path);
+			Log.d(ContentManager.class.getName(), "Found in cache: " + path);
 		}
 	}
 
@@ -308,7 +302,7 @@ public class ContentManager {
 	 * @return The most recent URL in the shortUrlList
 	 * 
 	 */
-	public int getMostRecentIndex(String[] shortUrlList){
+	public static int getMostRecentIndex(String[] shortUrlList){
 		int resultIndex = 0;
 		int mostRecent = 0;
 		for(int i=0; i<shortUrlList.length; i++){
@@ -330,7 +324,7 @@ public class ContentManager {
 	 * @return True if the entire update completed successfully.
 	 * 
 	 */
-	public boolean updateCache(UpdateActivity.ContentUpdater progress, String zipURL){
+	public static boolean updateCache(UpdateActivity.ContentUpdater progress, String zipURL){
 		try{
 			URL url;
 			try{
@@ -357,7 +351,7 @@ public class ContentManager {
 				File f2 = new File(filesDir, ze.getName() + ".part");
 				String outputFilename2 = filesDir.getAbsolutePath() + "/" + ze.getName();
 				
-				Log.d(this.getClass().getName(), "Unzipping " + ze.getName() + " to " + f2.getPath());
+				Log.d(ContentManager.class.getName(), "Unzipping " + ze.getName() + " to " + f2.getPath());
 				try{
 					Common.mkdirForFile(f2);
 				}catch(IOException e){
@@ -375,7 +369,7 @@ public class ContentManager {
 				zipStream.closeEntry();
 				boolean renameResult2 = f2.renameTo(new File(outputFilename2));
 				if (false == renameResult2){
-					Log.e(this.getClass().getName(), "Could not rename the .part file for " +ze.getName() + " in data.");
+					Log.e(ContentManager.class.getName(), "Could not rename the .part file for " +ze.getName() + " in data.");
 					result = false;
 				}
 				imgCache.removeBitmap(ze.getName()); //TODO make sure thumbs update
@@ -394,7 +388,7 @@ public class ContentManager {
 	 * @return The exhibit list.
 	 * 
 	 */
-	public ExhibitList getExhibitList(){
+	public static ExhibitList getExhibitList(){
 		return exhibitList;
 	}
 
@@ -409,22 +403,12 @@ public class ContentManager {
 	 * @throws IOException if SD card read fails, could be a corrupt file system.
 	 * 
 	 */
-	private ExhibitList buildExhibitList(AssetManager assetManager) throws XmlPullParserException, IOException{
+	private static ExhibitList buildExhibitList(AssetManager assetManager) throws XmlPullParserException, IOException{
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		XmlPullParser xmlBox = factory.newPullParser();
 		InputStream istr = streamAssetOrFile("exhibits.xml", assetManager);
 		BufferedReader in = new BufferedReader(new InputStreamReader(istr), 1024);
 		xmlBox.setInput(in);
 		return new ExhibitList(xmlBox);
-	}
-
-	/**
-	 * This will set self to be the current content manager.
-	 * 
-	 * @param contentManager the contentManger to set self to.
-	 * 
-	 */
-	public static void setSelf(ContentManager contentManager) {
-		self = contentManager;
 	}
 }

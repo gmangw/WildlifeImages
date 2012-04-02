@@ -48,7 +48,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		String imageUrl = getIntent().getStringExtra("Image");
 		if (imageUrl != null){
 			ImageView v = (ImageView)findViewById(R.id.audio_image);
-			v.setImageBitmap(ContentManager.getSelf().getBitmapThumb(imageUrl, getAssets()));
+			v.setImageBitmap(ContentManager.getBitmapThumb(imageUrl, getAssets()));
 		}
 
 		Object instance = getLastNonConfigurationInstance();
@@ -57,7 +57,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 			if (url == null){
 				url = "";
 			}
-			soundPlayer = playSound(url, ContentManager.getSelf(), getAssets());
+			soundPlayer = playSound(url, getAssets());
 			if (soundPlayer == null){
 				soundPlayer = new MediaPlayer();
 			}
@@ -113,10 +113,10 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	 * @param assets that lets us know where the items in the assets folder are.
 	 * 
 	 */
-	public MediaPlayer playSound(String shortUrl, ContentManager contentManager, AssetManager assets){
+	public MediaPlayer playSound(String shortUrl, AssetManager assets){
 		MediaPlayer soundPlayer = new MediaPlayer();
 		try{
-			AssetFileDescriptor fd = contentManager.getFileDescriptor((shortUrl), assets);
+			AssetFileDescriptor fd = ContentManager.getFileDescriptor((shortUrl), assets);
 			if (fd.getStartOffset() == -1){
 				soundPlayer.setDataSource(fd.getFileDescriptor());
 			}else{
