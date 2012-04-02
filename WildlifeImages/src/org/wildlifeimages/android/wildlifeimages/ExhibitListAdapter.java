@@ -17,30 +17,39 @@ import android.widget.TextView;
  * 	
  */
 public class ExhibitListAdapter extends BaseAdapter{
-
-	ExhibitList backingList;
 	Context context;
+	String groupFilter = "";
 
-	public ExhibitListAdapter(Context context, ExhibitList list){
-		backingList = list;
+	public ExhibitListAdapter(Context context){
 		this.context = context;
 	}
 
 	public int getCount() {
-		return backingList.getCount();
+		ExhibitList list = ContentManager.getExhibitList();
+		String[] groupExhibits = list.getGroup(groupFilter);
+		if (groupExhibits.length > 0){
+			return groupExhibits.length;
+		}else{
+			return list.getCount();
+		}
 	}
 
 	public Exhibit getItem(int position) {
-		return backingList.getExhibitAt(position);
+		ExhibitList list = ContentManager.getExhibitList();
+		String[] groupExhibits = list.getGroup(groupFilter);
+		if (groupExhibits.length > 0){
+			return list.get(groupExhibits[position]);
+		}else{
+			return list.getExhibitAt(position);
+		}
 	}
 
 	public long getItemId(int position) {
 		return position;
 	}
 
-	/* http://techdroid.kbeanie.com/2009/07/custom-listview-for-android.html */
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
-		Exhibit entry = backingList.getExhibitAt(position);
+		Exhibit entry = getItem(position);
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_item_layout, null);
@@ -57,6 +66,17 @@ public class ExhibitListAdapter extends BaseAdapter{
 		itemLabel.setText(entry.getName());
 
 		return convertView;
+	}
+
+	public void setGroupFilter(String filter){
+		if (groupFilter.equals(filter) == false){
+			groupFilter = filter;
+			this.notifyDataSetChanged();
+		}
+	}
+	
+	public String getGroupFilter(){
+		return groupFilter;
 	}
 
 }

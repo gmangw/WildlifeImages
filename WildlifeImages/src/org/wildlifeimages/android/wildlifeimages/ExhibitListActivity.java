@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
@@ -18,7 +21,7 @@ import android.widget.ListView;
  * 	
  */
 public class ExhibitListActivity extends ListActivity {
-
+	private ExhibitListAdapter adapter;
 	/**
 	 * This will happen when the activity actually starts.
 	 * Will grab the latest state of the current exhibit list and display it.
@@ -29,11 +32,16 @@ public class ExhibitListActivity extends ListActivity {
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+		if (false == Common.isAtLeastHoneycomb()){
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
 		
 		setContentView(R.layout.list_layout);
-		setListAdapter(new ExhibitListAdapter(this, ContentManager.getExhibitList()));
+		adapter = new ExhibitListAdapter(this);
+		if (bundle != null){
+			adapter.setGroupFilter(bundle.getString("GroupFilter"));
+		}
+		setListAdapter(adapter);
 	}
 
 	/**
@@ -62,5 +70,40 @@ public class ExhibitListActivity extends ListActivity {
 	public static void start(Activity context) {
 		Intent listIntent = new Intent(context, ExhibitListActivity.class);
 		context.startActivity(listIntent);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.listmenu, menu);
+		
+		return true;
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle bundle){
+		bundle.putString("GroupFilter", adapter.getGroupFilter());
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		
+		switch (item.getItemId()){
+		case R.integer.LIST_MENU_ALL:
+			adapter.setGroupFilter(getResources().getString(R.string.list_menu_all_group));
+			break;
+		case R.integer.LIST_MENU_BIRDS:
+			adapter.setGroupFilter(getResources().getString(R.string.list_menu_birds_group));
+			break;
+		case R.integer.LIST_MENU_MAMMALS:
+			adapter.setGroupFilter(getResources().getString(R.string.list_menu_mammals_group));
+			break;
+		case R.integer.LIST_MENU_FACILITIES:
+			adapter.setGroupFilter(getResources().getString(R.string.list_menu_facilities_group));
+			break;
+		}
+		return true;
 	}
 }

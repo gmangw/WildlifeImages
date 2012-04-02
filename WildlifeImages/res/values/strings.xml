@@ -43,6 +43,14 @@
     <string name="update_page_url">http://oregonstate.edu/~wilkinsg/wildlifeimages/update.html</string>
     <string name="qr_unknown">QR code not recognized.</string>
     <string name="exhibit_list_text">Choose an item below to learn more about an animal or facility.</string>
+    <string name="list_menu_all">All Exhibits</string>
+    <string name="list_menu_all_group"></string>
+    <string name="list_menu_birds">Birds</string>
+    <string name="list_menu_birds_group">Avians</string>
+    <string name="list_menu_mammals">Mammals</string>
+    <string name="list_menu_mammals_group">Mammals</string>
+    <string name="list_menu_facilities">Facilities</string>
+    <string name="list_menu_facilities_group">Facilities</string>
         
     <string-array name="intro_image_list">
         <item>shoshoni.jpg</item>

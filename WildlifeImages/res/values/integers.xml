@@ -7,6 +7,10 @@
         <item type="integer" format="integer" name="MENU_CAMERA">2</item>
         <item type="integer" format="integer" name="MENU_HOME">3</item>
         <item type="integer" format="integer" name="MENU_MAP">4</item>
-        <item type="integer" name="MENU_NEXT" format="integer">5</item>
-        <item type="integer" name="MENU_PREVIOUS" format="integer">6</item>
+        <item type="integer" format="integer" name="MENU_NEXT" >5</item>
+        <item type="integer" format="integer" name="MENU_PREVIOUS" >6</item>
+        <item type="integer" format="integer" name="LIST_MENU_ALL" >7</item>
+        <item type="integer" format="integer" name="LIST_MENU_MAMMALS" >8</item>
+        <item type="integer" format="integer" name="LIST_MENU_BIRDS" >9</item>
+        <item type="integer" format="integer" name="LIST_MENU_FACILITIES" >10</item>
     </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@integer/LIST_MENU_ALL" android:title="@string/list_menu_all" />
+	<item android:id="@integer/LIST_MENU_MAMMALS" android:title="@string/list_menu_mammals" />
+	<item android:id="@integer/LIST_MENU_BIRDS" android:title="@string/list_menu_birds" />
+	<item android:id="@integer/LIST_MENU_FACILITIES" android:title="@string/list_menu_facilities" />
+</menu> 

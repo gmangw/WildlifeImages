@@ -67,7 +67,7 @@ public class CommonUnitTest extends ActivityUnitTestCase<IntroActivity>{
 		Common.processActivityResult(mActivity, code_scan, Activity.RESULT_OK, intent);
 		assertNull(getStartedActivityIntent());
 
-		ExhibitList exhibitList = ContentManager.getSelf().getExhibitList();
+		ExhibitList exhibitList = ContentManager.getExhibitList();
 		ArrayList<String> names = new ArrayList<String>();
 		for (int i=0; i<exhibitList.getCount(); i++){
 			names.add(exhibitList.getExhibitAt(i).getName());

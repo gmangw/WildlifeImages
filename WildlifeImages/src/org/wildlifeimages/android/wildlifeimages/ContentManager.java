@@ -41,7 +41,7 @@ public class ContentManager {
 
 	private static HashSet<String> cachedFiles = null;
 
-	private static ExhibitList exhibitList;
+	private static ExhibitList exhibitList = null;
 
 	private static File filesDir = null;
 	static BitmapCache imgCache = null;
@@ -410,5 +410,13 @@ public class ContentManager {
 		BufferedReader in = new BufferedReader(new InputStreamReader(istr), 1024);
 		xmlBox.setInput(in);
 		return new ExhibitList(xmlBox);
+	}
+
+	public static void finish() {
+		filesDir = null;
+		timekeeper = null;
+		cachedFiles = null;
+		exhibitList = null;
+		imgCache = null;
 	}
 }

@@ -108,6 +108,7 @@ public class IntroActivity extends WireActivity{
 		.setPositiveButton(loadString(R.string.exit_option_yes),
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
+				ContentManager.finish();
 				me.finish();
 			}
 		})

@@ -16,13 +16,13 @@
 
     <TextView
         android:id="@+id/listitemlabel"
-        android:layout_width="1024dp"
+        android:layout_width="2048dp"
         android:layout_height="fill_parent"
         android:layout_marginLeft="16dp"
         android:clickable="false"
         android:focusable="false"
         android:gravity="center|left"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/background_dark"
         android:textSize="20sp"
         android:typeface="sans" />
 
