@@ -4,31 +4,37 @@
     <item
         android:id="@integer/MENU_HOME"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_home"
         android:title="@string/menu_home"/>
 
     <item
         android:id="@integer/MENU_PREVIOUS"
         android:showAsAction="always"
+        android:icon="@drawable/ic_menu_back"
         android:title="@string/menu_previous"/>
 
     <item
         android:id="@integer/MENU_NEXT"
         android:showAsAction="always"
+        android:icon="@drawable/ic_menu_forward"
         android:title="@string/menu_next"/>
 
     <item
         android:id="@integer/MENU_MAP"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_mapmode"
         android:title="@string/menu_map"/>
 
     <item
         android:id="@integer/MENU_SCAN"
         android:showAsAction="never"
+        android:icon="@drawable/ic_menu_qr"
         android:title="@string/menu_scan"/>
     
     <item
         android:id="@integer/MENU_CAMERA"
         android:showAsAction="never"
+        android:icon="@drawable/ic_menu_camera"
         android:title="@string/menu_camera"/>
 
 </menu>
