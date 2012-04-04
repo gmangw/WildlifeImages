@@ -3,6 +3,7 @@ package org.wildlifeimages.tools.update;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -56,7 +58,8 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JList exhibitAliasesList = new JList();
 
 	final JPanel contentPanel = new JPanel(new GridLayout(1,2));
-	final JPanel mainPanel = new JPanel(new GridLayout(3, 1, 2, 5));
+	final JPanel mainPanelCentral = new JPanel(new GridLayout(2, 1, 2, 5));
+	final JPanel mainPanel = new JPanel(new BorderLayout());
 	final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
 	final JPanel groupPanel = new JPanel(new GridLayout(4,1));
 	final JMapPanel mapPanel;
@@ -96,9 +99,10 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final ExhibitAliasesModel exhibitAliasesModel;
 
 	final JTabbedPane tabbedPane = new JTabbedPane();
+	final JTabbedPane exhibitTabs = new JTabbedPane();
 
 	final JPanel subPanel1 = new JPanel(new GridLayout(1, 2, 2, 5));
-	final JPanel subPanel2 = new JPanel(new GridLayout(2, 1, 2, 5));
+	final JPanel subPanel2 = new JPanel(new GridLayout(1, 1, 2, 5));
 	final JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
 	final JPanel subPanel4 = new JPanel(new GridLayout(1, 2, 2, 5));
 	final JPanel subPanel5 = new JPanel(new GridLayout(2, 3));
@@ -174,15 +178,6 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		}
 		exhibitNextDropdown.addActionListener(peer);
 		exhibitPreviousDropdown.addActionListener(peer);
-
-		saveButton.addActionListener(peer);
-		saveButton.setSize(100, 20);
-
-		newFileButton.addActionListener(peer);
-		newExhibitButton.addActionListener(peer);
-		newTagButton.addActionListener(peer);
-		newImageButton.addActionListener(peer);
-		loadPackageButton.addActionListener(peer);
 
 		addGroupExhibitButton.addActionListener(this);
 		removeGroupExhibitButton.addActionListener(this);
@@ -268,7 +263,10 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		newButtonsPanel.add(loadPackageButton);
 
 		for (Component c : newButtonsPanel.getComponents()){
-			c.setBackground(Color.WHITE);
+			JButton b = (JButton)c;
+			b.setBackground(Color.WHITE);
+			b.addActionListener(peer);
+			b.setBorder(BorderFactory.createCompoundBorder(saveButton.getBorder(), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		}
 
 		JPanel listPanelTop = new JPanel(new BorderLayout());
@@ -277,8 +275,8 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		JPanel listPanelBottom = new JPanel(new BorderLayout());
 		listPanelBottom.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
 		listPanelBottom.add(exhibitPhotosList, BorderLayout.CENTER);
-		JPanel listPanel = new JPanel(new GridLayout(2, 1));
-		listPanel.add(listPanelTop);
+		JPanel listPanel = new JPanel(new GridLayout(1, 1));
+		//listPanel.add(listPanelTop);
 		listPanel.add(listPanelBottom);
 		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
@@ -298,18 +296,21 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 
 		subPanel1.add(listPanel);
 		subPanel1.add(new JScrollPane(exhibitPhotosImage));
-		subPanel2.add(exhibitDataPanel);
+		subPanel2.add(exhibitTabs);
 		subPanel2.add(contentPanel);
 
-		subPanel3.add(aliasPanel);
-		subPanel3.add(newButtonsPanel);
+		exhibitTabs.add("Data", exhibitDataPanel);
+		exhibitTabs.add("Content", contentPanel);
+		exhibitTabs.add("Photos", subPanel1);
+		exhibitTabs.add("Aliases", aliasPanel);		
 
-		mainPanel.add(subPanel1);
-		mainPanel.add(subPanel2);
-		mainPanel.add(subPanel3);
+		mainPanelCentral.add(listPanelTop);
+		mainPanelCentral.add(subPanel2);
+		mainPanel.add(mainPanelCentral, BorderLayout.CENTER);
+		mainPanel.add(newButtonsPanel, BorderLayout.SOUTH);
 
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		mainPanel.setBackground(Color.WHITE);
+		mainPanelCentral.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		mainPanelCentral.setBackground(Color.WHITE);
 
 		subPanel4.add(new JScrollPane(groupNameList));
 		subPanel4.add(new JScrollPane(groupExhibitsList));
@@ -324,7 +325,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		groupPanel.add(new JScrollPane(modifiedFilesList)); //Add original files list above this?
 		groupPanel.add(subPanel5);
 
-		tabbedPane.addTab("Exhibit Stuff", mainPanel);
+		tabbedPane.addTab("Exhibits", mainPanel);
 		tabbedPane.addTab("Map", mapPanel);
 		tabbedPane.addTab("Groups", groupPanel);
 	}
