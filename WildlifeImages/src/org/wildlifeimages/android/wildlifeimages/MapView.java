@@ -37,6 +37,8 @@ public class MapView extends ImageView {
 	private float mapTop = 0.0f;
 	private float mapRight = 0.0f;
 	private float mapBottom = 0.0f;
+	
+	private final Rect r = new Rect();
 
 	private GestureDetector gestures;
 
@@ -313,14 +315,12 @@ public class MapView extends ImageView {
 		originY *= 0.925f;
 		processScroll(0, 0);
 	}
-
-	private final Rect r = new Rect(); //TODO move
 	
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 		
-		p.setTextSize(Math.min(getHeight()/25.0f * scale, MAX_FONT_SIZE));
+		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/25.0f * scale));
 		
 		for(int i=0; i<points.length/2; i++){
 			rectP.setTextAlign(Align.CENTER);
