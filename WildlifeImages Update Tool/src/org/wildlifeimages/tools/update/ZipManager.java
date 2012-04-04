@@ -16,15 +16,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.batik.swing.JSVGCanvas;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
@@ -36,7 +39,8 @@ public class ZipManager extends JFrame implements ActionListener{
 	private static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
 	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
-
+	private static final Pattern imageExtensionExpression = Pattern.compile(".+(.jpe?g|.bmp|.png|.gif)");
+	
 	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 
 	private JSVGCanvas map;
@@ -103,7 +107,6 @@ public class ZipManager extends JFrame implements ActionListener{
 	public void addFile(String filename, File newFile){
 		modifiedFiles.put(filename, newFile);
 		c.modifiedFilesListModel.notifyChange();
-		c.newContentDropdown.addItem(filename);
 		makeChange();
 	}
 
@@ -214,7 +217,7 @@ public class ZipManager extends JFrame implements ActionListener{
 
 	public InputStream getFileInputStream(String filename){
 		try{
-			return packageLoader.getFileInputStream(filename);
+			return new BufferedInputStream(packageLoader.getFileInputStream(filename));
 		}catch(IOException e){
 			showError(e.getMessage());
 			return null;
@@ -226,10 +229,43 @@ public class ZipManager extends JFrame implements ActionListener{
 	}
 	
 	public static boolean isImage(String filename){
-		final Pattern imageExtensionExpression = Pattern.compile(".+(.jpg|.jpeg|.bmp|.png|.gif)");
-		return imageExtensionExpression.matcher(filename.toLowerCase()).matches();
+		String s = filename.substring(Math.max(0, filename.length()-5));
+		return (s.toLowerCase().endsWith("jpg") || s.endsWith("bmp") || s.endsWith("jpeg") || s.endsWith("png") || s.endsWith("gif") );
 	}
 
+	public void loadUpdate(){
+		JFileChooser chooser = new JFileChooser("../");
+		chooser.setFileFilter(new FileFilter(){
+			@Override
+			public boolean accept(File f) {
+				if (f.isDirectory() || f.getName().endsWith(".zip")){
+					return true;
+				}
+				return false;
+			}
+			@Override
+			public String getDescription() {
+				return "Update Packages (*.zip)";
+			}
+		});
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setDialogTitle("Select update file");
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+			if (chooser.getSelectedFile().exists()){
+				try{
+					System.out.println(chooser.getSelectedFile().getName());
+					ArrayList<String> modFiles = new ArrayList<String>();
+					ExhibitLoader updateParser = packageLoader.readUpdate(new ZipInputStream(new FileInputStream(chooser.getSelectedFile())), modFiles);
+					for (String s : modFiles){
+						System.out.println(s);
+					}
+				}catch(IOException e){
+					System.out.println("Could not load");
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(c.saveButton)){			
@@ -257,12 +293,6 @@ public class ZipManager extends JFrame implements ActionListener{
 						}
 					}
 				}
-			}
-		}else if (event.getSource().equals(c.newContentDropdown)){
-			ExhibitInfo e = getCurrentExhibit();
-			e.setContent(currentTag, (String)c.newContentDropdown.getSelectedItem());
-			if (false == e.getContent(currentTag).equals(e.getOrigContents(currentTag))){
-				makeChange();
 			}
 		}else if (event.getSource().equals(c.exhibitPreviousDropdown)){
 			String prev = (String)c.exhibitPreviousDropdown.getSelectedItem();
@@ -297,8 +327,6 @@ public class ZipManager extends JFrame implements ActionListener{
 					ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
 					newE.setContent(newContentName, originalFiles[0]);
 					exhibitParser.getExhibits().add(newE);
-					c.exhibitNextDropdown.addItem(newName);
-					c.exhibitPreviousDropdown.addItem(newName);
 					((ComponentHolder.ExhibitListModel)c.exhibitNameList.getModel()).notifyChange();
 					c.contentListModel.notifyChange();
 					makeChange();

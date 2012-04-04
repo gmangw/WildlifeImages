@@ -3,20 +3,20 @@ package org.wildlifeimages.tools.update;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.zip.ZipInputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -25,17 +25,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 
-public class ComponentHolder implements ChangeListener, ActionListener{
+public class ComponentHolder implements ChangeListener{
 	final JButton newTagButton = new JButton("Add Content to Exhibit");
 	final JButton newExhibitButton = new JButton("Create New Exhibit");
 	final JButton saveButton = new JButton("Save Updates");
@@ -46,7 +47,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JButton addGroupExhibitButton = new JButton("Add Exhibit To Group");
 	final JButton removeGroupExhibitButton = new JButton("Remove Exhibit From Group");
 	final JButton removeGroupButton = new JButton("Remove Group");
-	final JButton editFileButton = new JButton("View/Edit File");
+	final JButton editFileButton = new JButton("Open File");
 	final JButton loadUpdateButton = new JButton("Load Prevous Update");
 
 	final JList exhibitNameList = new JList();
@@ -62,6 +63,8 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JPanel mainPanel = new JPanel(new BorderLayout());
 	final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
 	final JPanel groupPanel = new JPanel(new GridLayout(4,1));
+	final JPanel aliasDataPanel = new JPanel(new GridLayout(2,2));
+
 	final JMapPanel mapPanel;
 
 	final JLabel exhibitXCoordOrig = new JLabel();
@@ -101,11 +104,15 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 	final JTabbedPane tabbedPane = new JTabbedPane();
 	final JTabbedPane exhibitTabs = new JTabbedPane();
 
-	final JPanel subPanel1 = new JPanel(new GridLayout(1, 2, 2, 5));
+	final HTMLEditorKit htmlKit = new HTMLEditorKit();
+
+	final JEditorPane htmlContentViewer = new JEditorPane();
+
+	final JPanel photosPanel = new JPanel(new GridLayout(1, 2, 2, 5));
 	final JPanel subPanel2 = new JPanel(new GridLayout(1, 1, 2, 5));
 	final JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
-	final JPanel subPanel4 = new JPanel(new GridLayout(1, 2, 2, 5));
-	final JPanel subPanel5 = new JPanel(new GridLayout(2, 3));
+	final JPanel groupListPanel = new JPanel(new GridLayout(1, 2, 2, 5));
+	final JPanel filePanel = new JPanel(new BorderLayout());
 
 	final ZipManager peer;
 
@@ -127,10 +134,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		exhibitNameList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				JList src = (JList)arg0.getSource();
-				selectExhibit(src.getSelectedIndex());
-				selectPhoto();
-				selectAlias();
+				selectExhibit(exhibitNameList.getSelectedIndex());
 			}
 		});
 
@@ -139,8 +143,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		contentList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				JList src = (JList)arg0.getSource();
-				selectContent(src.getSelectedValue().toString());
+				selectContent((String)contentList.getSelectedValue());
 			}
 		});
 
@@ -161,30 +164,67 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		groupNameList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				JList src = (JList)arg0.getSource();
-				ExhibitGroup group = peer.getGroup(src.getSelectedValue().toString());
-				groupExhibitsModel.notifyChange();
-				groupExhibitsList.setSelectionInterval(0, 0);
-				groupXSpinnerModel.setValue(group.xPos);
-				groupYSpinnerModel.setValue(group.yPos);
+				selectGroup();
 			}
 		});
 
-		for (ExhibitInfo e : peer.getExhibits()){
-			if (false == e.getName().equals(peer.getCurrentExhibit().getName())){
-				exhibitPreviousDropdown.addItem(e.getName());
-				exhibitNextDropdown.addItem(e.getName());
-			}
-		}
+		exhibitNextDropdown.setModel(new ExhibitDropdownModel());
+		exhibitPreviousDropdown.setModel(new ExhibitDropdownModel());
+
+		htmlContentViewer.setEditable(false);
+		JScrollPane scrollPane = new JScrollPane(htmlContentViewer);
+		htmlContentViewer.setEditorKit(htmlKit);
+		Document doc = htmlKit.createDefaultDocument();
+		htmlContentViewer.setDocument(doc);
+
 		exhibitNextDropdown.addActionListener(peer);
 		exhibitPreviousDropdown.addActionListener(peer);
 
-		addGroupExhibitButton.addActionListener(this);
-		removeGroupExhibitButton.addActionListener(this);
-		addGroupButton.addActionListener(this);
-		editFileButton.addActionListener(this);
-		removeGroupButton.addActionListener(this);
-		loadUpdateButton.addActionListener(this);
+		addGroupExhibitButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent a) {
+				addGroupExhibit();
+			}
+		});
+
+		removeGroupExhibitButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeGroupExhibit();
+			}
+		});
+
+		addGroupButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addGroup();
+			}
+		});
+
+		editFileButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent a) {
+				editFile();
+			}
+		});
+
+		removeGroupButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeGroup();
+			}
+		});
+
+		loadUpdateButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.loadUpdate();
+			}
+		});
+
+		newFileButton.addActionListener(peer);
+		saveButton.addActionListener(peer);
+		loadPackageButton.addActionListener(peer);
 
 		addGroupExhibitButton.setBackground(Color.WHITE);
 		removeGroupExhibitButton.setBackground(Color.WHITE);
@@ -192,6 +232,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		editFileButton.setBackground(Color.WHITE);
 		removeGroupButton.setBackground(Color.WHITE);
 		loadUpdateButton.setBackground(Color.WHITE);
+		newFileButton.setBackground(Color.WHITE);
+		saveButton.setBackground(Color.WHITE);
+		loadPackageButton.setBackground(Color.WHITE);
 
 		exhibitXSpinnerModel.addChangeListener(this);
 		exhibitYSpinnerModel.addChangeListener(this);
@@ -203,14 +246,21 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		groupYSpinnerModel.addChangeListener(this);
 
 		newContentDropdown.setEditable(false);
-		newContentDropdown.addItem(" ");
+		newContentDropdown.setModel(new ContentDropdownModel());
 
-		for (String s : peer.originalFiles){
-			if (false == peer.modifiedFileExists(s)){
-				newContentDropdown.addItem(s);
+		newContentDropdown.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ExhibitInfo e = peer.getCurrentExhibit();
+				String currentTag = (String)contentList.getSelectedValue();
+				String content = (String)newContentDropdown.getSelectedItem();
+				e.setContent(currentTag, content);
+				loadHTMLContent(content);
+				if (false == e.getContent(currentTag).equals(e.getOrigContents(currentTag))){
+					peer.makeChange();
+				}
 			}
-		}
-		newContentDropdown.addActionListener(peer);
+		});
 
 		exhibitPhotosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		exhibitPhotosList.setModel(exhibitPhotosModel);
@@ -240,8 +290,12 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		contentDropdownPanel.add(newContentDropdown);
 		//contentDropdownPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-		contentPanel.add(new JScrollPane(contentList));
-		contentPanel.add(contentDropdownPanel);
+		JPanel contentControlPanel = new JPanel(new GridLayout(2,1));		
+		contentControlPanel.add(new JScrollPane(contentList));
+		contentControlPanel.add(contentDropdownPanel);
+
+		contentPanel.add(scrollPane);
+		contentPanel.add(contentControlPanel);
 		contentPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		exhibitDataPanel.add(exhibitXCoordOrig);
@@ -254,13 +308,10 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		exhibitDataPanel.add(exhibitNextDropdown);
 		exhibitDataPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-		JPanel newButtonsPanel = new JPanel(new GridLayout(2,3));
+		JPanel newButtonsPanel = new JPanel(new GridLayout(1,3));
 		newButtonsPanel.add(newExhibitButton);
 		newButtonsPanel.add(newTagButton);
 		newButtonsPanel.add(newImageButton);
-		newButtonsPanel.add(newFileButton);
-		newButtonsPanel.add(saveButton);
-		newButtonsPanel.add(loadPackageButton);
 
 		for (Component c : newButtonsPanel.getComponents()){
 			JButton b = (JButton)c;
@@ -276,71 +327,207 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		listPanelBottom.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
 		listPanelBottom.add(exhibitPhotosList, BorderLayout.CENTER);
 		JPanel listPanel = new JPanel(new GridLayout(1, 1));
-		//listPanel.add(listPanelTop);
 		listPanel.add(listPanelBottom);
 		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		JPanel aliasPanel = new JPanel(new GridLayout(1,2));
-		JPanel aliasDataPanel = new JPanel(new GridLayout(2,1));
+		aliasDataPanel.add(new JLabel("Alias X Coordinate"));
 		aliasDataPanel.add(aliasXCoordField);
+		aliasDataPanel.add(new JLabel("Alias Y Coordinate"));
 		aliasDataPanel.add(aliasYCoordField);
 
 		aliasPanel.add(new JScrollPane(exhibitAliasesList));
 		aliasPanel.add(aliasDataPanel);
 
-		JPanel groupDataPanel = new JPanel(new GridLayout(2,2));
-		groupDataPanel.add(groupXCoordField);
-		groupDataPanel.add(groupYCoordField);
-		groupDataPanel.add(removeGroupButton);
-		groupDataPanel.add(removeGroupExhibitButton);
+		JPanel groupXCoordPanel = new JPanel(new GridLayout(1,2));
+		groupXCoordPanel.add(new JLabel("Group X Coordinate"));
+		groupXCoordPanel.add(groupXCoordField);
 
-		subPanel1.add(listPanel);
-		subPanel1.add(new JScrollPane(exhibitPhotosImage));
-		subPanel2.add(exhibitTabs);
-		subPanel2.add(contentPanel);
+		JPanel groupYCoordPanel = new JPanel(new GridLayout(1,2));
+		groupYCoordPanel.add(new JLabel("Group Y Coordinate"));
+		groupYCoordPanel.add(groupYCoordField);
 
-		exhibitTabs.add("Data", exhibitDataPanel);
-		exhibitTabs.add("Content", contentPanel);
-		exhibitTabs.add("Photos", subPanel1);
-		exhibitTabs.add("Aliases", aliasPanel);		
+		JPanel groupDataButtonsPanel = new JPanel(new GridLayout(4,1));
+		groupDataButtonsPanel.add(addGroupButton);
+		groupDataButtonsPanel.add(removeGroupButton);
+		groupDataButtonsPanel.add(addGroupExhibitButton);
+		groupDataButtonsPanel.add(removeGroupExhibitButton);
+		
+		JPanel groupLocationPanel = new JPanel(new GridLayout(2,1));
+		groupLocationPanel.add(groupXCoordPanel);
+		groupLocationPanel.add(groupYCoordPanel);
+		
+		JPanel groupDataPanel = new JPanel(new GridLayout(1,2));
+		groupDataPanel.add(groupDataButtonsPanel);
+		groupDataPanel.add(groupLocationPanel);
+		
+		JPanel combinedDataPanel = new JPanel(new GridLayout(2,1));
+		combinedDataPanel.add(exhibitDataPanel);
+		combinedDataPanel.add(aliasPanel);
+		
+
+		photosPanel.add(new JScrollPane(exhibitPhotosImage));
+		photosPanel.add(listPanel);
+
+		exhibitTabs.add("Exhibit Properties", combinedDataPanel);
+		exhibitTabs.add("Exhibit Content", contentPanel);
+		exhibitTabs.add("Exhibit Photos", photosPanel);		
 
 		mainPanelCentral.add(listPanelTop);
-		mainPanelCentral.add(subPanel2);
+		mainPanelCentral.add(exhibitTabs);
 		mainPanel.add(mainPanelCentral, BorderLayout.CENTER);
 		mainPanel.add(newButtonsPanel, BorderLayout.SOUTH);
 
 		mainPanelCentral.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		mainPanelCentral.setBackground(Color.WHITE);
 
-		subPanel4.add(new JScrollPane(groupNameList));
-		subPanel4.add(new JScrollPane(groupExhibitsList));
+		groupListPanel.add(new JScrollPane(groupNameList));
+		groupListPanel.add(new JScrollPane(groupExhibitsList));
 
-		subPanel5.add(addGroupButton);
-		subPanel5.add(addGroupExhibitButton);
-		subPanel5.add(editFileButton);
-		subPanel5.add(loadUpdateButton);
+		JPanel packageButtonPanel = new JPanel(new GridLayout(1,3));
+		packageButtonPanel.add(loadPackageButton);
+		packageButtonPanel.add(loadUpdateButton);
+		loadUpdateButton.setEnabled(false);
+		packageButtonPanel.add(saveButton);
 
-		groupPanel.add(subPanel4);
+		JPanel fileButtonPanel = new JPanel(new GridLayout(2,1));
+		fileButtonPanel.add(editFileButton);
+		fileButtonPanel.add(newFileButton);
+		
+		filePanel.add(BorderLayout.CENTER, new JScrollPane(modifiedFilesList));
+		filePanel.add(BorderLayout.EAST, fileButtonPanel);
+
+		groupPanel.add(groupListPanel);
 		groupPanel.add(groupDataPanel);
-		groupPanel.add(new JScrollPane(modifiedFilesList)); //Add original files list above this?
-		groupPanel.add(subPanel5);
+		groupPanel.add(filePanel);
+		groupPanel.add(packageButtonPanel);
 
 		tabbedPane.addTab("Exhibits", mainPanel);
 		tabbedPane.addTab("Map", mapPanel);
 		tabbedPane.addTab("Groups", groupPanel);
 	}
 
+	String[] getAllContentList(){
+		ArrayList<String> list = new ArrayList<String>();
+		for (String s : peer.originalFiles){
+			if (false == peer.modifiedFileExists(s)){
+				if (ZipManager.isImage(s) == false){
+					list.add(s);
+				}
+			}
+		}
+		for (String s :peer.getModifiedFileNames()){
+			if (ZipManager.isImage(s) == false){
+				list.add(s);
+			}
+		}
+		return list.toArray(new String[0]);
+	}
+
+	void selectGroup(){
+		ExhibitGroup group = peer.getGroup(groupNameList.getSelectedValue().toString());
+		groupExhibitsModel.notifyChange();
+		groupExhibitsList.setSelectionInterval(0, 0);
+		groupXSpinnerModel.setValue(group.xPos);
+		groupYSpinnerModel.setValue(group.yPos);
+	}
+
+	void removeGroupExhibit(){
+		peer.makeChange();
+		peer.removeGroupExhibit(groupExhibitsList.getSelectedValue().toString(), groupNameList.getSelectedValue().toString());
+		groupExhibitsModel.notifyChange();
+		groupExhibitsList.setSelectionInterval(0, 0);
+	}
+
+	void addGroupExhibit(){
+		ArrayList<ExhibitInfo> filesList = new ArrayList<ExhibitInfo>();
+		for(ExhibitInfo e : peer.getExhibits()){
+			filesList.add(e);
+		}
+		String groupName = groupNameList.getSelectedValue().toString();
+		ExhibitGroup group = peer.getGroup(groupName);
+
+		for (String name : group.exhibits){
+			for (int i=0; i<filesList.size(); i++){
+				if (filesList.get(i).getName().equals(name)){
+					filesList.remove(i);
+				}
+			}
+		}
+		Object[] files = filesList.toArray();
+
+		ExhibitInfo e = (ExhibitInfo)JOptionPane.showInputDialog(peer, "Exhibit:", "Add which exhibit to group?",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
+		if (e != null){
+			String[] names = new String[group.exhibits.length + 1];
+			for(int i=0; i<names.length -1; i++){
+				names[i] = group.exhibits[i];
+			}
+			names[names.length-1] = e.getName();
+			ExhibitGroup newGroup = new ExhibitGroup(names, -1, -1);
+			peer.addGroup(groupName, newGroup);
+			peer.makeChange();
+			groupExhibitsModel.notifyChange();
+		}
+	}
+
+	void editFile(){
+		String[] keys = peer.getModifiedFileNames();
+		File f = peer.getModifiedFile(keys[modifiedFilesList.getSelectedIndex()]);
+		String[] exec = {"cmd.exe", "/C", f.getPath()};
+		try {
+			Runtime.getRuntime().exec(exec);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	void removeGroup(){
+		peer.makeChange();
+		peer.removeGroup(groupNameList.getSelectedValue().toString());
+		groupNameList.setSelectionInterval(0, 0);
+		groupExhibitsList.setSelectionInterval(0, 0);
+		groupExhibitsModel.notifyChange();
+		groupListModel.notifyChange();	
+	}
+
+	void addGroup(){
+		String newName = JOptionPane.showInputDialog("Name of new exhibit:");
+		if (newName != null && newName.length() > 0){//TODO add name expression matching
+			ExhibitGroup group = new ExhibitGroup(new String[0], -1, -1);
+			peer.addGroup(newName, group);
+			groupListModel.notifyChange();
+			peer.makeChange();
+		}
+	}
+
+	void loadHTMLContent(String shortUrl){
+		try{
+			StyleSheet style = htmlKit.getStyleSheet();
+			BufferedReader r = new BufferedReader(new InputStreamReader(peer.getFileInputStream("assets/ExhibitContents/exhibits.css")));
+			style.loadRules(r, null);
+		}catch(IOException e){
+			//TODO do this try block differently if css has been modified.
+		}
+		InputStream r = peer.getFileInputStream("assets/" + shortUrl);
+		StringBuffer sb = new StringBuffer();
+		try{
+			for(int result = r.read(); result != -1; result = r.read()){
+				sb.append((char)result);
+			}
+		}catch(IOException e){
+		}
+		htmlContentViewer.setText(sb.toString());
+	}
+
 	void selectAlias(){
 		int index = exhibitAliasesList.getSelectedIndex();
 		if (index < peer.getCurrentExhibit().getAliases().length){
-			aliasXCoordField.setVisible(true);
-			aliasYCoordField.setVisible(true);
+			aliasDataPanel.setVisible(true);
 			Alias alias = peer.getCurrentExhibit().getAliases()[index];
 			aliasXCoordField.getModel().setValue(alias.xPos);
 			aliasYCoordField.getModel().setValue(alias.yPos);
 		}else{
-			aliasXCoordField.setVisible(false);
-			aliasYCoordField.setVisible(false);
+			aliasDataPanel.setVisible(false);
 		}
 	}
 
@@ -350,6 +537,7 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		String data = e.getContent(tag);
 		exhibitContentLabel.setText(e.getOrigContents(tag));
 		newContentDropdown.setSelectedItem(data);
+		loadHTMLContent(data);
 	}
 
 	void selectExhibit(int index){
@@ -383,6 +571,9 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		exhibitAliasesList.setSelectionInterval(0, 0);
 
 		exhibitAliasesModel.notifyChange();
+
+		selectPhoto();
+		selectAlias();
 	}
 
 	class ModifiedListModel extends BasicListModel{
@@ -495,6 +686,55 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		}
 	}
 
+	class ExhibitDropdownModel extends BasicComboBoxModel{
+		private String selected = "";
+		
+		@Override
+		public Object getElementAt(int index) {
+			ExhibitInfo e = peer.getExhibits().get(index);
+			if (e.getName().equals(peer.getCurrentExhibit().getName())){
+				return "";
+			}else{
+				return e.getName();
+			}
+		}
+		@Override
+		public int getSize() {
+			return peer.getExhibits().size();
+		}
+		@Override
+		public Object getSelectedItem() {
+			return selected;
+		}
+		@Override
+		public void setSelectedItem(Object arg0) {
+			selected = (String)arg0;
+			notifyChange();
+		}
+	}
+	
+	class ContentDropdownModel extends BasicComboBoxModel{
+		private String selected = null;
+
+		@Override
+		public Object getElementAt(int index) {
+			return getAllContentList()[index];
+		}
+		@Override
+		public int getSize() {
+			return getAllContentList().length;
+		}
+		@Override
+		public Object getSelectedItem() {
+			return selected;
+		}
+		@Override
+		public void setSelectedItem(Object arg0) {
+			selected = (String)arg0;
+			notifyChange();
+		}
+	}
+
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		ExhibitInfo e = peer.getCurrentExhibit();
@@ -546,98 +786,4 @@ public class ComponentHolder implements ChangeListener, ActionListener{
 		}
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource().equals(addGroupButton)){
-			String newName = JOptionPane.showInputDialog("Name of new exhibit:");
-			if (newName != null && newName.length() > 0){//TODO add name expression matching
-				ExhibitGroup group = new ExhibitGroup(new String[0], -1, -1);
-				peer.addGroup(newName, group);
-				groupListModel.notifyChange();
-				peer.makeChange();
-			}
-		}else if (arg0.getSource().equals(addGroupExhibitButton)){
-			ArrayList<ExhibitInfo> filesList = new ArrayList<ExhibitInfo>();
-			for(ExhibitInfo e : peer.getExhibits()){
-				filesList.add(e);
-			}
-			String groupName = groupNameList.getSelectedValue().toString();
-			ExhibitGroup group = peer.getGroup(groupName);
-
-			for (String name : group.exhibits){
-				for (int i=0; i<filesList.size(); i++){
-					if (filesList.get(i).getName().equals(name)){
-						filesList.remove(i);
-					}
-				}
-			}
-			Object[] files = filesList.toArray();
-
-			ExhibitInfo e = (ExhibitInfo)JOptionPane.showInputDialog(peer, "Exhibit:", "Add which exhibit to group?",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
-			if (e != null){
-				String[] names = new String[group.exhibits.length + 1];
-				for(int i=0; i<names.length -1; i++){
-					names[i] = group.exhibits[i];
-				}
-				names[names.length-1] = e.getName();
-				ExhibitGroup newGroup = new ExhibitGroup(names, -1, -1);
-				peer.addGroup(groupName, newGroup);
-				peer.makeChange();
-				groupExhibitsModel.notifyChange();
-			}
-		}else if (arg0.getSource().equals(editFileButton)){
-			String[] keys = peer.getModifiedFileNames();
-			File f = peer.getModifiedFile(keys[modifiedFilesList.getSelectedIndex()]);
-			String[] exec = {"cmd.exe", "/C", f.getPath()};
-			try {
-				Runtime.getRuntime().exec(exec);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else if (arg0.getSource().equals(removeGroupExhibitButton)){
-			peer.makeChange();
-			peer.removeGroupExhibit(groupExhibitsList.getSelectedValue().toString(), groupNameList.getSelectedValue().toString());
-			groupExhibitsModel.notifyChange();
-			groupExhibitsList.setSelectionInterval(0, 0);
-		}else if (arg0.getSource().equals(removeGroupButton)){
-			peer.makeChange();
-			peer.removeGroup(groupNameList.getSelectedValue().toString());
-			groupNameList.setSelectionInterval(0, 0);
-			groupExhibitsList.setSelectionInterval(0, 0);
-			groupExhibitsModel.notifyChange();
-			groupListModel.notifyChange();	
-		}
-		else if (arg0.getSource().equals(loadUpdateButton)){
-			JFileChooser chooser = new JFileChooser("../");
-			chooser.setFileFilter(new FileFilter(){
-				@Override
-				public boolean accept(File f) {
-					if (f.isDirectory() || f.getName().endsWith(".zip")){
-						return true;
-					}
-					return false;
-				}
-				@Override
-				public String getDescription() {
-					return "Update Packages (*.zip)";
-				}
-			});
-			chooser.setAcceptAllFileFilterUsed(false);
-			chooser.setDialogTitle("Select update file");
-			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-				if (chooser.getSelectedFile().exists()){
-					try{
-						System.out.println(chooser.getSelectedFile().getName());
-						ArrayList<String> modFiles = new ArrayList<String>();
-						ExhibitLoader updateParser = peer.packageLoader.readUpdate(new ZipInputStream(new FileInputStream(chooser.getSelectedFile())), modFiles);
-						for (String s : modFiles){
-							System.out.println(s);
-						}
-					}catch(IOException e){
-						System.out.println("Could not load");
-					}
-				}
-			}
-		}
-	}
 }
