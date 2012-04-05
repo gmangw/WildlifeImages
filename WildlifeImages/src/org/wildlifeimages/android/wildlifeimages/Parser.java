@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.xmlpull.v1.XmlPullParser;

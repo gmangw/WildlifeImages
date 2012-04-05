@@ -68,7 +68,7 @@ public class MapView extends ImageView {
 	private static String activeName = "";
 
 	private float zoomFactor = 0.25f;
-	private float zoomMinimum = 1.00f;
+	//private float zoomMinimum = 1.00f;
 	private float[][] anchorPoints = {
 			{0.00f, 0.00f, 1.50f},
 			{1.00f, 0.00f, 1.50f},
@@ -476,6 +476,6 @@ public class MapView extends ImageView {
 	}
 
 	public void setZoomMinimum(float zoomMinimum) {
-		this.zoomMinimum = zoomMinimum;
+		//this.zoomMinimum = zoomMinimum;
 	}
 }
