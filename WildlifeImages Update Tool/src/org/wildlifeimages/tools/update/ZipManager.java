@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.batik.swing.JSVGCanvas;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 
-public class ZipManager extends JFrame implements ActionListener{
+public class ZipManager extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
@@ -266,105 +266,116 @@ public class ZipManager extends JFrame implements ActionListener{
 		}
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		if (event.getSource().equals(c.saveButton)){			
-			JFileChooser chooser = new JFileChooser("../");
-			chooser.setAcceptAllFileFilterUsed(false);
-			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			chooser.setDialogTitle("Select output zip file name.");
-			if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
-				Calendar now = Calendar.getInstance();
-				String filename = String.format("update_%1$tY%1$tm%1$td%1$tH%1$tM.zip", now);
-				File f = new File(chooser.getSelectedFile(), filename);
-				this.saveFile(f);
+	void loadPackage(){
+		int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm Package Load", JOptionPane.YES_NO_OPTION);
+		if (result == JOptionPane.YES_OPTION){
+			if (true == packageLoader.loadNewPackage()){
+				WindowEvent windowClosing = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+				this.dispatchEvent(windowClosing);
 			}
-		}else if (event.getSource().equals(c.newFileButton)){
-			JFileChooser chooser = new JFileChooser("../");
-			chooser.setDialogTitle("Select new file to add.");
-			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-				if (chooser.getSelectedFile().exists()){
-					String newName = JOptionPane.showInputDialog("Local name for new file (such as ExhibitContents/bear.html):");
-					if (newName != null){
-						if (newFileNamePattern.matcher(newName).matches()){
-							addFile(newName, chooser.getSelectedFile());
-						}else{
-							showError("Error: invalid filename. Spaces and special characters are not allowed.");
-						}
+		}
+	}
+	
+	void saveUpdate(){
+		JFileChooser chooser = new JFileChooser("../");
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		chooser.setDialogTitle("Select output zip file name.");
+		if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
+			Calendar now = Calendar.getInstance();
+			String filename = String.format("update_%1$tY%1$tm%1$td%1$tH%1$tM.zip", now);
+			File f = new File(chooser.getSelectedFile(), filename);
+			this.saveFile(f);
+		}
+	}
+	
+	void addFile(){
+		JFileChooser chooser = new JFileChooser("../");
+		chooser.setDialogTitle("Select new file to add.");
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+			if (chooser.getSelectedFile().exists()){
+				String newName = JOptionPane.showInputDialog("Local name for new file (such as ExhibitContents/bear.html):");
+				if (newName != null){
+					if (newFileNamePattern.matcher(newName).matches()){
+						addFile(newName, chooser.getSelectedFile());
+					}else{
+						showError("Error: invalid filename. Spaces and special characters are not allowed.");
 					}
 				}
 			}
-		}else if (event.getSource().equals(c.exhibitPreviousDropdown)){
-			String prev = (String)c.exhibitPreviousDropdown.getSelectedItem();
-			if (prev != null){
-				getCurrentExhibit().setPrevious(prev);
-				if (getCurrentExhibit().origPrevious == null || false == getCurrentExhibit().origPrevious.equals(prev)){
-					makeChange();
-				}
-			}
-		}else if (event.getSource().equals(c.exhibitNextDropdown)){
-			String next = (String)c.exhibitNextDropdown.getSelectedItem();
-			if (next != null){
-				getCurrentExhibit().setNext(next);
-				if (getCurrentExhibit().origNext == null || false == getCurrentExhibit().origNext.equals(next)){
-					makeChange();
-				}
-			}
-		}else if (event.getSource().equals(c.newTagButton)){
-			String newName = JOptionPane.showInputDialog("Name of new content:");
-			if (newName != null && localPathPattern.matcher(newName).matches()){
-				getCurrentExhibit().setContent(newName, originalFiles[0]);
+		}
+	}
+	
+	void addExhibit(){
+		String newName = JOptionPane.showInputDialog("Name of new exhibit:");
+		if (newName != null && exhibitNamePattern.matcher(newName).matches()){
+			String newContentName = JOptionPane.showInputDialog("Name of first new content:");
+			if (newContentName != null && localPathPattern.matcher(newContentName).matches()){
+				ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
+				newE.setContent(newContentName, originalFiles[0]);
+				exhibitParser.getExhibits().add(newE);
+				((ComponentHolder.ExhibitListModel)c.exhibitNameList.getModel()).notifyChange();
 				c.contentListModel.notifyChange();
 				makeChange();
 			}else{
-				System.out.println("Invalid tag name " + newName);
+				System.out.println("Invalid tag name " + newContentName);
 			}
-		}else if (event.getSource().equals(c.newExhibitButton)){
-			String newName = JOptionPane.showInputDialog("Name of new exhibit:");
-			if (newName != null && exhibitNamePattern.matcher(newName).matches()){
-				String newContentName = JOptionPane.showInputDialog("Name of first new content:");
-				if (newContentName != null && localPathPattern.matcher(newContentName).matches()){
-					ExhibitInfo newE = new ExhibitInfo(newName, 0, 0, null, null);
-					newE.setContent(newContentName, originalFiles[0]);
-					exhibitParser.getExhibits().add(newE);
-					((ComponentHolder.ExhibitListModel)c.exhibitNameList.getModel()).notifyChange();
-					c.contentListModel.notifyChange();
-					makeChange();
-				}else{
-					System.out.println("Invalid tag name " + newContentName);
-				}
-			}else{
-				System.out.println("Invalid exhibit name " + newName);
-			}
-		}else if (event.getSource().equals(c.newImageButton)){
-			ArrayList<String> fileList = new ArrayList<String>();
-			for (String file : originalFiles){
-				if (false == modifiedFiles.containsKey(file)){
-					if (isImage(file)){
-						fileList.add(file);
-					}
-				}
-			}
-			for (String file : modifiedFiles.keySet()){
+		}else{
+			System.out.println("Invalid exhibit name " + newName);
+		}
+	}
+	
+	void addContent(){
+		String newName = JOptionPane.showInputDialog("Name of new content:");
+		if (newName != null && localPathPattern.matcher(newName).matches()){
+			getCurrentExhibit().setContent(newName, originalFiles[0]);
+			c.contentListModel.notifyChange();
+			makeChange();
+		}else{
+			System.out.println("Invalid tag name " + newName);
+		}
+	}
+	
+	void addImage(){
+		ArrayList<String> fileList = new ArrayList<String>();
+		for (String file : originalFiles){
+			if (false == modifiedFiles.containsKey(file)){
 				if (isImage(file)){
 					fileList.add(file);
 				}
 			}
-			Object[] files = fileList.toArray();
-			String s = (String)JOptionPane.showInputDialog(this, "File to use:", "New Photo",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
+		}
+		for (String file : modifiedFiles.keySet()){
+			if (isImage(file)){
+				fileList.add(file);
+			}
+		}
+		Object[] files = fileList.toArray();
+		String s = (String)JOptionPane.showInputDialog(this, "File to use:", "New Photo",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
 
-			if ((s != null) && (s.length() > 0)) {
-				getCurrentExhibit().addPhoto(s);
-				c.exhibitPhotosModel.notifyChange();
+		if ((s != null) && (s.length() > 0)) {
+			getCurrentExhibit().addPhoto(s);
+			c.exhibitPhotosModel.notifyChange();
+			makeChange();
+		}
+	}
+	
+	void setPrevious(){
+		String prev = (String)c.exhibitPreviousDropdown.getSelectedItem();
+		if (prev != null){
+			getCurrentExhibit().setPrevious(prev);
+			if (getCurrentExhibit().origPrevious == null || false == getCurrentExhibit().origPrevious.equals(prev)){
 				makeChange();
 			}
-		}else if (event.getSource().equals(c.loadPackageButton)){
-			int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm Package Load", JOptionPane.YES_NO_OPTION);
-			if (result == JOptionPane.YES_OPTION){
-				if (true == packageLoader.loadNewPackage()){
-					WindowEvent windowClosing = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-					this.dispatchEvent(windowClosing);
-				}
+		}
+	}
+	
+	void setNext(){
+		String next = (String)c.exhibitNextDropdown.getSelectedItem();
+		if (next != null){
+			getCurrentExhibit().setNext(next);
+			if (getCurrentExhibit().origNext == null || false == getCurrentExhibit().origNext.equals(next)){
+				makeChange();
 			}
 		}
 	}

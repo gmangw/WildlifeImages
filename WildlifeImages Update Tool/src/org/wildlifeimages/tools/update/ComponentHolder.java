@@ -177,8 +177,19 @@ public class ComponentHolder implements ChangeListener{
 		Document doc = htmlKit.createDefaultDocument();
 		htmlContentViewer.setDocument(doc);
 
-		exhibitNextDropdown.addActionListener(peer);
-		exhibitPreviousDropdown.addActionListener(peer);
+		exhibitNextDropdown.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				peer.setNext();
+			}
+		});
+		
+		exhibitPreviousDropdown.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				peer.setPrevious();
+			}
+		});
 
 		addGroupExhibitButton.addActionListener(new ActionListener(){
 			@Override
@@ -222,9 +233,45 @@ public class ComponentHolder implements ChangeListener{
 			}
 		});
 
-		newFileButton.addActionListener(peer);
-		saveButton.addActionListener(peer);
-		loadPackageButton.addActionListener(peer);
+		newFileButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.addFile();
+			}
+		});
+	
+		saveButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.saveUpdate();
+			}
+		});
+		
+		loadPackageButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.loadPackage();
+			}
+		});
+		
+		newExhibitButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.addExhibit();
+			}
+		});
+		newTagButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.addContent();
+			}
+		});
+		newImageButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
 
 		addGroupExhibitButton.setBackground(Color.WHITE);
 		removeGroupExhibitButton.setBackground(Color.WHITE);
@@ -288,7 +335,6 @@ public class ComponentHolder implements ChangeListener{
 		contentDropdownPanel.add(exhibitContentLabel);
 		contentDropdownPanel.add(new JLabel("Current content:"));
 		contentDropdownPanel.add(newContentDropdown);
-		//contentDropdownPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		JPanel contentControlPanel = new JPanel(new GridLayout(2,1));		
 		contentControlPanel.add(new JScrollPane(contentList));
@@ -316,7 +362,6 @@ public class ComponentHolder implements ChangeListener{
 		for (Component c : newButtonsPanel.getComponents()){
 			JButton b = (JButton)c;
 			b.setBackground(Color.WHITE);
-			b.addActionListener(peer);
 			b.setBorder(BorderFactory.createCompoundBorder(saveButton.getBorder(), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		}
 
@@ -506,13 +551,14 @@ public class ComponentHolder implements ChangeListener{
 			BufferedReader r = new BufferedReader(new InputStreamReader(peer.getFileInputStream("assets/ExhibitContents/exhibits.css")));
 			style.loadRules(r, null);
 		}catch(IOException e){
-			//TODO do this try block differently if css has been modified.
+			//TODO do the try block differently if css has been modified.
 		}
-		InputStream r = peer.getFileInputStream("assets/" + shortUrl);
-		StringBuffer sb = new StringBuffer();
+		InputStream r = peer.getFileInputStream("assets/" + shortUrl); //TODO do differently if modified
+		StringBuffer sb = new StringBuffer(128);
 		try{
-			for(int result = r.read(); result != -1; result = r.read()){
-				sb.append((char)result);
+			byte[] buffer = new byte[128];
+			for(int result = r.read(buffer); result != -1; result = r.read(buffer)){
+				sb.append(new String(buffer, 0, result));
 			}
 		}catch(IOException e){
 		}
