@@ -1,10 +1,18 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +22,7 @@ import android.view.Window;
  * The parent for the other activities allowing for fun helper functions.
  */
 public abstract class WireActivity extends Activity{
-	
+
 	public static final int SCAN_DIALOG = 0;
 
 	@Override
@@ -25,16 +33,16 @@ public abstract class WireActivity extends Activity{
 		if (ContentManager.isInitialized() == false){
 			ContentManager.init(this.getFilesDir(), this.getAssets());
 		}
-		
+
 		if (false == Common.isAtLeastHoneycomb()){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id){
 		super.onCreateDialog(id);
-		
+
 		if (id == SCAN_DIALOG){
 			return Common.createScanDialog(this);
 		}else{
@@ -99,6 +107,19 @@ public abstract class WireActivity extends Activity{
 			return true;
 		}else{
 			return false;
+		}
+	}
+
+	public long getBuildTime(){
+		try{
+			ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), 0);
+			ZipFile zf = new ZipFile(ai.sourceDir);
+			ZipEntry ze = zf.getEntry("classes.dex");
+			return ze.getTime();
+		}catch(IOException e){
+			return 0;
+		} catch (NameNotFoundException e) {
+			return 0;
 		}
 	}
 }

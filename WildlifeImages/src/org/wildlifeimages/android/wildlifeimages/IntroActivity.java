@@ -1,5 +1,9 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -256,18 +260,33 @@ public class IntroActivity extends WireActivity{
 	public class UpdateChecker extends AsyncTask<IntroActivity, Integer, String>{
 
 		@Override
-		protected String doInBackground(IntroActivity... arg0) {
+		protected String doInBackground(IntroActivity... arg0) {			
 			if (Common.isNetworkConnected(getApplicationContext()) == true){
 				String url = Common.getZipUrl(loadString(R.string.update_page_url));
 
 				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
 				String oldUrl = preferences.getString(loadString(R.string.update_preferences_key_last), "<none>");
-				if (true == oldUrl.equals(url)){
-					return null;
-				}
 				if (url == null){
 					Log.d(this.getClass().getName(), "Update failed due to missing zip url.");
 					publishProgress(NETWORK_ERROR);
+				}
+				if (true == oldUrl.equals(url)){
+					return null;
+				}
+				//update_201204041839
+				SimpleDateFormat fmt = new SimpleDateFormat();
+				fmt.applyPattern("yyyyMMddHHmm");
+				
+				Date time;
+				try {
+					time= fmt.parse(url.substring(url.length()-16, url.length()-4));
+				} catch (ParseException e) {
+					time = null;
+				}
+				
+				if (time.getTime() < getBuildTime()){
+					Log.d(this.getClass().getName(), "The current update file is older than the application.");
+					return null;
 				}
 
 				Log.i(this.getClass().getName(), "Grabbing " + url + ", previously grabbed " + oldUrl);
