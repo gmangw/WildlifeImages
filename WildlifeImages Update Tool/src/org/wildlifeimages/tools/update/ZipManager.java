@@ -2,6 +2,9 @@ package org.wildlifeimages.tools.update;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -19,9 +22,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.batik.swing.JSVGCanvas;
@@ -35,7 +44,7 @@ public class ZipManager extends JFrame{
 	private static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
 	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
 	private static final Pattern imageExtensionExpression = Pattern.compile(".+(.jpe?g|.bmp|.png|.gif)");
-	
+
 	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 
 	private JSVGCanvas map;
@@ -53,10 +62,10 @@ public class ZipManager extends JFrame{
 
 	public ZipManager(PackageLoader loader){	
 		packageLoader = loader;
-		
+
 		this.setTitle("Update Tool");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
+
 		modifiedFiles.clear();
 
 		try {
@@ -71,11 +80,11 @@ public class ZipManager extends JFrame{
 
 		c = new ComponentHolder(this);
 		c.init();
-		
-		this.setSize(720, 640);
+
+		this.setSize(640, 480);
 		this.setLayout(new GridLayout(1,1));
 		this.add(c.tabbedPane);
-		
+
 		JSVGCanvas newMap = null;
 		try{
 			newMap = JMapPanel.getMapCanvas(mapDimension, packageLoader.getFileInputStream("res/raw/map.svg"));
@@ -88,13 +97,45 @@ public class ZipManager extends JFrame{
 		c.mapPanel.add(map);
 		c.tabbedPane.setSelectedIndex(1);
 		c.tabbedPane.setSelectedIndex(0);
+
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("Menu");
+		menuBar.add(menu);
+		JMenuItem menuItem = new JMenuItem("Load newer app version");
+		menuItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				loadPackage();
+			}
+		});
+		menu.add(menuItem);
+		menuItem = new JMenuItem("Save updates to file");
+		menuItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				saveUpdate();
+			}
+		});
+		menu.add(menuItem);
+		menuItem = new JMenuItem("Exit");
+		menuItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Quit?", JOptionPane.OK_CANCEL_OPTION)){
+					System.exit(0);
+				}
+			}
+		});
+		menu.add(menuItem);
+		this.setJMenuBar(menuBar);
+		
 		this.setVisible(true);
 	}
 
 	Dimension getMapDimension(){
 		return mapDimension;
 	}
-	
+
 	void makeChange(){
 		this.setTitle("Update Tool*");
 	}
@@ -135,14 +176,14 @@ public class ZipManager extends JFrame{
 			out.closeEntry();
 
 			out.close();
-			
+
 			File outPage = new File(outFile.getParent(), "update.html");
 			String contents = "<html>\n<a href=\"http://www.wildlifeimages.org\">Homepage</a>\n<!-- http://oregonstate.edu/~wilkinsg/wildlifeimages/" + outFile.getName() + " -->\n</html>";
-			
+
 			FileOutputStream pageStream = new FileOutputStream(outPage);
 			pageStream.write(contents.getBytes());
 			pageStream.close();
-			
+
 			for(ExhibitInfo e : exhibitParser.getExhibits()){
 				File output = new File(e.getName()+".png");
 				CreateQR.writeExhibitQR(e.getName(), output);
@@ -197,11 +238,11 @@ public class ZipManager extends JFrame{
 	public JSVGCanvas getMap(){
 		return map;
 	}
-	
+
 	public void removeGroup(String groupName) {
 		exhibitParser.removeGroup(groupName);
 	}
-	
+
 	public void removeGroupExhibit(String exhibitName, String groupName) {
 		exhibitParser.removeGroupExhibit(exhibitName, groupName);
 	}
@@ -222,7 +263,7 @@ public class ZipManager extends JFrame{
 	public ArrayList<ExhibitInfo> getExhibits(){
 		return exhibitParser.getExhibits();
 	}
-	
+
 	public static boolean isImage(String filename){
 		String s = filename.substring(Math.max(0, filename.length()-5));
 		return (s.toLowerCase().endsWith("jpg") || s.endsWith("bmp") || s.endsWith("jpeg") || s.endsWith("png") || s.endsWith("gif") );
@@ -260,7 +301,7 @@ public class ZipManager extends JFrame{
 			}
 		}
 	}
-	
+
 	void loadPackage(){
 		int result = JOptionPane.showConfirmDialog(null, "This will discard any unsaved changes. Continue?", "Confirm Package Load", JOptionPane.YES_NO_OPTION);
 		if (result == JOptionPane.YES_OPTION){
@@ -270,12 +311,12 @@ public class ZipManager extends JFrame{
 			}
 		}
 	}
-	
+
 	void saveUpdate(){
 		JFileChooser chooser = new JFileChooser("../");
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooser.setDialogTitle("Select output zip file name.");
+		chooser.setDialogTitle("Select a location for the new update file.");
 		if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
 			Calendar now = Calendar.getInstance();
 			String filename = String.format("update_%1$tY%1$tm%1$td%1$tH%1$tM.zip", now);
@@ -283,7 +324,7 @@ public class ZipManager extends JFrame{
 			this.saveFile(f);
 		}
 	}
-	
+
 	void addFile(){
 		JFileChooser chooser = new JFileChooser("../");
 		chooser.setDialogTitle("Select new file to add.");
@@ -300,7 +341,7 @@ public class ZipManager extends JFrame{
 			}
 		}
 	}
-	
+
 	void addExhibit(){
 		String newName = JOptionPane.showInputDialog("Name of new exhibit:");
 		if (newName != null && exhibitNamePattern.matcher(newName).matches()){
@@ -319,7 +360,7 @@ public class ZipManager extends JFrame{
 			System.out.println("Invalid exhibit name " + newName);
 		}
 	}
-	
+
 	void addContent(){
 		String newName = JOptionPane.showInputDialog("Name of new content:");
 		if (newName != null && localPathPattern.matcher(newName).matches()){
@@ -330,7 +371,7 @@ public class ZipManager extends JFrame{
 			System.out.println("Invalid tag name " + newName);
 		}
 	}
-	
+
 	void addImage(){
 		ArrayList<String> fileList = new ArrayList<String>();
 		for (String file : originalFiles){
@@ -354,7 +395,7 @@ public class ZipManager extends JFrame{
 			makeChange();
 		}
 	}
-	
+
 	void setPrevious(){
 		String prev = (String)c.exhibitPreviousDropdown.getSelectedItem();
 		if (prev != null){
@@ -364,7 +405,7 @@ public class ZipManager extends JFrame{
 			}
 		}
 	}
-	
+
 	void setNext(){
 		String next = (String)c.exhibitNextDropdown.getSelectedItem();
 		if (next != null){

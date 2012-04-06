@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -37,18 +39,19 @@ import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 
 public class ComponentHolder implements ChangeListener{
-	final JButton newTagButton = new JButton("Add Content to Exhibit");
+	final JButton newTagButton = new JButton("Add Page");
+	final JButton removeTagButton = new JButton("Remove Page");
+	final JButton renameTagButton = new JButton("Rename Page");
 	final JButton newExhibitButton = new JButton("Create New Exhibit");
-	final JButton saveButton = new JButton("Save Updates");
+	final JButton removeExhibitButton = new JButton("Remove Exhibit");
+	final JButton renameExhibitButton = new JButton("Rename Exhibit");
 	final JButton newFileButton = new JButton("Add file to project");
 	final JButton newImageButton = new JButton("Add Photo to Exhibit");
-	final JButton loadPackageButton = new JButton("Load Package");
 	final JButton addGroupButton = new JButton("New Group");
 	final JButton addGroupExhibitButton = new JButton("Add Exhibit To Group");
 	final JButton removeGroupExhibitButton = new JButton("Remove Exhibit From Group");
 	final JButton removeGroupButton = new JButton("Remove Group");
 	final JButton editFileButton = new JButton("Open File");
-	final JButton loadUpdateButton = new JButton("Load Prevous Update");
 
 	final JList exhibitNameList = new JList();
 	final JList contentList = new JList();
@@ -58,12 +61,11 @@ public class ComponentHolder implements ChangeListener{
 	final JList groupExhibitsList = new JList();
 	final JList exhibitAliasesList = new JList();
 
-	final JPanel contentPanel = new JPanel(new GridLayout(1,2));
-	final JPanel mainPanelCentral = new JPanel(new GridLayout(2, 1, 2, 5));
+	final JPanel contentPanel = new JPanel(new GridLayout(1,2,2,2));
 	final JPanel mainPanel = new JPanel(new BorderLayout());
-	final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4));
-	final JPanel groupPanel = new JPanel(new GridLayout(4,1));
-	final JPanel aliasDataPanel = new JPanel(new GridLayout(2,2));
+	final JPanel exhibitDataPanel = new JPanel(new GridLayout(2,4,5,5));
+	final JPanel groupPanel = new JPanel(new GridLayout(2,1,2,2));
+	final JPanel aliasDataPanel = new JPanel(new GridLayout(2,2,2,2));
 
 	final JMapPanel mapPanel;
 
@@ -108,17 +110,23 @@ public class ComponentHolder implements ChangeListener{
 
 	final JEditorPane htmlContentViewer = new JEditorPane();
 
-	final JPanel photosPanel = new JPanel(new GridLayout(1, 2, 2, 5));
-	final JPanel subPanel2 = new JPanel(new GridLayout(1, 1, 2, 5));
-	final JPanel subPanel3 = new JPanel(new GridLayout(2, 1, 2, 5));
-	final JPanel groupListPanel = new JPanel(new GridLayout(1, 2, 2, 5));
+	final JPanel photosPanel = new JPanel(new GridLayout(1,2,2,2));
+	final JPanel subPanel2 = new JPanel(new GridLayout(1,1,2,2));
+	final JPanel subPanel3 = new JPanel(new GridLayout(2,1,2,2));
+	final JPanel groupListPanel = new JPanel(new GridLayout(1,2,2,2));
 	final JPanel filePanel = new JPanel(new BorderLayout());
+	
+	final Border lineBorder = BorderFactory.createLineBorder(Color.GRAY);
+	final Border thinPaddedBorder = BorderFactory.createEmptyBorder(2,2,2,2);
+	final Border mediumPaddedBorder = BorderFactory.createEmptyBorder(5,5,5,5);
+	final Border largePaddedBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+	final CompoundBorder paddedLine = BorderFactory.createCompoundBorder(lineBorder, mediumPaddedBorder);
 
 	final ZipManager peer;
 
 	public ComponentHolder(ZipManager manager){
 		peer = manager;
-		mapPanel = new JMapPanel(new GridLayout(1,1,0,0), peer.getMapDimension(), peer);
+		mapPanel = new JMapPanel(new GridLayout(1,1,2,2), peer.getMapDimension(), peer);
 		modifiedFilesListModel = new ModifiedListModel();
 		contentListModel = new ContentListModel();
 		exhibitPhotosModel = new ExhibitPhotosModel();
@@ -172,7 +180,6 @@ public class ComponentHolder implements ChangeListener{
 		exhibitPreviousDropdown.setModel(new ExhibitDropdownModel());
 
 		htmlContentViewer.setEditable(false);
-		JScrollPane scrollPane = new JScrollPane(htmlContentViewer);
 		htmlContentViewer.setEditorKit(htmlKit);
 		Document doc = htmlKit.createDefaultDocument();
 		htmlContentViewer.setDocument(doc);
@@ -226,31 +233,10 @@ public class ComponentHolder implements ChangeListener{
 			}
 		});
 
-		loadUpdateButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				peer.loadUpdate();
-			}
-		});
-
 		newFileButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				peer.addFile();
-			}
-		});
-	
-		saveButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				peer.saveUpdate();
-			}
-		});
-		
-		loadPackageButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				peer.loadPackage();
 			}
 		});
 		
@@ -272,16 +258,6 @@ public class ComponentHolder implements ChangeListener{
 				
 			}
 		});
-
-		addGroupExhibitButton.setBackground(Color.WHITE);
-		removeGroupExhibitButton.setBackground(Color.WHITE);
-		addGroupButton.setBackground(Color.WHITE);
-		editFileButton.setBackground(Color.WHITE);
-		removeGroupButton.setBackground(Color.WHITE);
-		loadUpdateButton.setBackground(Color.WHITE);
-		newFileButton.setBackground(Color.WHITE);
-		saveButton.setBackground(Color.WHITE);
-		loadPackageButton.setBackground(Color.WHITE);
 
 		exhibitXSpinnerModel.addChangeListener(this);
 		exhibitYSpinnerModel.addChangeListener(this);
@@ -318,7 +294,7 @@ public class ComponentHolder implements ChangeListener{
 			}
 		});
 
-		exhibitContentLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		exhibitContentLabel.setBorder(paddedLine);
 
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modifiedFilesList.setModel(modifiedFilesListModel);
@@ -330,19 +306,33 @@ public class ComponentHolder implements ChangeListener{
 		groupNameList.setSelectionInterval(0, 0);
 		exhibitAliasesList.setSelectionInterval(0, 0);
 
-		JPanel contentDropdownPanel = new JPanel(new GridLayout(4, 1));
+		JPanel contentDropdownPanel = new JPanel(new GridLayout(4,1,2,2));
 		contentDropdownPanel.add(new JLabel("Original content:"));
 		contentDropdownPanel.add(exhibitContentLabel);
 		contentDropdownPanel.add(new JLabel("Current content:"));
 		contentDropdownPanel.add(newContentDropdown);
 
-		JPanel contentControlPanel = new JPanel(new GridLayout(2,1));		
-		contentControlPanel.add(new JScrollPane(contentList));
+		JPanel contentButtonPanel = new JPanel(new GridLayout(3,1,2,2));
+		contentButtonPanel.add(newTagButton);
+		contentButtonPanel.add(removeTagButton);
+		contentButtonPanel.add(renameTagButton);
+		
+		for (Component c : contentButtonPanel.getComponents()){
+			JButton b = (JButton)c;
+			b.setBorder(BorderFactory.createCompoundBorder(b.getBorder(), mediumPaddedBorder));
+		}
+		
+		JPanel contentListPanel = new JPanel(new BorderLayout());
+		contentListPanel.add(new JScrollPane(contentList), BorderLayout.CENTER);
+		contentListPanel.add(contentButtonPanel, BorderLayout.EAST);
+		
+		JPanel contentControlPanel = new JPanel(new GridLayout(2,1,2,2));		
+		contentControlPanel.add(contentListPanel);
 		contentControlPanel.add(contentDropdownPanel);
 
-		contentPanel.add(scrollPane);
+		contentPanel.add(new JScrollPane(htmlContentViewer));
 		contentPanel.add(contentControlPanel);
-		contentPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		contentPanel.setBorder(mediumPaddedBorder);
 
 		exhibitDataPanel.add(exhibitXCoordOrig);
 		exhibitDataPanel.add(exhibitXCoordField);
@@ -352,104 +342,105 @@ public class ComponentHolder implements ChangeListener{
 		exhibitDataPanel.add(exhibitYCoordField);
 		exhibitDataPanel.add(exhibitNextOrig);
 		exhibitDataPanel.add(exhibitNextDropdown);
-		exhibitDataPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-		JPanel newButtonsPanel = new JPanel(new GridLayout(1,3));
-		newButtonsPanel.add(newExhibitButton);
-		newButtonsPanel.add(newTagButton);
-		newButtonsPanel.add(newImageButton);
+		JPanel exhibitButtonsPanel = new JPanel(new GridLayout(3,1,2,2));
+		exhibitButtonsPanel.add(newExhibitButton);
+		exhibitButtonsPanel.add(removeExhibitButton);
+		exhibitButtonsPanel.add(renameExhibitButton);
 
-		for (Component c : newButtonsPanel.getComponents()){
+		for (Component c : exhibitButtonsPanel.getComponents()){
 			JButton b = (JButton)c;
-			b.setBackground(Color.WHITE);
-			b.setBorder(BorderFactory.createCompoundBorder(saveButton.getBorder(), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+			b.setBorder(BorderFactory.createCompoundBorder(b.getBorder(), mediumPaddedBorder));
 		}
 
 		JPanel listPanelTop = new JPanel(new BorderLayout());
 		listPanelTop.add(new JLabel("Exhibits:"), BorderLayout.NORTH);
 		listPanelTop.add(new JScrollPane(exhibitNameList), BorderLayout.CENTER);
+		listPanelTop.add(exhibitButtonsPanel, BorderLayout.EAST);
 		JPanel listPanelBottom = new JPanel(new BorderLayout());
 		listPanelBottom.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
 		listPanelBottom.add(exhibitPhotosList, BorderLayout.CENTER);
-		JPanel listPanel = new JPanel(new GridLayout(1, 1));
-		listPanel.add(listPanelBottom);
-		listPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-		JPanel aliasPanel = new JPanel(new GridLayout(1,2));
+		JPanel aliasPanel = new JPanel(new GridLayout(1,2,2,2));
 		aliasDataPanel.add(new JLabel("Alias X Coordinate"));
 		aliasDataPanel.add(aliasXCoordField);
 		aliasDataPanel.add(new JLabel("Alias Y Coordinate"));
 		aliasDataPanel.add(aliasYCoordField);
 
-		aliasPanel.add(new JScrollPane(exhibitAliasesList));
+		JPanel aliasDataLabeled = new JPanel(new BorderLayout());
+		aliasDataLabeled.add(new JLabel("Exhibit Aliases:"), BorderLayout.NORTH);
+		aliasDataLabeled.add(new JScrollPane(exhibitAliasesList), BorderLayout.CENTER);
+		
+		aliasPanel.add(aliasDataLabeled);
 		aliasPanel.add(aliasDataPanel);
+		aliasPanel.setBorder(paddedLine);
 
-		JPanel groupXCoordPanel = new JPanel(new GridLayout(1,2));
+		JPanel groupXCoordPanel = new JPanel(new GridLayout(1,2,2,2));
 		groupXCoordPanel.add(new JLabel("Group X Coordinate"));
 		groupXCoordPanel.add(groupXCoordField);
 
-		JPanel groupYCoordPanel = new JPanel(new GridLayout(1,2));
+		JPanel groupYCoordPanel = new JPanel(new GridLayout(1,2,2,2));
 		groupYCoordPanel.add(new JLabel("Group Y Coordinate"));
 		groupYCoordPanel.add(groupYCoordField);
 
-		JPanel groupDataButtonsPanel = new JPanel(new GridLayout(4,1));
+		JPanel groupDataButtonsPanel = new JPanel(new GridLayout(4,1,2,2));
 		groupDataButtonsPanel.add(addGroupButton);
 		groupDataButtonsPanel.add(removeGroupButton);
 		groupDataButtonsPanel.add(addGroupExhibitButton);
 		groupDataButtonsPanel.add(removeGroupExhibitButton);
 		
-		JPanel groupLocationPanel = new JPanel(new GridLayout(2,1));
+		JPanel groupLocationPanel = new JPanel(new GridLayout(2,1,2,2));
 		groupLocationPanel.add(groupXCoordPanel);
 		groupLocationPanel.add(groupYCoordPanel);
+		groupLocationPanel.setBorder(paddedLine);
 		
-		JPanel groupDataPanel = new JPanel(new GridLayout(1,2));
-		groupDataPanel.add(groupDataButtonsPanel);
+		JPanel groupDataPanel = new JPanel(new GridLayout(1,2,2,2));
 		groupDataPanel.add(groupLocationPanel);
+		groupDataPanel.add(groupDataButtonsPanel);
 		
-		JPanel combinedDataPanel = new JPanel(new GridLayout(2,1));
+		JPanel combinedDataPanel = new JPanel(new GridLayout(2,1,2,2));
 		combinedDataPanel.add(exhibitDataPanel);
 		combinedDataPanel.add(aliasPanel);
-		
+		combinedDataPanel.setBorder(mediumPaddedBorder);
 
 		photosPanel.add(new JScrollPane(exhibitPhotosImage));
-		photosPanel.add(listPanel);
+		photosPanel.add(listPanelBottom);
+		photosPanel.setBorder(mediumPaddedBorder);
 
-		exhibitTabs.add("Exhibit Properties", combinedDataPanel);
 		exhibitTabs.add("Exhibit Content", contentPanel);
-		exhibitTabs.add("Exhibit Photos", photosPanel);		
+		exhibitTabs.add("Exhibit Photos", photosPanel);	
+		exhibitTabs.add("Exhibit Properties", combinedDataPanel);
 
-		mainPanelCentral.add(listPanelTop);
-		mainPanelCentral.add(exhibitTabs);
-		mainPanel.add(mainPanelCentral, BorderLayout.CENTER);
-		mainPanel.add(newButtonsPanel, BorderLayout.SOUTH);
+		mainPanel.add(listPanelTop, BorderLayout.NORTH);
+		mainPanel.add(exhibitTabs, BorderLayout.CENTER);
 
-		mainPanelCentral.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		mainPanelCentral.setBackground(Color.WHITE);
+		mainPanel.setBorder(mediumPaddedBorder);
 
 		groupListPanel.add(new JScrollPane(groupNameList));
 		groupListPanel.add(new JScrollPane(groupExhibitsList));
 
-		JPanel packageButtonPanel = new JPanel(new GridLayout(1,3));
-		packageButtonPanel.add(loadPackageButton);
-		packageButtonPanel.add(loadUpdateButton);
-		loadUpdateButton.setEnabled(false);
-		packageButtonPanel.add(saveButton);
-
-		JPanel fileButtonPanel = new JPanel(new GridLayout(2,1));
+		JPanel fileButtonPanel = new JPanel(new GridLayout(1,2,2,2));
 		fileButtonPanel.add(editFileButton);
 		fileButtonPanel.add(newFileButton);
+		for (Component c : fileButtonPanel.getComponents()){
+			JButton b = (JButton)c;
+			b.setBorder(BorderFactory.createCompoundBorder(b.getBorder(),largePaddedBorder));
+		}
 		
-		filePanel.add(BorderLayout.CENTER, new JScrollPane(modifiedFilesList));
-		filePanel.add(BorderLayout.EAST, fileButtonPanel);
+		filePanel.add(new JLabel("Added Files:"), BorderLayout.NORTH);
+		filePanel.add(new JScrollPane(modifiedFilesList), BorderLayout.CENTER);
+		filePanel.add(fileButtonPanel, BorderLayout.SOUTH);
 
 		groupPanel.add(groupListPanel);
 		groupPanel.add(groupDataPanel);
-		groupPanel.add(filePanel);
-		groupPanel.add(packageButtonPanel);
+		groupPanel.setBorder(mediumPaddedBorder);
 
+		tabbedPane.setBorder(thinPaddedBorder);
+		
 		tabbedPane.addTab("Exhibits", mainPanel);
-		tabbedPane.addTab("Map", mapPanel);
 		tabbedPane.addTab("Groups", groupPanel);
+		tabbedPane.addTab("Map", mapPanel);
+		tabbedPane.addTab("Files", filePanel);
 	}
 
 	String[] getAllContentList(){

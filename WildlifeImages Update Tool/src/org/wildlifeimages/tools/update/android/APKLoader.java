@@ -111,7 +111,7 @@ public class APKLoader implements PackageLoader{
 	}
 
 	public boolean loadNewPackage(){
-		JFileChooser chooser = new JFileChooser("../");
+		JFileChooser chooser = new JFileChooser("./");
 		chooser.setFileFilter(new FileFilter(){
 			@Override
 			public boolean accept(File f) {
