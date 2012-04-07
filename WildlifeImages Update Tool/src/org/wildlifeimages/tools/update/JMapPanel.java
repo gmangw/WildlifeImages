@@ -6,12 +6,9 @@ import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -29,17 +26,17 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 
 	private final Dimension mapDimension;
 
-	private final ZipManager peer;
+	private final ExhibitLoader peer;
 	
 	private int mapX = -1;
 	private int mapY = -1;
 
-	public JMapPanel(LayoutManager layout, Dimension mapSize, ZipManager manager) {
+	public JMapPanel(LayoutManager layout, Dimension mapSize, ExhibitLoader l) {
 		super(layout);
 
 		mapDimension = mapSize;
 
-		peer = manager;
+		peer = l;
 	}
 
 	@Override
@@ -90,6 +87,9 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 			ExhibitGroup group = peer.getGroup(groupName);
 			int exhibitX = group.xPos;
 			int exhibitY = group.yPos;
+			if (exhibitX == -1 && exhibitY == -1){
+				continue;
+			}
 			int x = w * exhibitX/100 + offsetX;
 			int y = h * exhibitY/100 + offsetY;
 			names.add(groupName);
@@ -138,19 +138,14 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 		double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
 		double myAspect = 1.0*getWidth()/getHeight();
 		int w;
-		int h;
 		int offsetX = 0;
-		int offsetY = 0;
 
 		if (myAspect > mapAspect){
 			w = (int)(getWidth() * (mapAspect / myAspect));
-			h = getHeight();
 			offsetX = (getWidth() - w)/2;
 			return (int)(100 * x / w);
 		}else{
 			w = getWidth();
-			h = (int)(getHeight() * (myAspect / mapAspect));
-			offsetY = (getHeight() - h)/2;
 			return (int)(100 * (x - offsetX) / w);
 		}			
 	}
@@ -158,18 +153,13 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 	public int getMapY(int y) {
 		double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
 		double myAspect = 1.0*getWidth()/getHeight();
-		int w;
 		int h;
-		int offsetX = 0;
 		int offsetY = 0;
 
 		if (myAspect > mapAspect){
-			w = (int)(getWidth() * (mapAspect / myAspect));
 			h = getHeight();
-			offsetX = (getWidth() - w)/2;
 			return (int)(100 * y / h);
 		}else{
-			w = getWidth();
 			h = (int)(getHeight() * (myAspect / mapAspect));
 			offsetY = (getHeight() - h)/2;
 			return (int)(100 * (y - offsetY) / h);

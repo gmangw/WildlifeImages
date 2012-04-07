@@ -69,6 +69,11 @@ public class Exhibit{
 	}
 
 	public void setContent(String contentTag, String content) {
+		if (content == null){
+			contents.remove(contentTag);
+			tagList.remove(contentTag);
+			return;
+		}
 		if (false == contents.containsKey(contentTag)){
 			if (false == contentTag.equals(Exhibit.TAG_PHOTOS)){
 				tagList.add(contentTag);

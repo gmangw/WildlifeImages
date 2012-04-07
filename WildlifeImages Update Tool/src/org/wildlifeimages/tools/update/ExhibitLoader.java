@@ -70,6 +70,15 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	public void writeXML(ZipOutputStream out) throws IOException {
 		Parser.writeExhibitXML(out, exhibits, groupList);
 	}
+
+	public void removeExhibit(String name) {
+		for (int i=0; i<exhibits.size(); i++){
+			if (exhibits.get(i).getName().equals(name)){
+				exhibits.remove(i);
+			}
+		}
+		
+	}
 	
 	
 }
