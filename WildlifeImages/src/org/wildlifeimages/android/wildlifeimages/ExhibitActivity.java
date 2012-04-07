@@ -50,6 +50,7 @@ public class ExhibitActivity extends WireActivity{
 				exhibitList.setCurrent(name, Exhibit.TAG_AUTO);
 			}
 
+			remakeButtons(exhibitList.getCurrent());
 			showExhibit(exhibitList.getCurrent(), Exhibit.TAG_AUTO);
 		} else { /* Use saved state info if app just restarted */
 			String wasShowing = savedState.getString(loadString(R.string.save_current_exhibit));
@@ -70,8 +71,6 @@ public class ExhibitActivity extends WireActivity{
 		ExhibitList exhibitList = ContentManager.getExhibitList();
 
 		exhibitList.setCurrent(e, contentTag);
-
-		remakeButtons(e);
 
 		ExhibitView exView = (ExhibitView) findViewById(R.id.exhibit);
 		String[] content = e.getContent(e.getCurrentTag()).split(",");
@@ -217,6 +216,7 @@ public class ExhibitActivity extends WireActivity{
 	protected void onRestart(){
 		super.onResume();
 		Log.d("", "onRestart");
+		remakeButtons(activityCurrentExhibit);
 		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
 		//TODO not called after screen unlock
 	}
