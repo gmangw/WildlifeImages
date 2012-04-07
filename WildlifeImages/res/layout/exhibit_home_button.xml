@@ -8,6 +8,6 @@
     android:background="@drawable/android_button"
     android:onClick="exhibitProcessSidebar"
     android:scaleType="centerInside"
-    android:src="@drawable/home2" >
+    android:src="@drawable/ic_menu_home" >
 
 </ImageButton>

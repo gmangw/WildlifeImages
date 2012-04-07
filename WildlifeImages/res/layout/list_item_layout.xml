@@ -12,7 +12,8 @@
         android:layout_margin="0dp"
         android:adjustViewBounds="true"
         android:minHeight="64dp"
-        android:minWidth="64dp" />
+        android:minWidth="64dp"
+        android:src="@drawable/list_menu_02" />
 
     <TextView
         android:id="@+id/listitemlabel"
@@ -22,7 +23,7 @@
         android:clickable="false"
         android:focusable="false"
         android:gravity="center|left"
-        android:textColor="@android:color/background_dark"
+        android:textColor="@android:color/black"
         android:textSize="20sp"
         android:typeface="sans" />
 

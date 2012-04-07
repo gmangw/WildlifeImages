@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.FloatMath;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 /**
@@ -311,6 +312,18 @@ public class Common {
 		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netData = manager.getActiveNetworkInfo();
 		if (netData != null && netData.isConnectedOrConnecting() == true){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public static boolean onKeyDown(Activity context, int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_CAMERA){
+			Common.startCamera(context, null);
+			return true;
+		}else if (keyCode == KeyEvent.KEYCODE_BACK){
+			context.onBackPressed();
 			return true;
 		}else{
 			return false;

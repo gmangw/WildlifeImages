@@ -48,8 +48,6 @@ public class GroupListAdapter extends BaseAdapter{
 		TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
 		itemLabel.setText(entry.getName());
 
-		itemLabel.setTextColor(0xFFFFFFFF);
-
 		return convertView;
 	}
 }

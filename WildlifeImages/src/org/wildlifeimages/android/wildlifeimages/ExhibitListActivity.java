@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,8 @@ public class ExhibitListActivity extends ListActivity {
 
 		if (false == Common.isAtLeastHoneycomb()){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}else{
+			setTheme(android.R.style.Theme_Holo_Light);
 		}
 		
 		setContentView(R.layout.list_layout);
@@ -91,6 +94,9 @@ public class ExhibitListActivity extends ListActivity {
 		super.onOptionsItemSelected(item);
 		
 		switch (item.getItemId()){
+		case android.R.id.home:
+			IntroActivity.start(this);
+			break;
 		case R.integer.LIST_MENU_ALL:
 			adapter.setGroupFilter(getResources().getString(R.string.list_menu_all_group));
 			break;
@@ -105,5 +111,11 @@ public class ExhibitListActivity extends ListActivity {
 			break;
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		super.onKeyDown(keyCode, event);
+		return Common.onKeyDown(this, keyCode, event);
 	}
 }

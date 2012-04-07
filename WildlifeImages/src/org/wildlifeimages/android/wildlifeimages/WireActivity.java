@@ -36,6 +36,8 @@ public abstract class WireActivity extends Activity{
 
 		if (false == Common.isAtLeastHoneycomb()){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}else{
+			setTheme(android.R.style.Theme_Holo_Light);
 		}
 	}
 
@@ -99,15 +101,7 @@ public abstract class WireActivity extends Activity{
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event){
 		super.onKeyDown(keyCode, event);
-		if (keyCode == KeyEvent.KEYCODE_CAMERA){
-			Common.startCamera(this, null);
-			return true;
-		}else if (keyCode == KeyEvent.KEYCODE_BACK){
-			onBackPressed();
-			return true;
-		}else{
-			return false;
-		}
+		return Common.onKeyDown(this, keyCode, event);
 	}
 
 	public long getBuildTime(){
