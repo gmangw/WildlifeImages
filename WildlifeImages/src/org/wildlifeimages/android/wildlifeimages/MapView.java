@@ -14,6 +14,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -38,7 +39,8 @@ public class MapView extends ImageView {
 	private float mapRight = 0.0f;
 	private float mapBottom = 0.0f;
 	
-	private final Rect r = new Rect();
+	private final RectF rectF = new RectF();
+	private final Rect rect = new Rect();
 
 	private GestureDetector gestures;
 
@@ -320,20 +322,20 @@ public class MapView extends ImageView {
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 		
-		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/25.0f * scale));
+		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/30.0f * scale));
 		
 		for(int i=0; i<points.length/2; i++){
-			rectP.setTextAlign(Align.CENTER);
-
-			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), r);
-			r.offsetTo((int)transformedPoints[i*2] - r.width()/2, (int)transformedPoints[i*2+1] - r.height() + 3); 
-			r.inset(-3, -4);
+			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), rect);
+			rectF.set(rect);
+			rectF.offsetTo((int)transformedPoints[i*2] - rectF.width()/2, (int)transformedPoints[i*2+1] - p.getTextSize() + p.getTextSize()/3.0f); 
+			rectF.inset(-p.getTextSize()/8.0f, -p.getTextSize()/8.0f);
 
 			if (displayNames[i].equals(activeName)){
-				canvas.drawRect(r, activeP);
+				canvas.drawRect(rectF, activeP);
 			}else{
-				canvas.drawRect(r, rectP);
+				canvas.drawRect(rectF, rectP);
 			}
+			p.setStrokeWidth(0);
 
 			canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
 		}

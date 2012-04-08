@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,7 +39,6 @@ public class ExhibitActivity extends WireActivity{
 		super.onCreate(savedState);
 
 		setContentView(R.layout.exhibit_layout);
-		Log.d("", "onCreate");
 
 		ExhibitList exhibitList = ContentManager.getExhibitList();
 
@@ -215,7 +213,6 @@ public class ExhibitActivity extends WireActivity{
 	@Override
 	protected void onRestart(){
 		super.onResume();
-		Log.d("", "onRestart");
 		remakeButtons(activityCurrentExhibit);
 		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
 		//TODO not called after screen unlock
