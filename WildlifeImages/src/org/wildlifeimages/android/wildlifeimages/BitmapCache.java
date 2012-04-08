@@ -1,6 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import android.graphics.Bitmap;
@@ -18,8 +17,8 @@ public class BitmapCache {
 	public static final int SIZE = 96;
 	public static final int CACHE_MAX = 8;
 
-	private HashMap<String, Bitmap> cachedBitmaps;
-	private HashMap<String, Bitmap> cachedThumbs;
+	private HashTableRestricted<String, Bitmap> cachedBitmaps;
+	private HashTableRestricted<String, Bitmap> cachedThumbs;
 	LinkedList<String> sizeObserver = new LinkedList<String>();
 
 	/**
@@ -27,8 +26,8 @@ public class BitmapCache {
 	 * 
 	 */
 	public BitmapCache(){
-		cachedBitmaps = new HashMap<String, Bitmap>();
-		cachedThumbs = new HashMap<String, Bitmap>();
+		cachedBitmaps = new HashTableRestricted<String, Bitmap>();
+		cachedThumbs = new HashTableRestricted<String, Bitmap>();
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class BitmapCache {
 		cachedBitmaps.put(shortUrl, bmp);
 		sizeObserver.addLast(shortUrl);
 		if (sizeObserver.size() > CACHE_MAX){
-			removeBitmap(sizeObserver.getFirst());
+			removeBitmap(sizeObserver.getFirst()); //TODO LinkedHashMap instead?
 		}
 		Log.w(this.getClass().getName(), "Bitmap cache using " + sizeObserver.size() + "/" + CACHE_MAX);
 	}
@@ -137,6 +136,22 @@ public class BitmapCache {
 			cachedBitmaps.remove(shortUrl);
 		}
 		sizeObserver.remove(shortUrl);
-		//cachedThumbs.remove(shortUrl);
+		
+	}
+	
+	public void removeThumb(String shortUrl){
+		cachedThumbs.remove(shortUrl);
+	}
+	
+	public void clear(){
+		for (Bitmap b : cachedBitmaps.values()){
+			b.recycle();
+		}
+		for (Bitmap b : cachedThumbs.values()){
+			b.recycle();
+		}
+		cachedBitmaps.clear();
+		cachedThumbs.clear();
+		sizeObserver.clear();
 	}
 }

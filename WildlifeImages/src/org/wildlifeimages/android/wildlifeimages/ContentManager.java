@@ -44,13 +44,13 @@ public class ContentManager {
 	private static ExhibitList exhibitList = null;
 
 	private static File filesDir = null;
-	static BitmapCache imgCache = null;
+	private static BitmapCache imgCache = null;
 	
 	private static boolean timeKeeperEnabled = true;
 
 	private static int accessTime = 0;
 
-	private static Hashtable<String, Integer> timekeeper = null;
+	private static HashTableRestricted<String, Integer> timekeeper = null;
 	
 	/**
 	 * Constructor that builds our content manager.
@@ -64,7 +64,7 @@ public class ContentManager {
 		imgCache = new BitmapCache();
 		timeKeeperEnabled = true;
 		accessTime = 0;
-		timekeeper = new Hashtable<String, Integer>();
+		timekeeper = new HashTableRestricted<String, Integer>();
 		
 		filesDir = files;
 		addAllToMap(filesDir);
@@ -372,7 +372,8 @@ public class ContentManager {
 					Log.e(ContentManager.class.getName(), "Could not rename the .part file for " +ze.getName() + " in data.");
 					result = false;
 				}
-				imgCache.removeBitmap(ze.getName()); //TODO make sure thumbs update
+				imgCache.removeBitmap(ze.getName());
+				imgCache.removeThumb(ze.getName());
 				cachedFiles.add(ze.getName());
 			}
 			zipStream.close();
@@ -417,6 +418,8 @@ public class ContentManager {
 		timekeeper = null;
 		cachedFiles = null;
 		exhibitList = null;
+		
+		imgCache.clear();
 		imgCache = null;
 	}
 }

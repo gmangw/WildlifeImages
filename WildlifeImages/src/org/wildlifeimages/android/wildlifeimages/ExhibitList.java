@@ -16,11 +16,11 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class ExhibitList implements Parser.ExhibitInterface{
 
-	private Hashtable<String, Exhibit> exhibitList = new Hashtable<String, Exhibit>();
+	private HashTableRestricted<String, Exhibit> exhibitList = new HashTableRestricted<String, Exhibit>();
 
 	private ArrayList<String> keyList = new ArrayList<String>();
 
-	Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
+	HashTableRestricted<String, ExhibitGroup> groupList = new HashTableRestricted<String, ExhibitGroup>();
 
 	private Exhibit current = null;
 	
