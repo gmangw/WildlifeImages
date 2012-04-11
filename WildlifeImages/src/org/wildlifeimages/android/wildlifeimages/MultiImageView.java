@@ -8,11 +8,17 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.Layout.Alignment;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A modified ImageView which contains multiple images, navigable using touch controls.
@@ -24,12 +30,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 
 	private GestureDetector gestures;
 	private Matrix baseMatrix = new Matrix();
-	private String[] shortUrlList = new String[0];
+	private ExhibitPhoto[] photoList = new ExhibitPhoto[0];
 	private int currentBitmapIndex;
 	private int xScrollOffset = 0;
 	private Paint labelPaint = new Paint();
-	private Paint labelTextPaint = new Paint();
-	
+	private TextPaint labelTextPaint = new TextPaint();
+	private boolean isEmpty = true;
+	private StaticLayout mTextLayout = null;
+
 	int gray = Color.argb(100, 255, 255, 255);
 
 	RectF bmpRect = new RectF();
@@ -38,12 +46,12 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		super(context, attrs);
 		gestures = new GestureDetector(context, this);
 		this.setFocusable(true);
-		
+
 		labelPaint.setARGB(127, 0, 0, 0);
 		labelPaint.setAntiAlias(true);
-		
-		labelTextPaint.setARGB(165, 255, 255, 255);
-		labelTextPaint.setTextSize(30);
+
+		labelTextPaint.setARGB(255, 255, 255, 255);
+		labelTextPaint.setTextSize(getResources().getInteger(R.integer.image_caption_size));
 		labelTextPaint.setAntiAlias(true);
 	}
 
@@ -63,25 +71,39 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		reMeasureMatrix();
+		if (isEmpty == false){
+			setCaption();
+		}
 	}
 
 	private Bitmap getBitmap(String shortUrl){
 		return ContentManager.getBitmap(shortUrl, this.getContext().getAssets());
 	}
 
-	public void setImageBitmapList(String[] shortUrlList){
-		this.shortUrlList = shortUrlList;
-		currentBitmapIndex = ContentManager.getMostRecentIndex(shortUrlList);
-		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex]));
+	public void setImageBitmapList(ExhibitPhoto[] shortUrlList){
+		this.photoList = shortUrlList;
+		currentBitmapIndex = ContentManager.getMostRecentPhoto(shortUrlList);
+		setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex].shortUrl));
 	}
 
 	@Override
 	public void setImageBitmap(Bitmap bmp){
 		super.setImageBitmap(bmp);
+
 		if (bmp != null){
 			bmpRect = new RectF(0, 0, bmp.getWidth(), bmp.getHeight());
-
 			reMeasureMatrix();
+			isEmpty = false;
+			setCaption();
+		}else{
+			isEmpty = true;
+		}
+	}
+
+	private void setCaption(){
+		String caption = photoList[currentBitmapIndex].caption;
+		if (caption != null){
+			mTextLayout = new StaticLayout(caption, labelTextPaint, getWidth(), Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		}
 	}
 
@@ -109,7 +131,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	public boolean onDown(MotionEvent e) {
-		if (shortUrlList.length > 1){
+		if (photoList.length > 1){
 			return true;
 		}else{
 			return false;
@@ -119,14 +141,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private void scrollRight(){
 		if (hasNextImage()){
 			currentBitmapIndex++;
-			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex]));
+			setImageBitmap(getBitmap(photoList[currentBitmapIndex].shortUrl));
 		}
 	}
 
 	private void scrollLeft(){
 		if (hasPreviousImage()){
 			currentBitmapIndex--;
-			setImageBitmap(getBitmap(shortUrlList[currentBitmapIndex]));
+			setImageBitmap(getBitmap(photoList[currentBitmapIndex].shortUrl));
 		}
 	}
 
@@ -141,7 +163,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	private boolean hasNextImage(){
-		return (currentBitmapIndex < (shortUrlList.length-1));
+		return (currentBitmapIndex < (photoList.length-1));
 	}
 
 	private boolean hasPreviousImage(){
@@ -151,25 +173,23 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public void onLongPress(MotionEvent e) {
 	}
 
-	private final Rect bounds = new Rect();
-	
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 
-		String label = (currentBitmapIndex+1) + "/" + shortUrlList.length;
+		if (mTextLayout != null){
+			canvas.save();
+			canvas.translate(0, getHeight() - mTextLayout.getHeight());
+			canvas.drawRect(0, 0, getWidth(), mTextLayout.getHeight(), labelPaint);
+			mTextLayout.draw(canvas);
+			canvas.restore();
+		}
 
-		canvas.getClipBounds(bounds); 
-		int bottom = bounds.bottom;
-
-		canvas.drawRect(0, bottom - labelTextPaint.getTextSize(), labelTextPaint.measureText(label)+2, bottom, labelPaint);
-		canvas.drawText(label, 1, bottom-1, labelTextPaint);
-
-		float[] rightArrow = {bounds.right, bounds.exactCenterY(), bounds.right-50, bounds.exactCenterY()-30, bounds.right-50, bounds.exactCenterY()+30};
-		float[] leftArrow = {0, bounds.exactCenterY(), 50, bounds.exactCenterY()-30, 50, bounds.exactCenterY()+30};
+		float[] rightArrow = {getWidth(), getHeight()/2.0f, getWidth()-50, getHeight()/2.0f-30, getWidth()-50, getHeight()/2.0f+30};
+		float[] leftArrow = {0, getHeight()/2.0f, 50, getHeight()/2.0f-30, 50, getHeight()/2.0f+30};
 
 		int[] colors = {gray, gray, gray, gray, gray, gray};
-		
+
 		if (hasNextImage()){
 			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, rightArrow, 0, null, 0, colors, 0, null, 0, 0, labelPaint);
 		}
@@ -202,14 +222,22 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	public boolean onSingleTapUp(MotionEvent e) {
-		if (e.getX() > getWidth()*0.80f){
-			scrollRight();
-			return true;
-		}
-		if (e.getX() < getWidth()*0.20f){
-			scrollLeft();
-			return true;
+		if (e.getY() < getHeight()*0.80f){
+			if (e.getX() > getWidth()*0.80f){
+				scrollRight();
+				return true;
+			}
+			if (e.getX() < getWidth()*0.20f){
+				scrollLeft();
+				return true;
+			}
+		}else{
+			//Toast.makeText(getContext(), shortUrlList[currentBitmapIndex] + ", " + shortUrlList[currentBitmapIndex], Toast.LENGTH_LONG).show();
 		}
 		return false;
 	} 
+
+	public boolean isEmpty(){
+		return isEmpty;
+	}
 }

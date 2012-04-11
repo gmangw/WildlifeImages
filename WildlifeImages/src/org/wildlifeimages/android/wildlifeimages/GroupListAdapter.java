@@ -38,10 +38,10 @@ public class GroupListAdapter extends BaseAdapter{
 			convertView = inflater.inflate(R.layout.list_item_layout, null);
 		}
 		
-		if (entry.hasContent(Exhibit.TAG_PHOTOS)){
-			String[] photos = entry.getContent(Exhibit.TAG_PHOTOS).split(",");
+		if (entry.getPhotos().length > 0){
+			ExhibitPhoto[] photos = entry.getPhotos();
 			ImageView thumb = (ImageView)convertView.findViewById(R.id.listitemphoto);
-			Bitmap bmp = ContentManager.getBitmapThumb(photos[0], convertView.getContext().getAssets());
+			Bitmap bmp = ContentManager.getBitmapThumb(photos[0].shortUrl, convertView.getContext().getAssets());
 			thumb.setImageBitmap(bmp);
 		}
 

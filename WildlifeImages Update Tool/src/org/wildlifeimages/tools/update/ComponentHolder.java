@@ -38,6 +38,7 @@ import javax.swing.text.html.StyleSheet;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
+import org.wildlifeimages.android.wildlifeimages.ExhibitPhoto;
 
 public class ComponentHolder implements ChangeListener{
 	private final JButton newTagButton = new JButton("Add Page");
@@ -492,7 +493,7 @@ public class ComponentHolder implements ChangeListener{
 		String s = (String)JOptionPane.showInputDialog(null, "File to use:", "New Photo",JOptionPane.PLAIN_MESSAGE,null, files,files[0]);
 
 		if ((s != null) && (s.length() > 0)) {
-			getCurrentExhibit().addPhoto(s);
+			getCurrentExhibit().addPhoto(new ExhibitPhoto(s, null));
 			exhibitPhotosModel.notifyChange();
 			peer.makeChange();
 		}
@@ -680,9 +681,6 @@ public class ComponentHolder implements ChangeListener{
 	}
 
 	void loadHTMLContent(String shortUrl){
-		if (shortUrl.length() > 0){
-			return;
-		}
 		try{
 			StyleSheet style = htmlKit.getStyleSheet();
 			BufferedReader r = new BufferedReader(new InputStreamReader(peer.getFileInputStream("assets/ExhibitContents/exhibits.css")));
@@ -775,7 +773,7 @@ public class ComponentHolder implements ChangeListener{
 
 	void selectPhoto(){
 		int index = exhibitPhotosList.getSelectedIndex();
-		String shortUrl = getCurrentExhibit().getPhotos()[index];
+		String shortUrl = getCurrentExhibit().getPhotos()[index].shortUrl;
 
 		if (peer.modifiedFileExists(shortUrl)){
 			exhibitPhotosImage.setImage(peer.getModifiedFile(shortUrl));

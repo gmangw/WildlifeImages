@@ -12,11 +12,15 @@ public class PhotosActivity extends WireActivity {
 		super.onCreate(inState);
 		setContentView(R.layout.photos_layout);
 		if (true == getIntent().getBooleanExtra("showEvents", false)){
-			((ExhibitView) findViewById(R.id.photos_view)).loadUrl(loadString(R.string.intro_url_events));
+			((ExhibitView) findViewById(R.id.photos_view)).loadHtmlUrl(loadString(R.string.intro_url_events));
 			showingEvents = true;
 		}else{
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			((ExhibitView) findViewById(R.id.photos_view)).loadUrlList(introPhotoList);
+			ExhibitPhoto[] introPhotos = new ExhibitPhoto[introPhotoList.length];
+			for (int i=0; i<introPhotos.length; i++){
+				introPhotos[i] = new ExhibitPhoto(introPhotoList[i], null);
+			}
+			((ExhibitView) findViewById(R.id.photos_view)).loadPhotoList(introPhotos);
 			showingEvents = false;
 		}
 	}
@@ -25,11 +29,14 @@ public class PhotosActivity extends WireActivity {
 	protected void onResume(){
 		super.onResume();
 
-
 		ExhibitView exView = (ExhibitView) findViewById(R.id.photos_view);
 		if (showingEvents == false){
 			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			exView.loadUrlList(introPhotoList);
+			ExhibitPhoto[] introPhotos = new ExhibitPhoto[introPhotoList.length];
+			for (int i=0; i<introPhotos.length; i++){
+				introPhotos[i] = new ExhibitPhoto(introPhotoList[i], null);
+			}
+			exView.loadPhotoList(introPhotos);
 		}
 	}
 

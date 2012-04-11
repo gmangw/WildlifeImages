@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,8 +72,11 @@ public class ExhibitActivity extends WireActivity{
 		exhibitList.setCurrent(e, contentTag);
 
 		ExhibitView exView = (ExhibitView) findViewById(R.id.exhibit);
-		String[] content = e.getContent(e.getCurrentTag()).split(",");
-		exView.loadUrlList(content);
+		if (contentTag.equals(Exhibit.TAG_PHOTOS)){
+			exView.loadPhotoList(e.getPhotos());
+		}else{
+			exView.loadHtmlUrl(e.getContent(e.getCurrentTag()));
+		}
 
 		activityCurrentExhibit = e;
 	}
@@ -122,8 +126,8 @@ public class ExhibitActivity extends WireActivity{
 			}
 		}
 		ImageButton photoButton = (ImageButton)findViewById(R.id.exhibit_photo_button);
-		String[] urlList = e.getContent(Exhibit.TAG_PHOTOS).split(",");
-		String shortUrl = urlList[0];
+		ExhibitPhoto[] urlList = e.getPhotos();
+		String shortUrl = urlList[0].shortUrl;
 		Bitmap b = ContentManager.getBitmapThumb(shortUrl, getAssets());
 		photoButton.setImageBitmap(b);
 		if (Common.isAtLeastHoneycomb()){
@@ -138,7 +142,7 @@ public class ExhibitActivity extends WireActivity{
 				LayoutInflater inflater = LayoutInflater.from(this);
 				ImageButton button = (ImageButton)inflater.inflate(R.layout.exhibit_photo_button, null);
 				button.setLayoutParams(photoButton.getLayoutParams());
-				shortUrl = e.getContent(Exhibit.TAG_PHOTOS).split(",")[i];
+				shortUrl = e.getPhotos()[i].shortUrl;
 				ContentManager.setTimeKeeperEnabled(false);
 				b = ContentManager.getBitmapThumb(shortUrl, getAssets());
 				ContentManager.setTimeKeeperEnabled(true);
@@ -179,7 +183,7 @@ public class ExhibitActivity extends WireActivity{
 				LinearLayout photoButtons = (LinearLayout)findViewById(R.id.exhibit_photo_button_layout);
 				for (int i=0; i<photoButtons.getChildCount(); i++){
 					if (photoButtons.getChildAt(i).equals(v)){
-						String content = exhibitList.getCurrent().getContent(Exhibit.TAG_PHOTOS).split(",")[i];
+						String content = exhibitList.getCurrent().getPhotos()[i].shortUrl;
 						ContentManager.getBitmap(content, getAssets());
 					}
 				}
@@ -212,10 +216,18 @@ public class ExhibitActivity extends WireActivity{
 
 	@Override
 	protected void onRestart(){
-		super.onResume();
+		super.onRestart();
 		remakeButtons(activityCurrentExhibit);
 		showExhibit(activityCurrentExhibit, Exhibit.TAG_AUTO);
-		//TODO not called after screen unlock
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		ExhibitView exView = (ExhibitView) findViewById(R.id.exhibit);
+		if (exView.isCleared() == true){
+			onRestart();
+		}
 	}
 
 	/**

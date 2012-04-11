@@ -36,7 +36,7 @@ public class ExhibitList implements Parser.ExhibitInterface{
 		for(int i=0; i<data.contentNameList.size(); i++){
 			e.setContent(data.contentNameList.get(i), data.contentValueList.get(i));
 		}
-		for(String photo : data.photoList){
+		for(ExhibitPhoto photo : data.photoList){
 			e.addPhoto(photo);
 		}
 		for(int i=0; i<data.aliasList.size(); i++){

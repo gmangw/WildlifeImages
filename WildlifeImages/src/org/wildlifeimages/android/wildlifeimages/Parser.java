@@ -36,7 +36,8 @@ public class Parser {
 			e.contentValueList.add(url);
 		}else if (xmlBox.getName().equalsIgnoreCase("photo")){
 			String url = xmlBox.getAttributeValue(null, "page");
-			e.photoList.add(url);
+			String caption = xmlBox.getAttributeValue(null, "comment");
+			e.photoList.add(new ExhibitPhoto(url, caption));
 		}else if (xmlBox.getName().equalsIgnoreCase("alias")){
 			String tmp = xmlBox.getAttributeValue(null, "xpos");
 			int xAlias = -1;
@@ -144,9 +145,10 @@ public class Parser {
 				appendValue(sb, "page", e.getContent(tag));
 				sb.append("/>");
 			}
-			for (String photo : e.getContent(Exhibit.TAG_PHOTOS).split(",")){
+			for (ExhibitPhoto photo : e.getPhotos()){
 				sb.append("\n\t\t<photo ");
-				appendValue(sb, "page", photo);
+				appendValue(sb, "page", photo.shortUrl);
+				appendValue(sb, "comment", photo.caption);
 				sb.append("/>");
 			}
 			for (Alias a : e.getAliases()){
@@ -180,7 +182,7 @@ public class Parser {
 	public class ExhibitDataHolder{
 		public ArrayList<String> contentNameList = new ArrayList<String>();
 		public ArrayList<String> contentValueList = new ArrayList<String>();
-		public ArrayList<String> photoList = new ArrayList<String>();
+		public ArrayList<ExhibitPhoto> photoList = new ArrayList<ExhibitPhoto>();
 		public ArrayList<String> aliasList = new ArrayList<String>();
 		public ArrayList<Integer> aliasXList = new ArrayList<Integer>();
 		public ArrayList<Integer> aliasYList = new ArrayList<Integer>();

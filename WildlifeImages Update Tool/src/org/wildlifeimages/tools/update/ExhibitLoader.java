@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.zip.ZipOutputStream;
 
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
+import org.wildlifeimages.android.wildlifeimages.ExhibitPhoto;
 import org.wildlifeimages.android.wildlifeimages.Parser;
 import org.wildlifeimages.android.wildlifeimages.Parser.ExhibitDataHolder;
 import org.xmlpull.v1.XmlPullParser;
@@ -58,7 +59,7 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 		for(int i=0; i<data.contentNameList.size(); i++){
 			e.addOrigContent(data.contentNameList.get(i), data.contentValueList.get(i));
 		}
-		for(String photo : data.photoList){
+		for(ExhibitPhoto photo : data.photoList){
 			e.addPhoto(photo);
 		}
 		for(int i=0; i<data.aliasList.size(); i++){

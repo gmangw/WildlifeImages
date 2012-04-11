@@ -4,5 +4,6 @@
 		<item name="android:textSize">30dp</item>
 	</style>
 	<item type="integer" format="integer" name="content_text_size">26</item>
+	<item type="integer" format="integer" name="image_caption_size">30</item>
 	<item format="dimension" name="update_text_size" type="dimen">26dp</item>
 </resources>

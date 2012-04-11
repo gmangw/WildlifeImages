@@ -31,7 +31,7 @@ public abstract class WireActivity extends Activity{
 
 		/* Create a new content manager if there is none. */
 		if (ContentManager.isInitialized() == false){
-			ContentManager.init(this.getFilesDir(), this.getAssets());
+			ContentManager.init(this.getFilesDir(), this.getResources());
 		}
 
 		if (false == Common.isAtLeastHoneycomb()){

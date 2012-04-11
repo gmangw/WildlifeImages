@@ -21,8 +21,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import com.larvalabs.svgandroid.SVG;
+import com.larvalabs.svgandroid.SVGParser;
+
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.ParcelFileDescriptor;
@@ -52,6 +56,8 @@ public class ContentManager {
 
 	private static HashTableRestricted<String, Integer> timekeeper = null;
 	
+	private static SVG svg = null;
+	
 	/**
 	 * Constructor that builds our content manager.
 	 * 
@@ -59,7 +65,7 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	public static void init(File files, AssetManager assets){
+	public static void init(File files, Resources resources){
 		cachedFiles = new HashSet<String>();
 		imgCache = new BitmapCache();
 		timeKeeperEnabled = true;
@@ -69,28 +75,37 @@ public class ContentManager {
 		filesDir = files;
 		addAllToMap(filesDir);
 
-		prepareExhibits(assets);
+		prepareExhibits(resources);
 	}
 	
 	public static boolean isInitialized(){
 		return (filesDir != null);
 	}
 
+	public static SVG getSVG(Resources resources){
+		if (svg == null){
+			svg = SVGParser.getSVGFromResource(resources, R.raw.map);
+		}
+		return svg;
+	}
+	
 	/**
 	 * Create the exhibit list and cache the thumbs.
 	 * 
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	public static void prepareExhibits(AssetManager assets){
+	public static void prepareExhibits(Resources resources){
 		try {
-			exhibitList = buildExhibitList(assets);
+			exhibitList = buildExhibitList(resources.getAssets());
 		} catch (XmlPullParserException e) {
 			Log.e(ContentManager.class.getName(), "XmlPullParserException: " + e.getMessage());
 		} catch (IOException e) {
 			Log.e(ContentManager.class.getName(), "IOException: " + e.getMessage());
 		}
-		cacheThumbs(assets);
+		svg = null;
+		getSVG(resources);
+		cacheThumbs(resources.getAssets());
 	}
 
 	/**
@@ -302,11 +317,11 @@ public class ContentManager {
 	 * @return The most recent URL in the shortUrlList
 	 * 
 	 */
-	public static int getMostRecentIndex(String[] shortUrlList){
+	public static int getMostRecentPhoto(ExhibitPhoto[] shortUrlList){
 		int resultIndex = 0;
 		int mostRecent = 0;
 		for(int i=0; i<shortUrlList.length; i++){
-			Integer time = timekeeper.get(shortUrlList[i]);
+			Integer time = timekeeper.get(shortUrlList[i].shortUrl);
 			if (time != null && time > mostRecent){
 				mostRecent = time;
 				resultIndex = i;

@@ -9,6 +9,8 @@ import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * A modified FrameLayout containing a {@link WebView} and a {@link MultiImageView}.
@@ -39,33 +41,19 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		picView = new MultiImageView(context, attrs);
 		picView.setBackgroundColor(0xFF000000);
 		picView.setVisibility(View.INVISIBLE);
-		
+
 		FrameLayout.LayoutParams paramsLeft = this.generateDefaultLayoutParams();
 		paramsLeft.gravity = Gravity.LEFT + Gravity.CENTER_VERTICAL;
 		paramsLeft.width = FrameLayout.LayoutParams.WRAP_CONTENT;
 		paramsLeft.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-		
+
 		FrameLayout.LayoutParams paramsRight = this.generateDefaultLayoutParams();
 		paramsRight.gravity = Gravity.RIGHT + Gravity.CENTER_VERTICAL;
 		paramsRight.width = FrameLayout.LayoutParams.WRAP_CONTENT;
 		paramsRight.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-		
+
 		this.addView(htmlView);
 		this.addView(picView);
-	}
-
-	public void loadUrl(String shortUrl){
-		String[] urlList = new String[1];
-		urlList[0] = shortUrl;
-		loadUrlList(urlList);
-	}
-
-	public void loadUrlList(String[] shortUrlList){
-		if (Common.isImageUrl(shortUrlList[0])){
-			loadImageUrl(shortUrlList);
-		} else {
-			loadHtmlUrl(shortUrlList[0]);
-		}
 	}
 
 	public void loadHtmlUrl(String htmlShortUrl){
@@ -74,7 +62,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		picView.setVisibility(View.INVISIBLE);
 	}
 
-	public void loadImageUrl(String[] imgShortUrl){
+	public void loadPhotoList(ExhibitPhoto[] imgShortUrl){
 		picView.setImageBitmapList(imgShortUrl);
 		picView.setVisibility(View.VISIBLE);;
 		htmlView.setVisibility(View.INVISIBLE);
@@ -91,10 +79,10 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		String url = clickedUrl.replaceAll(ContentManager.ASSET_PREFIX, "");
 		Log.w(this.getClass().getName(), "Playing " + url);
 
-		String[] shortUrls = ContentManager.getExhibitList().getCurrent().getPhotos();
+		ExhibitPhoto[] shortUrls = ContentManager.getExhibitList().getCurrent().getPhotos();
 		String thumbUrl = "";
 		if (shortUrls.length > 0){
-			thumbUrl = shortUrls[0];
+			thumbUrl = shortUrls[0].shortUrl;
 		}
 		AudioActivity.start(context, url, thumbUrl);
 	}
@@ -102,5 +90,14 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 	public void clear() {
 		htmlView.loadUrl("");
 		picView.setImageBitmap(null);
+	}
+
+	public boolean isCleared() {
+		if (htmlView != null && picView != null){
+			if(picView.isEmpty()){
+				return true;
+			}
+		}
+		return false;
 	}
 }

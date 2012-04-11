@@ -12,7 +12,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -32,7 +31,7 @@ import android.widget.ZoomButtonsController.OnZoomListener;
  */
 public class MapView extends ImageView {
 
-	private static final float MAX_FONT_SIZE = 35.0f;
+	private static final float MAX_FONT_SIZE = 40.0f;
 	
 	private float mapLeft = 0.0f;
 	private float mapTop = 0.0f;
@@ -114,8 +113,7 @@ public class MapView extends ImageView {
 	public MapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		SVG svg = SVGParser.getSVGFromResource(getResources(), R.raw.map);
-		Drawable drawable = svg.createPictureDrawable();
+		Drawable drawable = ContentManager.getSVG(getResources()).createPictureDrawable();
 		this.setImageDrawable(drawable);
 		mapWidth = drawable.getIntrinsicWidth();
 		mapHeight = drawable.getIntrinsicHeight();
@@ -125,7 +123,7 @@ public class MapView extends ImageView {
 
 		p.setARGB(255, 255, 255, 255);
 		p.setTextSize(20);
-		p.setTypeface(Typeface.SERIF);
+		p.setTypeface(Typeface.SANS_SERIF);
 		p.setTextAlign(Paint.Align.CENTER);
 		p.setAntiAlias(true);
 
@@ -135,7 +133,7 @@ public class MapView extends ImageView {
 		smallP.setTextAlign(Paint.Align.CENTER);
 		smallP.setAntiAlias(true);
 
-		rectP.setARGB(200, 128, 128, 128);
+		rectP.setARGB(180, 64, 100, 64);
 		activeP.setARGB(255, 0, 128, 255);
 
 		ExhibitList exhibitList = ContentManager.getExhibitList();
@@ -322,8 +320,8 @@ public class MapView extends ImageView {
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 		
-		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/30.0f * scale));
-		
+		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/28.0f * scale));
+		//TODO ascent()
 		for(int i=0; i<points.length/2; i++){
 			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), rect);
 			rectF.set(rect);

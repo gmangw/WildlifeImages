@@ -1,8 +1,11 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 
 /**
@@ -19,6 +22,7 @@ public class Exhibit{
 	private String name;
 	private String currentTag = null;
 	private Hashtable<String, String> contents = new Hashtable<String, String>();
+	private LinkedHashSet<ExhibitPhoto> photos = new LinkedHashSet<ExhibitPhoto>();
 	private ArrayList<String> tagList = new ArrayList<String>();
 	private ArrayList<Alias> aliasList = new ArrayList<Alias>();
 	private String next = null;
@@ -67,7 +71,7 @@ public class Exhibit{
 			return true;
 		}
 	}
-
+	
 	public void setContent(String contentTag, String content) {
 		if (content == null){
 			contents.remove(contentTag);
@@ -75,9 +79,9 @@ public class Exhibit{
 			return;
 		}
 		if (false == contents.containsKey(contentTag)){
-			if (false == contentTag.equals(Exhibit.TAG_PHOTOS)){
+			//if (false == contentTag.equals(Exhibit.TAG_PHOTOS)){
 				tagList.add(contentTag);
-			}
+			//}
 		}
 		contents.put(contentTag, content);
 		if (currentTag == null){
@@ -85,13 +89,8 @@ public class Exhibit{
 		}
 	}
 
-	public void addPhoto(String content) {
-		if (contents.containsKey(Exhibit.TAG_PHOTOS)){
-			String previousPhoto = getContent(Exhibit.TAG_PHOTOS);
-			setContent(Exhibit.TAG_PHOTOS, previousPhoto + "," + content);
-		}else{
-			setContent(Exhibit.TAG_PHOTOS, content);
-		}
+	public void addPhoto(ExhibitPhoto photo) {
+		photos.add(photo);
 	}
 
 	public String getName() {
@@ -175,13 +174,8 @@ public class Exhibit{
 		}
 	}
 
-	public String[] getPhotos(){
-		String photos = contents.get(Exhibit.TAG_PHOTOS);
-		if (photos != null){
-			return photos.split(",");
-		}else{
-			return new String[0];
-		}
+	public ExhibitPhoto[] getPhotos(){
+		return photos.toArray(new ExhibitPhoto[0]);
 	}
 
 	public int getTagCount(){
