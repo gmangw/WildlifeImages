@@ -36,11 +36,11 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	public void addGroup(String groupName, String[] data, int x, int y) {
 		groupList.put(groupName, new ExhibitGroup(data, x, y));
 	}
-	
+
 	public void removeGroup(String groupName){
 		groupList.remove(groupName);
 	}
-	
+
 	public void removeGroupExhibit(String exhibitName, String groupName){
 		ExhibitGroup group = groupList.get(groupName);
 		ArrayList<String> newExhibits = new ArrayList<String>();
@@ -77,9 +77,7 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 			if (exhibits.get(i).getName().equals(name)){
 				exhibits.remove(i);
 			}
-		}
-		
+		}	
 	}
-	
-	
+
 }

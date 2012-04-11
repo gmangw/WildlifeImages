@@ -144,7 +144,8 @@
 		<content tag="Diet"
 			page="ExhibitContents/WesternScreechOwl/westernScreechOwlDiet.html" />
 		<photo
-			page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough.jpg" />
+			page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough.jpg"
+			comment="Van Gough's missing eye and damaged ear prevent him from being released." />
 		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-1.jpg" />
 	</exhibit>
 	<exhibit name="Golden Eagles" xpos="-1" ypos="-1"

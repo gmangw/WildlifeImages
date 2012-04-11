@@ -25,11 +25,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
@@ -92,6 +95,8 @@ public class ComponentHolder implements ChangeListener{
 	private final NumberSpinner aliasYSpinnerModel = new NumberSpinner();
 	private final NumberSpinner groupXSpinnerModel = new NumberSpinner();
 	private final NumberSpinner groupYSpinnerModel = new NumberSpinner();
+	
+	private final JTextArea photoCaption = new JTextArea();
 
 	private final JSpinner exhibitXCoordField = new JSpinner(exhibitXSpinnerModel);
 	private final JSpinner exhibitYCoordField = new JSpinner(exhibitYSpinnerModel);
@@ -187,6 +192,28 @@ public class ComponentHolder implements ChangeListener{
 		Document doc = htmlKit.createDefaultDocument();
 		htmlContentViewer.setDocument(doc);
 
+		photoCaption.setBorder(paddedLine);
+		photoCaption.setLineWrap(true);
+		photoCaption.setWrapStyleWord(true);
+		photoCaption.getDocument().addDocumentListener(new DocumentListener(){
+			private void change(){
+				getCurrentExhibit().getPhotos()[exhibitPhotosList.getSelectedIndex()].setCaption(photoCaption.getText());
+				peer.makeChange();
+			}
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				change();
+			}
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				change();
+			}
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				change();
+			}
+		});
+		
 		exhibitNextDropdown.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -382,10 +409,14 @@ public class ComponentHolder implements ChangeListener{
 		photoButtonPanel.add(newImageButton);
 		photoButtonPanel.add(removeImageButton);
 
-		JPanel listPanelBottom = new JPanel(new BorderLayout());
-		listPanelBottom.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
-		listPanelBottom.add(exhibitPhotosList, BorderLayout.CENTER);
-		listPanelBottom.add(photoButtonPanel, BorderLayout.SOUTH);
+		JPanel photoDataPanel = new JPanel(new GridLayout(2,1,2,2));
+		photoDataPanel.add(new JScrollPane(exhibitPhotosList));
+		photoDataPanel.add(photoCaption);
+		
+		JPanel photoPanelRight = new JPanel(new BorderLayout());
+		photoPanelRight.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
+		photoPanelRight.add(photoDataPanel, BorderLayout.CENTER);
+		photoPanelRight.add(photoButtonPanel, BorderLayout.SOUTH);
 
 		JPanel aliasPanel = new JPanel(new GridLayout(1,3,2,2));
 		aliasDataPanel.add(new JLabel("Alias X Coordinate"));
@@ -435,7 +466,7 @@ public class ComponentHolder implements ChangeListener{
 		combinedDataPanel.setBorder(mediumPaddedBorder);
 
 		photosPanel.add(new JScrollPane(exhibitPhotosImage));
-		photosPanel.add(listPanelBottom);
+		photosPanel.add(photoPanelRight);
 		photosPanel.setBorder(mediumPaddedBorder);
 
 		exhibitTabs.add("Exhibit Content", contentPanel);
@@ -780,6 +811,7 @@ public class ComponentHolder implements ChangeListener{
 		}else{
 			exhibitPhotosImage.setImage(shortUrl, peer.getFileInputStream("assets/" + shortUrl));
 		}
+		photoCaption.setText(getCurrentExhibit().getPhotos()[index].getCaption());
 	}
 
 	class ExhibitListModel extends BasicListModel{
@@ -858,7 +890,7 @@ public class ComponentHolder implements ChangeListener{
 	class ExhibitPhotosModel extends BasicListModel{
 		@Override
 		public Object getElementAt(int index) {
-			return getCurrentExhibit().getPhotos()[index];
+			return getCurrentExhibit().getPhotos()[index].shortUrl;
 		}
 
 		@Override

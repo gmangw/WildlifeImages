@@ -1,10 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 
@@ -21,9 +18,9 @@ public class Exhibit{
 
 	private String name;
 	private String currentTag = null;
-	private Hashtable<String, String> contents = new Hashtable<String, String>();
+	private HashTableRestricted<String, String> contents = new HashTableRestricted<String, String>();
 	private LinkedHashSet<ExhibitPhoto> photos = new LinkedHashSet<ExhibitPhoto>();
-	private ArrayList<String> tagList = new ArrayList<String>();
+	private ArrayList<String> tagList = new ArrayList<String>(); //TODO replace using linked hashtable?
 	private ArrayList<Alias> aliasList = new ArrayList<Alias>();
 	private String next = null;
 	private String previous = null;

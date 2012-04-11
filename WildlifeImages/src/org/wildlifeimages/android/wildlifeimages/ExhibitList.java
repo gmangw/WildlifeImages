@@ -2,7 +2,6 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.xmlpull.v1.XmlPullParser;

@@ -5,9 +5,6 @@ import java.util.Iterator;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 
-import com.larvalabs.svgandroid.SVG;
-import com.larvalabs.svgandroid.SVGParser;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -69,44 +66,12 @@ public class MapView extends ImageView {
 	private static String activeName = "";
 
 	private float zoomFactor = 0.25f;
-	//private float zoomMinimum = 1.00f;
 	private float[][] anchorPoints = {
 			{0.00f, 0.00f, 1.50f},
 			{1.00f, 0.00f, 1.50f},
 			{1.00f, 1.00f, 1.50f},
 			{0.00f, 1.00f, 1.50f}
 	};
-	/*private float[][] anchorPoints = { //TODO hiding auto zoom
-			{0.00f, 0.00f, 1.90f},
-			{0.00f, 0.25f, 2.50f}, 
-			{0.00f, 0.50f, 1.80f},
-			{0.00f, 0.75f, 1.70f},
-			{0.00f, 1.00f, 1.60f},
-
-			{0.25f, 0.00f, 2.00f},
-			{0.25f, 0.25f, 3.00f}, 
-			{0.25f, 0.50f, 1.80f},
-			{0.25f, 0.75f, 1.70f},
-			{0.25f, 1.00f, 1.60f}, 
-
-			{0.50f, 0.00f, 1.90f},
-			{0.50f, 0.25f, 2.50f}, 
-			{0.50f, 0.50f, 1.30f},
-			{0.50f, 0.75f, 1.30f},
-			{0.50f, 1.00f, 1.60f},
-
-			{0.75f, 0.00f, 1.90f},
-			{0.75f, 0.25f, 2.60f}, 
-			{0.75f, 0.50f, 1.60f},
-			{0.75f, 0.75f, 1.50f},
-			{0.75f, 1.00f, 1.40f},
-
-			{1.00f, 0.00f, 1.90f},
-			{1.00f, 0.25f, 1.80f},
-			{1.00f, 0.50f, 1.70f},
-			{1.00f, 0.75f, 1.60f},
-			{1.00f, 1.00f, 1.60f},
-	};*/
 
 	private final ZoomButtonsController zoomButtons;
 
@@ -409,7 +374,7 @@ public class MapView extends ImageView {
 	}
 
 	/**
-	 * @param xFraction 0...1 From the top border of the map to the bottom border.
+	 * @param yFraction 0...1 From the top border of the map to the bottom border.
 	 * @return Corresponding Y coordinate from -(scale*mapHeight) to +(scale*mapHeight) at the current zoom.
 	 */
 	float getYFromFraction(float yFraction){
@@ -447,13 +412,6 @@ public class MapView extends ImageView {
 	public float getScale(float xFraction, float yFraction) {
 		float newScale = 0.0f;
 
-		//TODO do this more efficiently?
-		/*for (int i=0; i<anchorPoints.length; i++){
-			float distance = Common.distance(xFraction, yFraction, anchorPoints[i][0], anchorPoints[i][1]);
-			//TODO I no longer remember what this next line is actually doing
-			float zoomCandidate = (anchorPoints[i][2]+zoomMinimum)-(zoomMinimum + (anchorPoints[i][2]-zoomMinimum)*(float)Common.smoothStep(0f, 0.75f, distance));
-			newScale = Math.max(newScale, zoomCandidate);
-		}*///TODO hiding auto zoom
 		newScale = anchorPoints[0][2];
 
 		float result = zoomFactor * newScale;
@@ -473,9 +431,5 @@ public class MapView extends ImageView {
 
 	public void setZoomFactor(float zoomFactor) {
 		this.zoomFactor = zoomFactor;
-	}
-
-	public void setZoomMinimum(float zoomMinimum) {
-		//this.zoomMinimum = zoomMinimum;
 	}
 }

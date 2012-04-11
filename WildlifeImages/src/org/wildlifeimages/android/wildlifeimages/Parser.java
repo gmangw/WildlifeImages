@@ -148,7 +148,7 @@ public class Parser {
 			for (ExhibitPhoto photo : e.getPhotos()){
 				sb.append("\n\t\t<photo ");
 				appendValue(sb, "page", photo.shortUrl);
-				appendValue(sb, "comment", photo.caption);
+				appendValue(sb, "comment", photo.getCaption());
 				sb.append("/>");
 			}
 			for (Alias a : e.getAliases()){

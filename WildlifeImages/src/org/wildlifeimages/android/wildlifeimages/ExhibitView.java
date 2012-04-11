@@ -9,8 +9,6 @@ import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
  * A modified FrameLayout containing a {@link WebView} and a {@link MultiImageView}.

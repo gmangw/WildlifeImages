@@ -12,13 +12,10 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * A modified ImageView which contains multiple images, navigable using touch controls.
@@ -36,7 +33,7 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private Paint labelPaint = new Paint();
 	private TextPaint labelTextPaint = new TextPaint();
 	private boolean isEmpty = true;
-	private StaticLayout mTextLayout = null;
+	private StaticLayout captionTextLayout = null;
 
 	int gray = Color.argb(100, 255, 255, 255);
 
@@ -101,9 +98,11 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	}
 
 	private void setCaption(){
-		String caption = photoList[currentBitmapIndex].caption;
-		if (caption != null){
-			mTextLayout = new StaticLayout(caption, labelTextPaint, getWidth(), Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		String caption = photoList[currentBitmapIndex].getCaption();
+		if (caption == null || caption.length() == 0){
+			captionTextLayout = null;
+		}else{
+			captionTextLayout = new StaticLayout(caption, labelTextPaint, getWidth(), Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);	
 		}
 	}
 
@@ -177,17 +176,17 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 
-		if (mTextLayout != null){
+		if (captionTextLayout != null){
 			canvas.save();
-			canvas.translate(0, getHeight() - mTextLayout.getHeight());
-			canvas.drawRect(0, 0, getWidth(), mTextLayout.getHeight(), labelPaint);
-			mTextLayout.draw(canvas);
+			canvas.translate(0, getHeight() - captionTextLayout.getHeight());
+			canvas.drawRect(0, 0, captionTextLayout.getWidth(), captionTextLayout.getHeight(), labelPaint);
+			captionTextLayout.draw(canvas);
 			canvas.restore();
 		}
 
 		float[] rightArrow = {getWidth(), getHeight()/2.0f, getWidth()-50, getHeight()/2.0f-30, getWidth()-50, getHeight()/2.0f+30};
 		float[] leftArrow = {0, getHeight()/2.0f, 50, getHeight()/2.0f-30, 50, getHeight()/2.0f+30};
-
+		//TODO move allocations out of onDraw
 		int[] colors = {gray, gray, gray, gray, gray, gray};
 
 		if (hasNextImage()){
