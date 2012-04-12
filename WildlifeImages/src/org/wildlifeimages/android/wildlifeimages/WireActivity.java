@@ -27,16 +27,16 @@ public abstract class WireActivity extends Activity{
 	protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 
-		/* Create a new content manager if there is none. */
-		if (ContentManager.isInitialized() == false){
-			ContentManager.init(this.getFilesDir(), this.getResources());
-		}
-
 		if (false == Common.isAtLeastHoneycomb()){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}else{
 			setTheme(android.R.style.Theme_Holo_Light);
 		}
+		
+		/* Create a new content manager if there is none. */
+		if (ContentManager.isInitialized() == false){
+			ContentManager.init(this.getFilesDir(), this.getResources());
+		}		
 	}
 
 	@Override
