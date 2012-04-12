@@ -277,6 +277,7 @@ public class IntroActivity extends WireActivity{
 				if (url == null){
 					Log.d(this.getClass().getName(), "Update failed due to missing zip url.");
 					publishProgress(NETWORK_ERROR);
+					return null;
 				}
 				if (true == oldUrl.equals(url)){
 					return null;
