@@ -34,8 +34,10 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 	private TextPaint labelTextPaint = new TextPaint();
 	private boolean isEmpty = true;
 	private StaticLayout captionTextLayout = null;
-
-	int gray = Color.argb(100, 255, 255, 255);
+	private final int gray = Color.argb(100, 255, 255, 255);
+	private final int[] colors = {gray, gray, gray, gray, gray, gray};
+	float[] rightArrow = {getWidth(), getHeight()/2.0f, getWidth()-50, getHeight()/2.0f-30, getWidth()-50, getHeight()/2.0f+30};
+	float[] leftArrow = {0, getHeight()/2.0f, 50, getHeight()/2.0f-30, 50, getHeight()/2.0f+30};
 
 	RectF bmpRect = new RectF();
 
@@ -71,6 +73,11 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		if (isEmpty == false){
 			setCaption();
 		}
+		
+		float[] tempRight = {getWidth(), getHeight()/2.0f, getWidth()-50, getHeight()/2.0f-30, getWidth()-50, getHeight()/2.0f+30};
+		float[] tempLeft = {0, getHeight()/2.0f, 50, getHeight()/2.0f-30, 50, getHeight()/2.0f+30};
+		rightArrow = tempRight;
+		leftArrow = tempLeft;
 	}
 
 	private Bitmap getBitmap(String shortUrl){
@@ -183,11 +190,6 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 			captionTextLayout.draw(canvas);
 			canvas.restore();
 		}
-
-		float[] rightArrow = {getWidth(), getHeight()/2.0f, getWidth()-50, getHeight()/2.0f-30, getWidth()-50, getHeight()/2.0f+30};
-		float[] leftArrow = {0, getHeight()/2.0f, 50, getHeight()/2.0f-30, 50, getHeight()/2.0f+30};
-		//TODO move allocations out of onDraw
-		int[] colors = {gray, gray, gray, gray, gray, gray};
 
 		if (hasNextImage()){
 			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, rightArrow, 0, null, 0, colors, 0, null, 0, 0, labelPaint);

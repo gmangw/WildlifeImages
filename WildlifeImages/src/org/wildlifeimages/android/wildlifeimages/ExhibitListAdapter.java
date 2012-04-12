@@ -1,6 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 
+import java.lang.annotation.Inherited;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -17,8 +19,10 @@ import android.widget.TextView;
  * 	
  */
 public class ExhibitListAdapter extends BaseAdapter{
-	Context context;
-	String groupFilter = "";
+	private Context context;
+	private String groupFilter = "";
+	private final StringBuilder sb = new StringBuilder("Photos ");
+	private final int initialLength = sb.length();
 
 	public ExhibitListAdapter(Context context){
 		this.context = context;
@@ -64,6 +68,15 @@ public class ExhibitListAdapter extends BaseAdapter{
 
 		TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
 		itemLabel.setText(entry.getName());
+		if (Common.isAtLeastHoneycomb()){
+			TextView itemDataLabel = (TextView)convertView.findViewById(R.id.list_item_info_label);
+			for (int i=0; i<entry.getTagCount(); i++){
+				sb.append(" | ");
+				sb.append(entry.getTag(i));
+			}
+			itemDataLabel.setText(sb.toString());
+			sb.setLength(initialLength);
+		}
 
 		return convertView;
 	}
@@ -74,7 +87,7 @@ public class ExhibitListAdapter extends BaseAdapter{
 			this.notifyDataSetChanged();
 		}
 	}
-	
+
 	public String getGroupFilter(){
 		return groupFilter;
 	}

@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/listitemlabel"
-        android:layout_width="2048dp"
+        android:layout_width="250dp"
         android:layout_height="fill_parent"
         android:layout_marginLeft="16dp"
         android:clickable="false"
@@ -26,5 +26,7 @@
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:typeface="sans" />
+    
+    <include layout="@layout/list_item_text"/>
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -37,7 +38,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		htmlView.setDownloadListener(this);
 
 		picView = new MultiImageView(context, attrs);
-		picView.setBackgroundColor(0xFF000000);
+		picView.setBackgroundResource(R.drawable.sharedbg_tile);
 		picView.setVisibility(View.INVISIBLE);
 
 		FrameLayout.LayoutParams paramsLeft = this.generateDefaultLayoutParams();
