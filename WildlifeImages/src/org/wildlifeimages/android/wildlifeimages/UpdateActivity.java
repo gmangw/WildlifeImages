@@ -54,15 +54,17 @@ public class UpdateActivity extends WireActivity implements OnCancelListener{
 	}
 
 	public void onUpdateCompleted(boolean result) {
-		ContentManager.prepareExhibits(this.getResources());
 		if (result == true){
 			setResult(Activity.RESULT_OK);
+			ContentManager.prepareExhibits(this.getResources());
+			ContentManager.getSVG(this.getResources());
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_success), Toast.LENGTH_SHORT).show();
 		}else{
 			ContentManager.clearCache();
 			setResult(Activity.RESULT_CANCELED);
 			Toast.makeText(this.getApplicationContext(), loadString(R.string.update_result_failure), Toast.LENGTH_SHORT).show();
 		}
+		
 		finish();
 	}
 

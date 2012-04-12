@@ -7,13 +7,16 @@ import java.util.Date;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +35,8 @@ public class IntroActivity extends WireActivity{
 	private static final int EXIT_DIALOG = WireActivity.SCAN_DIALOG+1;
 
 	private static final int UPDATE_DIALOG = EXIT_DIALOG+1;
+	
+	private static final int LOADING_DIALOG = UPDATE_DIALOG+1;
 
 	private static final int NETWORK_ERROR = 1;
 
@@ -50,7 +55,10 @@ public class IntroActivity extends WireActivity{
 		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			showIntro();
-			//TODO new UpdateChecker().execute(this);
+			if (isTaskRoot()){
+				new UpdateChecker().execute(this);
+				new SVGLoader().execute(getResources());
+			}
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
 		}
@@ -95,6 +103,8 @@ public class IntroActivity extends WireActivity{
 			return createExitDialog();
 		case UPDATE_DIALOG:
 			return createUpdateDialog();
+		case LOADING_DIALOG:
+			return createLoadingDialog();
 		default: 
 			return parent;
 		}
@@ -122,6 +132,14 @@ public class IntroActivity extends WireActivity{
 			}
 		});
 		return builder.create();
+	}
+	
+	private AlertDialog createLoadingDialog() {
+		ProgressDialog dialog = new ProgressDialog(this);
+		dialog.setIndeterminate(true);
+		dialog.setCancelable(false);
+		dialog.setMessage(loadString(R.string.loading_dialog_message));
+		return dialog;
 	}
 
 	@Override
@@ -164,13 +182,6 @@ public class IntroActivity extends WireActivity{
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-
-		//if (activeHomeId == R.id.intro_sidebar_photos){
-		//	ExhibitView exView = (ExhibitView) findViewById(R.id.intro);
-		//	exView.clear();
-		//}
-
-		//outState.putInt(loadString(R.string.save_current_home_id), activeHomeId);
 		Button b = (Button)findViewById(R.id.update_status);
 		outState.putBoolean("UpdateStatus", b.getVisibility() == View.VISIBLE);
 	}
@@ -191,24 +202,10 @@ public class IntroActivity extends WireActivity{
 	 */
 	private void introProcessSidebar(int viewId){
 		switch (viewId) {
-		/*case R.id.intro_sidebar_intro:
-			showIntro();
-			activeHomeId = viewId;
-			break;
-		case R.id.intro_sidebar_donations:
-			((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_support), ContentManager.getSelf());
-			activeHomeId = viewId;
-			setContentView(R.layout.splash_layout);
-			break;*/
 		case R.id.intro_sidebar_events:
-			//((ExhibitView) findViewById(R.id.intro)).loadUrl(loadString(R.string.intro_url_events), ContentManager.getSelf());
-			//activeHomeId = viewId;
 			PhotosActivity.start(this, true);
 			break;
 		case R.id.intro_sidebar_photos:
-			//String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
-			//((ExhibitView) findViewById(R.id.intro)).loadUrlList(introPhotoList, ContentManager.getSelf());
-			//activeHomeId = viewId;
 			PhotosActivity.start(this, false);
 			break;
 		case R.id.intro_sidebar_exhibitlist:
@@ -217,19 +214,12 @@ public class IntroActivity extends WireActivity{
 		case R.id.intro_sidebar_map:
 			MapActivity.start(this);
 			break;
-			//case R.id.intro_sidebar_video:
-			//	VideoActivity.start(this, R.raw.video);
-			//	break;
 		}
 	}
 
 	@Override
 	protected void onResume(){
 		super.onResume();
-
-		//if (activeHomeId == R.id.intro_sidebar_photos){
-		//	introProcessSidebar(activeHomeId);
-		//}
 	}
 
 
@@ -256,8 +246,26 @@ public class IntroActivity extends WireActivity{
 		Intent introIntent = new Intent(context, IntroActivity.class);
 		context.startActivityIfNeeded(introIntent, 0);
 	}
+	
+	private class SVGLoader extends AsyncTask<Resources, Integer, Integer>{
+		@Override
+		protected void onPreExecute(){
+			//showDialog(LOADING_DIALOG);
+		}
+		
+		@Override
+		protected Integer doInBackground(Resources... arg0) {
+			ContentManager.getSVG(arg0[0]);
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Integer result){
+			//dismissDialog(LOADING_DIALOG);
+		}
+	}
 
-	public class UpdateChecker extends AsyncTask<IntroActivity, Integer, String>{
+	private class UpdateChecker extends AsyncTask<IntroActivity, Integer, String>{
 
 		@Override
 		protected String doInBackground(IntroActivity... arg0) {			

@@ -81,7 +81,7 @@ public class ContentManager {
 		return (filesDir != null);
 	}
 
-	public static SVG getSVG(Resources resources){
+	public static synchronized SVG getSVG(Resources resources){
 		if (svg == null){
 			svg = SVGParser.getSVGFromResource(resources, R.raw.map);
 		}
@@ -103,7 +103,6 @@ public class ContentManager {
 			Log.e(ContentManager.class.getName(), "IOException: " + e.getMessage());
 		}
 		svg = null;
-		getSVG(resources);
 		cacheThumbs(resources.getAssets());
 	}
 
