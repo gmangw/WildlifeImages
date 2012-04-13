@@ -21,7 +21,7 @@ import android.widget.TextView;
 public class ExhibitListAdapter extends BaseAdapter{
 	private Context context;
 	private String groupFilter = "";
-	private final StringBuilder sb = new StringBuilder("Photos ");
+	private final StringBuilder sb = new StringBuilder();
 	private final int initialLength = sb.length();
 
 	public ExhibitListAdapter(Context context){
@@ -68,14 +68,17 @@ public class ExhibitListAdapter extends BaseAdapter{
 
 		TextView itemLabel = (TextView) convertView.findViewById(R.id.listitemlabel);
 		itemLabel.setText(entry.getName());
-		if (Common.isAtLeastHoneycomb()){
-			TextView itemDataLabel = (TextView)convertView.findViewById(R.id.list_item_info_label);
+		TextView itemDataLabel = (TextView)convertView.findViewById(R.id.list_item_info_label);
+		if (itemDataLabel != null){
 			for (int i=0; i<entry.getTagCount(); i++){
-				sb.append(" | ");
-				sb.append(entry.getTag(i));
+				//if (false == entry.getTag(i).equals(Exhibit.TAG_PHOTOS)){
+					sb.append(entry.getTag(i));
+					sb.append(" | ");
+				//}
 			}
+			sb.append("Photos");
 			itemDataLabel.setText(sb.toString());
-			sb.setLength(initialLength);
+			sb.setLength(0);
 		}
 
 		return convertView;

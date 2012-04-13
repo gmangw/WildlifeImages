@@ -38,7 +38,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		htmlView.setDownloadListener(this);
 
 		picView = new MultiImageView(context, attrs);
-		picView.setBackgroundResource(R.drawable.sharedbg_tile);
+		picView.setBackgroundResource(android.R.color.background_light);
 		picView.setVisibility(View.INVISIBLE);
 
 		FrameLayout.LayoutParams paramsLeft = this.generateDefaultLayoutParams();
