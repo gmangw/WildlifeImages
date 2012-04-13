@@ -14,7 +14,8 @@ import android.util.Log;
  * 	
  */	
 public class BitmapCache {	
-	public static final int SIZE = 96;
+	public static final int SIZE = 96; //TODO move to vals
+	
 	public static final int CACHE_MAX = 8;
 
 	private HashTableRestricted<String, Bitmap> cachedBitmaps;

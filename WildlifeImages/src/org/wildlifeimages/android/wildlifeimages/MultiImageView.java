@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Xfermode;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -74,8 +75,8 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 			setCaption();
 		}
 		
-		float[] tempRight = {getWidth(), getHeight()/2.0f, getWidth()-50, getHeight()/2.0f-30, getWidth()-50, getHeight()/2.0f+30};
-		float[] tempLeft = {0, getHeight()/2.0f, 50, getHeight()/2.0f-30, 50, getHeight()/2.0f+30};
+		float[] tempRight = {getWidth()-5, getHeight()/2.0f, getWidth()-55, getHeight()/2.0f-30, getWidth()-55, getHeight()/2.0f+30};
+		float[] tempLeft = {5, getHeight()/2.0f, 55, getHeight()/2.0f-30, 55, getHeight()/2.0f+30};
 		rightArrow = tempRight;
 		leftArrow = tempLeft;
 	}
@@ -190,12 +191,14 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 			captionTextLayout.draw(canvas);
 			canvas.restore();
 		}
-
+		
 		if (hasNextImage()){
 			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, rightArrow, 0, null, 0, colors, 0, null, 0, 0, labelPaint);
+			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, rightArrow, 0, null, 0, null, 0, null, 0, 0, labelPaint);
 		}
 		if (hasPreviousImage()){
 			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, leftArrow, 0, null, 0, colors, 0, null, 0, 0, labelPaint);
+			canvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, leftArrow, 0, null, 0, null, 0, null, 0, 0, labelPaint);
 		}
 	}
 

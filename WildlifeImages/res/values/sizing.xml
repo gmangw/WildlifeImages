@@ -5,8 +5,8 @@
         <item name="android:textSize">16dp</item>
     </style>
 
-    <item format="integer" name="content_text_size" type="integer">16</item>
-    <item type="integer" format="integer" name="image_caption_size">22</item>
-    <item format="dimension" name="update_text_size" type="dimen">16dp</item>
+    <item name="content_text_size" format="integer" type="integer">16</item>
+    <item name="image_caption_size" format="integer" type="integer">22</item>
+    <item name="update_text_size" format="dimension" type="dimen">16dp</item>
 
 </resources>

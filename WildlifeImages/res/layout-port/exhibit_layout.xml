@@ -10,7 +10,7 @@
         android:id="@+id/exhibitframe_port"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="3" >
+        android:layout_weight="1" >
 
         <org.wildlifeimages.android.wildlifeimages.ExhibitView
             android:id="@+id/exhibit"
@@ -22,8 +22,7 @@
     <LinearLayout
         android:id="@+id/exhibit_sidebar"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="8"
+        android:layout_height="@dimen/exhibit_sidebar_double"
         android:baselineAligned="false"
         android:orientation="horizontal" >
 
@@ -31,15 +30,14 @@
             android:id="@+id/exhibit_sidebar_linear"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:orientation="horizontal" >
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/exhibit_photo_button_layout"
-            android:layout_width="fill_parent"
+            android:layout_width="@dimen/exhibit_sidebar_size"
             android:layout_height="fill_parent"
-            android:layout_weight="7"
             android:orientation="vertical" >
 
             <include layout="@layout/exhibit_photo_button" />
