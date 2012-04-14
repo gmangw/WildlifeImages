@@ -203,6 +203,7 @@ public class IntroActivity extends WireActivity{
 	private void introProcessSidebar(int viewId){
 		switch (viewId) {
 		case R.id.intro_sidebar_events:
+			//EventsActivity.start(this);
 			PhotosActivity.start(this, true);
 			break;
 		case R.id.intro_sidebar_photos:

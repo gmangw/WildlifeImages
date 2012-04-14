@@ -14,6 +14,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -286,13 +287,14 @@ public class MapView extends ImageView {
 		super.onDraw(canvas);
 		
 		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/28.0f * scale));
-		//TODO ascent()
+
 		for(int i=0; i<points.length/2; i++){
 			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), rect);
-			rectF.set(rect);
-			rectF.offsetTo((int)transformedPoints[i*2] - rectF.width()/2, (int)transformedPoints[i*2+1] - p.getTextSize() + p.getTextSize()/3.0f); 
-			rectF.inset(-p.getTextSize()/8.0f, -p.getTextSize()/8.0f);
 
+			rectF.set(rect);
+			rectF.offset((int)transformedPoints[i*2] - rectF.width()/2, (int)transformedPoints[i*2+1]); 
+			rectF.inset(-p.getTextSize()/8.0f, -p.getTextSize()/8.0f);
+			
 			if (displayNames[i].equals(activeName)){
 				canvas.drawRect(rectF, activeP);
 			}else{

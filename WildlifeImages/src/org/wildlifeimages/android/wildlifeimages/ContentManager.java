@@ -1,5 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -189,7 +190,7 @@ public class ContentManager {
 		} catch (URISyntaxException e) {
 			Log.w(ContentManager.class.getName(), "Bad url " + longUrl);
 		}
-		return istr;
+		return new BufferedInputStream(istr);
 	}
 
 	/**

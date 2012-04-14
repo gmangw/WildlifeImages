@@ -29,8 +29,9 @@ public abstract class WireActivity extends Activity{
 	protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 
-		if (false == Common.isAtLeastHoneycomb()){
+		if (false == Common.isAtLeastHoneycomb()){//TODO do with xml
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			setTheme(android.R.style.Theme_Light);
 		}else{
 			setTheme(android.R.style.Theme_Holo_Light);
 		}

@@ -19,13 +19,10 @@ import android.widget.TextView;
  * 	
  */
 public class ExhibitListAdapter extends BaseAdapter{
-	private Context context;
 	private String groupFilter = "";
 	private final StringBuilder sb = new StringBuilder();
-	private final int initialLength = sb.length();
 
 	public ExhibitListAdapter(Context context){
-		this.context = context;
 	}
 
 	public int getCount() {
@@ -55,7 +52,7 @@ public class ExhibitListAdapter extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
 		Exhibit entry = getItem(position);
 		if (convertView == null) {
-			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_item_layout, null);
 		}
 
