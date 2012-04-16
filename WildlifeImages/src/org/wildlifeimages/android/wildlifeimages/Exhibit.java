@@ -18,9 +18,8 @@ public class Exhibit{
 
 	private String name;
 	private String currentTag = null;
-	private HashTableRestricted<String, String> contents = new HashTableRestricted<String, String>();
+	private LinkedHashMapRestricted<String, String> contents = new LinkedHashMapRestricted<String, String>();
 	private LinkedHashSet<ExhibitPhoto> photos = new LinkedHashSet<ExhibitPhoto>();
-	private ArrayList<String> tagList = new ArrayList<String>(); //TODO replace using linked hashtable?
 	private ArrayList<Alias> aliasList = new ArrayList<Alias>();
 	private String next = null;
 	private String previous = null;
@@ -48,13 +47,13 @@ public class Exhibit{
 	}
 
 	public Iterator<String> getTags(){
-		return tagList.iterator();
+		return contents.keySet().iterator();
 	}
 
 	public String getContent(String contentTag) {
 		String c = contents.get(contentTag);
 		if (c == null){
-			return contents.get(tagList.get(0));
+			return contents.entrySet().iterator().next().getValue();
 		}else{
 			return c;
 		}
@@ -72,13 +71,7 @@ public class Exhibit{
 	public void setContent(String contentTag, String content) {
 		if (content == null){
 			contents.remove(contentTag);
-			tagList.remove(contentTag);
 			return;
-		}
-		if (false == contents.containsKey(contentTag)){
-			//if (false == contentTag.equals(Exhibit.TAG_PHOTOS)){
-				tagList.add(contentTag);
-			//}
 		}
 		contents.put(contentTag, content);
 		if (currentTag == null){
@@ -176,11 +169,11 @@ public class Exhibit{
 	}
 
 	public int getTagCount(){
-		return tagList.size();
+		return contents.entrySet().size();
 	}
 
 	public String getTag(int index){
-		return tagList.get(index);
+		return (String)contents.keySet().toArray()[index];
 	}
 	
 	@Override

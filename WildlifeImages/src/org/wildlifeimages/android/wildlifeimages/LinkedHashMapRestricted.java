@@ -1,9 +1,9 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 
 @SuppressWarnings("serial")
-public class HashTableRestricted<K,V> extends Hashtable<K,V>{
+public class LinkedHashMapRestricted<K,V> extends LinkedHashMap<K,V>{
 
 	@Override
 	public synchronized V put(K key, V value){

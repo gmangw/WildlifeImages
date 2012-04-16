@@ -97,16 +97,16 @@ public class ExhibitListActivity extends ListActivity {
 		case android.R.id.home:
 			IntroActivity.start(this);
 			break;
-		case R.integer.LIST_MENU_ALL:
+		case R.id.list_menu_all:
 			adapter.setGroupFilter(getResources().getString(R.string.list_menu_all_group));
 			break;
-		case R.integer.LIST_MENU_BIRDS:
+		case R.id.list_menu_birds:
 			adapter.setGroupFilter(getResources().getString(R.string.list_menu_birds_group));
 			break;
-		case R.integer.LIST_MENU_MAMMALS:
+		case R.id.list_menu_mammals:
 			adapter.setGroupFilter(getResources().getString(R.string.list_menu_mammals_group));
 			break;
-		case R.integer.LIST_MENU_FACILITIES:
+		case R.id.list_menu_facilities:
 			adapter.setGroupFilter(getResources().getString(R.string.list_menu_facilities_group));
 			break;
 		}

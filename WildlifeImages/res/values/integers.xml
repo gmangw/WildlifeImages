@@ -1,16 +1,7 @@
+<resources>
 
-    <resources>
-        <item type="integer" name="UPDATE_ACTIVITY_REQUEST" format="integer">1024</item>
-        <item type="integer" format="integer" name="CODE_SCAN_ACTIVITY_REQUEST">2048</item>
-        <item type="integer" format="integer" name="CODE_SCAN_2_ACTIVITY_REQUEST">4096</item>
-        <item type="integer" format="integer" name="MENU_SCAN">1</item>
-        <item type="integer" format="integer" name="MENU_CAMERA">2</item>
-        <item type="integer" format="integer" name="MENU_HOME">3</item>
-        <item type="integer" format="integer" name="MENU_MAP">4</item>
-        <item type="integer" format="integer" name="MENU_NEXT" >5</item>
-        <item type="integer" format="integer" name="MENU_PREVIOUS" >6</item>
-        <item type="integer" format="integer" name="LIST_MENU_ALL" >7</item>
-        <item type="integer" format="integer" name="LIST_MENU_MAMMALS" >8</item>
-        <item type="integer" format="integer" name="LIST_MENU_BIRDS" >9</item>
-        <item type="integer" format="integer" name="LIST_MENU_FACILITIES" >10</item>
-    </resources>
+    <item name="UPDATE_ACTIVITY_REQUEST" format="integer" type="integer">1024</item>
+    <item name="CODE_SCAN_ACTIVITY_REQUEST" format="integer" type="integer">2048</item>
+    <item name="CODE_SCAN_2_ACTIVITY_REQUEST" format="integer" type="integer">4096</item>
+
+</resources>

@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@integer/LIST_MENU_ALL"
+        android:id="@+id/list_menu_all"
         android:icon="@drawable/list_menu_02"
         android:title="@string/list_menu_all"/>
     <item
-        android:id="@integer/LIST_MENU_MAMMALS"
+        android:id="@+id/list_menu_mammals"
         android:icon="@drawable/list_menu_01"
         android:title="@string/list_menu_mammals"/>
     <item
-        android:id="@integer/LIST_MENU_BIRDS"
+        android:id="@+id/list_menu_birds"
         android:icon="@drawable/list_menu_00"
         android:title="@string/list_menu_birds"/>
     <item
-        android:id="@integer/LIST_MENU_FACILITIES"
+        android:id="@+id/list_menu_facilities"
         android:icon="@drawable/ic_menu_info_details"
         android:title="@string/list_menu_facilities"/>
 

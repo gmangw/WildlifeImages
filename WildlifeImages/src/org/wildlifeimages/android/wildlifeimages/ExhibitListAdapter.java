@@ -1,8 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-
-import java.lang.annotation.Inherited;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;

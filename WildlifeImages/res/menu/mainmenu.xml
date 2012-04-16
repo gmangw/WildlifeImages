@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@integer/MENU_HOME" android:title="@string/menu_home" android:icon="@drawable/ic_menu_home" />
-	<item android:id="@integer/MENU_MAP" android:title="@string/menu_map" android:icon="@drawable/ic_menu_mapmode" />
-	<item android:id="@integer/MENU_SCAN" android:title="@string/menu_scan" android:icon="@drawable/ic_menu_qr" />
-	<item android:id="@integer/MENU_CAMERA" android:title="@string/menu_camera" android:icon="@drawable/ic_menu_camera" />
-	<item android:id="@integer/MENU_PREVIOUS" android:title="@string/menu_previous" android:icon="@drawable/ic_menu_back" />
-	<item android:id="@integer/MENU_NEXT" android:title="@string/menu_next" android:icon="@drawable/ic_menu_forward" />
+	<item android:id="@+id/menu_home" android:title="@string/menu_home" android:icon="@drawable/ic_menu_home" />
+	<item android:id="@+id/menu_map" android:title="@string/menu_map" android:icon="@drawable/ic_menu_mapmode" />
+	<item android:id="@+id/menu_scan" android:title="@string/menu_scan" android:icon="@drawable/ic_menu_qr" />
+	<item android:id="@+id/menu_camera" android:title="@string/menu_camera" android:icon="@drawable/ic_menu_camera" />
+	<item android:id="@+id/menu_previous" android:title="@string/menu_previous" android:icon="@drawable/ic_menu_back" />
+	<item android:id="@+id/menu_next" android:title="@string/menu_next" android:icon="@drawable/ic_menu_forward" />
 </menu>

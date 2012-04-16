@@ -14,21 +14,22 @@ import android.util.Log;
  * 	
  */	
 public class BitmapCache {	
-	public static final int SIZE = 96; //TODO move to vals
+	public final int SIZE;
 	
 	public static final int CACHE_MAX = 8;
 
-	private HashTableRestricted<String, Bitmap> cachedBitmaps;
-	private HashTableRestricted<String, Bitmap> cachedThumbs;
+	private LinkedHashMapRestricted<String, Bitmap> cachedBitmaps;
+	private LinkedHashMapRestricted<String, Bitmap> cachedThumbs;
 	LinkedList<String> sizeObserver = new LinkedList<String>();
 
 	/**
 	 * This will create the cached bitmaps and thumbs and store them in memory.
 	 * 
 	 */
-	public BitmapCache(){
-		cachedBitmaps = new HashTableRestricted<String, Bitmap>();
-		cachedThumbs = new HashTableRestricted<String, Bitmap>();
+	public BitmapCache(int size){
+		SIZE = size;
+		cachedBitmaps = new LinkedHashMapRestricted<String, Bitmap>();
+		cachedThumbs = new LinkedHashMapRestricted<String, Bitmap>();
 	}
 
 	/**

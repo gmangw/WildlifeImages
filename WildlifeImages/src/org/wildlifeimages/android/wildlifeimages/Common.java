@@ -78,13 +78,13 @@ public class Common {
 	 */	
 	public static void processActivityResult(WireActivity context, int requestCode, int resultCode, Intent intent){
 		if (resultCode == Activity.RESULT_OK){
-			if (requestCode == R.integer.CODE_SCAN_ACTIVITY_REQUEST) {
+			if (requestCode == context.loadInt(R.integer.CODE_SCAN_ACTIVITY_REQUEST)) {
 				String contents = intent.getStringExtra(context.loadString(R.string.intent_scan_extra_result));
 				String format = intent.getStringExtra(context.loadString(R.string.intent_scan_extra_result_format));
 				if (format.equals(context.loadString(R.string.intent_result_qr))){
 					processBarcodeContents(context, contents);
 				}
-			}else if (requestCode == R.integer.CODE_SCAN_2_ACTIVITY_REQUEST){
+			}else if (requestCode == context.loadInt(R.integer.CODE_SCAN_2_ACTIVITY_REQUEST)){
 				String contents = intent.getStringExtra(context.loadString(R.string.intent_scan_2_extra_result));
 				processBarcodeContents(context, contents);
 			}
@@ -122,10 +122,10 @@ public class Common {
 		if (scanAvailable){
 			Intent intent = new Intent(context.loadString(R.string.intent_action_scan));
 			intent.putExtra(context.loadString(R.string.intent_extra_scan_mode), context.loadString(R.string.intent_qr_mode));
-			context.startActivityForResult(intent, R.integer.CODE_SCAN_ACTIVITY_REQUEST);
+			context.startActivityForResult(intent, context.loadInt(R.integer.CODE_SCAN_ACTIVITY_REQUEST));
 		}else if (scan2Available){
 			Intent intent = new Intent(context.loadString(R.string.intent_action_scan_2));
-			context.startActivityForResult(intent, R.integer.CODE_SCAN_2_ACTIVITY_REQUEST);
+			context.startActivityForResult(intent, context.loadInt(R.integer.CODE_SCAN_2_ACTIVITY_REQUEST));
 		}else {
 			context.showDialog(WireActivity.SCAN_DIALOG);
 		}
@@ -176,19 +176,19 @@ public class Common {
 	public static void menuItemProcess(WireActivity context, int id, ExhibitList exhibits){
 		switch (id) {
 		case android.R.id.home:
-		case R.integer.MENU_HOME:
+		case R.id.menu_home:
 			IntroActivity.start(context);
 			break;
-		case R.integer.MENU_MAP:
+		case R.id.menu_map:
 			MapActivity.start(context);
 			break;
-		case R.integer.MENU_SCAN:
+		case R.id.menu_scan:
 			startScan(context);
 			break;
-		case R.integer.MENU_CAMERA:
+		case R.id.menu_camera:
 			Common.startCamera(context, null);
 			break;
-		case R.integer.MENU_NEXT:
+		case R.id.menu_next:
 			Exhibit next = exhibits.getNext();
 
 			if(next != null){
@@ -200,7 +200,7 @@ public class Common {
 				}
 			}
 			break;
-		case R.integer.MENU_PREVIOUS:
+		case R.id.menu_previous:
 			Exhibit prev = exhibits.getPrevious();
 
 			if(prev != null){

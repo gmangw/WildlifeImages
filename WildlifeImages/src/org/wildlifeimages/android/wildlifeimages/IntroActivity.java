@@ -16,7 +16,6 @@ import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -92,7 +91,7 @@ public class IntroActivity extends WireActivity{
 	}
 	
 	public void updateClicked(View v){
-		showDialog(UPDATE_DIALOG); //TODO
+		showDialog(UPDATE_DIALOG);
 	}
 
 	protected Dialog onCreateDialog(int id){
@@ -146,7 +145,7 @@ public class IntroActivity extends WireActivity{
 	public void onActivityResult(int requestCode, int resultCode, Intent intent){
 		super.onActivityResult(requestCode, resultCode, intent);
 		
-		if (requestCode == R.integer.UPDATE_ACTIVITY_REQUEST && resultCode == Activity.RESULT_OK){
+		if (requestCode == loadInt(R.integer.UPDATE_ACTIVITY_REQUEST) && resultCode == Activity.RESULT_OK){
 			Button b = (Button)findViewById(R.id.update_status);
 			b.setVisibility(View.INVISIBLE);
 		}
@@ -161,7 +160,7 @@ public class IntroActivity extends WireActivity{
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				Intent introIntent = new Intent(me, UpdateActivity.class);
-				me.startActivityForResult(introIntent, R.integer.UPDATE_ACTIVITY_REQUEST);
+				me.startActivityForResult(introIntent, loadInt(R.integer.UPDATE_ACTIVITY_REQUEST));
 			}
 		})
 		.setNegativeButton(loadString(R.string.update_available_message_no),
@@ -321,10 +320,7 @@ public class IntroActivity extends WireActivity{
 			for (int i : amount){
 				switch(i){
 				case NETWORK_ERROR:
-					//Button b = (Button)findViewById(R.id.update_status);
-					//b.setText("Cannot check for updates");
-					//b.setVisibility(View.VISIBLE);
-					//TODO
+					Log.d(this.getClass().getName(), "Cannot update: network error.");
 				}
 			}
 		}

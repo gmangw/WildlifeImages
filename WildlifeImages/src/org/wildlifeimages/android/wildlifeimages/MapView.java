@@ -14,7 +14,6 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -344,7 +343,7 @@ public class MapView extends ImageView {
 	}
 	
 	public void processScroll(float distanceX, float distanceY){
-		for (int i = 0; i < 2; i++){ //TODO see if necessary
+		for (int i = 0; i < 2; i++){
 			
 			clampOriginXY(distanceX, distanceY);
 

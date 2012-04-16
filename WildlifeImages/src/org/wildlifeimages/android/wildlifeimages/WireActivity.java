@@ -1,7 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -12,7 +11,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,20 +57,20 @@ public abstract class WireActivity extends Activity{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
 		if (this.getClass().equals(MapActivity.class)){
-			menu.removeItem(R.integer.MENU_MAP);
+			menu.removeItem(R.id.menu_map);
 		}
 		if (this.getClass().equals(IntroActivity.class)){
-			menu.removeItem(R.integer.MENU_HOME);
+			menu.removeItem(R.id.menu_home);
 		}
 		if (ContentManager.getExhibitList().getCurrent().getNext() == null){
-			menu.findItem(R.integer.MENU_NEXT).setEnabled(false);
+			menu.findItem(R.id.menu_next).setEnabled(false);
 		}
 		if (ContentManager.getExhibitList().getCurrent().getPrevious() == null){
-			menu.findItem(R.integer.MENU_PREVIOUS).setEnabled(false);
+			menu.findItem(R.id.menu_previous).setEnabled(false);
 		}
 		if (false == Common.isIntentAvailable(this, MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)){
-			menu.findItem(R.integer.MENU_CAMERA).setEnabled(false);
-			menu.findItem(R.integer.MENU_SCAN).setEnabled(false);
+			menu.findItem(R.id.menu_camera).setEnabled(false);
+			menu.findItem(R.id.menu_scan).setEnabled(false);
 		}
 		return true;
 	}
@@ -97,6 +95,10 @@ public abstract class WireActivity extends Activity{
 
 	public String loadString(int resId){
 		return getResources().getString(resId); 
+	}
+	
+	public int loadInt(int resId){
+		return getResources().getInteger(resId); 
 	}
 
 	@Override

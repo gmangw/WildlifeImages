@@ -1,11 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.io.InputStream;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Gallery;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -82,7 +78,6 @@ public class EventsActivity extends WireActivity{
 				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(R.layout.event_item_layout, null);
 			}
-			Gallery myParent = (Gallery)findViewById(R.id.events_view);
 			convertView.setLayoutParams(new Gallery.LayoutParams(300, 300));
 			TextView itemLabel = (TextView) convertView.findViewById(R.id.event_item_name);
 			itemLabel.setText("Item " + position);

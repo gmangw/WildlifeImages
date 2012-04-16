@@ -1,0 +1,5 @@
+<resources>
+
+    <item name="thumbnail_size" format="integer" type="integer">96</item>
+
+</resources>

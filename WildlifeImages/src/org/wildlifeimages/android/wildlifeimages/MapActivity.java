@@ -176,6 +176,13 @@ public class MapActivity extends WireActivity{
 		}
 
 		public void onLongPress(MotionEvent e) {
+			MapView mMapView = (MapView) findViewById(R.id.map);
+			float[] result = mMapView.getFractionFromTouch(e.getX(), e.getY());
+			float x = result[0];
+			float y = result[1];
+			for (int i=0; i<8; i++){
+				mMapView.zoomOut(x, y);
+			}
 		}
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {

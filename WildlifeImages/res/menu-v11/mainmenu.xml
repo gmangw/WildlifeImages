@@ -2,37 +2,37 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <item
-        android:id="@integer/MENU_HOME"
+        android:id="@+id/menu_home"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_home"
         android:title="@string/menu_home"/>
 
     <item
-        android:id="@integer/MENU_PREVIOUS"
+        android:id="@+id/menu_previous"
         android:showAsAction="always"
         android:icon="@drawable/ic_menu_back"
         android:title="@string/menu_previous"/>
 
     <item
-        android:id="@integer/MENU_NEXT"
+        android:id="@+id/menu_next"
         android:showAsAction="always"
         android:icon="@drawable/ic_menu_forward"
         android:title="@string/menu_next"/>
 
     <item
-        android:id="@integer/MENU_MAP"
+        android:id="@+id/menu_map"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_mapmode"
         android:title="@string/menu_map"/>
 
     <item
-        android:id="@integer/MENU_SCAN"
+        android:id="@+id/menu_scan"
         android:showAsAction="never"
         android:icon="@drawable/ic_menu_qr"
         android:title="@string/menu_scan"/>
     
     <item
-        android:id="@integer/MENU_CAMERA"
+        android:id="@+id/menu_camera"
         android:showAsAction="never"
         android:icon="@drawable/ic_menu_camera"
         android:title="@string/menu_camera"/>

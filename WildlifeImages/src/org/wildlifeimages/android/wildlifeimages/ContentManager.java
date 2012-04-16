@@ -54,7 +54,7 @@ public class ContentManager {
 
 	private static int accessTime = 0;
 
-	private static HashTableRestricted<String, Integer> timekeeper = null;
+	private static LinkedHashMapRestricted<String, Integer> timekeeper = null;
 	
 	private static SVG svg = null;
 	
@@ -67,10 +67,10 @@ public class ContentManager {
 	 */
 	public static void init(File files, Resources resources){
 		cachedFiles = new HashSet<String>();
-		imgCache = new BitmapCache();
+		imgCache = new BitmapCache(resources.getInteger(R.integer.thumbnail_size));
 		timeKeeperEnabled = true;
 		accessTime = 0;
-		timekeeper = new HashTableRestricted<String, Integer>();
+		timekeeper = new LinkedHashMapRestricted<String, Integer>();
 		
 		filesDir = files;
 		addAllToMap(filesDir);

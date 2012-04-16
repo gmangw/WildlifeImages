@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.xmlpull.v1.XmlPullParser;
@@ -138,8 +139,10 @@ public class Parser {
 			appendValue(sb, "previous", e.getPrevious());
 			appendValue(sb, "next", e.getNext());
 			sb.append(">");
-			for (int i = 0; i<e.getTagCount(); i++){
-				String tag = e.getTag(i);
+			
+			String tag;
+			for (Iterator<String> iter = e.getTags(); iter.hasNext();){
+				tag = iter.next();
 				sb.append("\n\t\t<content ");
 				appendValue(sb, "tag", tag);
 				appendValue(sb, "page", e.getContent(tag));
