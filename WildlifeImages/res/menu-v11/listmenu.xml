@@ -4,18 +4,22 @@
     <item
         android:id="@+id/list_menu_all"
         android:icon="@drawable/list_menu_02"
+        android:showAsAction="ifRoom"
         android:title="@string/list_menu_all"/>
     <item
         android:id="@+id/list_menu_mammals"
         android:icon="@drawable/list_menu_01"
+        android:showAsAction="ifRoom"
         android:title="@string/list_menu_mammals"/>
     <item
         android:id="@+id/list_menu_birds"
         android:icon="@drawable/list_menu_00"
+        android:showAsAction="ifRoom"
         android:title="@string/list_menu_birds"/>
     <item
         android:id="@+id/list_menu_facilities"
         android:icon="@drawable/list_menu_03"
+        android:showAsAction="ifRoom"
         android:title="@string/list_menu_facilities"/>
 
 </menu>

@@ -9,20 +9,20 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.CharBuffer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.FloatMath;
 import android.util.Log;
@@ -66,32 +66,9 @@ public class Common {
 						PackageManager.MATCH_DEFAULT_ONLY);
 			return list.size() > 0;
 		}
-	}
+	}/* CommonInstrumentationTest */
 
-	/**
-	 * Gets called when an activity has been started and a request has been given for when it ends.
-	 * 
-	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
-	 * @param an int requestCode that has the code for what action to do.
-	 * @param an int resultCode that has the resulting code from the request.
-	 * @param a Intent intent that is the intent used to start the process.	
-	 */	
-	public static void processActivityResult(WireActivity context, int requestCode, int resultCode, Intent intent){
-		if (resultCode == Activity.RESULT_OK){
-			if (requestCode == context.loadInt(R.integer.CODE_SCAN_ACTIVITY_REQUEST)) {
-				String contents = intent.getStringExtra(context.loadString(R.string.intent_scan_extra_result));
-				String format = intent.getStringExtra(context.loadString(R.string.intent_scan_extra_result_format));
-				if (format.equals(context.loadString(R.string.intent_result_qr))){
-					processBarcodeContents(context, contents);
-				}
-			}else if (requestCode == context.loadInt(R.integer.CODE_SCAN_2_ACTIVITY_REQUEST)){
-				String contents = intent.getStringExtra(context.loadString(R.string.intent_scan_2_extra_result));
-				processBarcodeContents(context, contents);
-			}
-		}
-	}
-
-	private static void processBarcodeContents(WireActivity context, String contents){
+	static void processBarcodeContents(WireActivity context, String contents){
 		String potentialKey = null;
 		String prefix = context.loadString(R.string.qr_prefix);
 
@@ -108,12 +85,12 @@ public class Common {
 			Toast.makeText(context.getApplicationContext(), context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
 			Log.w(Common.class.getName(), "Unrecognized QR code " + contents);
 		}
-	}
+	}/* CommonUnitTest */
 
 	/**
 	 * Checks if you have an application to scan a QR code and launch it if you have one.
 	 * 
-	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
+	 * @param context The activity to serve as the parent of the new activity
 	 */
 	public static void startScan(WireActivity context){
 		boolean scanAvailable = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan));
@@ -129,7 +106,7 @@ public class Common {
 		}else {
 			context.showDialog(WireActivity.SCAN_DIALOG);
 		}
-	}
+	}/* CommonUnitTest */
 
 	/**
 	 * Starts the camera application to take a picture.
@@ -137,83 +114,10 @@ public class Common {
 	 * @param an Activity context that has the information about the current activity.
 	 * @param a URI imageUri that contains the location of where the image will be stored. 
 	 */
-	public static void startCamera(Activity context, Uri imageUri){
+	public static void startCamera(Activity context){
 		Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
 		context.startActivity(intent);
-	}
-
-	/**
-	 * Will ask the user if you don't have a QR scanner if you would like to download one.
-	 * 
-	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
-	 */
-	public static AlertDialog createScanDialog(final WireActivity context){
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-		builder.setMessage(context.loadString(R.string.scan_app_options))
-		.setCancelable(false)
-		.setPositiveButton(R.string.scan_app_option_yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(context.loadString(R.string.scan_app_url)));
-				context.startActivity(i);
-			}
-		})
-		.setNegativeButton(R.string.scan_app_option_no, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-		return builder.create();
-	}
-
-	/**
-	 * Tries to match the id of the menu button pressed with one of the cases, so home or map, etc...
-	 * Launches the appropriate activity according to the case found from the id.
-	 * 
-	 * @param a WireActivity context that contains the info about the WireActivity, so our main page.
-	 * @param an int id containing the id of the view, so a button or an item.
-	 * @param an ExhibitList exhibits that contains the current list of exhibits.
-	 */
-	public static void menuItemProcess(WireActivity context, int id, ExhibitList exhibits){
-		switch (id) {
-		case android.R.id.home:
-		case R.id.menu_home:
-			IntroActivity.start(context);
-			break;
-		case R.id.menu_map:
-			MapActivity.start(context);
-			break;
-		case R.id.menu_scan:
-			startScan(context);
-			break;
-		case R.id.menu_camera:
-			Common.startCamera(context, null);
-			break;
-		case R.id.menu_next:
-			Exhibit next = exhibits.getNext();
-
-			if(next != null){
-				exhibits.setCurrent(next, Exhibit.TAG_AUTO);
-				ExhibitActivity.start(context);
-			}else{
-				if (context.getClass() != ExhibitActivity.class){
-					ExhibitActivity.start(context);
-				}
-			}
-			break;
-		case R.id.menu_previous:
-			Exhibit prev = exhibits.getPrevious();
-
-			if(prev != null){
-				exhibits.setCurrent(prev, Exhibit.TAG_AUTO);
-				ExhibitActivity.start(context);
-			}else{
-				if (context.getClass() != ExhibitActivity.class){
-					ExhibitActivity.start(context);
-				}
-			}
-			break;
-		}
-	}
+	}/* CommonUnitTest */
 
 	/**
 	 * This will check if the image URL passed in has an acceptable image format.
@@ -224,11 +128,11 @@ public class Common {
 	public static boolean isImageUrl(String url){
 		String lower = url.toLowerCase();
 		return imageExtensionExpression.matcher(lower).matches();
-	}
+	}/* CommonInstrumentationTest */
 
 	public static float distance(float x1, float y1, float x2, float y2){
 		return (FloatMath.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)));
-	}
+	}/* CommonInstrumentationTest */
 
 	public static float clamp(float value, float min, float max){
 		if (max < min){
@@ -242,24 +146,27 @@ public class Common {
 			value = max;
 		}
 		return value;
-	}
+	}/* CommonInstrumentationTest */
 
 	//http://en.wikipedia.org/wiki/Smoothstep
 	public static float smoothStep(float edge0, float edge1, float x){
 		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
 		return x*x*x*(x*(x*6 - 15) + 10);
-	}
+	}/* CommonInstrumentationTest */
 
 	public static void recursiveRemove(File f){
 		if (f.isDirectory()){
 			File[] list = f.listFiles();
 			for(int i=0; i<list.length; i++){
 				recursiveRemove(list[i]);
+				if (list[i].isDirectory()){
+					list[i].delete();
+				}
 			}
 		}else{
 			f.delete();
 		}
-	}
+	}/* CommonInstrumentationTest */
 
 	public static void mkdirForFile(File file) throws IOException{
 		if (file.getParentFile().exists()){
@@ -272,13 +179,13 @@ public class Common {
 				throw(new IOException("Cache subdirectory creation failed: " + file.getParentFile()));
 			}
 		}
-	}
+	}/* CommonInstrumentationTest */
 
 	public static void writeBytesToFile(byte[] content, File f) throws IOException{
 		FileOutputStream fOut = new FileOutputStream(f);
 		fOut.write(content);
 		fOut.close();
-	}
+	}/* CommonInstrumentationTest */
 
 	public static String getZipUrl(String page){
 		try{
@@ -302,11 +209,11 @@ public class Common {
 		} catch (IOException e) {
 			return null;
 		}
-	}
+	}/* CommonInstrumentationTest */
 	
 	public static boolean isAtLeastHoneycomb(){
 		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
-	}
+	}/* CommonInstrumentationTest */
 
 	public static boolean isNetworkConnected(Context context){
 		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -316,11 +223,11 @@ public class Common {
 		}else{
 			return false;
 		}
-	}
+	}/* CommonInstrumentationTest */
 
 	public static boolean onKeyDown(Activity context, int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_CAMERA){
-			Common.startCamera(context, null);
+			Common.startCamera(context);
 			return true;
 		}else if (keyCode == KeyEvent.KEYCODE_BACK){
 			context.onBackPressed();
@@ -328,5 +235,19 @@ public class Common {
 		}else{
 			return false;
 		}
-	}
+	}/* CommonUnitTest */
+	
+	public static Date getUpdateTime(String url){
+		//update_201204041839.zip
+		SimpleDateFormat fmt = new SimpleDateFormat();
+		fmt.applyPattern("yyyyMMddHHmm");
+		
+		Date time;
+		try {
+			time= fmt.parse(url.substring(url.length()-16, url.length()-4));
+		} catch (ParseException e) {
+			time = new Date(0);
+		}
+		return time;
+	}/* CommonInstrumentationTest */
 }

@@ -5,12 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Random;
 
 import org.wildlifeimages.android.wildlifeimages.BitmapCache;
 import org.wildlifeimages.android.wildlifeimages.Common;
 import org.wildlifeimages.android.wildlifeimages.IntroActivity;
-import org.wildlifeimages.android.wildlifeimages.R;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -31,8 +31,8 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		super.setUp();
 		mActivity = this.getActivity();
 	}
-
-	public void testCommonIsIntentAvailable(){
+	
+	public void testIsIntentAvailable(){
 		assertFalse(Common.isIntentAvailable(null, null));
 		assertFalse(Common.isIntentAvailable(null, "com.google.zxing.client.android.SCAN"));		
 		assertFalse(Common.isIntentAvailable(mActivity, null));
@@ -44,7 +44,7 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		Common.isIntentAvailable(mActivity, "com.google.zxing.client.android.SCAN");
 	}
 
-	public void testCommonIsImageUrl(){
+	public void testIsImageUrl(){
 		assertFalse(Common.isImageUrl(""));
 		assertFalse(Common.isImageUrl("beaver"));
 		assertFalse(Common.isImageUrl(".jpg"));
@@ -59,7 +59,7 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		assertTrue(Common.isImageUrl("beaver.png"));
 	}
 
-	public void testCommonDistance(){
+	public void testDistance(){
 		assertEquals(1.0f, Common.distance(0.0f, 0.0f, 1.0f, 0.0f), TestHost.DELTA);
 		assertEquals(Math.sqrt(2.0f), Common.distance(0.0f, 0.0f, 1.0f, 1.0f), TestHost.DELTA);
 		assertEquals(0.0f, Common.distance(0.0f, 0.0f, 0.0f, 0.0f), TestHost.DELTA);
@@ -70,12 +70,10 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		assertEquals(Float.POSITIVE_INFINITY, Common.distance(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, 0.0f, 0.0f), Float.POSITIVE_INFINITY);
 		assertEquals(Float.POSITIVE_INFINITY, Common.distance(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, 0.0f, 0.0f));
 		assertEquals(Float.POSITIVE_INFINITY, Common.distance(Float.NEGATIVE_INFINITY, 0.0f, Float.POSITIVE_INFINITY, 0.0f));
-
-		assertEquals(Float.MIN_VALUE, Common.distance(Float.MIN_VALUE, Float.MIN_VALUE, 0.0f, 0.0f));
 	}
 
-	public void testCommonClamp(){
-		Random rand = new Random(12345);
+	public void testClamp(){
+		Random rand = new Random(567891);
 
 		float value;
 		float clamp1;
@@ -96,8 +94,8 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		}
 	}
 
-	public void testCommonSmoothStep(){
-		Random rand = new Random(12345);
+	public void testSmoothStep(){
+		Random rand = new Random(456789);
 
 		float value;
 		float clamp1;
@@ -114,12 +112,12 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		}
 	}
 
-	public void testCommonWriteBytesToFile() throws IOException{
+	public void testWriteBytesToFile() throws IOException{
 		byte[] test1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 		byte[] test2 = new byte[1024];
 		byte[] test3 = new byte[4096];
 
-		Random rand = new Random(123456);
+		Random rand = new Random(345678);
 		rand.nextBytes(test2);
 		rand.nextBytes(test3);
 
@@ -153,12 +151,12 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		}
 	}
 
-	public void testCommonMkdirForFile() throws IOException{
+	public void testMkdirForFile() throws IOException{
 		Random rand = new Random(123456);
 
 		String filename = rand.nextInt()+".tmp";
 		File f = new File(mActivity.getFilesDir(), filename);
-		assertFalse(f.exists());
+		f.delete();
 		Common.mkdirForFile(f);
 		f = File.createTempFile(filename, "", mActivity.getFilesDir());
 		assertTrue(f.exists());
@@ -179,7 +177,7 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		assertTrue(new File(mActivity.getFilesDir().getPath()+"/does").delete());
 	}
 
-	public void testCommonGetZipUrl() throws IOException{
+	public void testGetZipUrl() throws IOException{
 		assertNull(Common.getZipUrl(""));
 		assertNull(Common.getZipUrl("http://www.google.com"));
 	}
@@ -204,5 +202,54 @@ public class CommonInstrumentationTest extends ActivityInstrumentationTestCase2<
 		}
 		Log.w(Common.class.getName(), "Loaded " + i + " bitmaps");
 		assertTrue(i > BitmapCache.CACHE_MAX * 2);
+	}
+	
+	public void testRecursiveRemove() throws IOException{
+		Random rand = new Random(234567);
+
+		File f = new File(mActivity.getFilesDir(), "tmp" + rand.nextInt());
+		f.delete();
+		f.mkdir();
+		new File(f, rand.nextInt()+".tmp").createNewFile();
+		new File(f, rand.nextInt()+".tmp").createNewFile();
+		new File(f, rand.nextInt()+".tmp").createNewFile();
+		File f2 = new File(f, "tmp" + rand.nextInt());
+		f2.delete();
+		f2.mkdir();
+		new File(f2, rand.nextInt()+".tmp").createNewFile();
+		new File(f2, rand.nextInt()+".tmp").createNewFile();
+		new File(f2, rand.nextInt()+".tmp").createNewFile();
+		File f3 = new File(f2, "tmp" + rand.nextInt());
+		f3.delete();
+		f3.mkdir();
+		new File(f3, rand.nextInt()+".tmp").createNewFile();
+		new File(f3, rand.nextInt()+".tmp").createNewFile();
+		new File(f3, rand.nextInt()+".tmp").createNewFile();
+		assertEquals(4, f.list().length);
+		Common.recursiveRemove(f);
+		assertEquals(0, f.list().length);
+		
+		assertTrue(f.delete());
+	}
+	
+	public void testIsAtLeastHoneycomb(){
+		Common.isAtLeastHoneycomb();
+	}
+	
+	public void testIsNetworkConnected(){
+		try{
+			Common.isNetworkConnected(null);
+			fail("");
+		}catch(NullPointerException e){
+			assertTrue(true);
+		}
+		Common.isNetworkConnected(mActivity);
+	}
+	
+	public void testGetUpdateTime(){
+		assertEquals(new Date(2012-1900, 4-1, 4, 18, 39).toString(), Common.getUpdateTime("update_201204041839.zip").toString());
+		assertEquals(new Date(2012-1900, 4-1, 4, 18, 39).toString(), Common.getUpdateTime("http://wildlifeimages.org/update_201204041839.zip").toString());
+		assertEquals(0, Common.getUpdateTime("update_04041839.zip").getTime());
+		assertEquals(0, Common.getUpdateTime("update_001204041899").getTime());
 	}
 }

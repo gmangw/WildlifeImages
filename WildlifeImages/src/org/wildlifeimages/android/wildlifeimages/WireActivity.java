@@ -5,17 +5,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
 /**
  * The parent for the other activities allowing for fun helper functions.
  */
@@ -26,13 +28,6 @@ public abstract class WireActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
-
-		if (false == Common.isAtLeastHoneycomb()){//TODO do with xml
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-			setTheme(android.R.style.Theme_Light);
-		}else{
-			setTheme(android.R.style.Theme_Holo_Light);
-		}
 		
 		/* Create a new content manager if there is none. */
 		if (ContentManager.isInitialized() == false){
@@ -45,7 +40,21 @@ public abstract class WireActivity extends Activity{
 		super.onCreateDialog(id);
 
 		if (id == SCAN_DIALOG){
-			return Common.createScanDialog(this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(loadString(R.string.scan_app_options))
+			.setCancelable(false)
+			.setPositiveButton(R.string.scan_app_option_yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(loadString(R.string.scan_app_url)));
+					startActivity(i);
+				}
+			})
+			.setNegativeButton(R.string.scan_app_option_no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			return builder.create();
 		}else{
 			return null;
 		}
@@ -56,10 +65,10 @@ public abstract class WireActivity extends Activity{
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
-		if (this.getClass().equals(MapActivity.class)){
+		if (this.getClass() == MapActivity.class){
 			menu.removeItem(R.id.menu_map);
 		}
-		if (this.getClass().equals(IntroActivity.class)){
+		if (this.getClass() == IntroActivity.class){
 			menu.removeItem(R.id.menu_home);
 		}
 		if (ContentManager.getExhibitList().getCurrent().getNext() == null){
@@ -72,12 +81,56 @@ public abstract class WireActivity extends Activity{
 			menu.findItem(R.id.menu_camera).setEnabled(false);
 			menu.findItem(R.id.menu_scan).setEnabled(false);
 		}
+		if (this.getClass() != ExhibitActivity.class){
+			menu.removeItem(R.id.menu_next);
+			menu.removeItem(R.id.menu_previous);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Common.menuItemProcess(this, item.getItemId(), ContentManager.getExhibitList());
+		switch (item.getItemId()) {
+		case android.R.id.home:
+		case R.id.menu_home:
+			if (getClass() != IntroActivity.class){
+				IntroActivity.start(this);
+			}
+			break;
+		case R.id.menu_map:
+			MapActivity.start(this);
+			break;
+		case R.id.menu_scan:
+			Common.startScan(this);
+			break;
+		case R.id.menu_camera:
+			Common.startCamera(this);
+			break;
+		case R.id.menu_next:
+			Exhibit next = ContentManager.getExhibitList().getNext();
+
+			if(next != null){
+				ContentManager.getExhibitList().setCurrent(next, Exhibit.TAG_AUTO);
+				ExhibitActivity.start(this);
+			}else{
+				if (getClass() != ExhibitActivity.class){
+					ExhibitActivity.start(this);
+				}
+			}
+			break;
+		case R.id.menu_previous:
+			Exhibit prev = ContentManager.getExhibitList().getPrevious();
+
+			if(prev != null){
+				ContentManager.getExhibitList().setCurrent(prev, Exhibit.TAG_AUTO);
+				ExhibitActivity.start(this);
+			}else{
+				if (getClass() != ExhibitActivity.class){
+					ExhibitActivity.start(this);
+				}
+			}
+			break;
+		}
 		return true;
 	}
 
@@ -90,7 +143,18 @@ public abstract class WireActivity extends Activity{
 	 */	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent){
-		Common.processActivityResult(this, requestCode, resultCode, intent);
+		if (resultCode == Activity.RESULT_OK){
+			if (requestCode == loadInt(R.integer.CODE_SCAN_ACTIVITY_REQUEST)) {
+				String contents = intent.getStringExtra(loadString(R.string.intent_scan_extra_result));
+				String format = intent.getStringExtra(loadString(R.string.intent_scan_extra_result_format));
+				if (format.equals(loadString(R.string.intent_result_qr))){
+					Common.processBarcodeContents(this, contents);
+				}
+			}else if (requestCode == loadInt(R.integer.CODE_SCAN_2_ACTIVITY_REQUEST)){
+				String contents = intent.getStringExtra(loadString(R.string.intent_scan_2_extra_result));
+				Common.processBarcodeContents(this, contents);
+			}
+		}
 	}
 
 	public String loadString(int resId){

@@ -282,16 +282,7 @@ public class IntroActivity extends WireActivity{
 				if (true == oldUrl.equals(url)){
 					return null;
 				}
-				//update_201204041839
-				SimpleDateFormat fmt = new SimpleDateFormat();
-				fmt.applyPattern("yyyyMMddHHmm");
-				
-				Date time;
-				try {
-					time= fmt.parse(url.substring(url.length()-16, url.length()-4));
-				} catch (ParseException e) {
-					time = null;
-				}
+				Date time = Common.getUpdateTime(url);
 				
 				if (time.getTime() < getBuildTime()){
 					Log.d(this.getClass().getName(), "The current update file is older than the application.");

@@ -4,8 +4,7 @@
     <org.wildlifeimages.android.wildlifeimages.ExhibitView
         android:id="@+id/photos_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/white" >
+        android:layout_height="fill_parent" >
     </org.wildlifeimages.android.wildlifeimages.ExhibitView>
 
 </merge>
