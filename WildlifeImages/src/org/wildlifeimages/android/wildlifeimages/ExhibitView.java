@@ -1,6 +1,8 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,9 +26,21 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 
 	public ExhibitView(final Context context, AttributeSet attrs) {
 		super(context, attrs);
-		htmlView = new WebView(context, attrs);
+		htmlView = new WebView(context, attrs){			
+			@Override
+			public void loadUrl(String url){
+				super.loadUrl(url);
+				this.setBackgroundResource(android.R.color.background_light);
+			}
+			@Override
+			public void loadData(String data, String mimeType, String encoding){
+				super.loadData(data, mimeType, encoding);
+				this.setBackgroundResource(android.R.color.background_light);
+			}
+		};
 		htmlView.setVisibility(View.VISIBLE);
-
+		htmlView.setBackgroundColor(Color.TRANSPARENT);
+		
 		htmlView.getSettings().setJavaScriptEnabled(true);
 		htmlView.getSettings().setPluginsEnabled(true);
 		htmlView.getSettings().setSupportZoom(true);
@@ -50,6 +64,8 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		paramsRight.width = FrameLayout.LayoutParams.WRAP_CONTENT;
 		paramsRight.height = FrameLayout.LayoutParams.WRAP_CONTENT;
 
+		this.setBackgroundColor(Color.TRANSPARENT);
+		
 		this.addView(htmlView);
 		this.addView(picView);
 	}
