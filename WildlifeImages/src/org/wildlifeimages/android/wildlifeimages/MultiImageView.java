@@ -65,6 +65,9 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 		this.setScaleType(ScaleType.MATRIX);
 	}
 
+	private static final int arrowSize = 30;
+	private static final int arrowPad = 5;
+	
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh){
 		super.onSizeChanged(w, h, oldw, oldh);
@@ -74,8 +77,9 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 			setCaption();
 		}
 		
-		float[] tempRight = {getWidth()-5, getHeight()/2.0f, getWidth()-55, getHeight()/2.0f-30, getWidth()-55, getHeight()/2.0f+30};
-		float[] tempLeft = {5, getHeight()/2.0f, 55, getHeight()/2.0f-30, 55, getHeight()/2.0f+30};
+		
+		float[] tempRight = {getWidth()-arrowPad, getHeight()/2.0f, getWidth()- arrowPad - arrowSize, getHeight()/2.0f-(arrowSize/2), getWidth()- arrowPad - arrowSize, getHeight()/2.0f+(arrowSize/2)};
+		float[] tempLeft = {arrowPad, getHeight()/2.0f, arrowPad+arrowSize, getHeight()/2.0f-(arrowSize/2), arrowPad+arrowSize, getHeight()/2.0f+(arrowSize/2)};
 		rightArrow = tempRight;
 		leftArrow = tempLeft;
 	}
@@ -156,6 +160,11 @@ public class MultiImageView extends ImageView implements GestureDetector.OnGestu
 			currentBitmapIndex--;
 			setImageBitmap(getBitmap(photoList[currentBitmapIndex].shortUrl));
 		}
+	}
+	
+	public void setCurrentPhotoIndex(int index){
+		currentBitmapIndex = Math.max(0, Math.min(photoList.length, index));
+		setImageBitmap(getBitmap(photoList[currentBitmapIndex].shortUrl));
 	}
 
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,

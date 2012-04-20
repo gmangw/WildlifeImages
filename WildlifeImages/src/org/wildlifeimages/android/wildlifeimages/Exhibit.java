@@ -58,15 +58,6 @@ public class Exhibit{
 			return c;
 		}
 	}
-
-	public boolean hasContent(String contentTag) {
-		String c = contents.get(contentTag);
-		if (c == null){
-			return false;
-		} else {
-			return true;
-		}
-	}
 	
 	public void setContent(String contentTag, String content) {
 		if (content == null){

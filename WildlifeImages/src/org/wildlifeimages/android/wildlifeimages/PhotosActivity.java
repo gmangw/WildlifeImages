@@ -1,5 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,12 +17,12 @@ public class PhotosActivity extends WireActivity {
 			((ExhibitView) findViewById(R.id.photos_view)).loadHtmlUrl(loadString(R.string.intro_url_events));
 			showingEvents = true;
 		}else{
-			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
+			/*String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
 			ExhibitPhoto[] introPhotos = new ExhibitPhoto[introPhotoList.length];
 			for (int i=0; i<introPhotos.length; i++){
 				introPhotos[i] = new ExhibitPhoto(introPhotoList[i], null);
-			}
-			((ExhibitView) findViewById(R.id.photos_view)).loadPhotoList(introPhotos);
+			}*/
+			
 			showingEvents = false;
 		}
 	}
@@ -31,12 +33,20 @@ public class PhotosActivity extends WireActivity {
 
 		ExhibitView exView = (ExhibitView) findViewById(R.id.photos_view);
 		if (showingEvents == false){
-			String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
+			/*String[] introPhotoList = getResources().getStringArray(R.array.intro_image_list);
 			ExhibitPhoto[] introPhotos = new ExhibitPhoto[introPhotoList.length];
 			for (int i=0; i<introPhotos.length; i++){
 				introPhotos[i] = new ExhibitPhoto(introPhotoList[i], null);
 			}
-			exView.loadPhotoList(introPhotos);
+			exView.loadPhotoList(introPhotos);*/
+			ArrayList<ExhibitPhoto> list = new ArrayList<ExhibitPhoto>();
+			for (int i=0; i<ContentManager.getExhibitList().getCount(); i++){
+				for (ExhibitPhoto p : ContentManager.getExhibitList().getExhibitAt(i).getPhotos()){
+					list.add(p);
+				}
+			}
+			ContentManager.getBitmap(list.get(0).shortUrl, getAssets());
+			exView.loadPhotoList(list.toArray(new ExhibitPhoto[0]));
 		}
 	}
 

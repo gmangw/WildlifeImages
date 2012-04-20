@@ -1,7 +1,5 @@
 package org.wildlifeimages.android.wildlifeimages;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
@@ -39,8 +37,6 @@ public class IntroActivity extends WireActivity{
 
 	private static final int NETWORK_ERROR = 1;
 
-	//private int activeHomeId = R.id.intro_sidebar_intro;
-
 	/**
 	 * Invoked when the Activity is created.
 	 * 
@@ -51,10 +47,12 @@ public class IntroActivity extends WireActivity{
 	protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);		
 		getWindow().setFormat(PixelFormat.RGBA_8888);
+		setContentView(R.layout.splash_layout);
 		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
-			showIntro();
+			
 			if (isTaskRoot()){
+				LoadingActivity.start(this);
 				new UpdateChecker().execute(this);
 				new SVGLoader().execute(getResources());
 			}
@@ -64,24 +62,12 @@ public class IntroActivity extends WireActivity{
 	}
 
 	/**
-	 * Loads the page at intro_url_about.
-	 */
-	private void showIntro() {
-		setContentView(R.layout.splash_layout);
-
-		//ExhibitView mExhibitView;
-		//mExhibitView = (ExhibitView) findViewById(R.id.intro);
-		//mExhibitView.loadUrl(loadString(R.string.intro_url_about), ContentManager.getSelf());
-	}
-
-	/**
 	 * Shows the intro and loads the proper sidebar.
 	 * 
 	 * * @param savedState a Bundle containing state saved from a previous execution.
 	 */
 	private void restoreState(Bundle savedState){
 		//activeHomeId = savedState.getInt(loadString(R.string.save_current_home_id));
-		showIntro();
 
 		Button b = (Button)findViewById(R.id.update_status);
 		if (savedState.getBoolean("UpdateStatus") == true){
@@ -244,7 +230,7 @@ public class IntroActivity extends WireActivity{
 	 */
 	public static void start(Activity context) {
 		Intent introIntent = new Intent(context, IntroActivity.class);
-		context.startActivityIfNeeded(introIntent, 0);
+		context.startActivity(introIntent);
 	}
 	
 	private class SVGLoader extends AsyncTask<Resources, Integer, Integer>{
@@ -252,16 +238,19 @@ public class IntroActivity extends WireActivity{
 		protected void onPreExecute(){
 			//showDialog(LOADING_DIALOG);
 		}
-		
 		@Override
-		protected Integer doInBackground(Resources... arg0) {
-			ContentManager.getSVG(arg0[0]);
+		protected void onProgressUpdate(Integer... progress){
+			//dismissDialog(LOADING_DIALOG);
+		}
+		@Override
+		protected Integer doInBackground(Resources... resources) {
+			//ContentManager.cacheThumbs(resources[0].getAssets());
+			//publishProgress(0);
+			ContentManager.getSVG(resources[0]);
 			return null;
 		}
-		
 		@Override
 		protected void onPostExecute(Integer result){
-			//dismissDialog(LOADING_DIALOG);
 		}
 	}
 

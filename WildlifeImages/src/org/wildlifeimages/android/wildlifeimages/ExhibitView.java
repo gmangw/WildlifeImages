@@ -1,7 +1,6 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -47,7 +46,7 @@ public class ExhibitView extends FrameLayout implements DownloadListener{
 		htmlView.getSettings().setBuiltInZoomControls(false);
 		htmlView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.CLOSE);
 		htmlView.getSettings().setDefaultFontSize(getResources().getInteger(R.integer.content_text_size));
-
+		
 		htmlView.setDownloadListener(this);
 
 		picView = new MultiImageView(context, attrs);

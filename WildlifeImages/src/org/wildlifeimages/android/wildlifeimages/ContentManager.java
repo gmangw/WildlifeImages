@@ -49,15 +49,15 @@ public class ContentManager {
 
 	private static File filesDir = null;
 	private static BitmapCache imgCache = null;
-	
+
 	private static boolean timeKeeperEnabled = true;
 
 	private static int accessTime = 0;
 
 	private static LinkedHashMapRestricted<String, Integer> timekeeper = null;
-	
+
 	private static SVG svg = null;
-	
+
 	/**
 	 * Constructor that builds our content manager.
 	 * 
@@ -71,13 +71,13 @@ public class ContentManager {
 		timeKeeperEnabled = true;
 		accessTime = 0;
 		timekeeper = new LinkedHashMapRestricted<String, Integer>();
-		
+
 		filesDir = files;
 		addAllToMap(filesDir);
 
 		prepareExhibits(resources);
 	}
-	
+
 	public static boolean isInitialized(){
 		return (filesDir != null);
 	}
@@ -88,7 +88,7 @@ public class ContentManager {
 		}
 		return svg;
 	}
-	
+
 	/**
 	 * Create the exhibit list and cache the thumbs.
 	 * 
@@ -104,23 +104,6 @@ public class ContentManager {
 			Log.e(ContentManager.class.getName(), "IOException: " + e.getMessage());
 		}
 		svg = null;
-		cacheThumbs(resources.getAssets());
-	}
-
-	/**
-	 * Will go through the exhibit list and get the bitmap for each thumb, then cache it.
-	 * 
-	 * @param assets all the stuff in the assets folder that we need.
-	 * 
-	 */
-	private static void cacheThumbs(AssetManager assets){
-		for(int i=0; i<exhibitList.getCount(); i++){
-			Exhibit entry = exhibitList.getExhibitAt(i);
-			if (entry.hasContent("Photos")){
-				String[] photos = entry.getContent("Photos").split(",");
-				getBitmapThumb(photos[0], assets);
-			}
-		}
 	}
 
 	/**
@@ -153,7 +136,7 @@ public class ContentManager {
 			return "file:///android_asset/" + shortUrl;
 		}
 	}
-	
+
 	public static void setTimeKeeperEnabled(boolean enabled){
 		timeKeeperEnabled = enabled;
 	}
@@ -163,7 +146,7 @@ public class ContentManager {
 			timekeeper.put(shortUrl, accessTime++);
 		}
 	}
-	
+
 	/**
 	 * Will get the input stream from the shortURL, useful for images.
 	 * Used for streaming data.
@@ -249,7 +232,9 @@ public class ContentManager {
 	 * 
 	 */
 	public static Bitmap getBitmapThumb(String shortUrl, AssetManager assets){
-		populateBitmapThumb(shortUrl, assets);
+		if (false == imgCache.containsThumb(shortUrl)){
+			populateBitmapThumb(shortUrl, assets);
+		}
 		return imgCache.getThumb(shortUrl);
 	}
 
@@ -277,13 +262,10 @@ public class ContentManager {
 	 * @param assets all the stuff in the assets folder that we need.
 	 * 
 	 */
-	private static void populateBitmapThumb(String shortUrl, AssetManager assets){
-		if (imgCache.containsThumb(shortUrl)){
-		}else{
-			Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
-			if (bmp != null){
-				imgCache.putThumb(shortUrl, bmp);
-			}
+	private static synchronized void populateBitmapThumb(String shortUrl, AssetManager assets){
+		Bitmap bmp = BitmapFactory.decodeStream(streamAssetOrFile(shortUrl, assets));
+		if (bmp != null){
+			imgCache.putThumb(shortUrl, bmp);
 		}
 	}
 
@@ -364,7 +346,7 @@ public class ContentManager {
 				}
 				File f2 = new File(filesDir, ze.getName() + ".part");
 				String outputFilename2 = filesDir.getAbsolutePath() + "/" + ze.getName();
-				
+
 				Log.d(ContentManager.class.getName(), "Unzipping " + ze.getName() + " to " + f2.getPath());
 				try{
 					Common.mkdirForFile(f2);
@@ -432,7 +414,7 @@ public class ContentManager {
 		timekeeper = null;
 		cachedFiles = null;
 		exhibitList = null;
-		
+
 		imgCache.clear();
 		imgCache = null;
 	}
