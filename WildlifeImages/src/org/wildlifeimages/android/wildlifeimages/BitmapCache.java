@@ -99,13 +99,11 @@ public class BitmapCache {
 		float aspect = 1.0f * width / height;
 
 		if (aspect < 1.0f){
-			int newHeight = (int)(SIZE/aspect);
-			thumb = Bitmap.createScaledBitmap(bmp, SIZE, newHeight, true);
-			thumb = Bitmap.createBitmap(thumb, 0, 0, SIZE, SIZE);
+			thumb = Bitmap.createBitmap(bmp, 0, 0, width, width);
+			thumb = Bitmap.createScaledBitmap(thumb, SIZE, SIZE, true);
 		}else{
-			int newWidth = (int)(SIZE*aspect);
-			thumb = Bitmap.createScaledBitmap(bmp, newWidth, SIZE, true);
-			thumb = Bitmap.createBitmap(thumb, (newWidth - SIZE)/2, 0, SIZE, SIZE);
+			thumb = Bitmap.createBitmap(bmp, (width - height)/2, 0, height, height);
+			thumb = Bitmap.createScaledBitmap(thumb, SIZE, SIZE, true);
 		}
 		cachedThumbs.put(shortUrl, thumb);
 	}

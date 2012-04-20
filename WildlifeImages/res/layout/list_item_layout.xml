@@ -11,8 +11,6 @@
         android:layout_height="fill_parent"
         android:layout_margin="0dp"
         android:adjustViewBounds="true"
-        android:minHeight="64dp"
-        android:minWidth="64dp"
         android:src="@drawable/list_menu_02" />
 
     <TextView

@@ -3,8 +3,11 @@ package org.wildlifeimages.android.wildlifeimages;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.ClipDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.ProgressBar;
 
 public class LoadingActivity extends WireActivity{
@@ -14,8 +17,11 @@ public class LoadingActivity extends WireActivity{
 	@Override
 	public void onCreate(Bundle inState){
 		super.onCreate(inState);
-
+		getWindow().setFormat(PixelFormat.RGBA_8888);
 		setContentView(R.layout.loading_layout);
+		//ClipDrawable cd = new ClipDrawable(getResources().getDrawable(R.drawable.button_2), Gravity.LEFT, ClipDrawable.HORIZONTAL);
+		//ProgressBar progress = (ProgressBar)findViewById(R.id.loading_progress);
+		//progress.setProgressDrawable(cd);
 	}
 
 	protected void onStart(){
