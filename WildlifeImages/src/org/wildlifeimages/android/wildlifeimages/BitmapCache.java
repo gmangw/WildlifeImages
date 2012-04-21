@@ -41,7 +41,6 @@ public class BitmapCache {
 	 * 
 	 */
 	public Bitmap getBitmap(String shortUrl) {
-		Log.i(this.getClass().getName(), "Retrieved cached bitmap " + shortUrl);
 		return cachedBitmaps.get(shortUrl);
 	}
 
@@ -121,7 +120,7 @@ public class BitmapCache {
 		if (sizeObserver.size() > CACHE_MAX){
 			removeBitmap(sizeObserver.getFirst()); //TODO LinkedHashMap instead?
 		}
-		Log.w(this.getClass().getName(), "Bitmap cache using " + sizeObserver.size() + "/" + CACHE_MAX);
+		Log.d(this.getClass().getName(), "Bitmap cache using " + sizeObserver.size() + "/" + CACHE_MAX);
 	}
 
 	/**

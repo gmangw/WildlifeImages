@@ -50,11 +50,17 @@ public class IntroActivity extends WireActivity{
 		setContentView(R.layout.splash_layout);
 		
 		if (savedState == null) { /* Start from scratch if there is no previous state */
-			
 			if (isTaskRoot()){
 				LoadingActivity.start(this);
 				new UpdateChecker().execute(this);
 				new SVGLoader().execute(getResources());
+				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
+				long time = getBuildTime();
+				if (preferences.getLong(loadString(R.string.update_preferences_key_build), 0) < time){
+					ContentManager.clearCache();
+					Log.d(this.getClass().getName(), "Clearing cache files from a previous application version.");
+				}
+				preferences.edit().putLong(loadString(R.string.update_preferences_key_build), time);
 			}
 		} else { /* Use saved state info if app just restarted */
 			restoreState(savedState);
@@ -274,7 +280,7 @@ public class IntroActivity extends WireActivity{
 				Date time = Common.getUpdateTime(url);
 				
 				if (time.getTime() < getBuildTime()){
-					Log.d(this.getClass().getName(), "The current update file is older than the application.");
+					Log.d(this.getClass().getName(), "The available update file is older than the application.");
 					return null;
 				}
 
