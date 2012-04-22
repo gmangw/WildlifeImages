@@ -14,6 +14,8 @@ import java.util.zip.ZipInputStream;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import org.wildlifeimages.android.wildlifeimages.Parser;
+import org.wildlifeimages.android.wildlifeimages.Parser.Event;
 import org.wildlifeimages.tools.update.ExhibitLoader;
 import org.wildlifeimages.tools.update.PackageLoader;
 import org.xmlpull.v1.XmlPullParser;
@@ -22,7 +24,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 public class APKLoader implements PackageLoader{
 	private static final String EXHIBITSFILENAME = "exhibits.xml";
-
+	private static final String EVENTSFILENAME = "events.xml";
 	private static final String ASSETPATH = "assets/";
 
 	private File apkFile = null;
@@ -150,5 +152,20 @@ public class APKLoader implements PackageLoader{
 			throw new IOException("Error: Could not load " + filename);
 		}
 		return stream;
+	}
+	
+	public Event[] loadEvents(){
+		try{
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+			XmlPullParser xmlBox = factory.newPullParser();
+			InputStream istr = getFileInputStream(ASSETPATH+EVENTSFILENAME);
+			BufferedReader in = new BufferedReader(new InputStreamReader(istr), 1024);
+			xmlBox.setInput(in);
+			return Parser.parseEvents(xmlBox);
+		}catch(XmlPullParserException e){
+			return new Event[0];
+		}catch(IOException e){
+			return new Event[0];
+		}
 	}
 }

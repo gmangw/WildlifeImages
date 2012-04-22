@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <events_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../EventsSchema.xsd">
-	<event title="“Estate Planning 101” Estate Planning Workshops">
-		<date>2012-03-06</date>
+	<event title="'Estate Planning 101' Estate Planning Workshops">
+		<startdate>2012-03-06</startdate>
+		<enddate>2012-03-06</enddate>
 		<description>A FREE workshop on basic estate planning principles (to include charitable giving) and how to have an estate plan that works. Workshop will be held in the Evergreen Room at Taprock NW Bar and Grill in Grants Pass. Participants will receive a free tour ticket of Wildlife Images. Light appetizer and refreshments provided.</description>
 	</event>
-	<event title="“Color Eggs for the Critters” an Eggs-Travaganza!">
-		<date>2012-03-31</date>
+	<event title="'Color Eggs for the Critters' an Eggs-Travaganza!">
+		<startdate>2012-03-31</startdate>
+		<enddate>2012-03-31</enddate>
 		<description>Children from 2 to 15 can come and help our animal care staff color eggs for the critters. Animal Keepers will place the colored eggs throughout the habitats during the following Easter weekend so that the animals have to forage for their food, and of course crack open the colorful shells. The animals love it! Free Event!</description>
 	</event>
 </events_list>

@@ -8,6 +8,7 @@
         android:id="@+id/event_item_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:gravity="center" >
     </TextView>
 

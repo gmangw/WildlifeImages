@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.batik.swing.JSVGCanvas;
+import org.wildlifeimages.android.wildlifeimages.Parser.Event;
 
 public class ZipManager extends JFrame implements ManagerInterface, WindowListener{
 
@@ -332,5 +333,10 @@ public class ZipManager extends JFrame implements ManagerInterface, WindowListen
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
+	}
+
+	@Override
+	public Event[] loadEvents() {
+		return packageLoader.loadEvents();
 	}
 }

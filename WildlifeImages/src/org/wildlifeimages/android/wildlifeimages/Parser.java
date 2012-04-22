@@ -207,7 +207,7 @@ public class Parser {
 		public void addExhibit(String name, int xCoord, int yCoord, String next, String previous, ExhibitDataHolder data);
 	}
 
-	static Event[] parseEvents(XmlPullParser xmlBox)throws IOException, XmlPullParserException{
+	public static Event[] parseEvents(XmlPullParser xmlBox)throws IOException, XmlPullParserException{
 		int eventType;
 		ArrayList<Event> eventList = new ArrayList<Event>();
 		
@@ -226,7 +226,7 @@ public class Parser {
 		return eventList.toArray(new Event[0]);
 	}
 
-	static class Event {
+	public static class Event {
 		private Date startDay = new Date(0);
 		private Date endDay = new Date(0);
 		private String title = "";
@@ -288,10 +288,14 @@ public class Parser {
 		eventType = xmlBox.getEventType();
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
-				if (xmlBox.getName().equalsIgnoreCase("date")){
+				if (xmlBox.getName().equalsIgnoreCase("startdate")){
 					eventType = xmlBox.next();
 					String date = xmlBox.getText();
 					e.setStartDay(date);
+				}else if (xmlBox.getName().equalsIgnoreCase("enddate")){
+					eventType = xmlBox.next();
+					String date = xmlBox.getText();
+					e.setEndDay(date);
 				}else if (xmlBox.getName().equalsIgnoreCase("description")){
 					eventType = xmlBox.next();
 					String description = xmlBox.getText();

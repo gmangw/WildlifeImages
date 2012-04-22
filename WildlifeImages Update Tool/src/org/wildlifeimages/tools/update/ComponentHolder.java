@@ -45,6 +45,7 @@ import javax.swing.text.html.StyleSheet;
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.wildlifeimages.android.wildlifeimages.ExhibitPhoto;
+import org.wildlifeimages.android.wildlifeimages.Parser.Event;
 
 public class ComponentHolder implements ChangeListener{
 	private final JButton newTagButton = new JButton("Add Page");
@@ -73,6 +74,7 @@ public class ComponentHolder implements ChangeListener{
 	private final JList groupExhibitsList = new JList();
 	private final JList exhibitAliasesList = new JList();
 	private final JList originalFilesList = new JList();
+	private final JList eventsList = new JList();
 
 	private final JPanel contentPanel = new JPanel(new GridLayout(1,2,2,2));
 	private final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -118,6 +120,7 @@ public class ComponentHolder implements ChangeListener{
 	private final GroupListModel groupListModel;
 	private final GroupExhibitsModel groupExhibitsModel;
 	private final ExhibitAliasesModel exhibitAliasesModel;
+	private final EventsListModel eventsListModel;
 
 	final JTabbedPane tabbedPane = new JTabbedPane();
 	private final JTabbedPane exhibitTabs = new JTabbedPane();
@@ -149,6 +152,7 @@ public class ComponentHolder implements ChangeListener{
 		groupListModel = new GroupListModel();
 		groupExhibitsModel = new GroupExhibitsModel();
 		exhibitAliasesModel = new ExhibitAliasesModel();
+		eventsListModel = new EventsListModel();
 	}
 
 	public void init(){		
@@ -191,6 +195,15 @@ public class ComponentHolder implements ChangeListener{
 			}
 		});
 
+		eventsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		eventsList.setModel(eventsListModel);
+		eventsList.addListSelectionListener(new ListSelectionListener(){
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				//TODO
+			}
+		});
+		
 		exhibitNextDropdown.setModel(new ExhibitDropdownModel());
 		exhibitPreviousDropdown.setModel(new ExhibitDropdownModel());
 
@@ -530,6 +543,7 @@ public class ComponentHolder implements ChangeListener{
 		tabbedPane.addTab("Groups", groupPanel);
 		tabbedPane.addTab("Map", mapPanel);
 		tabbedPane.addTab("Files", filePanel);
+		tabbedPane.addTab("Events", new JScrollPane(eventsList));
 	}
 
 	void addImage(){
@@ -912,6 +926,23 @@ public class ComponentHolder implements ChangeListener{
 		@Override
 		public int getSize() {
 			return getCurrentExhibit().getAliases().length;
+		}
+	}
+	
+	class EventsListModel extends BasicListModel{
+		Event[] events;
+		public EventsListModel(){
+			events = peer.loadEvents();
+		}
+		
+		@Override
+		public Object getElementAt(int index) {
+			return events[index].getTitle();
+		}
+		
+		@Override
+		public int getSize() {
+			return events.length;
 		}
 	}
 
