@@ -22,8 +22,6 @@ public class ExhibitList implements Parser.ExhibitInterface{
 
 	private LinkedHashMapRestricted<String, ExhibitGroup> groupList = new LinkedHashMapRestricted<String, ExhibitGroup>();
 
-	private LinkedHashMapRestricted<String, String> aliasTags = new LinkedHashMapRestricted<String, String>();
-	
 	private Exhibit current = null;
 	
 	public void addGroup(String groupName, String[] data, int x, int y){

@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 
-public class LoadingActivity extends WireActivity{
+public class LoadingActivity extends Activity{
 
 	private ThumbLoader thumbLoad = null;
 
