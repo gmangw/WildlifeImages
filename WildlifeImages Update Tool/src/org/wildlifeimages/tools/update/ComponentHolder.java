@@ -721,10 +721,9 @@ public class ComponentHolder implements ChangeListener{
 
 	void viewFile(){
 		String filename = peer.getOriginalFiles()[originalFilesList.getSelectedIndex()];
-		String name = filename.substring(0, filename.lastIndexOf('.'));
 		String ext = filename.substring(filename.lastIndexOf('.')+1);
 		try{
-			File f = new File(new Random().nextInt() + "." + ext);
+			File f = new File(".tmp" + new Random().nextInt() + "." + ext);
 			OutputStream outStream = new FileOutputStream(f);
 			InputStream stream = peer.getFileInputStream("assets/" + filename);
 			for (int result = stream.read(); result != -1; result = stream.read()){

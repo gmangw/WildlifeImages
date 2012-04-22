@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +33,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.batik.swing.JSVGCanvas;
 
-public class ZipManager extends JFrame implements ManagerInterface{
+public class ZipManager extends JFrame implements ManagerInterface, WindowListener{
 
 	private static final long serialVersionUID = 1L;
 
@@ -122,7 +123,7 @@ public class ZipManager extends JFrame implements ManagerInterface{
 		});
 		menu.add(menuItem);
 		this.setJMenuBar(menuBar);
-		
+		this.addWindowListener(this);
 		this.setVisible(true);
 	}
 
@@ -297,5 +298,39 @@ public class ZipManager extends JFrame implements ManagerInterface{
 				}
 			}
 		}
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		File f = new File("./");
+		for (File tmp : f.listFiles()){
+			if (tmp.getName().startsWith(".tmp")){
+				tmp.delete();
+			}
+		}
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
 	}
 }

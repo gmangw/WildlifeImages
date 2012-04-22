@@ -53,6 +53,7 @@
     <string name="list_menu_facilities">Facilities</string>
     <string name="list_menu_facilities_group">Facilities</string>
     <string name="loading_dialog_message">Loading exhibit data…</string>
+    <string name="events_layout_text" >Events at Wildlife Images</string>
         
     <string-array name="intro_image_list">
         <item>shoshoni.jpg</item>

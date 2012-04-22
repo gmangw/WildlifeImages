@@ -59,6 +59,11 @@ public class LoadingActivity extends Activity{
 	}
 
 	@Override
+	public void onBackPressed(){
+		/* Take no action */
+	}
+	
+	@Override
 	protected void onPause() {
 		super.onPause();
 		if (thumbLoad != null){

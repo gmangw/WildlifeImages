@@ -8,15 +8,28 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Events at Wildlife Images"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/update_text_size" />
+        android:padding="2dp"
+        android:text="@string/events_layout_text"
+        android:textSize="20dp" />
 
     <Gallery
         android:id="@+id/events_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:paddingBottom="5dp"
+        android:spacing="10dp"
+        android:unselectedAlpha="0.5" >
     </Gallery>
+
+    <SeekBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/events_seekbar"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:maxHeight="8dp"
+        android:thumb="@drawable/wildlifeimages_logo" />
 
 </LinearLayout>

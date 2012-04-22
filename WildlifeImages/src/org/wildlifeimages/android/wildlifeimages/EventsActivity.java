@@ -6,11 +6,18 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
@@ -20,9 +27,9 @@ public class EventsActivity extends WireActivity{
 		super.onCreate(bundle);
 
 		setContentView(R.layout.events_layout);
-		Gallery gallery = (Gallery)findViewById(R.id.events_view);
-		gallery.setSpacing(0);
-		gallery.setAdapter(new EventAdapter());
+		final Gallery gallery = (Gallery)findViewById(R.id.events_view);
+		EventAdapter adapter = new EventAdapter();
+		gallery.setAdapter(adapter);
 
 		if (bundle == null){
 			new AsyncTask<Integer, Integer, Integer>(){
@@ -49,18 +56,40 @@ public class EventsActivity extends WireActivity{
 			}.execute(0);
 			gallery.setSelection(0);
 		}
+		
+		final SeekBar seekBar = (SeekBar)findViewById(R.id.events_seekbar);
+		gallery.setOnItemSelectedListener(new OnItemSelectedListener(){
+			public void onItemSelected(AdapterView<?> adapterView, View view, int index, long arg3) {
+				seekBar.setProgress(index);
+			}
+			public void onNothingSelected(AdapterView<?> arg0) {
+				seekBar.setProgress(0);
+			}
+		});
 
+
+		seekBar.setMax(gallery.getCount()-1);
+		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				gallery.setSelection(progress);
+			}
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+		});
 	}
 
 	public static void start(Activity context) {
 		Intent eventsIntent = new Intent(context, EventsActivity.class);
 		context.startActivity(eventsIntent);
 	}
-	
+
 	private class EventAdapter implements SpinnerAdapter{
 		public EventAdapter(){
 		}
-		
+
 		public int getCount() {
 			return 10;
 		}
@@ -78,13 +107,15 @@ public class EventsActivity extends WireActivity{
 				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(R.layout.event_item_layout, null);
 			}
-			convertView.setLayoutParams(new Gallery.LayoutParams(300, 300));
+			//Gallery gallery = (Gallery)findViewById(R.id.events_view);
+			int width = 4*getWindowManager().getDefaultDisplay().getWidth()/5;
+			convertView.setLayoutParams(new Gallery.LayoutParams(width, LayoutParams.FILL_PARENT));
 			TextView itemLabel = (TextView) convertView.findViewById(R.id.event_item_name);
 			itemLabel.setText("Item " + position);
 			itemLabel = (TextView) convertView.findViewById(R.id.event_item_description);
 			itemLabel.setText("Item " + position + " is a large item with lots of event text. blah blah blah. So much text that it runs onto multiple lines, showing off ellipsizing.");
 
-			convertView.setBackgroundResource(R.drawable.android_button);
+			convertView.setBackgroundResource(R.drawable.event_border);
 
 			return convertView;
 		}
