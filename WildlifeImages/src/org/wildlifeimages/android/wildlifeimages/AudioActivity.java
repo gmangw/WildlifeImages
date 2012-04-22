@@ -108,7 +108,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	/**
 	 * This will play the audio file.
 	 * 
-	 * @param shortUrl that is a short Url to the AV file.
+	 * @param shortUrl that is a short URL to the AV file.
 	 * @param contentManager that keeps track of state, cached items, and open connections.
 	 * @param assets that lets us know where the items in the assets folder are.
 	 * 
@@ -175,7 +175,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 	//Override comment sufficient.
 	@Override
 	public void onBackPressed(){
-		/* Calls mediaStop to stop the media ad return to the previos page. */
+		/* Calls mediaStop to stop the media ad return to the previous page. */
 		mediaStop(null);
 	}
 
@@ -270,7 +270,7 @@ public class AudioActivity extends WireActivity implements OnCompletionListener{
 		 * Will seek to the selected location in the audio.
 		 * 
 		 * @param seekBar a SeekBar that allows the user to select a specific location in the audio.
-		 * @param progress an int showig the amount of progress of the track.
+		 * @param progress an int showing the amount of progress of the track.
 		 * @param fromUser whether the user actually changed track position or if the program did.
 		 * 
 		 */
