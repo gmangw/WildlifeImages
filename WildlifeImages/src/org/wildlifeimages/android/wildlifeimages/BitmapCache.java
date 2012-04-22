@@ -138,10 +138,21 @@ public class BitmapCache {
 		
 	}
 	
+	/**
+	 * This will remove the smaller thumb bitmap from memory.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * 
+	 */
 	public void removeThumb(String shortUrl){
 		cachedThumbs.remove(shortUrl);
 	}
 	
+	/**
+	 * This will mark the cached bitmaps and thumbs to be marked for recycling.
+	 *   so they can be cleaned up by the garbage collector.
+	 *   
+	 */
 	public void clear(){
 		for (Bitmap b : cachedBitmaps.values()){
 			b.recycle();

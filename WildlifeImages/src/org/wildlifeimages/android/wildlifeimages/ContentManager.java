@@ -137,10 +137,24 @@ public class ContentManager {
 		}
 	}
 
+	/**
+	 * This function will set the timekeeper enabled value to the boolean value passed in.
+	 * 
+	 * @param enabled a boolean value that the variable timeKeeperEnabled will be set to.
+	 * 
+	 */
 	public static void setTimeKeeperEnabled(boolean enabled){
 		timeKeeperEnabled = enabled;
 	}
 
+	/**
+	 * This function will set the time for the the current shortUrl.
+	 * Used for the timekeeper, which tells when things were most recently accessed, so used
+	 * when you come back to say a photo screen and want to know what photo to display.
+	 * 
+	 * @param shortUrl a shortened URL from the assets directory.
+	 * 
+	 */
 	private static void putTime(String shortUrl){
 		if (timeKeeperEnabled == true){
 			timekeeper.put(shortUrl, accessTime++);
@@ -409,6 +423,11 @@ public class ContentManager {
 		return new ExhibitList(xmlBox);
 	}
 
+	/**
+	 * This will be called at the end and will set the variables used to null.
+	 * It will also clear and null the image cache.
+	 * 
+	 */
 	public static void finish() {
 		filesDir = null;
 		timekeeper = null;
