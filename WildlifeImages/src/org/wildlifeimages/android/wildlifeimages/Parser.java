@@ -51,9 +51,14 @@ public class Parser {
 				yAlias = Integer.decode(tmp);
 			}
 			String aliasName = xmlBox.getAttributeValue(null, "name");
+			String aliasTag = xmlBox.getAttributeValue(null, "tag");
+			if (aliasTag == null){
+				aliasTag = Exhibit.TAG_AUTO;
+			}
 			e.aliasList.add(aliasName);
 			e.aliasXList.add(xAlias);
 			e.aliasYList.add(yAlias);
+			e.aliasTagList.add(aliasTag);
 		}
 	}
 
@@ -189,6 +194,7 @@ public class Parser {
 		public ArrayList<String> aliasList = new ArrayList<String>();
 		public ArrayList<Integer> aliasXList = new ArrayList<Integer>();
 		public ArrayList<Integer> aliasYList = new ArrayList<Integer>();
+		public ArrayList<String> aliasTagList = new ArrayList<String>();
 	}
 
 	public interface ExhibitInterface {

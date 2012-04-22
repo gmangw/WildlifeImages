@@ -13,7 +13,7 @@ import java.util.LinkedHashSet;
  */
 public class Exhibit{
 
-	public static final String TAG_AUTO = "_auto";
+	public static final String TAG_AUTO = "_";
 	public static final String TAG_PHOTOS = "Photos";
 
 	private String name;
@@ -129,14 +129,14 @@ public class Exhibit{
 		return name.hashCode();
 	}
 
-	public void addAlias(String aliasName, int xPos, int yPos) {
+	public void addAlias(String aliasName, int xPos, int yPos, String tag) {
 		for (int i=0; i<aliasList.size(); i++){
 			if (aliasList.get(i).name.equals(aliasName)){
-				aliasList.set(i, new Alias(aliasName, xPos, yPos));
+				aliasList.set(i, new Alias(aliasName, xPos, yPos, tag));
 				return;
 			}
 		}
-		aliasList.add(new Alias(aliasName, xPos, yPos));
+		aliasList.add(new Alias(aliasName, xPos, yPos, tag));
 	}
 
 	public Alias[] getAliases(){
@@ -147,11 +147,13 @@ public class Exhibit{
 		public final String name;
 		public final int xPos;
 		public final int yPos;
+		public final String tag;
 
-		public Alias(String aliasName, int aliasX, int aliasY){
+		public Alias(String aliasName, int aliasX, int aliasY, String exhibitTag){
 			name = aliasName;
 			xPos = aliasX;
 			yPos = aliasY;
+			tag = exhibitTag;
 		}
 	}
 

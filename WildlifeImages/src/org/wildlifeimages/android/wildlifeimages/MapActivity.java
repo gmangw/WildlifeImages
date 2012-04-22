@@ -154,7 +154,7 @@ public class MapActivity extends WireActivity{
 				if (exhibitList.getGroup(selectedExhibit).length > 0){
 					showDialog(selectedExhibit.hashCode());
 				}else{
-					exhibitList.setCurrent(exhibitList.get(selectedExhibit), Exhibit.TAG_AUTO);
+					exhibitList.setCurrent(selectedExhibit, Exhibit.TAG_AUTO);
 					ExhibitActivity.start(parent);	
 				}
 			}

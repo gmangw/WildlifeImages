@@ -79,7 +79,6 @@ public class IntroActivity extends WireActivity{
 		if (savedState.getBoolean("UpdateStatus") == true){
 			b.setVisibility(View.VISIBLE);
 		}
-		//introProcessSidebar(activeHomeId);
 	}
 	
 	public void updateClicked(View v){
@@ -241,22 +240,9 @@ public class IntroActivity extends WireActivity{
 	
 	private class SVGLoader extends AsyncTask<Resources, Integer, Integer>{
 		@Override
-		protected void onPreExecute(){
-			//showDialog(LOADING_DIALOG);
-		}
-		@Override
-		protected void onProgressUpdate(Integer... progress){
-			//dismissDialog(LOADING_DIALOG);
-		}
-		@Override
 		protected Integer doInBackground(Resources... resources) {
-			//ContentManager.cacheThumbs(resources[0].getAssets());
-			//publishProgress(0);
 			ContentManager.getSVG(resources[0]);
 			return null;
-		}
-		@Override
-		protected void onPostExecute(Integer result){
 		}
 	}
 

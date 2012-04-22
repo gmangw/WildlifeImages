@@ -1,12 +1,16 @@
 <?xml version="1.0"?>
 <exhibit_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../ExhibitsSchema.xsd">
-	<exhibit name="Wildlife Images" xpos="78" ypos="30" next="Brown Bears">
+	<exhibit name="Wildlife Images" xpos="-1" ypos="-1" next="Brown Bears">
 		<content tag="Introduction"
 			page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
 		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
 		<content tag="Visit" page="ExhibitContents/WildlifeImages/visit.html" />
 		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" />
+		<alias name="Wildlife  Images" xpos="78" ypos="30" />
+		<alias name="Parking" xpos="77" ypos="11" />
+		<alias name="Education  Building" xpos="65" ypos="17" />
+		<alias name="Clinic" xpos="52" ypos="25" />
 	</exhibit>
 	<exhibit name="Brown Bears" xpos="-1" ypos="-1" previous="Wildlife Images"
 		next="Black Bears">
@@ -17,8 +21,8 @@
 		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
 		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
 		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
-		<alias name="Brown Bears 1" xpos="25" ypos="86" />
-		<alias name="Brown Bears 2" xpos="9" ypos="80" />
+		<alias name="Brown  Bears 1" xpos="25" ypos="86" />
+		<alias name="Brown  Bears 2" xpos="9" ypos="80" />
 	</exhibit>
 	<exhibit name="Black Bears" xpos="-1" ypos="-1" previous="Brown Bears"
 		next="Lynx">
@@ -34,8 +38,8 @@
 		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
 		<photo page="ExhibitContents/BlackBears/BlackBear-3.jpg" />
-		<alias name="Black Bear 1" xpos="22" ypos="58" />
-		<alias name="Black Bear 2" xpos="9" ypos="52" />
+		<alias name="Black  Bear 1" xpos="22" ypos="58" tag="Boggs" />
+		<alias name="Black  Bear 2" xpos="9" ypos="52" tag="Yogi" />
 	</exhibit>
 	<exhibit name="Lynx" xpos="32" ypos="67" previous="Black Bears"
 		next="Cougar">
@@ -70,7 +74,7 @@
 		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" />
 		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
 	</exhibit>
-	<exhibit name="Wolves" xpos="33" ypos="39" previous="Badger"
+	<exhibit name="Gray Wolves" xpos="-1" ypos="-1" previous="Badger"
 		next="Hybrid Wolves">
 		<content tag="Introduction" page="ExhibitContents/Wolves/wolvesIntro.html" />
 		<content tag="Lakota" page="ExhibitContents/Wolves/wolvesLakota.html" />
@@ -83,8 +87,9 @@
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
 		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
+		<alias name="Gray  Wolves" xpos="33" ypos="37" />
 	</exhibit>
-	<exhibit name="Hybrid Wolves" xpos="24" ypos="34" previous="Wolves"
+	<exhibit name="Hybrid Wolves" xpos="-1" ypos="-1" previous="Wolves"
 		next="River Otter">
 		<content tag="Introduction"
 			page="ExhibitContents/HybridWolves/hybridWolvesIntro.html" />
@@ -95,6 +100,7 @@
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-Kelsi-1.jpg" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-Argo-1.jpg" />
 		<photo page="ExhibitContents/HybridWolves/HybridWolves-ArgoAndKelsi-1.jpg" />
+		<alias name="Hybrid  Wolves" xpos="24" ypos="34" />
 	</exhibit>
 	<exhibit name="River Otter" xpos="17" ypos="9" previous="Hybrid Wolves"
 		next="Bald Eagles">
@@ -264,7 +270,7 @@
 			page="ExhibitContents/CommonBarnOwl/commonBarnOwlEscape.html" />
 		<photo page="ExhibitContents/CommonBarnOwl/BarnOwl-Petri-1.jpg" />
 	</exhibit>
-	<exhibit name="Common Raven" xpos="40" ypos="10" previous="Common Barn Owl"
+	<exhibit name="Common Raven" xpos="-1" ypos="-1" previous="Common Barn Owl"
 		next="American Crow">
 		<content tag="Introduction"
 			page="ExhibitContents/CommonRaven/commonRavenIntro.html" />
@@ -274,6 +280,7 @@
 			page="ExhibitContents/CommonRaven/commonRavenSpeech.html" />
 		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-1.jpg" />
 		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-2.jpg" />
+		<alias name="Common  Raven" xpos="46" ypos="10" />
 	</exhibit>
 	<exhibit name="American Crow" xpos="-1" ypos="-1" previous="Common Raven"
 		next="Eurasian Eagle Owl">
@@ -346,7 +353,7 @@
 			page="ExhibitContents/HarrisHawk/harrisHawkCharacteristics.html" />
 		<photo page="ExhibitContents/HarrisHawk/HarrisHawk-Wizard-1.jpg" />
 	</exhibit>
-	<exhibit name="Raccoon" xpos="56" ypos="17" previous="Harris Hawk"
+	<exhibit name="Raccoon" xpos="54" ypos="18" previous="Harris Hawk"
 		next="Mink">
 		<content tag="Introduction" page="ExhibitContents/Raccoon/raccoonIntro.html" />
 		<content tag="Ruby" page="ExhibitContents/Raccoon/raccoonRuby.html" />
@@ -354,7 +361,7 @@
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" />
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" />
 	</exhibit>
-	<exhibit name="Mink" xpos="41" ypos="22" previous="Raccoon"
+	<exhibit name="Mink" xpos="-1" ypos="-1" previous="Raccoon"
 		next="Hedgehogs">
 		<content tag="Introduction"
 			page="ExhibitContents/AmericanMink/americanMinkIntro.html" />
@@ -469,15 +476,14 @@
 		<member exhibit="Bald Eagles" />
 		<member exhibit="Turkey Vulture" />
 	</group>
-	<group name="Bobcats" xpos="45" ypos="27">
-		<member exhibit="Bobcats" />
-	</group>
-	<group name="Small Mammals" xpos="33" ypos="15">
+	<group name="Small  Mammals" xpos="42" ypos="24">
 		<member exhibit="Ground Squirrel" />
 		<member exhibit="Coatis" />
 		<member exhibit="Hedgehogs" />
+		<member exhibit="Mink" />
+		<member exhibit="Bobcats" />
 	</group>
-	<group name="Water Birds" xpos="63" ypos="36">
+	<group name="Water  Birds" xpos="63" ypos="36">
 		<member exhibit="Sacred Ibis" />
 		<member exhibit="Sandhill Crane" />
 	</group>

@@ -29,14 +29,17 @@ import android.widget.ZoomButtonsController.OnZoomListener;
 public class MapView extends ImageView {
 
 	private static final float MAX_FONT_SIZE = 40.0f;
-	
+
 	private float mapLeft = 0.0f;
 	private float mapTop = 0.0f;
 	private float mapRight = 0.0f;
 	private float mapBottom = 0.0f;
-	
+
 	private final RectF rectF = new RectF();
+	private final RectF rectFUnion = new RectF();
 	private final Rect rect = new Rect();
+	private int index = 0;
+	private final float[] yOffsets = new float[6];
 
 	private GestureDetector gestures;
 
@@ -63,6 +66,7 @@ public class MapView extends ImageView {
 	private float[] points;
 	private float[] transformedPoints;
 	private String[] displayNames;
+	private String[][] displayNamesSplit;
 	private static String activeName = "";
 
 	private float zoomFactor = 0.25f;
@@ -167,6 +171,10 @@ public class MapView extends ImageView {
 		}
 
 		displayNames = nameList.toArray(new String[nameList.size()]);
+		displayNamesSplit = new String[displayNames.length][];
+		for (int i=0; i<displayNames.length; i++){
+			displayNamesSplit[i] = displayNames[i].split("  ");
+		}
 
 		points = new float[pointList.size()];
 		for (int i=0; i<points.length; i++){
@@ -256,17 +264,17 @@ public class MapView extends ImageView {
 		float[] result = {xy[0]/mapWidth, xy[1]/mapHeight};
 		return result;
 	}
-	
+
 	public void zoomIn(float x, float y){
 		clampOriginXY(getXFromFraction(x) - originX, getYFromFraction(y) - originY);
 		zoomIn();
 	}
-	
+
 	public void zoomOut(float x, float y){
 		clampOriginXY(getXFromFraction(x) - originX, getYFromFraction(y) - originY);
 		zoomOut();
 	}
-	
+
 	public void zoomIn(){
 		zoomFactor = zoomFactor * 1.075f;
 		originX *= 1.075f;
@@ -280,28 +288,40 @@ public class MapView extends ImageView {
 		originY *= 0.925f;
 		processScroll(0, 0);
 	}
-	
+
 	@Override
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
-		
+
 		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/28.0f * scale));
 
 		for(int i=0; i<points.length/2; i++){
-			p.getTextBounds(displayNames[i], 0, displayNames[i].length(), rect);
+			rectFUnion.setEmpty();
+			yOffsets[0] = 0;
+			index = 0;
+			for (String nameLine : displayNamesSplit[i]){
+				p.getTextBounds(nameLine, 0, nameLine.length(), rect);
+				rectF.set(rect);
+				rectF.offset((int)transformedPoints[i*2] - rectF.width()/2, (int)transformedPoints[i*2+1]); 
+				rectF.inset(-p.getTextSize()/8.0f, -p.getTextSize()/8.0f);
+				rectF.offset(0, yOffsets[index]);
 
-			rectF.set(rect);
-			rectF.offset((int)transformedPoints[i*2] - rectF.width()/2, (int)transformedPoints[i*2+1]); 
-			rectF.inset(-p.getTextSize()/8.0f, -p.getTextSize()/8.0f);
-			
-			if (displayNames[i].equals(activeName)){
-				canvas.drawRect(rectF, activeP);
-			}else{
-				canvas.drawRect(rectF, rectP);
+				rectFUnion.union(rectF);
+				index++;
+				yOffsets[index] = rectF.height();
 			}
-			p.setStrokeWidth(0);
 
-			canvas.drawText(displayNames[i], transformedPoints[i*2], transformedPoints[i*2+1], p);
+			if (displayNames[i].equals(activeName)){
+				canvas.drawRect(rectFUnion, activeP);
+			}else{
+				canvas.drawRect(rectFUnion, rectP);
+			}
+
+			index = 0;
+			for (String nameLine : displayNamesSplit[i]){
+				canvas.drawText(nameLine, transformedPoints[i*2], transformedPoints[i*2+1] + yOffsets[index], p);
+				index++;
+			}
 		}
 	}
 
@@ -341,10 +361,10 @@ public class MapView extends ImageView {
 			originY = originY + distanceY;
 		}
 	}
-	
+
 	public void processScroll(float distanceX, float distanceY){
 		for (int i = 0; i < 2; i++){
-			
+
 			clampOriginXY(distanceX, distanceY);
 
 			float xFraction = (float)Math.max(0.0f, getXFraction(originX));

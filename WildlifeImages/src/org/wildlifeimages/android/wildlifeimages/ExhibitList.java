@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -19,8 +20,10 @@ public class ExhibitList implements Parser.ExhibitInterface{
 
 	private ArrayList<String> keyList = new ArrayList<String>();
 
-	LinkedHashMapRestricted<String, ExhibitGroup> groupList = new LinkedHashMapRestricted<String, ExhibitGroup>();
+	private LinkedHashMapRestricted<String, ExhibitGroup> groupList = new LinkedHashMapRestricted<String, ExhibitGroup>();
 
+	private LinkedHashMapRestricted<String, String> aliasTags = new LinkedHashMapRestricted<String, String>();
+	
 	private Exhibit current = null;
 	
 	public void addGroup(String groupName, String[] data, int x, int y){
@@ -39,7 +42,7 @@ public class ExhibitList implements Parser.ExhibitInterface{
 			e.addPhoto(photo);
 		}
 		for(int i=0; i<data.aliasList.size(); i++){
-			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i));
+			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i), data.aliasTagList.get(i));
 			exhibitList.put(data.aliasList.get(i), e);
 		}
 		exhibitList.put(e.getName(), e);
@@ -76,7 +79,15 @@ public class ExhibitList implements Parser.ExhibitInterface{
 	}
 
 	public void setCurrent(String name, String contentTag) {
-		Exhibit e = this.get(name);
+		Exhibit e = this.get(name);//TODO
+		if (e != null && contentTag.equals(Exhibit.TAG_AUTO) && false == e.getName().equals(name)){
+			for (Alias a : e.getAliases()){
+				if (a.name.equals(name)){
+					setCurrent(e, a.tag);
+					return;
+				}
+			}
+		}
 		setCurrent(e, contentTag);
 	}
 

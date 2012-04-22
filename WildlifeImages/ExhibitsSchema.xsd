@@ -24,6 +24,7 @@
   <xs:attribute name="name" type="stringtype" use="required"/>
   <xs:attribute name="xpos" type="inttype" use="required"/>
   <xs:attribute name="ypos" type="inttype" use="required"/>
+  <xs:attribute name="tag" 	type="stringtype" use="optional"/>
 </xs:complexType>
 
 <xs:complexType name="phototype">

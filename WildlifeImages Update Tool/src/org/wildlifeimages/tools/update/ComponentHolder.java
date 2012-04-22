@@ -9,10 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -60,6 +63,7 @@ public class ComponentHolder implements ChangeListener{
 	private final JButton addAliasButton = new JButton("Add Alias");
 	private final JButton removeAliasButton = new JButton("Remove Alias");
 	private final JButton editFileButton = new JButton("Open File");
+	private final JButton viewFileButton = new JButton("View File");
 
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
@@ -68,6 +72,7 @@ public class ComponentHolder implements ChangeListener{
 	private final JList groupNameList = new JList();
 	private final JList groupExhibitsList = new JList();
 	private final JList exhibitAliasesList = new JList();
+	private final JList originalFilesList = new JList();
 
 	private final JPanel contentPanel = new JPanel(new GridLayout(1,2,2,2));
 	private final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -95,7 +100,7 @@ public class ComponentHolder implements ChangeListener{
 	private final NumberSpinner aliasYSpinnerModel = new NumberSpinner();
 	private final NumberSpinner groupXSpinnerModel = new NumberSpinner();
 	private final NumberSpinner groupYSpinnerModel = new NumberSpinner();
-	
+
 	private final JTextArea photoCaption = new JTextArea();
 
 	private final JSpinner exhibitXCoordField = new JSpinner(exhibitXSpinnerModel);
@@ -106,6 +111,7 @@ public class ComponentHolder implements ChangeListener{
 	private final JSpinner groupYCoordField = new JSpinner(groupYSpinnerModel);
 
 	private final ModifiedListModel modifiedFilesListModel;
+	private final OriginalFilesListModel originalFilesListModel;
 	private final ContentListModel contentListModel;
 	private final ExhibitPhotosModel exhibitPhotosModel;
 	private final ExhibitListModel exhibitNameModel;
@@ -122,7 +128,7 @@ public class ComponentHolder implements ChangeListener{
 
 	private final JPanel photosPanel = new JPanel(new GridLayout(1,2,2,2));
 	private final JPanel groupListPanel = new JPanel(new GridLayout(1,2,2,2));
-	private final JPanel filePanel = new JPanel(new BorderLayout());
+	private final JPanel filePanel = new JPanel(new GridLayout(2,1,2,2));
 
 	private final Border lineBorder = BorderFactory.createLineBorder(Color.GRAY);
 	private final Border thinPaddedBorder = BorderFactory.createEmptyBorder(2,2,2,2);
@@ -136,6 +142,7 @@ public class ComponentHolder implements ChangeListener{
 		peer = manager;
 		mapPanel = new JMapPanel(new GridLayout(1,1,2,2), mapDimension, peer.getLoader());
 		modifiedFilesListModel = new ModifiedListModel();
+		originalFilesListModel = new OriginalFilesListModel();
 		contentListModel = new ContentListModel();
 		exhibitPhotosModel = new ExhibitPhotosModel();
 		exhibitNameModel = new ExhibitListModel();
@@ -213,7 +220,7 @@ public class ComponentHolder implements ChangeListener{
 				change();
 			}
 		});
-		
+
 		exhibitNextDropdown.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -253,6 +260,13 @@ public class ComponentHolder implements ChangeListener{
 			@Override
 			public void actionPerformed(ActionEvent a) {
 				editFile();
+			}
+		});
+
+		viewFileButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent a) {
+				viewFile();
 			}
 		});
 
@@ -346,6 +360,9 @@ public class ComponentHolder implements ChangeListener{
 		modifiedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modifiedFilesList.setModel(modifiedFilesListModel);
 
+		originalFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		originalFilesList.setModel(originalFilesListModel);
+
 		modifiedFilesList.setSelectionInterval(0, 0);
 		exhibitNameList.setSelectionInterval(0, 0);
 		contentList.setSelectionInterval(0, 0);
@@ -412,7 +429,7 @@ public class ComponentHolder implements ChangeListener{
 		JPanel photoDataPanel = new JPanel(new GridLayout(2,1,2,2));
 		photoDataPanel.add(new JScrollPane(exhibitPhotosList));
 		photoDataPanel.add(photoCaption);
-		
+
 		JPanel photoPanelRight = new JPanel(new BorderLayout());
 		photoPanelRight.add(new JLabel("Exhibit Photos:"), BorderLayout.NORTH);
 		photoPanelRight.add(photoDataPanel, BorderLayout.CENTER);
@@ -481,7 +498,7 @@ public class ComponentHolder implements ChangeListener{
 		groupListPanel.add(new JScrollPane(groupNameList));
 		groupListPanel.add(new JScrollPane(groupExhibitsList));
 
-		JPanel fileButtonPanel = new JPanel(new GridLayout(1,2,2,2));
+		JPanel fileButtonPanel = new JPanel(new GridLayout(2,1,2,2));
 		fileButtonPanel.add(newFileButton);
 		fileButtonPanel.add(editFileButton);
 
@@ -490,9 +507,18 @@ public class ComponentHolder implements ChangeListener{
 			b.setBorder(BorderFactory.createCompoundBorder(b.getBorder(),largePaddedBorder));
 		}
 
-		filePanel.add(new JLabel("Added Files:"), BorderLayout.NORTH);
-		filePanel.add(new JScrollPane(modifiedFilesList), BorderLayout.CENTER);
-		filePanel.add(fileButtonPanel, BorderLayout.SOUTH);
+		JPanel originalListPanel = new JPanel(new BorderLayout());
+		originalListPanel.add(new JLabel("Original Files:"), BorderLayout.NORTH);
+		originalListPanel.add(new JScrollPane(originalFilesList), BorderLayout.CENTER);
+		originalListPanel.add(viewFileButton, BorderLayout.EAST);
+
+		JPanel modifiedListPanel = new JPanel(new BorderLayout());
+		modifiedListPanel.add(new JLabel("Added Files:"), BorderLayout.NORTH);
+		modifiedListPanel.add(new JScrollPane(modifiedFilesList), BorderLayout.CENTER);
+		modifiedListPanel.add(fileButtonPanel, BorderLayout.EAST);
+
+		filePanel.add(originalListPanel);
+		filePanel.add(modifiedListPanel);
 
 		groupPanel.add(groupListPanel);
 		groupPanel.add(groupDataPanel);
@@ -693,6 +719,29 @@ public class ComponentHolder implements ChangeListener{
 		}
 	}
 
+	void viewFile(){
+		String filename = peer.getOriginalFiles()[originalFilesList.getSelectedIndex()];
+		String name = filename.substring(0, filename.lastIndexOf('.'));
+		String ext = filename.substring(filename.lastIndexOf('.')+1);
+		try{
+			File f = new File(new Random().nextInt() + "." + ext);
+			OutputStream outStream = new FileOutputStream(f);
+			InputStream stream = peer.getFileInputStream("assets/" + filename);
+			for (int result = stream.read(); result != -1; result = stream.read()){
+				outStream.write(result);
+			}
+			outStream.close();
+			String[] exec = {"cmd.exe", "/C", f.getPath()};
+			try {
+				Runtime.getRuntime().exec(exec);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+
 	void removeGroup(){
 		peer.makeChange();
 		peer.getLoader().removeGroup(groupNameList.getSelectedValue().toString());
@@ -786,6 +835,18 @@ public class ComponentHolder implements ChangeListener{
 
 		selectPhoto();
 		selectAlias();
+	}
+
+	class OriginalFilesListModel extends BasicListModel{
+		@Override
+		public Object getElementAt(int index) {
+			return peer.getOriginalFiles()[index];
+		}
+
+		@Override
+		public int getSize() {
+			return peer.getOriginalFiles().length;
+		}
 	}
 
 	class ModifiedListModel extends BasicListModel{
@@ -968,7 +1029,7 @@ public class ComponentHolder implements ChangeListener{
 			int index = exhibitAliasesList.getSelectedIndex();
 			Alias alias = e.getAliases()[index];
 			if (alias.xPos != val){
-				e.addAlias(alias.name, val, alias.yPos);
+				e.addAlias(alias.name, val, alias.yPos, alias.tag);
 				peer.makeChange();
 			}
 		}else if (arg0.getSource().equals(aliasYCoordField.getModel())){
@@ -976,7 +1037,7 @@ public class ComponentHolder implements ChangeListener{
 			int index = exhibitAliasesList.getSelectedIndex();
 			Alias alias = e.getAliases()[index];
 			if (alias.yPos != val){
-				e.addAlias(alias.name, alias.xPos, val);
+				e.addAlias(alias.name, alias.xPos, val, alias.tag);
 				peer.makeChange();
 			}
 		}else if (arg0.getSource().equals(groupXCoordField.getModel())){

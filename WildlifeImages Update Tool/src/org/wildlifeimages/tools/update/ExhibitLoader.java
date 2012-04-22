@@ -63,7 +63,7 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 			e.addPhoto(photo);
 		}
 		for(int i=0; i<data.aliasList.size(); i++){
-			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i));
+			e.addAlias(data.aliasList.get(i), data.aliasXList.get(i), data.aliasYList.get(i), data.aliasTagList.get(i));
 		}
 		exhibits.add(e);
 	}
