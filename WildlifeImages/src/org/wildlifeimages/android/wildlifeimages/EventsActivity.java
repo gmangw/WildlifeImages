@@ -1,5 +1,15 @@
 package org.wildlifeimages.android.wildlifeimages;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.wildlifeimages.android.wildlifeimages.Parser.Event;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +38,7 @@ public class EventsActivity extends WireActivity{
 
 		setContentView(R.layout.events_layout);
 		final Gallery gallery = (Gallery)findViewById(R.id.events_view);
-		EventAdapter adapter = new EventAdapter();
+		EventAdapter adapter = new EventAdapter(loadEvents());
 		gallery.setAdapter(adapter);
 
 		if (bundle == null){
@@ -56,7 +66,7 @@ public class EventsActivity extends WireActivity{
 			}.execute(0);
 			gallery.setSelection(0);
 		}
-		
+
 		final SeekBar seekBar = (SeekBar)findViewById(R.id.events_seekbar);
 		gallery.setOnItemSelectedListener(new OnItemSelectedListener(){
 			public void onItemSelected(AdapterView<?> adapterView, View view, int index, long arg3) {
@@ -87,14 +97,16 @@ public class EventsActivity extends WireActivity{
 	}
 
 	private class EventAdapter implements SpinnerAdapter{
-		public EventAdapter(){
+		private Event[] list;
+		public EventAdapter(Event[] events){
+			list = events;
 		}
 
 		public int getCount() {
-			return 10;
+			return list.length;
 		}
 		public Object getItem(int position) {
-			return null;
+			return list[position];
 		}
 		public long getItemId(int position) {
 			return position;
@@ -107,13 +119,12 @@ public class EventsActivity extends WireActivity{
 				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(R.layout.event_item_layout, null);
 			}
-			//Gallery gallery = (Gallery)findViewById(R.id.events_view);
 			int width = 4*getWindowManager().getDefaultDisplay().getWidth()/5;
 			convertView.setLayoutParams(new Gallery.LayoutParams(width, LayoutParams.FILL_PARENT));
 			TextView itemLabel = (TextView) convertView.findViewById(R.id.event_item_name);
-			itemLabel.setText("Item " + position);
+			itemLabel.setText(list[position].getTitle());
 			itemLabel = (TextView) convertView.findViewById(R.id.event_item_description);
-			itemLabel.setText("Item " + position + " is a large item with lots of event text. blah blah blah. So much text that it runs onto multiple lines, showing off ellipsizing.");
+			itemLabel.setText(list[position].getDescription());
 
 			convertView.setBackgroundResource(R.drawable.event_border);
 
@@ -134,6 +145,21 @@ public class EventsActivity extends WireActivity{
 		}
 		public View getDropDownView(int position, View convertView, ViewGroup parent) {
 			return null;
+		}
+	}
+
+	private Event[] loadEvents(){
+		try{
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+			XmlPullParser xmlBox = factory.newPullParser();
+			InputStream istr = ContentManager.streamAssetOrFile("events.xml", getAssets());
+			BufferedReader in = new BufferedReader(new InputStreamReader(istr), 1024);
+			xmlBox.setInput(in);
+			return Parser.parseEvents(xmlBox);
+		}catch(XmlPullParserException e){
+			return new Event[0];
+		}catch(IOException e){
+			return new Event[0];
 		}
 	}
 

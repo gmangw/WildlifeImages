@@ -2,7 +2,10 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -144,7 +147,7 @@ public class Parser {
 			appendValue(sb, "previous", e.getPrevious());
 			appendValue(sb, "next", e.getNext());
 			sb.append(">");
-			
+
 			String tag;
 			for (Iterator<String> iter = e.getTags(); iter.hasNext();){
 				tag = iter.next();
@@ -203,4 +206,105 @@ public class Parser {
 
 		public void addExhibit(String name, int xCoord, int yCoord, String next, String previous, ExhibitDataHolder data);
 	}
+
+	static Event[] parseEvents(XmlPullParser xmlBox)throws IOException, XmlPullParserException{
+		int eventType;
+		ArrayList<Event> eventList = new ArrayList<Event>();
+		
+		if (xmlBox != null){
+			eventType = xmlBox.getEventType();
+
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				if(eventType == XmlPullParser.START_TAG) {
+					if (xmlBox.getName().equalsIgnoreCase("event")){
+						eventList.add(Parser.readEvent(xmlBox));
+					}
+				}
+				eventType = xmlBox.next();
+			}
+		}
+		return eventList.toArray(new Event[0]);
+	}
+
+	static class Event {
+		private Date startDay = new Date(0);
+		private Date endDay = new Date(0);
+		private String title = "";
+		private String description = "";
+		
+		public Date getStartDay() {
+			return startDay;
+		}
+		public void setStartDay(Date startDay) {
+			this.startDay = startDay;
+			setEndDay(endDay);
+		}
+		public void setStartDay(String startDay){
+			setStartDay(convertXmlToDate(startDay));
+		}
+		public Date getEndDay() {
+			return endDay;
+		}
+		public void setEndDay(Date endDay) {
+			this.endDay = endDay;
+			if (endDay.before(startDay)){
+				endDay = new Date(startDay.getTime());
+			}
+		}
+		public void setEndDay(String endDay){
+			setEndDay(convertXmlToDate(endDay));
+		}
+		public String getTitle() {
+			return title;
+		}
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		private Date convertXmlToDate(String xmlDate){
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+			Date time;
+			try {
+				time= fmt.parse(xmlDate);
+			} catch (ParseException e) {
+				time = new Date(0);
+			}
+			return time;
+		}
+	}
+	
+	private static Event readEvent(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
+		int eventType;
+
+		String title = getXMLAttribute(xmlBox, "title", "");
+		Event e = new Event();
+		e.setTitle(title);
+
+		eventType = xmlBox.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if(eventType == XmlPullParser.START_TAG) {
+				if (xmlBox.getName().equalsIgnoreCase("date")){
+					eventType = xmlBox.next();
+					String date = xmlBox.getText();
+					e.setStartDay(date);
+				}else if (xmlBox.getName().equalsIgnoreCase("description")){
+					eventType = xmlBox.next();
+					String description = xmlBox.getText();
+					e.setDescription(description);
+				}
+			}else if(eventType == XmlPullParser.END_TAG){
+				if (xmlBox.getName().equalsIgnoreCase("event")){
+					break;
+				}
+			}
+			eventType = xmlBox.next();
+		}
+		return e;
+	}
+
 }

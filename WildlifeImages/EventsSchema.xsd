@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:simpleType name="stringtype">
+		<xs:restriction base="xs:string" />
+	</xs:simpleType>
+
+	<xs:simpleType name="inttype">
+		<xs:restriction base="xs:integer" />
+	</xs:simpleType>
+
+	<xs:complexType name="eventtype">
+		<xs:sequence>
+			<xs:element name="date" type="xs:date" minOccurs="1"
+				maxOccurs="1" />
+			<xs:element name="description" type="stringtype"
+				minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="title" type="stringtype" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="eventlisttype">
+		<xs:sequence>
+			<xs:element name="event" maxOccurs="unbounded" type="eventtype" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="events_list" type="eventlisttype" />
+
+</xs:schema>

@@ -1,70 +1,74 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-<xs:simpleType name="stringtype">
-  <xs:restriction base="xs:string"/>
-</xs:simpleType>
+	<xs:simpleType name="stringtype">
+		<xs:restriction base="xs:string" />
+	</xs:simpleType>
 
-<xs:simpleType name="inttype">
-  <xs:restriction base="xs:integer"/>
-</xs:simpleType>
+	<xs:simpleType name="inttype">
+		<xs:restriction base="xs:integer" />
+	</xs:simpleType>
 
-<xs:simpleType name="orderidtype">
-  <xs:restriction base="xs:string">
-    <xs:pattern value="[0-9]{6}"/>
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="orderidtype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{6}" />
+		</xs:restriction>
+	</xs:simpleType>
 
-<xs:complexType name="contenttype">
-  <xs:attribute name="tag" type="stringtype" use="required"/>
-  <xs:attribute name="page" type="stringtype" use="required"/>
-</xs:complexType>
+	<xs:complexType name="contenttype">
+		<xs:attribute name="tag" type="stringtype" use="required" />
+		<xs:attribute name="page" type="stringtype" use="required" />
+	</xs:complexType>
 
-<xs:complexType name="aliastype">
-  <xs:attribute name="name" type="stringtype" use="required"/>
-  <xs:attribute name="xpos" type="inttype" use="required"/>
-  <xs:attribute name="ypos" type="inttype" use="required"/>
-  <xs:attribute name="tag" 	type="stringtype" use="optional"/>
-</xs:complexType>
+	<xs:complexType name="aliastype">
+		<xs:attribute name="name" type="stringtype" use="required" />
+		<xs:attribute name="xpos" type="inttype" use="required" />
+		<xs:attribute name="ypos" type="inttype" use="required" />
+		<xs:attribute name="tag" type="stringtype" use="optional" />
+	</xs:complexType>
 
-<xs:complexType name="phototype">
-  <xs:attribute name="page" type="stringtype" use="required"/>
-  <xs:attribute name="comment" type="stringtype" use="optional"/>
-</xs:complexType>
+	<xs:complexType name="phototype">
+		<xs:attribute name="page" type="stringtype" use="required" />
+		<xs:attribute name="comment" type="stringtype" use="optional" />
+	</xs:complexType>
 
-<xs:complexType name="groupmembertype">
-  <xs:attribute name="exhibit" type="stringtype" use="required"/>
-</xs:complexType>
+	<xs:complexType name="groupmembertype">
+		<xs:attribute name="exhibit" type="stringtype" use="required" />
+	</xs:complexType>
 
-<xs:complexType name="grouptype">
-  <xs:sequence>
-    <xs:element name="member" type="groupmembertype" minOccurs="1" maxOccurs="unbounded"/>
-  </xs:sequence>
-  <xs:attribute name="name" type="stringtype" use="required"/>
-  <xs:attribute name="xpos" type="inttype" use="optional"/>
-  <xs:attribute name="ypos" type="inttype" use="optional"/>
-</xs:complexType>
+	<xs:complexType name="grouptype">
+		<xs:sequence>
+			<xs:element name="member" type="groupmembertype"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="stringtype" use="required" />
+		<xs:attribute name="xpos" type="inttype" use="optional" />
+		<xs:attribute name="ypos" type="inttype" use="optional" />
+	</xs:complexType>
 
-<xs:complexType name="exhibittype">
-  <xs:sequence>
-    <xs:element name="content" type="contenttype" minOccurs="1" maxOccurs="unbounded"/>
-    <xs:element name="photo" type="phototype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="alias" type="aliastype" minOccurs="0" maxOccurs="unbounded"/>
-  </xs:sequence>
-  <xs:attribute name="name" type="stringtype" use="required"/>
-  <xs:attribute name="xpos" type="inttype" use="optional"/>
-  <xs:attribute name="ypos" type="inttype" use="optional"/>
-  <xs:attribute name="next" type="stringtype" use="optional"/>
-  <xs:attribute name="previous" type="stringtype" use="optional"/>
-</xs:complexType>
+	<xs:complexType name="exhibittype">
+		<xs:sequence>
+			<xs:element name="content" type="contenttype" minOccurs="1"
+				maxOccurs="unbounded" />
+			<xs:element name="photo" type="phototype" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="alias" type="aliastype" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="stringtype" use="required" />
+		<xs:attribute name="xpos" type="inttype" use="optional" />
+		<xs:attribute name="ypos" type="inttype" use="optional" />
+		<xs:attribute name="next" type="stringtype" use="optional" />
+		<xs:attribute name="previous" type="stringtype" use="optional" />
+	</xs:complexType>
 
-<xs:complexType name="shipordertype">
-  <xs:sequence>
-    <xs:element name="exhibit" maxOccurs="unbounded" type="exhibittype"/>
-    <xs:element name="group" maxOccurs="unbounded" type="grouptype"/>
-  </xs:sequence>
-</xs:complexType>
+	<xs:complexType name="exhibitlisttype">
+		<xs:sequence>
+			<xs:element name="exhibit" maxOccurs="unbounded" type="exhibittype" />
+			<xs:element name="group" maxOccurs="unbounded" type="grouptype" />
+		</xs:sequence>
+	</xs:complexType>
 
-<xs:element name="exhibit_list" type="shipordertype"/>
+	<xs:element name="exhibit_list" type="exhibitlisttype" />
 
 </xs:schema>
