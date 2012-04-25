@@ -40,7 +40,7 @@ public class ZipManager extends JFrame implements ManagerInterface, WindowListen
 
 	static final Pattern localPathPattern = Pattern.compile("[a-zA-Z0-9_\\-\\.]+(/[a-zA-Z0-9_\\-\\.]+)*");
 	static final Pattern exhibitNamePattern = Pattern.compile("[a-zA-Z0-9_'?,]*");
-	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.])*");
+	private static final Pattern newFileNamePattern = Pattern.compile("[a-zA-Z0-9\\.]+(/[a-zA-Z0-9\\.]+)*");
 
 	private final Hashtable<String, File> modifiedFiles = new Hashtable<String, File>();
 

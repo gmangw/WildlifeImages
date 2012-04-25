@@ -42,6 +42,9 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+import net.sourceforge.jdatepicker.JDatePicker;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.wildlifeimages.android.wildlifeimages.ExhibitPhoto;
@@ -140,7 +143,7 @@ public class ComponentHolder implements ChangeListener{
 	private final CompoundBorder paddedLine = BorderFactory.createCompoundBorder(lineBorder, mediumPaddedBorder);
 
 	private final ManagerInterface peer;
-
+	
 	public ComponentHolder(ManagerInterface manager, Dimension mapDimension){
 		peer = manager;
 		mapPanel = new JMapPanel(new GridLayout(1,1,2,2), mapDimension, peer.getLoader());

@@ -37,6 +37,7 @@
     <string name="update_preferences_key_build">buildTime</string>
     <string name="update_result_success">Update Complete</string>
     <string name="update_result_failure">Update Failed - Check network connection</string>
+    <string name="update_result_cancelled">Update Cancelled</string>
     <string name="update_dialog_message">Getting updated content&#8230;</string>
     <string name="update_available_message">Updated content is available. Download?</string>
     <string name="update_available_message_yes">Download</string>

@@ -1,6 +1,7 @@
 package org.wildlifeimages.android.wildlifeimages;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,10 +14,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.wildlifeimages.android.wildlifeimages.UpdateActivity.ContentUpdateTask;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -42,6 +46,7 @@ import android.util.Log;
  */
 public class ContentManager {
 	public static final String ASSET_PREFIX = "file:///android_asset/";
+	public static final String TEMP_FILE_EXTENSION = ".part";
 
 	private static HashSet<String> cachedFiles = null;
 
@@ -326,71 +331,82 @@ public class ContentManager {
 	}
 
 	/**
-	 * This function will update the cache.
+	 * Stream an update file from the server, unzipping the contents into the app's storage directory
+	 * and preparing them for use.
 	 * 
-	 * @param progress thread doing the updating, can communicate if it wants to stop updating.
-	 * @param zipURL URL location of the zip file used for updating.
+	 * @param progress AsyncTask calling this function, used to indicate if the update should be cancelled.
+	 * @param zipURL Address of the zip file to update from.
 	 * 
-	 * @return True if the entire update completed successfully.
+	 * @return true if the entire update completed successfully, false otherwise.
 	 * 
 	 */
-	public static boolean updateCache(UpdateActivity.ContentUpdater progress, String zipURL){
+	public static boolean updateCache(ContentUpdateTask progress, String zipURL){
+		ArrayList<File> downloadedFiles = new ArrayList<File>();
+		ArrayList<String> updatedFileNames = new ArrayList<String>();
+		byte[] buffer = new byte[128];
+		boolean updateResult = true;
 		try{
-			URL url;
-			try{
-				url = new URL(zipURL);
-			}catch(MalformedURLException e){
-				return false;
-			}
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			InputStream webStream = conn.getInputStream();
-			ZipInputStream zipStream = new ZipInputStream(webStream);
-			ZipEntry ze = null;
+			URL url = new URL(zipURL);
 
-			boolean result = true;
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			BufferedInputStream webStream = new BufferedInputStream(conn.getInputStream(), 2048);
+			ZipInputStream zipStream = new ZipInputStream(webStream);
+			ZipEntry entry = null;
+
 			int lengthRead = 0;
-			while ((ze = zipStream.getNextEntry()) != null) {
-				progress.publish(0);
-				if (progress.isCancelled()){
+			for (entry = zipStream.getNextEntry(); entry != null; entry = zipStream.getNextEntry()) {
+				if (true == progress.isCancelled()){
 					zipStream.close();
-					return false;
-				}
-				if (progress.isCancelled() == true){
+					updateResult = false;
 					break;
 				}
-				File f2 = new File(filesDir, ze.getName() + ".part");
-				String outputFilename2 = filesDir.getAbsolutePath() + "/" + ze.getName();
 
-				Log.d(ContentManager.class.getName(), "Unzipping " + ze.getName() + " to " + f2.getPath());
-				try{
-					Common.mkdirForFile(f2);
-				}catch(IOException e){
-					result = false;
-					continue;
-				}
-				FileOutputStream fout2 = new FileOutputStream(f2);
+				File outputFile = new File(filesDir, entry.getName() + TEMP_FILE_EXTENSION);
 
-				byte[] buffer = new byte[4];
+				Log.d(ContentManager.class.getName(), "Unzipping " + entry.getName() + " to " + outputFile.getPath());
+
+				Common.mkdirForFile(outputFile);
+
+				BufferedOutputStream outputFileStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+
+				downloadedFiles.add(outputFile);
+				updatedFileNames.add(entry.getName());
+
 				for(int read = zipStream.read(buffer); read != -1; read = zipStream.read(buffer)) {
-					fout2.write(buffer, 0, read);
-					lengthRead++;
+					outputFileStream.write(buffer, 0, read);
+					lengthRead += read;
+					progress.publish(lengthRead);
 				}
-				fout2.close();
+				outputFileStream.close();
+
 				zipStream.closeEntry();
-				boolean renameResult2 = f2.renameTo(new File(outputFilename2));
-				if (false == renameResult2){
-					Log.e(ContentManager.class.getName(), "Could not rename the .part file for " +ze.getName() + " in data.");
-					result = false;
-				}
-				imgCache.removeBitmap(ze.getName());
-				imgCache.removeThumb(ze.getName());
-				cachedFiles.add(ze.getName());
 			}
 			zipStream.close();
-			return result;
+		} catch(MalformedURLException e){
+			updateResult = false;
 		} catch (IOException e) {
-			return false;
+			updateResult = false;
 		}
+		if (true == updateResult){
+			for (int i=0; i<downloadedFiles.size(); i++){
+				String entryName = updatedFileNames.get(i);
+				String outputFilename = filesDir.getAbsolutePath() + File.separator + entryName;
+				boolean renameResult = downloadedFiles.get(i).renameTo(new File(outputFilename));
+				if (true == renameResult){
+					imgCache.removeBitmap(entryName);
+					imgCache.removeThumb(entryName);
+					cachedFiles.add(entryName);
+				}else{
+					updateResult = false;
+				}
+			}
+		}else{
+			for (File tmp : downloadedFiles){
+				tmp.delete();
+			}
+		}
+
+		return updateResult;
 	}
 
 	/**
