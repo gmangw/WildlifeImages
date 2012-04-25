@@ -47,6 +47,10 @@ import android.util.Log;
 public class ContentManager {
 	public static final String ASSET_PREFIX = "file:///android_asset/";
 	public static final String TEMP_FILE_EXTENSION = ".part";
+	
+	private static final int UPDATE_BUFFER_SIZE = 128;
+	private static final int UPDATE_STREAM_BUFFER_SIZE = 2048;
+	private static final int STREAM_END = -1;
 
 	private static HashSet<String> cachedFiles = null;
 
@@ -334,73 +338,103 @@ public class ContentManager {
 	 * Stream an update file from the server, unzipping the contents into the app's storage directory
 	 * and preparing them for use.
 	 * 
-	 * @param progress AsyncTask calling this function, used to indicate if the update should be cancelled.
-	 * @param zipURL Address of the zip file to update from.
+	 * @param progress AsyncTask calling this function, queried to verify that the update was not cancelled.
+	 * @param zipURL Web address of the update package file.
 	 * 
 	 * @return true if the entire update completed successfully, false otherwise.
 	 * 
 	 */
 	public static boolean updateCache(ContentUpdateTask progress, String zipURL){
-		ArrayList<File> downloadedFiles = new ArrayList<File>();
-		ArrayList<String> updatedFileNames = new ArrayList<String>();
-		byte[] buffer = new byte[128];
-		boolean updateResult = true;
+		ArrayList<File> downloadedFiles = new ArrayList<File>(); /* Files saved to disk */
+		ArrayList<String> updatedFileNames = new ArrayList<String>(); /* Short URLs of saved files */
+		byte[] buffer = new byte[UPDATE_BUFFER_SIZE]; /* Space to hold chunks of downloaded files */
+		boolean updateResult = true; /* Track whether any errors have occurred */
+
 		try{
-			URL url = new URL(zipURL);
+			URL url = new URL(zipURL); /* Location of update package zip file */
+			ZipEntry entry = null; /* Current file within update package */
 
+			/* Request to access the update package over the network */
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			BufferedInputStream webStream = new BufferedInputStream(conn.getInputStream(), 2048);
+			BufferedInputStream webStream = new BufferedInputStream(conn.getInputStream(), UPDATE_STREAM_BUFFER_SIZE);
 			ZipInputStream zipStream = new ZipInputStream(webStream);
-			ZipEntry entry = null;
 
-			int lengthRead = 0;
+			int lengthRead = 0; /* Number of bytes downloaded */
+
+			/* Download and process each new file */
 			for (entry = zipStream.getNextEntry(); entry != null; entry = zipStream.getNextEntry()) {
 				if (true == progress.isCancelled()){
+					/* Cancel gracefully */
 					zipStream.close();
 					updateResult = false;
 					break;
 				}
 
+				/* Temporary location to save the downloaded file */
 				File outputFile = new File(filesDir, entry.getName() + TEMP_FILE_EXTENSION);
 
 				Log.d(ContentManager.class.getName(), "Unzipping " + entry.getName() + " to " + outputFile.getPath());
 
+				/* Ensure that a folder exists to hold the file's relative path */
 				Common.mkdirForFile(outputFile);
 
+				/* Open the file for writing, using a buffered stream for efficientcy */ 
 				BufferedOutputStream outputFileStream = new BufferedOutputStream(new FileOutputStream(outputFile));
 
+				/* Record the file's relative path and actual location for later processing */
 				downloadedFiles.add(outputFile);
 				updatedFileNames.add(entry.getName());
 
-				for(int read = zipStream.read(buffer); read != -1; read = zipStream.read(buffer)) {
+				/* Read the entire file as the package downloads, buffer.length bytes at a time */
+				for(int read = zipStream.read(buffer); read != STREAM_END; read = zipStream.read(buffer)) {
 					outputFileStream.write(buffer, 0, read);
 					lengthRead += read;
-					progress.publish(lengthRead);
+					progress.publish(lengthRead); /* Show the user how much has been downloaded */
 				}
-				outputFileStream.close();
 
+				/* Clean up */
+				outputFileStream.close();
 				zipStream.closeEntry();
 			}
+
+			/* Close the network connection */
 			zipStream.close();
 		} catch(MalformedURLException e){
+			/* Error converting string to URL, this should never occur */
 			updateResult = false;
+			Log.e(ContentManager.class.getName(), "Update failed due to malformed URL");
 		} catch (IOException e) {
+			/* Error reading from network (likely) or writing to disk (unlikely) */
 			updateResult = false;
+			Log.d(ContentManager.class.getName(), "Update failed due to I/O Exception");
 		}
+
 		if (true == updateResult){
+			/* Process each successfully downloaded file */
 			for (int i=0; i<downloadedFiles.size(); i++){
 				String entryName = updatedFileNames.get(i);
 				String outputFilename = filesDir.getAbsolutePath() + File.separator + entryName;
-				boolean renameResult = downloadedFiles.get(i).renameTo(new File(outputFilename));
+
+				/* Move the file to its final location */
+				File finalOutputFile = new File(outputFilename);
+				if (finalOutputFile.exists()){
+					finalOutputFile.delete();
+				}
+				boolean renameResult = downloadedFiles.get(i).renameTo(finalOutputFile);
+
 				if (true == renameResult){
+					/* Register the file for use and remove references to previous versions */
 					imgCache.removeBitmap(entryName);
 					imgCache.removeThumb(entryName);
 					cachedFiles.add(entryName);
 				}else{
+					/* renameTo failed for an unknown reason */
 					updateResult = false;
+					Log.e(ContentManager.class.getName(), "Updated file " + entryName +" could not be renamed.");
 				}
 			}
 		}else{
+			/* Remove partial update contents in case of error */
 			for (File tmp : downloadedFiles){
 				tmp.delete();
 			}
