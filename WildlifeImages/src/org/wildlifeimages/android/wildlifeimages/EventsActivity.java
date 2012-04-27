@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import org.wildlifeimages.android.wildlifeimages.Parser.Event;
 import org.xmlpull.v1.XmlPullParser;
@@ -28,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EventsActivity extends WireActivity{
 
@@ -87,6 +89,14 @@ public class EventsActivity extends WireActivity{
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
+		
+		Event e = new Event();
+		e.setTitle("Sample Event");
+		e.setDescription("This event takes place at wildlife images");
+		Date d = new Date();
+		e.setStartDay(d);
+		e.setEndDay(d);
+		//addEventToCalendar(e);
 	}
 
 	public static void start(Activity context) {
@@ -158,6 +168,27 @@ public class EventsActivity extends WireActivity{
 			return new Event[0];
 		}catch(IOException e){
 			return new Event[0];
+		}
+	}
+	
+	public void addEventToCalendar(View v){
+		Gallery gallery = (Gallery)findViewById(R.id.events_view);
+		addEventToCalendar((Event)gallery.getSelectedItem());
+	}
+
+	private void addEventToCalendar(Event event) {
+		Intent l_intent = new Intent(Intent.ACTION_EDIT);
+		l_intent.setType("vnd.android.cursor.item/event");
+		l_intent.putExtra("title", event.getTitle());
+		l_intent.putExtra("description", event.getDescription());
+		l_intent.putExtra("eventLocation", "Wildlife Images");
+		l_intent.putExtra("beginTime", event.getStartDay());
+		l_intent.putExtra("endTime", event.getEndDay());
+		l_intent.putExtra("allDay", true);
+		try {
+			startActivity(l_intent);
+		} catch (Exception e) {
+			Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
 		}
 	}
 

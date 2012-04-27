@@ -315,7 +315,6 @@ public class Parser {
 			} catch (ParseException e) {
 				time = new Date(0);
 			}
-			System.out.println(xmlDate + ", " + time);
 			return time;
 		}
 		public int compareTo(Event other) {

@@ -8,15 +8,31 @@
         android:id="@+id/event_item_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:gravity="center" >
+        android:gravity="center"
+        android:textStyle="bold" >
     </TextView>
 
     <TextView
         android:id="@+id/event_item_description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="left" >
+        android:gravity="left"
+        android:layout_weight="1" >
     </TextView>
+
+    <Button
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/event_border"
+        android:minEms="5"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp"
+        android:textColor="@android:color/black"
+        android:text="Add to Calendar"
+        android:onClick="addEventToCalendar"
+        android:layout_gravity="bottom|right" />
 
 </LinearLayout>
