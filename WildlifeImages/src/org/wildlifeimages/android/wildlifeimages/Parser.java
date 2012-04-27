@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -189,6 +190,46 @@ public class Parser {
 		sb.append("\n</exhibit_list>");
 		out.write(sb.toString().getBytes());
 	}
+	
+	public static void writeEventsXml(OutputStream out, ArrayList<? extends Event> events)throws IOException{
+		StringBuffer sb = new StringBuffer();
+		sb.append("<?xml version=\"1.0\"?>\n");
+		sb.append("<events_list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\t");
+		sb.append("xsi:noNamespaceSchemaLocation=\"../EventsSchema.xsd\">\n");
+		
+		for (Event e : events){
+			sb.append("\t<event>\n");
+			
+			sb.append("\t\t<title>");
+			sb.append(e.getTitle());
+			sb.append("</title>\n");
+			
+			sb.append("\t\t<startdate>");
+			Date d = e.getStartDay();
+			Calendar now = Calendar.getInstance();
+			now.setTime(d);
+			String date = String.format("%1$tY-%1$tm-%1$td", now);
+			sb.append(date);
+			sb.append("</startdate>\n");
+			
+			sb.append("\t\t<enddate>");
+			d = e.getEndDay();
+			now = Calendar.getInstance();
+			now.setTime(d);
+			date = String.format("%1$tY-%1$tm-%1$td", now);
+			sb.append(date);
+			sb.append("</enddate>\n");
+			
+			sb.append("\t\t<description>");
+			sb.append(e.getDescription());
+			sb.append("</description>\n");
+			
+			sb.append("\t</event>\n");
+		}
+		
+		sb.append("</events_list>");
+		out.write(sb.toString().getBytes());
+	}
 
 	public class ExhibitDataHolder{
 		public ArrayList<String> contentNameList = new ArrayList<String>();
@@ -210,7 +251,7 @@ public class Parser {
 	public static Event[] parseEvents(XmlPullParser xmlBox)throws IOException, XmlPullParserException{
 		int eventType;
 		ArrayList<Event> eventList = new ArrayList<Event>();
-		
+
 		if (xmlBox != null){
 			eventType = xmlBox.getEventType();
 
@@ -226,12 +267,12 @@ public class Parser {
 		return eventList.toArray(new Event[0]);
 	}
 
-	public static class Event {
+	public static class Event implements Comparable<Event>{
 		private Date startDay = new Date(0);
 		private Date endDay = new Date(0);
 		private String title = "";
 		private String description = "";
-		
+
 		public Date getStartDay() {
 			return startDay;
 		}
@@ -246,10 +287,10 @@ public class Parser {
 			return endDay;
 		}
 		public void setEndDay(Date endDay) {
-			this.endDay = endDay;
 			if (endDay.before(startDay)){
 				endDay = new Date(startDay.getTime());
 			}
+			this.endDay = endDay;
 		}
 		public void setEndDay(String endDay){
 			setEndDay(convertXmlToDate(endDay));
@@ -274,21 +315,26 @@ public class Parser {
 			} catch (ParseException e) {
 				time = new Date(0);
 			}
+			System.out.println(xmlDate + ", " + time);
 			return time;
 		}
+		public int compareTo(Event other) {
+			return this.getStartDay().compareTo(other.getStartDay());
+		}
 	}
-	
+
 	private static Event readEvent(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
 		int eventType;
-
-		String title = getXMLAttribute(xmlBox, "title", "");
 		Event e = new Event();
-		e.setTitle(title);
 
 		eventType = xmlBox.getEventType();
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if(eventType == XmlPullParser.START_TAG) {
-				if (xmlBox.getName().equalsIgnoreCase("startdate")){
+				if (xmlBox.getName().equalsIgnoreCase("title")){
+					eventType = xmlBox.next();
+					String title = xmlBox.getText();
+					e.setTitle(title);
+				}else if (xmlBox.getName().equalsIgnoreCase("startdate")){
 					eventType = xmlBox.next();
 					String date = xmlBox.getText();
 					e.setStartDay(date);

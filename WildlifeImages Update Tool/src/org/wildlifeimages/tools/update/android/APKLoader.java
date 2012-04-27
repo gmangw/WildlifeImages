@@ -72,7 +72,7 @@ public class APKLoader implements PackageLoader{
 
 						xmlBox.setInput(in);
 						System.out.println("Creating parser");
-						loader = new ExhibitLoader(xmlBox);
+						loader = new ExhibitLoader(xmlBox, this);
 					}catch(XmlPullParserException e){
 						throw new IOException("Error parsing package." , e);
 					}
@@ -101,7 +101,7 @@ public class APKLoader implements PackageLoader{
 
 						xmlBox.setInput(in);
 						System.out.println("Creating parser");
-						loader = new ExhibitLoader(xmlBox);
+						loader = new ExhibitLoader(xmlBox, this);
 					}catch(XmlPullParserException e){
 						throw new IOException("Error parsing package." , e);
 					}

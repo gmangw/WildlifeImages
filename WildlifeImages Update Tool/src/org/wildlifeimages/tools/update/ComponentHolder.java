@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -29,7 +32,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerModel;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
@@ -41,9 +47,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-
-import net.sourceforge.jdatepicker.JDatePicker;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 
 import org.wildlifeimages.android.wildlifeimages.Exhibit.Alias;
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
@@ -68,6 +71,8 @@ public class ComponentHolder implements ChangeListener{
 	private final JButton removeAliasButton = new JButton("Remove Alias");
 	private final JButton editFileButton = new JButton("Open File");
 	private final JButton viewFileButton = new JButton("View File");
+	private final JButton addEventButton = new JButton("Add Event");
+	private final JButton removeEventButton = new JButton("Remove Event");
 
 	private final JList exhibitNameList = new JList();
 	private final JList contentList = new JList();
@@ -85,7 +90,7 @@ public class ComponentHolder implements ChangeListener{
 	private final JPanel groupPanel = new JPanel(new GridLayout(2,1,2,2));
 	private final JPanel aliasDataPanel = new JPanel(new GridLayout(2,2,2,2));
 
-	final JMapPanel mapPanel;
+	private final JMapPanel mapPanel;
 
 	private final JLabel exhibitXCoordOrig = new JLabel();
 	private final JLabel exhibitYCoordOrig = new JLabel();
@@ -107,6 +112,11 @@ public class ComponentHolder implements ChangeListener{
 	private final NumberSpinner groupYSpinnerModel = new NumberSpinner();
 
 	private final JTextArea photoCaption = new JTextArea();
+	private final JTextArea eventDescription = new JTextArea();
+
+	private final JTextField eventName = new JTextField();
+	private final JSpinner eventStart;
+	private final JSpinner eventEnd;
 
 	private final JSpinner exhibitXCoordField = new JSpinner(exhibitXSpinnerModel);
 	private final JSpinner exhibitYCoordField = new JSpinner(exhibitYSpinnerModel);
@@ -143,7 +153,7 @@ public class ComponentHolder implements ChangeListener{
 	private final CompoundBorder paddedLine = BorderFactory.createCompoundBorder(lineBorder, mediumPaddedBorder);
 
 	private final ManagerInterface peer;
-	
+
 	public ComponentHolder(ManagerInterface manager, Dimension mapDimension){
 		peer = manager;
 		mapPanel = new JMapPanel(new GridLayout(1,1,2,2), mapDimension, peer.getLoader());
@@ -156,6 +166,19 @@ public class ComponentHolder implements ChangeListener{
 		groupExhibitsModel = new GroupExhibitsModel();
 		exhibitAliasesModel = new ExhibitAliasesModel();
 		eventsListModel = new EventsListModel();
+		
+		Calendar calendar = Calendar.getInstance();
+		Date initDate = calendar.getTime();
+		calendar.add(Calendar.YEAR, -100);
+		Date earliestDate = calendar.getTime();
+		calendar.add(Calendar.YEAR, 200);
+		Date latestDate = calendar.getTime();
+		SpinnerModel dateModel1 = new SpinnerDateModel(initDate, earliestDate, latestDate, Calendar.YEAR);
+		SpinnerModel dateModel2 = new SpinnerDateModel(initDate, earliestDate, latestDate, Calendar.YEAR);
+		eventStart = new JSpinner(dateModel1);
+		eventEnd = new JSpinner(dateModel2);
+		eventStart.setEditor(new JSpinner.DateEditor(eventStart, "MM/dd/yyyy"));
+		eventEnd.setEditor(new JSpinner.DateEditor(eventEnd, "MM/dd/yyyy"));
 	}
 
 	public void init(){		
@@ -203,10 +226,14 @@ public class ComponentHolder implements ChangeListener{
 		eventsList.addListSelectionListener(new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				//TODO
+				Event e = eventsListModel.getEvent(eventsList.getSelectedIndex());
+				eventDescription.setText(e.getDescription());
+				eventName.setText(e.getTitle());
+				eventStart.getModel().setValue(e.getStartDay());
+				eventEnd.getModel().setValue(e.getEndDay());
 			}
 		});
-		
+
 		exhibitNextDropdown.setModel(new ExhibitDropdownModel());
 		exhibitPreviousDropdown.setModel(new ExhibitDropdownModel());
 
@@ -214,6 +241,50 @@ public class ComponentHolder implements ChangeListener{
 		htmlContentViewer.setEditorKit(htmlKit);
 		Document doc = htmlKit.createDefaultDocument();
 		htmlContentViewer.setDocument(doc);
+
+		eventName.getDocument().addDocumentListener(new DocumentListener(){
+			private void change(){
+				Event e = peer.getLoader().getEvents().get(eventsList.getSelectedIndex());
+				e.setTitle(eventName.getText());
+				peer.makeChange();
+				eventsListModel.notifyChange();
+			}
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				change();
+			}
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				change();
+			}
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				change();
+			}
+		});
+
+		
+		eventDescription.setLineWrap(true);
+		eventDescription.setWrapStyleWord(true);
+		eventDescription.getDocument().addDocumentListener(new DocumentListener(){
+			private void change(){
+				Event e = peer.getLoader().getEvents().get(eventsList.getSelectedIndex());
+				e.setDescription(eventDescription.getText());
+				peer.makeChange();
+			}
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				change();
+			}
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				change();
+			}
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				change();
+			}
+		});
 
 		photoCaption.setBorder(paddedLine);
 		photoCaption.setLineWrap(true);
@@ -335,6 +406,29 @@ public class ComponentHolder implements ChangeListener{
 				addImage();
 			}
 		});
+		
+		addEventButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Event e = new Event();
+				e.setTitle("New Event");
+				e.setStartDay(new Date());
+				peer.getLoader().getEvents().add(e);
+				peer.getLoader().getEvents();
+				eventsListModel.notifyChange();
+				peer.makeChange();
+			}
+		});
+		
+		removeEventButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				peer.getLoader().getEvents().remove(eventsList.getSelectedIndex());
+				peer.getLoader().getEvents();
+				eventsListModel.notifyChange();
+				peer.makeChange();
+			}
+		});
 
 		exhibitXSpinnerModel.addChangeListener(this);
 		exhibitYSpinnerModel.addChangeListener(this);
@@ -344,6 +438,9 @@ public class ComponentHolder implements ChangeListener{
 
 		groupXSpinnerModel.addChangeListener(this);
 		groupYSpinnerModel.addChangeListener(this);
+		
+		eventStart.getModel().addChangeListener(this);
+		eventEnd.getModel().addChangeListener(this);
 
 		newContentDropdown.setEditable(false);
 		newContentDropdown.setModel(new ContentDropdownModel());
@@ -385,6 +482,7 @@ public class ComponentHolder implements ChangeListener{
 		exhibitPhotosList.setSelectionInterval(0, 0);
 		groupNameList.setSelectionInterval(0, 0);
 		exhibitAliasesList.setSelectionInterval(0, 0);
+		eventsList.setSelectionInterval(0, 0);
 
 		JPanel contentDropdownPanel = new JPanel(new GridLayout(4,1,2,2));
 		contentDropdownPanel.add(new JLabel("Original content:"));
@@ -401,6 +499,9 @@ public class ComponentHolder implements ChangeListener{
 			JButton b = (JButton)c;
 			b.setBorder(BorderFactory.createCompoundBorder(b.getBorder(), mediumPaddedBorder));
 		}
+		
+		addEventButton.setBorder(largePaddedBorder);
+		removeEventButton.setBorder(largePaddedBorder);
 
 		JPanel contentListPanel = new JPanel(new BorderLayout());
 		contentListPanel.add(new JScrollPane(contentList), BorderLayout.CENTER);
@@ -533,6 +634,29 @@ public class ComponentHolder implements ChangeListener{
 		modifiedListPanel.add(new JScrollPane(modifiedFilesList), BorderLayout.CENTER);
 		modifiedListPanel.add(fileButtonPanel, BorderLayout.EAST);
 
+		JPanel eventsSmallDataPanel = new JPanel(new GridLayout(1,4,2,2));
+		eventsSmallDataPanel.add(new JLabel("Start Date:"));
+		eventsSmallDataPanel.add(eventStart);
+		eventsSmallDataPanel.add(new JLabel("End Date:"));
+		eventsSmallDataPanel.add(eventEnd);
+
+		JPanel eventsDataPanel = new JPanel(new BorderLayout());
+		eventsDataPanel.add(eventName, BorderLayout.NORTH);
+		eventsDataPanel.add(new JScrollPane(eventDescription), BorderLayout.CENTER);
+		eventsDataPanel.add(eventsSmallDataPanel, BorderLayout.SOUTH);
+
+		JPanel eventButtonsPanel = new JPanel(new GridLayout(1,2,2,2));
+		eventButtonsPanel.add(addEventButton);
+		eventButtonsPanel.add(removeEventButton);
+		
+		JPanel eventsListPanel = new JPanel(new BorderLayout());
+		eventsListPanel.add(new JScrollPane(eventsList), BorderLayout.CENTER);
+		eventsListPanel.add(eventButtonsPanel, BorderLayout.SOUTH);
+		
+		JPanel eventsPanel = new JPanel(new GridLayout(2,1,2,2));
+		eventsPanel.add(eventsListPanel);
+		eventsPanel.add(eventsDataPanel);
+
 		filePanel.add(originalListPanel);
 		filePanel.add(modifiedListPanel);
 
@@ -546,7 +670,7 @@ public class ComponentHolder implements ChangeListener{
 		tabbedPane.addTab("Groups", groupPanel);
 		tabbedPane.addTab("Map", mapPanel);
 		tabbedPane.addTab("Files", filePanel);
-		tabbedPane.addTab("Events", new JScrollPane(eventsList));
+		tabbedPane.addTab("Events", eventsPanel);
 	}
 
 	void addImage(){
@@ -931,21 +1055,25 @@ public class ComponentHolder implements ChangeListener{
 			return getCurrentExhibit().getAliases().length;
 		}
 	}
-	
+
 	class EventsListModel extends BasicListModel{
-		Event[] events;
+		ArrayList<Event> events;
 		public EventsListModel(){
-			events = peer.loadEvents();
+			events = peer.getLoader().getEvents();
 		}
-		
+
+		public Event getEvent(int index) {
+			return events.get(index);
+		}
+
 		@Override
 		public Object getElementAt(int index) {
-			return events[index].getTitle();
+			return events.get(index).getTitle();
 		}
-		
+
 		@Override
 		public int getSize() {
-			return events.length;
+			return events.size();
 		}
 	}
 
@@ -1089,7 +1217,19 @@ public class ComponentHolder implements ChangeListener{
 				peer.getLoader().addGroup(name, group.exhibits,group.xPos, val);
 				peer.makeChange();
 			}
+		}else if (arg0.getSource().equals(eventStart.getModel())){
+			Event event = peer.getLoader().getEvents().get(eventsList.getSelectedIndex());
+			event.setStartDay((Date)eventStart.getModel().getValue());
+			peer.makeChange();
+		}else if (arg0.getSource().equals(eventEnd.getModel())){
+			Event event = peer.getLoader().getEvents().get(eventsList.getSelectedIndex());
+			event.setEndDay((Date)eventEnd.getModel().getValue());
+			peer.makeChange();
 		}
+	}
+
+	public JMapPanel getMapPanel() {
+		return mapPanel;
 	}
 
 }

@@ -11,6 +11,8 @@
 
 	<xs:complexType name="eventtype">
 		<xs:sequence>
+			<xs:element name="title" type="stringtype" minOccurs="1"
+				maxOccurs="1" />
 			<xs:element name="startdate" type="xs:date" minOccurs="1"
 				maxOccurs="1" />
 			<xs:element name="enddate" type="xs:date" minOccurs="1"
@@ -18,7 +20,6 @@
 			<xs:element name="description" type="stringtype"
 				minOccurs="1" maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="title" type="stringtype" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="eventlisttype">

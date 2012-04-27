@@ -2,12 +2,14 @@ package org.wildlifeimages.tools.update;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.zip.ZipOutputStream;
 
 import org.wildlifeimages.android.wildlifeimages.ExhibitGroup;
 import org.wildlifeimages.android.wildlifeimages.ExhibitPhoto;
 import org.wildlifeimages.android.wildlifeimages.Parser;
+import org.wildlifeimages.android.wildlifeimages.Parser.Event;
 import org.wildlifeimages.android.wildlifeimages.Parser.ExhibitDataHolder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -15,9 +17,13 @@ import org.xmlpull.v1.XmlPullParserException;
 public class ExhibitLoader implements Parser.ExhibitInterface{
 	private ArrayList<ExhibitInfo> exhibits = new ArrayList<ExhibitInfo>();
 	private Hashtable<String, ExhibitGroup> groupList = new Hashtable<String, ExhibitGroup>();
+	private ArrayList<Event> events = new ArrayList<Event>();
 
-	public ExhibitLoader(XmlPullParser xmlBox) throws XmlPullParserException, IOException{
+	public ExhibitLoader(XmlPullParser xmlBox, PackageLoader loader) throws XmlPullParserException, IOException{
 		new Parser(xmlBox, this);
+		for(Event e : loader.loadEvents()){
+			events.add(e);
+		}
 	}
 
 	public ArrayList<ExhibitInfo> getExhibits(){
@@ -71,6 +77,10 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	public void writeXML(ZipOutputStream out) throws IOException {
 		Parser.writeExhibitXML(out, exhibits, groupList);
 	}
+	
+	public void writeEventsXML(ZipOutputStream out) throws IOException {
+		Parser.writeEventsXml(out, events);
+	}
 
 	public void removeExhibit(String name) {
 		for (int i=0; i<exhibits.size(); i++){
@@ -78,6 +88,11 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 				exhibits.remove(i);
 			}
 		}	
+	}
+
+	public ArrayList<Event> getEvents() {
+		Collections.sort(events);
+		return events;
 	}
 
 }

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -29,7 +30,7 @@ public class MapActivity extends WireActivity{
 	@Override
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
-
+		//getWindow().setFormat(PixelFormat.RGBA_8888);
 		setContentView(R.layout.tour_layout);
 
 		MapView mMapView = (MapView) findViewById(R.id.map);

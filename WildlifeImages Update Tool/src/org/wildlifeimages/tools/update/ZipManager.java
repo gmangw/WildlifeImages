@@ -88,9 +88,9 @@ public class ZipManager extends JFrame implements ManagerInterface, WindowListen
 			newMap = new JSVGCanvas();
 		}finally{
 			map = newMap;
-			map.addMouseMotionListener(c.mapPanel);
+			map.addMouseMotionListener(c.getMapPanel());
 		}
-		c.mapPanel.add(map);
+		c.getMapPanel().add(map);
 		c.tabbedPane.setSelectedIndex(1);
 		c.tabbedPane.setSelectedIndex(0);
 
@@ -166,6 +166,10 @@ public class ZipManager extends JFrame implements ManagerInterface, WindowListen
 			out.putNextEntry(new ZipEntry("exhibits.xml"));
 
 			exhibitParser.writeXML(out);
+			
+			out.putNextEntry(new ZipEntry("events.xml"));
+			
+			exhibitParser.writeEventsXML(out);
 
 			out.closeEntry();
 
@@ -333,10 +337,5 @@ public class ZipManager extends JFrame implements ManagerInterface, WindowListen
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
-	}
-
-	@Override
-	public Event[] loadEvents() {
-		return packageLoader.loadEvents();
 	}
 }
