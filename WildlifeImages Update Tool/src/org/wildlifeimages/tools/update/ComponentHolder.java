@@ -173,8 +173,8 @@ public class ComponentHolder implements ChangeListener{
 		Date earliestDate = calendar.getTime();
 		calendar.add(Calendar.YEAR, 200);
 		Date latestDate = calendar.getTime();
-		SpinnerModel dateModel1 = new SpinnerDateModel(initDate, earliestDate, latestDate, Calendar.YEAR);
-		SpinnerModel dateModel2 = new SpinnerDateModel(initDate, earliestDate, latestDate, Calendar.YEAR);
+		SpinnerModel dateModel1 = new SpinnerDateModel(initDate, earliestDate, latestDate, Calendar.DATE);
+		SpinnerModel dateModel2 = new SpinnerDateModel(initDate, earliestDate, latestDate, Calendar.DATE);
 		eventStart = new JSpinner(dateModel1);
 		eventEnd = new JSpinner(dateModel2);
 		eventStart.setEditor(new JSpinner.DateEditor(eventStart, "MM/dd/yyyy"));
@@ -417,6 +417,7 @@ public class ComponentHolder implements ChangeListener{
 				peer.getLoader().getEvents();
 				eventsListModel.notifyChange();
 				peer.makeChange();
+				eventsList.setSelectedIndex(0);
 			}
 		});
 		

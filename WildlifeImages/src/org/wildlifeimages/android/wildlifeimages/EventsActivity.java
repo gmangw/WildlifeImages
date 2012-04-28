@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.wildlifeimages.android.wildlifeimages.Parser.Event;
@@ -15,6 +16,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -25,6 +27,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SpinnerAdapter;
@@ -71,12 +75,18 @@ public class EventsActivity extends WireActivity{
 		gallery.setOnItemSelectedListener(new OnItemSelectedListener(){
 			public void onItemSelected(AdapterView<?> adapterView, View view, int index, long arg3) {
 				seekBar.setProgress(index);
+				TextView month = (TextView)findViewById(R.id.events_month);
+				TextView year = (TextView)findViewById(R.id.events_year);
+				Event e = (Event)adapterView.getSelectedItem();
+				Calendar now = Calendar.getInstance();
+				now.setTime(e.getStartDay());
+				month.setText(String.format("%1$tB", now));
+				year.setText(String.format("%1$tY", now));
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {
 				seekBar.setProgress(0);
 			}
 		});
-
 
 		seekBar.setMax(gallery.getCount()-1);
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
@@ -89,7 +99,7 @@ public class EventsActivity extends WireActivity{
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
-		
+
 		Event e = new Event();
 		e.setTitle("Sample Event");
 		e.setDescription("This event takes place at wildlife images");
@@ -129,10 +139,21 @@ public class EventsActivity extends WireActivity{
 			}
 			int width = 4*getWindowManager().getDefaultDisplay().getWidth()/5;
 			convertView.setLayoutParams(new Gallery.LayoutParams(width, LayoutParams.FILL_PARENT));
+			Event e = list[position];
 			TextView itemLabel = (TextView) convertView.findViewById(R.id.event_item_name);
-			itemLabel.setText(list[position].getTitle());
+			itemLabel.setText(e.getTitle());
 			itemLabel = (TextView) convertView.findViewById(R.id.event_item_description);
-			itemLabel.setText(list[position].getDescription());
+			itemLabel.setText(e.getDescription());
+
+			ImageView b = (ImageView)convertView.findViewById(R.id.event_image);
+			if (b != null){
+				if (e.getImage() != null && false == e.getImage().equals("")){
+					b.setImageBitmap(ContentManager.getBitmapThumb(e.getImage(), getAssets()));
+					itemLabel.setBackgroundColor(getResources().getColor(android.R.color.background_light) - 0x55000000);
+				}else{
+					b.setImageResource(0);
+				}
+			}
 
 			convertView.setBackgroundResource(R.drawable.event_border);
 
@@ -142,7 +163,7 @@ public class EventsActivity extends WireActivity{
 			return 1;
 		}
 		public boolean hasStableIds() {
-			return false;
+			return true;
 		}
 		public boolean isEmpty() {
 			return false;
@@ -170,7 +191,7 @@ public class EventsActivity extends WireActivity{
 			return new Event[0];
 		}
 	}
-	
+
 	public void addEventToCalendar(View v){
 		Gallery gallery = (Gallery)findViewById(R.id.events_view);
 		addEventToCalendar((Event)gallery.getSelectedItem());

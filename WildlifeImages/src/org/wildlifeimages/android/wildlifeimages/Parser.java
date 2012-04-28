@@ -201,7 +201,7 @@ public class Parser {
 			sb.append("\t<event>\n");
 			
 			sb.append("\t\t<title>");
-			sb.append(e.getTitle());
+			sb.append(e.getTitle().replace("&", "and"));
 			sb.append("</title>\n");
 			
 			sb.append("\t\t<startdate>");
@@ -221,7 +221,7 @@ public class Parser {
 			sb.append("</enddate>\n");
 			
 			sb.append("\t\t<description>");
-			sb.append(e.getDescription());
+			sb.append(e.getDescription().replace("&", "and"));
 			sb.append("</description>\n");
 			
 			sb.append("\t</event>\n");
@@ -272,6 +272,7 @@ public class Parser {
 		private Date endDay = new Date(0);
 		private String title = "";
 		private String description = "";
+		private String imageUrl = "";
 
 		public Date getStartDay() {
 			return startDay;
@@ -306,6 +307,12 @@ public class Parser {
 		}
 		public void setDescription(String description) {
 			this.description = description;
+		}
+		public void setImage(String image){
+			imageUrl = image;
+		}
+		public String getImage(){
+			return imageUrl;
 		}
 		private Date convertXmlToDate(String xmlDate){
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
@@ -345,6 +352,10 @@ public class Parser {
 					eventType = xmlBox.next();
 					String description = xmlBox.getText();
 					e.setDescription(description);
+				}else if (xmlBox.getName().equalsIgnoreCase("image")){
+					eventType = xmlBox.next();
+					String image = xmlBox.getText();
+					e.setImage(image);
 				}
 			}else if(eventType == XmlPullParser.END_TAG){
 				if (xmlBox.getName().equalsIgnoreCase("event")){

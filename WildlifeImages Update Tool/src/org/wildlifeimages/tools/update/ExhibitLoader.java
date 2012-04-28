@@ -91,7 +91,6 @@ public class ExhibitLoader implements Parser.ExhibitInterface{
 	}
 
 	public ArrayList<Event> getEvents() {
-		Collections.sort(events);
 		return events;
 	}
 

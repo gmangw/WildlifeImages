@@ -2,15 +2,40 @@
 <events_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../EventsSchema.xsd">
 	<event>
+		<title>Earth Day, Go Green Day</title>
+		<startdate>2012-02-27</startdate>
+		<enddate>2012-04-22</enddate>
+		<description>Wear Green and Admission is half price. Children can enter the color completion to win a free pass on the Expedition Transport for the rest of 2012! Reservations are required.</description>
+	</event>
+	<event>
+		<title>"Color Eggs for the Critters" an Eggs-Travaganza!</title>
+		<startdate>2012-02-27</startdate>
+		<enddate>2012-05-27</enddate>
+		<description>Children from 2 to 15 can come and help our animal care staff color eggs for the critters. Animal Keepers will place the colored eggs throughout the habitats during the following Easter weekend so that the animals have to forage for their food, and of course crack open the colorful shells. The animals love it! Free Event!</description>
+	</event>
+	<event>
 		<title>"Estate Planning 101" Estate Planning Workshops</title>
 		<startdate>2012-03-06</startdate>
 		<enddate>2012-03-06</enddate>
 		<description>A FREE workshop on basic estate planning principles (to include charitable giving) and how to have an estate plan that works. Workshop will be held in the Evergreen Room at Taprock NW Bar and Grill in Grants Pass. Participants will receive a free tour ticket of Wildlife Images. Light appetizer and refreshments provided.</description>
 	</event>
 	<event>
-		<title>"Color Eggs for the Critters" an Eggs-Travaganza!</title>
-		<startdate>2012-03-31</startdate>
-		<enddate>2012-03-31</enddate>
-		<description>Children from 2 to 15 can come and help our animal care staff color eggs for the critters. Animal Keepers will place the colored eggs throughout the habitats during the following Easter weekend so that the animals have to forage for their food, and of course crack open the colorful shells. The animals love it! Free Event!</description>
+		<title>Mother's Day Brunch</title>
+		<startdate>2012-05-13</startdate>
+		<enddate>2012-05-27</enddate>
+		<description>A unique Mother’s Day Brunch at Wildlife Images with a touch of chocolate. Enjoy a catered brunch by Silver Ridge Outfitters while in the company of some amazing critters. As our guest you will have full access to our facility with many photo opportunities. And the ladies will receive special gifts of chocolate and a flower. $35.00 for the general public and $25.00 for Wildlife Images members. Purchase your tickets today or give us a call for more details.</description>
+	</event>
+	<event>
+		<title>Early Bird Gets the Worm!</title>
+		<startdate>2012-06-13</startdate>
+		<enddate>2012-06-13</enddate>
+		<description>We will be opening the gates early at 8am and kids from 8am to 9am receive FREE entry, bring your camera for photo with an animal ambassador. Reservations are required.</description>
+		<image>Events/Denise-Pictures-018.jpg</image>
+	</event>
+	<event>
+		<title>Spring into Wildlife a Fundraiser at Chet’s Garden Center and Nursery</title>
+		<startdate>2012-06-27</startdate>
+		<enddate>2012-06-27</enddate>
+		<description>25% of all proceeds go directly benefit Wildlife Images Rehabilitation and Education Center. Wildlife is blooming this time of year at Chet’s Nursery. Spring is upon us. It’s time to get planting! Come in for in store specials including 10% off of everything in stock. Choose from a huge selection of plants, fertilizer, gardening supplies, tools and garden art.</description>
 	</event>
 </events_list>
