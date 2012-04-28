@@ -16,7 +16,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -27,7 +27,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -39,7 +38,7 @@ public class EventsActivity extends WireActivity{
 
 	@Override protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
-
+		//getWindow().setFormat(PixelFormat.RGBA_8888);
 		setContentView(R.layout.events_layout);
 		final Gallery gallery = (Gallery)findViewById(R.id.events_view);
 		EventAdapter adapter = new EventAdapter(loadEvents());
@@ -149,7 +148,7 @@ public class EventsActivity extends WireActivity{
 			if (b != null){
 				if (e.getImage() != null && false == e.getImage().equals("")){
 					b.setImageBitmap(ContentManager.getBitmapThumb(e.getImage(), getAssets()));
-					itemLabel.setBackgroundColor(getResources().getColor(android.R.color.background_light) - 0x55000000);
+					itemLabel.setBackgroundColor(getResources().getColor(android.R.color.background_light) - 0x44000000);
 				}else{
 					b.setImageResource(0);
 				}
