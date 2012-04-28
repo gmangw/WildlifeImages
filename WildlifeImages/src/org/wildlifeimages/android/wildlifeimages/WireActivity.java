@@ -85,6 +85,9 @@ public abstract class WireActivity extends Activity{
 			menu.removeItem(R.id.menu_next);
 			menu.removeItem(R.id.menu_previous);
 		}
+		if (this.getClass() != EventsActivity.class){
+			menu.removeItem(R.id.menu_event);
+		}
 		return true;
 	}
 
@@ -96,16 +99,16 @@ public abstract class WireActivity extends Activity{
 			if (getClass() != IntroActivity.class){
 				IntroActivity.start(this);
 			}
-			break;
+			return true;
 		case R.id.menu_map:
 			MapActivity.start(this);
-			break;
+			return true;
 		case R.id.menu_scan:
 			Common.startScan(this);
-			break;
+			return true;
 		case R.id.menu_camera:
 			Common.startCamera(this);
-			break;
+			return true;
 		case R.id.menu_next:
 			Exhibit next = ContentManager.getExhibitList().getNext();
 
@@ -117,7 +120,7 @@ public abstract class WireActivity extends Activity{
 					ExhibitActivity.start(this);
 				}
 			}
-			break;
+			return true;
 		case R.id.menu_previous:
 			Exhibit prev = ContentManager.getExhibitList().getPrevious();
 
@@ -129,9 +132,9 @@ public abstract class WireActivity extends Activity{
 					ExhibitActivity.start(this);
 				}
 			}
-			break;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**

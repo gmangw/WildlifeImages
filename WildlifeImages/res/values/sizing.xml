@@ -6,7 +6,9 @@
     </style>
 
     <item name="content_text_size" format="integer" type="integer">16</item>
+    <item name="content_text_dp" format="dimension" type="dimen">16dp</item>
     <item name="image_caption_size" format="integer" type="integer">22</item>
     <item name="update_text_size" format="dimension" type="dimen">16dp</item>
+    <item name="event_gallery_weight" format="float" type="dimen">1.00</item>
 
 </resources>

@@ -7,6 +7,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/menu_home"/>
     <item
+        android:id="@+id/menu_event"
+        android:icon="@drawable/ic_menu_today"
+        android:showAsAction="always"
+        android:title="@string/menu_event"/>
+    <item
         android:id="@+id/menu_previous"
         android:icon="@drawable/ic_menu_back"
         android:showAsAction="ifRoom"

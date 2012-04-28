@@ -8,6 +8,7 @@
     <string name="menu_camera">Camera</string>
     <string name="menu_next">Next</string>
     <string name="menu_previous">Previous</string>
+    <string name="menu_event">Add to Calendar</string>
     <string name="save_current_exhibit">sce</string>
     <string name="save_current_exhibit_tag">scet</string>
     <string name="save_map_x">smx</string>
@@ -54,7 +55,7 @@
     <string name="list_menu_facilities">Facilities</string>
     <string name="list_menu_facilities_group">Facilities</string>
     <string name="loading_dialog_message">Loading exhibit data…</string>
-    <string name="events_layout_text" >Events at Wildlife Images</string>
+    <string name="events_layout_text" >Events</string>
         
     <string-array name="intro_image_list">
         <item>shoshoni.jpg</item>

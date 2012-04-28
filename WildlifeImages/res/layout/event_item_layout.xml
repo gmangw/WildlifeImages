@@ -4,11 +4,13 @@
     android:layout_height="fill_parent"
     android:layout_gravity="bottom" >
 
-    <ImageView
+    <ImageButton
         android:id="@+id/event_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left" />
+        android:layout_gravity="bottom|left"
+        android:onClick="showEventImage"
+        android:background="@android:color/transparent" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -20,6 +22,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textSize="@dimen/content_text_dp"
             android:textStyle="bold" >
         </TextView>
 
@@ -27,7 +30,8 @@
             android:id="@+id/event_item_description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="left" >
+            android:gravity="left"
+            android:textSize="@dimen/content_text_dp" >
         </TextView>
     </LinearLayout>
 
