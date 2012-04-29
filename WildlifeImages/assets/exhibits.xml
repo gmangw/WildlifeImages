@@ -6,7 +6,7 @@
 			page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
 		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
 		<content tag="Visit" page="ExhibitContents/WildlifeImages/visit.html" />
-		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" />
+		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" comment="Wildlife Images Trolley" />
 		<alias name="Wildlife  Images" xpos="78" ypos="30" />
 		<alias name="Parking" xpos="77" ypos="11" />
 		<alias name="Education  Building" xpos="65" ypos="17" />
@@ -18,9 +18,10 @@
 		<content tag="Kodi and Yak"
 			page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
 		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" comment="Kodi" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" comment="Kodi" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-3.jpg" comment="Kodi" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" comment="Yak" />
 		<alias name="Brown  Bears 1" xpos="25" ypos="86" />
 		<alias name="Brown  Bears 2" xpos="9" ypos="80" />
 	</exhibit>
@@ -34,10 +35,10 @@
 		<content tag="Yogi" page="ExhibitContents/BlackBears/blackBearYogi.html" />
 		<content tag="Bear Bear"
 			page="ExhibitContents/BlackBears/blackBearBearBear.html" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-3.jpg" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Boggs-1.jpg" comment="Boggs" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" comment="Janie" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-2.jpg" comment="Janie" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-BearBear-1.jpg" comment="Bear Bear" />
 		<alias name="Black  Bear 1" xpos="22" ypos="58" tag="Boggs" />
 		<alias name="Black  Bear 2" xpos="9" ypos="52" tag="Yogi" />
 	</exhibit>
@@ -46,9 +47,8 @@
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
 		<content tag="Nikki" page="ExhibitContents/Lynx/lynxNikki.html" />
 		<content tag="Fun Facts" page="ExhibitContents/Lynx/lynxFunFacts.html" />
-		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
-		<photo page="ExhibitContents/Lynx/Lynx-2.jpg" />
-		<photo page="ExhibitContents/Lynx/Lynx-3.jpg" />
+		<photo page="ExhibitContents/Lynx/Lynx-Nikki-1.jpg" comment="Nikki" />
+		<photo page="ExhibitContents/Lynx/Lynx-Nikki-2.jpg" comment="Nikki" />
 	</exhibit>
 	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx"
 		next="Badger">
@@ -58,21 +58,20 @@
 		<content tag="Hunting" page="ExhibitContents/Cougar/cougarHunting.html" />
 		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
 		<content tag="Tendons" page="ExhibitContents/Cougar/cougarClipping.html" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" comment="Clark" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" comment="Clark" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" comment="Clark" />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
 		next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
 		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" comment="Nubs" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" comment="Nubs with a cardboard tube." />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" comment="Nubs being displayed during a tour." />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" comment="Nubs on a walk." />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-5.jpg" comment="Nubs" />
 	</exhibit>
 	<exhibit name="Gray Wolves" xpos="-1" ypos="-1" previous="Badger"
 		next="Hybrid Wolves">
@@ -82,11 +81,11 @@
 		<content tag="Wolves" page="ExhibitContents/Wolves/wolves.html" />
 		<content tag="Pack" page="ExhibitContents/Wolves/wolvesPack.html" />
 		<content tag="Territory" page="ExhibitContents/Wolves/wolvesTerritory.html" />
-		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Lakota-2.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
+		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" comment="Lakota" />
+		<photo page="ExhibitContents/Wolves/Wolves-Lakota-2.jpg" comment="Lakota" />
+		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" comment="Tundra when she was younger and darker." />
+		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" comment="Tundra in her and Lakota's enclosure." />
+		<photo page="ExhibitContents/Wolves/Wolves-TundraAndLakota-1.jpg" comment="Tundra (left) and Lakota (right)." />
 		<alias name="Gray  Wolves" xpos="33" ypos="37" />
 	</exhibit>
 	<exhibit name="Hybrid Wolves" xpos="-1" ypos="-1" previous="Wolves"
