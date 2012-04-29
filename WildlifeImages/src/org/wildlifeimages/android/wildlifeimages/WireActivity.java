@@ -85,7 +85,7 @@ public abstract class WireActivity extends Activity{
 			menu.removeItem(R.id.menu_next);
 			menu.removeItem(R.id.menu_previous);
 		}
-		if (this.getClass() != EventsActivity.class){
+		if (this.getClass() != EventsActivity.class /*|| (Common.isAtLeastHoneycomb() == true && Common.isAtLeastICS() == false)*/){
 			menu.removeItem(R.id.menu_event);
 		}
 		return true;

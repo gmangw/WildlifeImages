@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.wildlifeimages.android.wildlifeimages.Parser.Event;
 import org.xmlpull.v1.XmlPullParser;
@@ -47,18 +48,18 @@ public class EventsActivity extends WireActivity{
 	private int eventWidth = 300;
 	private int screenHeight = 300;
 	private int eventHeight = 300;
-	
+
 	public static final int PHOTO_DIALOG = WireActivity.SCAN_DIALOG + 1;
-	
+
 	@Override 
 	protected void onCreate(Bundle bundle){
 		super.onCreate(bundle);
-		
+
 		screenWidth = getWindowManager().getDefaultDisplay().getWidth();
 		screenHeight = getWindowManager().getDefaultDisplay().getHeight();
 		eventWidth = 5*screenWidth/(6 * (1+screenWidth/1024));
 		eventHeight = 2*screenHeight/3;
-		
+
 		setContentView(R.layout.events_layout);
 		final Gallery gallery = (Gallery)findViewById(R.id.events_view);
 		EventAdapter adapter = new EventAdapter(loadEvents());
@@ -125,18 +126,18 @@ public class EventsActivity extends WireActivity{
 			}
 		});
 	}
-	
+
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog){
 		super.onPrepareDialog(id, dialog);
-		
+
 		ImageView i = new ImageView(this);
 		Gallery gallery = (Gallery)findViewById(R.id.events_view);
 		Event e = (Event)gallery.getSelectedItem();
 		i.setImageBitmap(ContentManager.getBitmap(e.getImage(), getAssets()));
 		((AlertDialog)dialog).setView(i);
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id){
 		Dialog dialog = super.onCreateDialog(id);
@@ -147,7 +148,7 @@ public class EventsActivity extends WireActivity{
 			Event e = (Event)gallery.getSelectedItem();
 			i.setImageBitmap(ContentManager.getBitmap(e.getImage(), getAssets()));
 			//dialog.setContentView(i);
-			
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setView(i);
 			dialog = builder.create();
@@ -156,7 +157,7 @@ public class EventsActivity extends WireActivity{
 		}
 		return dialog;
 	}
-	
+
 	public void showEventImage(View v){
 		Gallery gallery = (Gallery)findViewById(R.id.events_view);
 		Event e = (Event)gallery.getSelectedItem();
@@ -254,7 +255,7 @@ public class EventsActivity extends WireActivity{
 			return new Event[0];
 		}
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (super.onOptionsItemSelected(item) == false){
@@ -271,18 +272,65 @@ public class EventsActivity extends WireActivity{
 	}
 
 	private void addEventToCalendar(Event event) {
-		Intent l_intent = new Intent(Intent.ACTION_EDIT);
-		l_intent.setType("vnd.android.cursor.item/event");
-		l_intent.putExtra("title", event.getTitle());
-		l_intent.putExtra("description", event.getDescription());
-		l_intent.putExtra("eventLocation", "Wildlife Images");
-		l_intent.putExtra("beginTime", event.getStartDay());
-		l_intent.putExtra("endTime", event.getEndDay());
-		l_intent.putExtra("allDay", true);
-		try {
-			startActivity(l_intent);
-		} catch (Exception e) {
-			Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
+
+		if (Common.isAtLeastICS() == true){
+			Intent intent = new Intent(Intent.ACTION_INSERT);
+			intent.setType("vnd.android.cursor.item/event");
+			intent.putExtra("title", event.getTitle());
+			intent.putExtra("description", event.getDescription());
+			intent.putExtra("eventLocation", "Wildlife Images");
+			intent.putExtra("beginTime", event.getStartDay());
+			intent.putExtra("endTime", event.getEndDay());
+			intent.putExtra("allDay", true);
+			try {
+				startActivity(intent);
+			} catch (Exception e) {
+				Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
+			}
+			/*Intent intent = new Intent(Intent.ACTION_INSERT);
+			intent.setType("vnd.android.cursor.item/event");
+			intent.putExtra(Events.TITLE, "My House Party");
+			intent.putExtra(Events.EVENT_LOCATION, "My Beach House");
+			intent.putExtra(Events.DESCRIPTION, "A Pig Roast on the Beach"); 
+
+			GregorianCalendar calDate = new GregorianCalendar(2012, 7, 15);
+			intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
+			intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
+			intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis()); 
+
+			try {
+				startActivity(intent);
+			} catch (Exception e) {
+				Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
+			}*/
+		}else if (Common.isAtLeastHoneycomb() == false){
+			Intent intent = new Intent(Intent.ACTION_EDIT);
+			intent.setType("vnd.android.cursor.item/event");
+			intent.putExtra("title", event.getTitle());
+			intent.putExtra("description", event.getDescription());
+			intent.putExtra("eventLocation", "Wildlife Images");
+			intent.putExtra("beginTime", event.getStartDay());
+			intent.putExtra("endTime", event.getEndDay());
+			intent.putExtra("allDay", true);
+			try {
+				startActivity(intent);
+			} catch (Exception e) {
+				Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
+			}
+		}else{
+			Intent intent = new Intent(Intent.ACTION_EDIT);
+			intent.setType("vnd.android.cursor.item/event");
+			intent.putExtra("title", event.getTitle());
+			intent.putExtra("description", event.getDescription());
+			intent.putExtra("eventLocation", "Wildlife Images");
+			intent.putExtra("beginTime", event.getStartDay());
+			intent.putExtra("endTime", event.getEndDay());
+			intent.putExtra("allDay", true);
+			try {
+				startActivity(intent);
+			} catch (Exception e) {
+				Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 
