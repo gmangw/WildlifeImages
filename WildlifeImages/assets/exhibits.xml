@@ -186,8 +186,9 @@
 			page="ExhibitContents/GreatHornedOwl/greatHornedOwlPrey.html" />
 		<content tag="Hunting"
 			page="ExhibitContents/GreatHornedOwl/greatHornedOwlHunting.html" />
-		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" />
-		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" comment="Buddy" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-2.jpg" comment="Buddy" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-3.jpg" comment="Buddy" />
 	</exhibit>
 	<exhibit name="Sandhill Crane" xpos="-1" ypos="-1"
 		previous="Great Horned Owl" next="Augur Buzzards">
@@ -197,18 +198,21 @@
 			page="ExhibitContents/SandhillCrane/sandhillCraneNiles.html" />
 		<content tag="Daphne"
 			page="ExhibitContents/SandhillCrane/sandhillCraneDaphne.html" />
-		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
+		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-NilesAndDaphne-1.jpg" comment="Niles and Daphne" />
 	</exhibit>
 	<exhibit name="Augur Buzzards" xpos="-1" ypos="-1"
 		previous="Great Horned Owl" next="Sacred Ibis">
 		<content tag="Introduction"
 			page="ExhibitContents/AugurBuzzards/augurBuzzardsIntro.html" />
-		<content tag="Augi"
-			page="ExhibitContents/AugurBuzzards/augurBuzzardsAugi.html" />
+		<content tag="Augie"
+			page="ExhibitContents/AugurBuzzards/augurBuzzardsAugie.html" />
 		<content tag="Beruti"
 			page="ExhibitContents/AugurBuzzards/augurBuzzardsBeruti.html" />
-		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-1.jpg" />
-		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-2.jpg" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augie-1.jpg" comment="Augie (light phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augie-2.jpg" comment="Augie (light phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augie-3.jpg" comment="Augie (light phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Beruti-1.jpg" comment="Beruti (dark phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Beruti-2.jpg" comment="Beruti (dark phase)" />
 	</exhibit>
 	<exhibit name="Sacred Ibis" xpos="-1" ypos="-1" previous="Augur Buzzards"
 		next="Turkey Vulture">
@@ -218,7 +222,7 @@
 		<content tag="Ancient Egypt"
 			page="ExhibitContents/SacredIbis/sacredIbisAncientEgypt.html" />
 		<photo
-			page="ExhibitContents/SacredIbis/SacredIbis-PinnochioAndGeppeto-1.jpg" />
+			page="ExhibitContents/SacredIbis/SacredIbis-PinnochioAndGeppeto-1.jpg" comment="Pinnochio and Geppeto" />
 	</exhibit>
 	<exhibit name="Turkey Vulture" xpos="-1" ypos="-1" previous="Sacred Ibis"
 		next="Red-Tailed Hawk">
