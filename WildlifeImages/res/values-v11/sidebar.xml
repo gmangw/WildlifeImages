@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="exhibit_sidebar_size" format="dimension" type="dimen">66px</item>
+    <item name="exhibit_sidebar_size" format="dimension" type="dimen">44px</item>
     <item name="exhibit_sidebar_double" format="dimension" type="dimen">132px</item>
-</resources>
+
+</resources>
