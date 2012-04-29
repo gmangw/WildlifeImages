@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="exhibit_sidebar_size" format="dimension" type="dimen">100px</item>
-    <item name="exhibit_sidebar_double" format="dimension" type="dimen">300px</item>
+    <item name="exhibit_sidebar_size" format="dimension" type="dimen">100dp</item>
+    <item name="exhibit_sidebar_double" format="dimension" type="dimen">300dp</item>
 
 </resources>
