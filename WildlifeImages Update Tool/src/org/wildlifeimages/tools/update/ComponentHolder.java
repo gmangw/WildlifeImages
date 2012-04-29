@@ -101,6 +101,7 @@ public class ComponentHolder implements ChangeListener{
 	private final JComboBox newContentDropdown = new JComboBox();
 	private final JComboBox exhibitPreviousDropdown = new JComboBox();
 	private final JComboBox exhibitNextDropdown = new JComboBox();
+	private final JComboBox eventPhotoDropdown = new JComboBox();
 
 	private final JImage exhibitPhotosImage = new JImage();
 
@@ -231,6 +232,7 @@ public class ComponentHolder implements ChangeListener{
 				eventName.setText(e.getTitle());
 				eventStart.getModel().setValue(e.getStartDay());
 				eventEnd.getModel().setValue(e.getEndDay());
+				eventPhotoDropdown.setSelectedItem(e.getImage());
 			}
 		});
 
@@ -443,9 +445,18 @@ public class ComponentHolder implements ChangeListener{
 		eventStart.getModel().addChangeListener(this);
 		eventEnd.getModel().addChangeListener(this);
 
+		eventPhotoDropdown.setEditable(false);
+		eventPhotoDropdown.setModel(new PhotoDropdownModel());
+		eventPhotoDropdown.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Event e = peer.getLoader().getEvents().get(eventsList.getSelectedIndex());
+				e.setImage(eventPhotoDropdown.getSelectedItem().toString());
+			}
+		});
+		
 		newContentDropdown.setEditable(false);
 		newContentDropdown.setModel(new ContentDropdownModel());
-
 		newContentDropdown.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -635,11 +646,19 @@ public class ComponentHolder implements ChangeListener{
 		modifiedListPanel.add(new JScrollPane(modifiedFilesList), BorderLayout.CENTER);
 		modifiedListPanel.add(fileButtonPanel, BorderLayout.EAST);
 
-		JPanel eventsSmallDataPanel = new JPanel(new GridLayout(1,4,2,2));
-		eventsSmallDataPanel.add(new JLabel("Start Date:"));
-		eventsSmallDataPanel.add(eventStart);
-		eventsSmallDataPanel.add(new JLabel("End Date:"));
-		eventsSmallDataPanel.add(eventEnd);
+		JPanel eventImagePanel = new JPanel(new BorderLayout());
+		eventImagePanel.add(new JLabel("Event Image: "), BorderLayout.WEST);
+		eventImagePanel.add(eventPhotoDropdown, BorderLayout.CENTER);
+		
+		JPanel eventTimePanel = new JPanel(new GridLayout(1,4,2,2));
+		eventTimePanel.add(new JLabel("Start Date:"));
+		eventTimePanel.add(eventStart);
+		eventTimePanel.add(new JLabel("End Date:"));
+		eventTimePanel.add(eventEnd);
+		
+		JPanel eventsSmallDataPanel = new JPanel(new GridLayout(2,1,2,2));
+		eventsSmallDataPanel.add(eventTimePanel);
+		eventsSmallDataPanel.add(eventImagePanel);
 
 		JPanel eventsDataPanel = new JPanel(new BorderLayout());
 		eventsDataPanel.add(eventName, BorderLayout.NORTH);
@@ -787,7 +806,7 @@ public class ComponentHolder implements ChangeListener{
 		}
 	}
 
-	String[] getAllContentList(){
+	private String[] getAllContentList(){
 		ArrayList<String> list = new ArrayList<String>();
 		for (String s : peer.getOriginalFiles()){
 			if (false == peer.modifiedFileExists(s)){
@@ -798,6 +817,24 @@ public class ComponentHolder implements ChangeListener{
 		}
 		for (String s : peer.getModifiedFileNames()){
 			if (ZipManager.isImage(s) == false){
+				list.add(s);
+			}
+		}
+		return list.toArray(new String[0]);
+	}
+	
+	private String[] getAllPhotoList(){
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("");
+		for (String s : peer.getOriginalFiles()){
+			if (false == peer.modifiedFileExists(s)){
+				if (ZipManager.isImage(s) == true){
+					list.add(s);
+				}
+			}
+		}
+		for (String s : peer.getModifiedFileNames()){
+			if (ZipManager.isImage(s) == true){
 				list.add(s);
 			}
 		}
@@ -1159,6 +1196,28 @@ public class ComponentHolder implements ChangeListener{
 		@Override
 		public int getSize() {
 			return getAllContentList().length;
+		}
+		@Override
+		public Object getSelectedItem() {
+			return selected;
+		}
+		@Override
+		public void setSelectedItem(Object arg0) {
+			selected = (String)arg0;
+			notifyChange();
+		}
+	}
+	
+	class PhotoDropdownModel extends BasicComboBoxModel{
+		private String selected = null;
+
+		@Override
+		public Object getElementAt(int index) {
+			return getAllPhotoList()[index];
+		}
+		@Override
+		public int getSize() {
+			return getAllPhotoList().length;
 		}
 		@Override
 		public Object getSelectedItem() {

@@ -287,22 +287,6 @@ public class EventsActivity extends WireActivity{
 			} catch (Exception e) {
 				Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
 			}
-			/*Intent intent = new Intent(Intent.ACTION_INSERT);
-			intent.setType("vnd.android.cursor.item/event");
-			intent.putExtra(Events.TITLE, "My House Party");
-			intent.putExtra(Events.EVENT_LOCATION, "My Beach House");
-			intent.putExtra(Events.DESCRIPTION, "A Pig Roast on the Beach"); 
-
-			GregorianCalendar calDate = new GregorianCalendar(2012, 7, 15);
-			intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
-			intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
-			intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis()); 
-
-			try {
-				startActivity(intent);
-			} catch (Exception e) {
-				Toast.makeText(this.getApplicationContext(), "Sorry, no compatible calendar was found!", Toast.LENGTH_LONG).show();
-			}*/
 		}else if (Common.isAtLeastHoneycomb() == false){
 			Intent intent = new Intent(Intent.ACTION_EDIT);
 			intent.setType("vnd.android.cursor.item/event");
