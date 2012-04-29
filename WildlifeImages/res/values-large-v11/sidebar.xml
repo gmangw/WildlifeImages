@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="exhibit_sidebar_size" format="dimension" type="dimen">70dp</item>
+    <item name="exhibit_sidebar_double" format="dimension" type="dimen">210dp</item>
+
+</resources>

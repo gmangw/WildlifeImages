@@ -6,7 +6,7 @@
 			page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
 		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
 		<content tag="Visit" page="ExhibitContents/WildlifeImages/visit.html" />
-		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" />
+		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" comment="Wildlife Images Trolley" />
 		<alias name="Wildlife  Images" xpos="78" ypos="30" />
 		<alias name="Parking" xpos="77" ypos="11" />
 		<alias name="Education  Building" xpos="65" ypos="17" />
@@ -18,9 +18,10 @@
 		<content tag="Kodi and Yak"
 			page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
 		<content tag="Brown Bears" page="ExhibitContents/BrownBears/brownBears.html" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" />
-		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-1.jpg" comment="Kodi" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-2.jpg" comment="Kodi" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Kodi-3.jpg" comment="Kodi" />
+		<photo page="ExhibitContents/BrownBears/BrownBear-Yak-1.jpg" comment="Yak" />
 		<alias name="Brown  Bears 1" xpos="25" ypos="86" />
 		<alias name="Brown  Bears 2" xpos="9" ypos="80" />
 	</exhibit>
@@ -34,10 +35,10 @@
 		<content tag="Yogi" page="ExhibitContents/BlackBears/blackBearYogi.html" />
 		<content tag="Bear Bear"
 			page="ExhibitContents/BlackBears/blackBearBearBear.html" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-1.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-2.jpg" />
-		<photo page="ExhibitContents/BlackBears/BlackBear-3.jpg" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Boggs-1.jpg" comment="Boggs" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-1.jpg" comment="Janie" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-Janie-2.jpg" comment="Janie" />
+		<photo page="ExhibitContents/BlackBears/BlackBear-BearBear-1.jpg" comment="Bear Bear" />
 		<alias name="Black  Bear 1" xpos="22" ypos="58" tag="Boggs" />
 		<alias name="Black  Bear 2" xpos="9" ypos="52" tag="Yogi" />
 	</exhibit>
@@ -46,9 +47,8 @@
 		<content tag="Introduction" page="ExhibitContents/Lynx/lynxIntro.html" />
 		<content tag="Nikki" page="ExhibitContents/Lynx/lynxNikki.html" />
 		<content tag="Fun Facts" page="ExhibitContents/Lynx/lynxFunFacts.html" />
-		<photo page="ExhibitContents/Lynx/Lynx-1.jpg" />
-		<photo page="ExhibitContents/Lynx/Lynx-2.jpg" />
-		<photo page="ExhibitContents/Lynx/Lynx-3.jpg" />
+		<photo page="ExhibitContents/Lynx/Lynx-Nikki-1.jpg" comment="Nikki" />
+		<photo page="ExhibitContents/Lynx/Lynx-Nikki-2.jpg" comment="Nikki" />
 	</exhibit>
 	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx"
 		next="Badger">
@@ -58,21 +58,21 @@
 		<content tag="Hunting" page="ExhibitContents/Cougar/cougarHunting.html" />
 		<content tag="Clark" page="ExhibitContents/Cougar/cougarClark.html" />
 		<content tag="Tendons" page="ExhibitContents/Cougar/cougarClipping.html" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" />
-		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-1.jpg" comment="Clark" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" comment="Clark" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" comment="Clark" />
+		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" comment="Clark with his Easter basket (Easter 2012)." />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
 		next="Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
 		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" />
-		<photo page="ExhibitContents/Badger/Badger-Boogie-1.jpg" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-1.jpg" comment="Nubs" />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-2.jpg" comment="Nubs with a cardboard tube." />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-3.jpg" comment="Nubs being displayed during a tour." />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-4.jpg" comment="Nubs on a walk." />
+		<photo page="ExhibitContents/Badger/Badger-Nubs-5.jpg" comment="Nubs" />
 	</exhibit>
 	<exhibit name="Gray Wolves" xpos="-1" ypos="-1" previous="Badger"
 		next="Hybrid Wolves">
@@ -82,11 +82,11 @@
 		<content tag="Wolves" page="ExhibitContents/Wolves/wolves.html" />
 		<content tag="Pack" page="ExhibitContents/Wolves/wolvesPack.html" />
 		<content tag="Territory" page="ExhibitContents/Wolves/wolvesTerritory.html" />
-		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Lakota-2.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" />
-		<photo page="ExhibitContents/Wolves/Wolves-Tundra-3.jpg" />
+		<photo page="ExhibitContents/Wolves/Wolves-Lakota-1.jpg" comment="Lakota" />
+		<photo page="ExhibitContents/Wolves/Wolves-Lakota-2.jpg" comment="Lakota" />
+		<photo page="ExhibitContents/Wolves/Wolves-Tundra-1.jpg" comment="Tundra when she was younger and darker." />
+		<photo page="ExhibitContents/Wolves/Wolves-Tundra-2.jpg" comment="Tundra in her and Lakota's enclosure." />
+		<photo page="ExhibitContents/Wolves/Wolves-TundraAndLakota-1.jpg" comment="Tundra (left) and Lakota (right)." />
 		<alias name="Gray  Wolves" xpos="33" ypos="37" />
 	</exhibit>
 	<exhibit name="Hybrid Wolves" xpos="-1" ypos="-1" previous="Wolves"
@@ -97,9 +97,9 @@
 			page="ExhibitContents/HybridWolves/hybridWolvesPersonality.html" />
 		<content tag="Integration"
 			page="ExhibitContents/HybridWolves/hybridWolvesIntegration.html" />
-		<photo page="ExhibitContents/HybridWolves/HybridWolves-Kelsi-1.jpg" />
-		<photo page="ExhibitContents/HybridWolves/HybridWolves-Argo-1.jpg" />
-		<photo page="ExhibitContents/HybridWolves/HybridWolves-ArgoAndKelsi-1.jpg" />
+		<photo page="ExhibitContents/HybridWolves/HybridWolves-ArgoAndKelsey-1.jpg" comment="Argo (left) and Kelsey (right)." />
+		<photo page="ExhibitContents/HybridWolves/HybridWolves-Kelsey-1.jpg" comment="Kelsey" />
+		<photo page="ExhibitContents/HybridWolves/HybridWolves-Argo-1.jpg" comment="Argo" />
 		<alias name="Hybrid  Wolves" xpos="24" ypos="34" />
 	</exhibit>
 	<exhibit name="River Otter" xpos="17" ypos="9" previous="Hybrid Wolves"
@@ -108,10 +108,10 @@
 		<content tag="Nestle"
 			page="ExhibitContents/RiverOtter/riverOtterNestle.html" />
 		<content tag="River Otters" page="ExhibitContents/RiverOtter/riverOtters.html" />
-		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-1.jpg" />
-		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-2.jpg" />
-		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-3.jpg" />
-		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-4.jpg" />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-1.jpg" comment="Nestle" />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-2.jpg" comment="Nestle opening her birthday present (February 2012)." />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-3.jpg" comment="Nestle with her birthday present (February 2012)." />
+		<photo page="ExhibitContents/RiverOtter/RiverOtter-Nestle-4.jpg" comment="Nestle eating her birthday present (February 2012)." />
 	</exhibit>
 	<exhibit name="Bald Eagles" xpos="-1" ypos="-1" previous="River Otter"
 		next="Peregrine Falcon">
@@ -126,10 +126,9 @@
 			page="ExhibitContents/BaldEagles/baldEaglesDefiance.html" />
 		<content tag="Fun Facts"
 			page="ExhibitContents/BaldEagles/baldEaglesFunFacts.html" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-1.jpg" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-2.jpg" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-3.jpg" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-Defiance-1.jpg" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-Defiance-1.jpg" comment="Defiance" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-MsJefferson-1.jpg" comment="Ms. Jefferson" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-MsJefferson-2.jpg" comment="Ms. Jefferson" />
 	</exhibit>
 	<exhibit name="Peregrine Falcon" xpos="-1" ypos="-1" previous="Bald Eagles"
 		next="Western Screech Owl">
@@ -139,7 +138,9 @@
 			page="ExhibitContents/PeregrineFalcon/peregrineFalconChase.html" />
 		<content tag="Diet"
 			page="ExhibitContents/PeregrineFalcon/peregrineFalconDiet.html" />
-		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-1.jpg" />
+		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-1.jpg" comment="Chase being handled." />
+		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-2.jpg" comment="Chase perching outside." />
+		<photo page="ExhibitContents/PeregrineFalcon/PeregrineFalcon-Chase-3.jpg" comment="Chase" />
 	</exhibit>
 	<exhibit name="Western Screech Owl" xpos="-1" ypos="-1"
 		previous="Peregrine Falcon" next="Golden Eagles">
@@ -150,9 +151,8 @@
 		<content tag="Diet"
 			page="ExhibitContents/WesternScreechOwl/westernScreechOwlDiet.html" />
 		<photo
-			page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough.jpg"
+			page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough-1.jpg"
 			comment="Van Gough's missing eye and damaged ear prevent him from being released." />
-		<photo page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-1.jpg" />
 	</exhibit>
 	<exhibit name="Golden Eagles" xpos="-1" ypos="-1"
 		previous="Western Screech Owl" next="Great Horned Owl">
@@ -168,10 +168,9 @@
 			page="ExhibitContents/GoldenEagles/goldenEaglesDiet.html" />
 		<content tag="Nesting"
 			page="ExhibitContents/GoldenEagles/goldenEaglesNesting.html" />
-		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" />
-		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-2.jpg" />
-		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-1.jpg" />
-		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-2.jpg" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-1.jpg" comment="Phoenix" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Phoenix-2.jpg" comment="Phoenix" />
+		<photo page="ExhibitContents/GoldenEagles/GoldenEagle-Duchess-1.jpg" comment="Duchess" />
 	</exhibit>
 	<exhibit name="Great Horned Owl" xpos="-1" ypos="-1" previous="Golden Eagles"
 		next="Sandhill Crane">
@@ -187,8 +186,9 @@
 			page="ExhibitContents/GreatHornedOwl/greatHornedOwlPrey.html" />
 		<content tag="Hunting"
 			page="ExhibitContents/GreatHornedOwl/greatHornedOwlHunting.html" />
-		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" />
-		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-1.jpg" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" comment="Buddy" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-2.jpg" comment="Buddy" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-3.jpg" comment="Buddy" />
 	</exhibit>
 	<exhibit name="Sandhill Crane" xpos="-1" ypos="-1"
 		previous="Great Horned Owl" next="Augur Buzzards">
@@ -198,18 +198,21 @@
 			page="ExhibitContents/SandhillCrane/sandhillCraneNiles.html" />
 		<content tag="Daphne"
 			page="ExhibitContents/SandhillCrane/sandhillCraneDaphne.html" />
-		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-1.jpg" />
+		<photo page="ExhibitContents/SandhillCrane/SandhillCrane-NilesAndDaphne-1.jpg" comment="Niles and Daphne" />
 	</exhibit>
 	<exhibit name="Augur Buzzards" xpos="-1" ypos="-1"
 		previous="Great Horned Owl" next="Sacred Ibis">
 		<content tag="Introduction"
 			page="ExhibitContents/AugurBuzzards/augurBuzzardsIntro.html" />
-		<content tag="Augi"
-			page="ExhibitContents/AugurBuzzards/augurBuzzardsAugi.html" />
+		<content tag="Augie"
+			page="ExhibitContents/AugurBuzzards/augurBuzzardsAugie.html" />
 		<content tag="Beruti"
 			page="ExhibitContents/AugurBuzzards/augurBuzzardsBeruti.html" />
-		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-1.jpg" />
-		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augi-2.jpg" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augie-1.jpg" comment="Augie (light phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augie-2.jpg" comment="Augie (light phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Augie-3.jpg" comment="Augie (light phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Beruti-1.jpg" comment="Beruti (dark phase)" />
+		<photo page="ExhibitContents/AugurBuzzards/AugurBuzzards-Beruti-2.jpg" comment="Beruti (dark phase)" />
 	</exhibit>
 	<exhibit name="Sacred Ibis" xpos="-1" ypos="-1" previous="Augur Buzzards"
 		next="Turkey Vulture">
@@ -219,7 +222,7 @@
 		<content tag="Ancient Egypt"
 			page="ExhibitContents/SacredIbis/sacredIbisAncientEgypt.html" />
 		<photo
-			page="ExhibitContents/SacredIbis/SacredIbis-PinnochioAndGeppeto-1.jpg" />
+			page="ExhibitContents/SacredIbis/SacredIbis-PinnochioAndGeppeto-1.jpg" comment="Pinnochio and Geppeto" />
 	</exhibit>
 	<exhibit name="Turkey Vulture" xpos="-1" ypos="-1" previous="Sacred Ibis"
 		next="Red-Tailed Hawk">
