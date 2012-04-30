@@ -9,7 +9,6 @@
 		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" comment="Wildlife Images Trolley" />
 		<alias name="Wildlife  Images" xpos="78" ypos="30" />
 		<alias name="Parking" xpos="77" ypos="11" />
-		<alias name="Education  Building" xpos="65" ypos="17" />
 		<alias name="Clinic" xpos="52" ypos="25" />
 	</exhibit>
 	<exhibit name="Brown Bears" xpos="-1" ypos="-1" previous="Wildlife Images"
@@ -50,9 +49,9 @@
 		<photo page="ExhibitContents/Lynx/Lynx-Nikki-1.jpg" comment="Nikki" />
 		<photo page="ExhibitContents/Lynx/Lynx-Nikki-2.jpg" comment="Nikki" />
 	</exhibit>
-	<exhibit name="Cougar" xpos="45" ypos="50" previous="Lynx"
+	<exhibit name="Cougar" xpos="-1" ypos="-1" previous="Lynx"
 		next="Badger">
-		<content tag="Introduction" page="ExhibitContents/Cougar/cougarIntro.html" />
+		<content tag="Cougars" page="ExhibitContents/Cougar/cougarIntro.html" />
 		<content tag="Habitat" page="ExhibitContents/Cougar/cougarHabitat.html" />
 		<content tag="Diet" page="ExhibitContents/Cougar/cougarDiet.html" />
 		<content tag="Hunting" page="ExhibitContents/Cougar/cougarHunting.html" />
@@ -62,6 +61,8 @@
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-2.jpg" comment="Clark" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-3.jpg" comment="Clark" />
 		<photo page="ExhibitContents/Cougar/Cougar-Clark-4.jpg" comment="Clark with his Easter basket (Easter 2012)." />
+		<alias name="Cougar Run" xpos="42" ypos="59" tag="Habitat" />
+		<alias name="Cougar" xpos="45" ypos="50" tag="Cougars" />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
 		next="Wolves">
@@ -153,6 +154,7 @@
 		<photo
 			page="ExhibitContents/WesternScreechOwl/WesternScreechOwl-VanGough-1.jpg"
 			comment="Van Gough's missing eye and damaged ear prevent him from being released." />
+		<alias name="Screech Owl" xpos="47" ypos="11" />
 	</exhibit>
 	<exhibit name="Golden Eagles" xpos="-1" ypos="-1"
 		previous="Western Screech Owl" next="Great Horned Owl">
@@ -262,6 +264,7 @@
 			page="ExhibitContents/AmericanKestrel/americanKestrelAppearance.html" />
 		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-1.jpg" />
 		<photo page="ExhibitContents/AmericanKestrel/AmericanKestrel-2.jpg" />
+		<alias name="Kestrel" xpos="48" ypos="8" />
 	</exhibit>
 	<exhibit name="Common Barn Owl" xpos="-1" ypos="-1"
 		previous="American Kestrel" next="Common Raven">
@@ -283,7 +286,7 @@
 			page="ExhibitContents/CommonRaven/commonRavenSpeech.html" />
 		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-1.jpg" />
 		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-2.jpg" />
-		<alias name="Common  Raven" xpos="46" ypos="10" />
+		<alias name="Raven" xpos="46" ypos="14" />
 	</exhibit>
 	<exhibit name="American Crow" xpos="-1" ypos="-1" previous="Common Raven"
 		next="Eurasian Eagle Owl">
@@ -356,7 +359,7 @@
 			page="ExhibitContents/HarrisHawk/harrisHawkCharacteristics.html" />
 		<photo page="ExhibitContents/HarrisHawk/HarrisHawk-Wizard-1.jpg" />
 	</exhibit>
-	<exhibit name="Raccoon" xpos="54" ypos="18" previous="Harris Hawk"
+	<exhibit name="Raccoon" xpos="55" ypos="21" previous="Harris Hawk"
 		next="Mink">
 		<content tag="Introduction" page="ExhibitContents/Raccoon/raccoonIntro.html" />
 		<content tag="Ruby" page="ExhibitContents/Raccoon/raccoonRuby.html" />
@@ -364,7 +367,7 @@
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" />
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" />
 	</exhibit>
-	<exhibit name="Mink" xpos="-1" ypos="-1" previous="Raccoon"
+	<exhibit name="Mink" xpos="41" ypos="21" previous="Raccoon"
 		next="Hedgehogs">
 		<content tag="Introduction"
 			page="ExhibitContents/AmericanMink/americanMinkIntro.html" />
@@ -389,7 +392,7 @@
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-1.jpg" />
 		<photo page="ExhibitContents/HedgeHogs/HedgeHog-1.jpg" />
 	</exhibit>
-	<exhibit name="Bobcats" xpos="-1" ypos="-1" previous="Hedgehogs"
+	<exhibit name="Bobcats" xpos="46" ypos="28" previous="Hedgehogs"
 		next="Ground Squirrel">
 		<content tag="Introduction" page="ExhibitContents/Bobcats/bobcatsIntro.html" />
 		<content tag="Shoshoni" page="ExhibitContents/Bobcats/bobcatsShoshoni.html" />
@@ -411,8 +414,9 @@
 			page="ExhibitContents/GroundSquirrel/groundSquirrelArrival.html" />
 		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-1.jpg" />
 		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-2.jpg" />
+		<alias name="Squirrel" xpos="39" ypos="25" />
 	</exhibit>
-	<exhibit name="Coatis" xpos="-1" ypos="-1" previous="Ground Squirrel">
+	<exhibit name="Coatis" xpos="48" ypos="19" previous="Ground Squirrel">
 		<content tag="Introduction" page="ExhibitContents/Coatis/coatisIntro.html" />
 		<content tag="Baby and Bentley"
 			page="ExhibitContents/Coatis/coatisBabyAndBentley.html" />
@@ -459,14 +463,12 @@
 	<group name="Facilities">
 		<member exhibit="Wildlife Images" />
 	</group>
-	<group name="Birds" xpos="54" ypos="10">
+	<group name="Birds" xpos="56" ypos="8">
 		<member exhibit="Peregrine Falcon" />
-		<member exhibit="Western Screech Owl" />
 		<member exhibit="Golden Eagles" />
 		<member exhibit="Great Horned Owl" />
 		<member exhibit="Augur Buzzards" />
 		<member exhibit="Red-Tailed Hawk" />
-		<member exhibit="American Kestrel" />
 		<member exhibit="Common Barn Owl" />
 		<member exhibit="American Crow" />
 		<member exhibit="Eurasian Eagle Owl" />
@@ -479,15 +481,11 @@
 		<member exhibit="Bald Eagles" />
 		<member exhibit="Turkey Vulture" />
 	</group>
-	<group name="Small  Mammals" xpos="42" ypos="24">
-		<member exhibit="Ground Squirrel" />
-		<member exhibit="Coatis" />
-		<member exhibit="Hedgehogs" />
-		<member exhibit="Mink" />
-		<member exhibit="Bobcats" />
-	</group>
 	<group name="Water  Birds" xpos="63" ypos="36">
 		<member exhibit="Sacred Ibis" />
 		<member exhibit="Sandhill Crane" />
+	</group>
+		<group name="Education  Building" xpos="65" ypos="17">
+		<member exhibit="Hedgehogs" />
 	</group>
 </exhibit_list>
