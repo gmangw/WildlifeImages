@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 	private final Dimension mapDimension;
 
 	private final ExhibitLoader peer;
-	
+
 	private int mapX = -1;
 	private int mapY = -1;
 
@@ -97,30 +99,75 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 			pointsY.add(y);
 		}
 
-		int fontHeight = g.getFontMetrics().getHeight();
-		for (int i=0; i<names.size(); i++){
-			int stringWidth = g.getFontMetrics().stringWidth(names.get(i));
-			g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.5f));
-			g.fillRect(pointsX.get(i)-stringWidth/2 - 1, pointsY.get(i)-fontHeight+1, stringWidth + 2, fontHeight+2);
-			g.setColor(Color.WHITE);
-			g.drawString(names.get(i), pointsX.get(i)-stringWidth/2, pointsY.get(i));
-		}
+		Rectangle2D.Float rectUnion = new Rectangle2D.Float();
+		Rectangle2D.Float rect = new Rectangle2D.Float();
+		float[] yOffsets = new float[6];
+		int index = 0;
 		
+		for (int i=0; i<names.size(); i++){
+			rectUnion.setRect(0, 0, 0, 0);
+			yOffsets[0] = 0;
+			index = 0;
+			for (String nameLine : names.get(i).split("  ")){
+				rect = doubleRectToFloat(g.getFontMetrics().getStringBounds(nameLine, g));
+				offset(rect, pointsX.get(i) - rect.width/2, pointsY.get(i)*1.0f);
+				inset(rect, -g.getFont().getSize2D()/8.0f, -g.getFont().getSize2D()/8.0f);
+				offset(rect, 0, yOffsets[index]);
+				
+				if (rectUnion.width * rectUnion.height != 0){
+					Rectangle2D.Float.union(rect, rectUnion, rectUnion);
+				}else{
+					rectUnion = new Rectangle2D.Float(rect.x, rect.y, rect.width, rect.height);
+				}
+				index++;
+				yOffsets[index] = rect.height;
+			}
+			
+			g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.5f));
+			g.fillRect((int)rectUnion.x, (int)rectUnion.y, (int)rectUnion.width, (int)rectUnion.height);
+			
+			
+			g.setColor(Color.WHITE);
+			
+			index = 0;
+			for (String nameLine : names.get(i).split("  ")){
+				int stringWidth = g.getFontMetrics().stringWidth(nameLine);
+				g.drawString(nameLine, pointsX.get(i) - stringWidth/2, pointsY.get(i) + (int)yOffsets[index]);
+				index++;
+			}
+		}
+
 		g.setColor(Color.BLACK);
 		if (mapX != -1 || mapY != -1){
 			g.drawString(mapX + ", " + mapY, 0, 10);
 		}
 	}
+		
+	private static void inset(Rectangle2D.Float insetRect, float x, float y){
+		insetRect.x += x;
+		insetRect.y += y;
+		insetRect.width = Math.max(insetRect.width - x, 0);
+		insetRect.height = Math.max(insetRect.height - y, 0);
+	}
+	
+	private static Rectangle2D.Float doubleRectToFloat(Rectangle2D doubleRect){
+		return new Rectangle2D.Float((float)doubleRect.getX(), (float)doubleRect.getY(), (float)doubleRect.getWidth(), (float)doubleRect.getHeight());
+	}
+
+	private static void offset(Rectangle2D.Float moveRect, float x, float y){
+		moveRect.x += x;
+		moveRect.y += y;
+	}
 
 	public static JSVGCanvas getMapCanvas(Dimension d, InputStream stream) throws IOException{
-		
+
 		JSVGCanvas svgCanvas = new JSVGCanvas();
 
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 
 		SVGDocument doc = (SVGDocument)f.createDocument("myURI", stream);
-		
+
 		stream.close();
 		String widthString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE);
 		String heightString = doc.getDocumentElement().getAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE);
@@ -128,7 +175,7 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 		int height = Integer.parseInt(heightString.substring(0, heightString.length()-3));
 		d.setSize(width, height);
 
-		
+
 		svgCanvas.setSVGDocument(doc);
 
 		return svgCanvas;
@@ -149,7 +196,7 @@ public class JMapPanel extends JPanel implements MouseMotionListener{
 			return (int)(100 * (x - offsetX) / w);
 		}			
 	}
-	
+
 	public int getMapY(int y) {
 		double mapAspect = mapDimension.getWidth()/mapDimension.getHeight();
 		double myAspect = 1.0*getWidth()/getHeight();
