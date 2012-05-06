@@ -190,20 +190,20 @@ public class Parser {
 		sb.append("\n</exhibit_list>");
 		out.write(sb.toString().getBytes());
 	}
-	
+
 	public static void writeEventsXml(OutputStream out, ArrayList<? extends Event> events)throws IOException{
 		StringBuffer sb = new StringBuffer();
 		sb.append("<?xml version=\"1.0\"?>\n");
 		sb.append("<events_list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\t");
 		sb.append("xsi:noNamespaceSchemaLocation=\"../EventsSchema.xsd\">\n");
-		
+
 		for (Event e : events){
 			sb.append("\t<event>\n");
-			
+
 			sb.append("\t\t<title>");
 			sb.append(e.getTitle().replace("&", "and"));
 			sb.append("</title>\n");
-			
+
 			sb.append("\t\t<startdate>");
 			Date d = e.getStartDay();
 			Calendar now = Calendar.getInstance();
@@ -211,7 +211,7 @@ public class Parser {
 			String date = String.format("%1$tY-%1$tm-%1$td", now);
 			sb.append(date);
 			sb.append("</startdate>\n");
-			
+
 			sb.append("\t\t<enddate>");
 			d = e.getEndDay();
 			now = Calendar.getInstance();
@@ -219,14 +219,20 @@ public class Parser {
 			date = String.format("%1$tY-%1$tm-%1$td", now);
 			sb.append(date);
 			sb.append("</enddate>\n");
-			
+
 			sb.append("\t\t<description>");
 			sb.append(e.getDescription().replace("&", "and"));
 			sb.append("</description>\n");
-			
+
+			if (e.getImage().length() > 0){
+				sb.append("\t\t<image>");
+				sb.append(e.getImage());
+				sb.append("</image>\n");
+			}
+
 			sb.append("\t</event>\n");
 		}
-		
+
 		sb.append("</events_list>");
 		out.write(sb.toString().getBytes());
 	}
