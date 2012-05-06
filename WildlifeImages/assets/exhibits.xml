@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <exhibit_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../ExhibitsSchema.xsd">
-	<exhibit name="Wildlife Images" xpos="-1" ypos="-1" next="Brown Bears">
+	<exhibit name="Wildlife Images" xpos="-1" ypos="-1" next="Reptile and Arthropod Building">
 		<content tag="Introduction"
 			page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
 		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
@@ -11,6 +11,23 @@
 		<alias name="Parking" xpos="77" ypos="11" />
 		<alias name="Clinic" xpos="52" ypos="25" />
 	</exhibit>
+	<exhibit name="Reptile and Arthropod Building" xpos="-1" ypos="-1" previous="Wildlife Images" next="Brown Bears">
+		<content tag="Introduction" page="ExhibitContents/ReptileAndArthropodBuilding/reptileAndArthropodBuildingIntro.html" />
+		<content tag="Popular Pet Residents" page="ExhibitContents/ReptileAndArthropodBuilding/popularPetResidents.html" />
+		<content tag="Eastern Box Turtle" page="ExhibitContents/ReptileAndArthropodBuilding/easternBoxTurtle.html" />
+		<photo page="ExhibitContents/WildlifeImages/trolley.jpg" comment="Wildlife Images Trolley" />
+		<alias name="Reptiles/Arthropods" xpos="63" ypos="30" />
+	</exhibit>
+	
+	<exhibit name="Pond" xpos="72" ypos="50" previous="Wildlife Images" next="Brown Bears">
+		<content tag="Introduction" page="ExhibitContents/Pond/pondIntro.html" />
+		<content tag="Great Blue Herons" page="ExhibitContents/Pond/greatBlueHerons.html" />
+		<content tag="Barn Owl" page="ExhibitContents/Pond/barnOwl.html" />
+		<photo page="ExhibitContents/Pond/Pond-1.jpg" comment="Canadian goose taking flight." />
+		<photo page="ExhibitContents/Pond/Pond-2.jpg" comment="Mallard Ducks" />
+		<photo page="ExhibitContents/Pond/Pond-3.jpg" comment="Ducks and Geese" />
+	</exhibit>
+	
 	<exhibit name="Brown Bears" xpos="-1" ypos="-1" previous="Wildlife Images"
 		next="Black Bears">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
@@ -65,7 +82,7 @@
 		<alias name="Cougar" xpos="45" ypos="50" tag="Cougars" />
 	</exhibit>
 	<exhibit name="Badger" xpos="37" ypos="47" previous="Cougar"
-		next="Wolves">
+		next="Gray Wolves">
 		<content tag="Introduction" page="ExhibitContents/Badger/badgerIntro.html" />
 		<content tag="Nubs" page="ExhibitContents/Badger/badgerNubs.html" />
 		<content tag="Badgers" page="ExhibitContents/Badger/badgers.html" />
@@ -90,7 +107,7 @@
 		<photo page="ExhibitContents/Wolves/Wolves-TundraAndLakota-1.jpg" comment="Tundra (left) and Lakota (right)." />
 		<alias name="Gray  Wolves" xpos="33" ypos="37" />
 	</exhibit>
-	<exhibit name="Hybrid Wolves" xpos="-1" ypos="-1" previous="Wolves"
+	<exhibit name="Hybrid Wolves" xpos="-1" ypos="-1" previous="Gray Wolves"
 		next="River Otter">
 		<content tag="Introduction"
 			page="ExhibitContents/HybridWolves/hybridWolvesIntro.html" />
