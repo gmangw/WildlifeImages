@@ -3,7 +3,8 @@
     style="@style/ButtonText"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:minEms="5"
+    android:gravity="center"
+    android:paddingTop="0dp"
     android:textColor="@android:color/black"
     android:background="@drawable/android_button" >
 

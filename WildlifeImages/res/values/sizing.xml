@@ -2,7 +2,8 @@
 <resources>
 
     <style name="ButtonText">
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <item name="content_text_size" format="integer" type="integer">16</item>
