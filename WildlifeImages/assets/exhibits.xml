@@ -1,29 +1,28 @@
 <?xml version="1.0"?>
 <exhibit_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../ExhibitsSchema.xsd">
-	<exhibit name="Wildlife Images" xpos="-1" ypos="-1" next="Reptile and Arthropod Building">
-		<content tag="Wildlife Images" page="ExhibitContents/WildlifeImages/wildlifeimages.html" />
-		<content tag="Support" page="ExhibitContents/WildlifeImages/donate.html" />
-		<content tag="Visit" page="ExhibitContents/WildlifeImages/visit.html" />
-		<content tag="Reptile Building" page="ExhibitContents/WildlifeImages/reptileAndArthropodBuilding.html" />
-		<content tag="Education Building" page="ExhibitContents/WildlifeImages/educationBuilding.html" />
-		<content tag="Birds of Prey" page="ExhibitContents/WildlifeImages/birdsOfPreyCenter.html" />
-		<photo page="ExhibitContents/WildlifeImages/Entrance.jpg" comment="Wildlife Images Entrance" />
-		<photo page="ExhibitContents/WildlifeImages/BabyBirdRoom.jpg" comment="Baby Bird Room" />
-		<photo page="ExhibitContents/WildlifeImages/BirdOfPreyBuilding.jpg" comment="Bird of Prey Building" />
-		<photo page="ExhibitContents/WildlifeImages/EducationBuilding.jpg" comment="Education Building" />
-		<photo page="ExhibitContents/WildlifeImages/CritterCreek.jpg" comment="Critter Creek" />
-		<photo page="ExhibitContents/WildlifeImages/EagleFlight.jpg" comment="Eagle Flight" />
-		<photo page="ExhibitContents/WildlifeImages/EagleStatue.jpg" comment="Eagle Statue" />
-		<photo page="ExhibitContents/WildlifeImages/TrolleyStopBear.jpg" comment="Trolley Stop Bear" />
-		<photo page="ExhibitContents/WildlifeImages/Trolley.jpg" comment="Wildlife Images Trolley" />
+	<exhibit name="Wildlife Images" xpos="-1" ypos="-1" next="Pond">
+		<content tag="Wildlife Images" page="ExhibitContents/WildlifeImages/wildlifeImages.html" />
+		<content tag="Support" page="ExhibitContents/WildlifeImages/wildlifeImagesDonate.html" />
+		<content tag="Visit" page="ExhibitContents/WildlifeImages/wildlifeImagesVisit.html" />
+		<content tag="Reptile Building" page="ExhibitContents/WildlifeImages/wildlifeImagesReptileAndArthropodBuilding.html" />
+		<content tag="Education Building" page="ExhibitContents/WildlifeImages/wildlifeImagesEducationBuilding.html" />
+		<content tag="Birds of Prey" page="ExhibitContents/WildlifeImages/wildlifeImagesBirdsOfPreyCenter.html" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-Entrance.jpg" comment="Wildlife Images Entrance" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-BabyBirdRoom.jpg" comment="Baby Bird Room" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-BirdOfPreyBuilding.jpg" comment="Bird of Prey Building" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-EducationBuilding.jpg" comment="Education Building" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-CritterCreek.jpg" comment="Critter Creek" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-EagleFlight.jpg" comment="Eagle Flight" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-EagleStatue.jpg" comment="Eagle Statue" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-TrolleyStopBear.jpg" comment="Trolley Stop Bear" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-Trolley.jpg" comment="Wildlife Images Trolley" />
 		<alias name="Wildlife  Images" xpos="78" ypos="30" tag="Wildlife Images" />
 		<alias name="Parking" xpos="77" ypos="11" tag="Visit" />
 		<alias name="Clinic" xpos="52" ypos="25" tag="Wildlife Images" />
 		<alias name="Reptiles/Arthropods" xpos="63" ypos="30" tag="Reptile Building" />
 		<alias name="Education  Building" xpos="65" ypos="17" tag="Education Building" />
 	</exhibit>
-	
 	<exhibit name="Pond" xpos="72" ypos="50" previous="Wildlife Images" next="Brown Bears">
 		<content tag="Introduction" page="ExhibitContents/Pond/pondIntro.html" />
 		<content tag="Great Blue Herons" page="ExhibitContents/Pond/greatBlueHerons.html" />
@@ -32,9 +31,7 @@
 		<photo page="ExhibitContents/Pond/Pond-2.jpg" comment="Mallard Ducks" />
 		<photo page="ExhibitContents/Pond/Pond-3.jpg" comment="Ducks and Geese" />
 	</exhibit>
-	
-	<exhibit name="Brown Bears" xpos="-1" ypos="-1" previous="Wildlife Images"
-		next="Black Bears">
+	<exhibit name="Brown Bears" xpos="-1" ypos="-1" previous="Pond" next="Black Bears">
 		<content tag="Introduction" page="ExhibitContents/BrownBears/brownBearIntro.html" />
 		<content tag="Kodi and Yak"
 			page="ExhibitContents/BrownBears/brownBearKodiAndYak.html" />
@@ -414,9 +411,10 @@
 	</exhibit>
 	<exhibit name="Gray Fox" xpos="-1" ypos="-1" previous="Hedgehogs" next="Bobcats">
 		<content tag="Introduction" page="ExhibitContents/GrayFox/grayFoxIntro.html" />
-		<content tag="Carson" page="ExhibitContents/GrayFox/carson.html" />
-		<photo page="ExhibitContents/GrayFox/Carson-1.jpg" comment="Carson" />
-		<photo page="ExhibitContents/GrayFox/Carson-2.jpg" comment="Carson" />
+		<content tag="Carson" page="ExhibitContents/GrayFox/grayFoxCarson.html" />
+		<content tag="Fun Facts" page="ExhibitContents/GrayFox/grayFoxFunFacts.html" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Carson" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Carson" />
 	</exhibit>
 	<exhibit name="Bobcats" xpos="-1" ypos="-1" previous="Gray Fox" next="Ground Squirrel">
 		<content tag="Introduction" page="ExhibitContents/Bobcats/bobcatsIntro.html" />
@@ -490,6 +488,7 @@
 		<member exhibit="Pond" />
 	</group>
 	<group name="Birds" xpos="56" ypos="8">
+		<member exhibit="Wildlife Images" />
 		<member exhibit="Peregrine Falcon" />
 		<member exhibit="Golden Eagles" />
 		<member exhibit="Great Horned Owl" />
@@ -516,5 +515,4 @@
 		<member exhibit="Bobcats" />
 		<member exhibit="Hedgehogs" />
 	</group>
-	
 </exhibit_list>
