@@ -37,7 +37,6 @@ public class IntroActivityInstrumentationTest extends ActivityInstrumentationTes
 		assertNotNull(mActivity);
 
 		runTestOnUiThread(new Runnable(){
-			@Override
 			public void run() {
 				ImageButton explore = (ImageButton)mActivity.findViewById(R.id.intro_sidebar_exhibitlist);
 				explore.performClick();
@@ -49,7 +48,6 @@ public class IntroActivityInstrumentationTest extends ActivityInstrumentationTes
 		assertNotNull(mActivity);
 
 		runTestOnUiThread(new Runnable(){
-			@Override
 			public void run() {
 				ImageButton photos = (ImageButton)mActivity.findViewById(R.id.intro_sidebar_photos);
 				photos.performClick();
@@ -61,7 +59,6 @@ public class IntroActivityInstrumentationTest extends ActivityInstrumentationTes
 		assertNotNull(mActivity);
 		
 		runTestOnUiThread(new Runnable(){
-			@Override
 			public void run() {
 				ImageButton map = (ImageButton)mActivity.findViewById(R.id.intro_sidebar_map);
 				map.performClick();
@@ -73,7 +70,6 @@ public class IntroActivityInstrumentationTest extends ActivityInstrumentationTes
 		assertNotNull(mActivity);
 		
 		runTestOnUiThread(new Runnable(){
-			@Override
 			public void run() {
 				ImageButton events = (ImageButton)mActivity.findViewById(R.id.intro_sidebar_events);
 				events.performClick();
