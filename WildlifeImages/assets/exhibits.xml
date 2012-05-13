@@ -14,6 +14,9 @@
 		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-EducationBuilding.jpg" comment="Education Building" />
 		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-CritterCreek.jpg" comment="Critter Creek" />
 		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-EagleFlight.jpg" comment="Eagle Flight" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-BobcatEnclosure.jpg" comment="Bobcat Enclosure" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-GroundSquirrelEnclosure.jpg" comment="Ground Squirrel Enclosure" />
+		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-DaveSeniorFounder.jpg" comment="Dave Siddon Sr. - Founder of Wildlife Images." />
 		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-EagleStatue.jpg" comment="Eagle Statue" />
 		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-TrolleyStopBear.jpg" comment="Trolley Stop Bear" />
 		<photo page="ExhibitContents/WildlifeImages/WildlifeImages-Trolley.jpg" comment="Wildlife Images Trolley" />
@@ -146,9 +149,10 @@
 			page="ExhibitContents/BaldEagles/baldEaglesDefiance.html" />
 		<content tag="Fun Facts"
 			page="ExhibitContents/BaldEagles/baldEaglesFunFacts.html" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-Defiance-1.jpg" comment="Bald Eagles - Defiance" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-MsJefferson-1.jpg" comment="Bald Eagles - Ms. Jefferson" />
-		<photo page="ExhibitContents/BaldEagles/BaldEagle-MsJefferson-2.jpg" comment="Bald Eagles - Ms. Jefferson" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-Defiance-1.jpg" comment="Bald Eagle - Defiance" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-MsJefferson-1.jpg" comment="Bald Eagle - Ms. Jefferson" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-MsJefferson-2.jpg" comment="Bald Eagle - Ms. Jefferson" />
+		<photo page="ExhibitContents/BaldEagles/BaldEagle-SqueakyAndHaggis-1.jpg" comment="Bald Eagles - Squeaky and Haggis" />
 	</exhibit>
 	<exhibit name="Peregrine Falcon" xpos="-1" ypos="-1" previous="Bald Eagles"
 		next="Western Screech Owl">
@@ -211,6 +215,7 @@
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-1.jpg" comment="Great Horned Owl - Buddy" />
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-2.jpg" comment="Great Horned Owl - Buddy" />
 		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Buddy-3.jpg" comment="Great Horned Owl - Buddy" />
+		<photo page="ExhibitContents/GreatHornedOwl/GreatHornedOwl-Owlet-1.jpg" comment="A Great Horned Owl owlet." />
 	</exhibit>
 	<exhibit name="Sandhill Crane" xpos="-1" ypos="-1"
 		previous="Great Horned Owl" next="Augur Buzzards">
@@ -382,7 +387,7 @@
 			page="ExhibitContents/HarrisHawk/harrisHawkCharacteristics.html" />
 		<photo page="ExhibitContents/HarrisHawk/HarrisHawk-Wizard-1.jpg" comment="Harris Hawk - Wizard" />
 	</exhibit>
-	<exhibit name="Raccoon" xpos="55" ypos="21" previous="Harris Hawk" next="Mink">
+	<exhibit name="Raccoon" xpos="55" ypos="21" previous="Harris Hawk" next="American Mink">
 		<content tag="Introduction" page="ExhibitContents/Raccoon/raccoonIntro.html" />
 		<content tag="Ruby" page="ExhibitContents/Raccoon/raccoonRuby.html" />
 		<content tag="Diet" page="ExhibitContents/Raccoon/raccoonDiet.html" />
@@ -390,7 +395,7 @@
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" comment="Raccoon - Ruby" />
 		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-3.jpg" comment="Raccoon - Ruby" />
 	</exhibit>
-	<exhibit name="Mink" xpos="41" ypos="21" previous="Raccoon"
+	<exhibit name="American Mink" xpos="41" ypos="21" previous="Raccoon"
 		next="Hedgehogs">
 		<content tag="Introduction"
 			page="ExhibitContents/AmericanMink/americanMinkIntro.html" />
@@ -407,7 +412,7 @@
 		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-2.jpg" comment="American Mink - Jasmine with her Easter egg (Easter 2012)." />
 		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-3.jpg" comment="American Mink - Jasmine with her Easter egg (Easter 2012)." />
 	</exhibit>
-	<exhibit name="Hedgehogs" xpos="-1" ypos="-1" previous="Mink" next="Gray Fox">
+	<exhibit name="Hedgehogs" xpos="-1" ypos="-1" previous="American Mink" next="Gray Fox">
 		<content tag="Introduction" page="ExhibitContents/HedgeHogs/hedgeHogIntro.html" />
 		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogSugarAndSpice.html" />
 		<content tag="Fun Facts" page="ExhibitContents/HedgeHogs/hedgeHogFunFacts.html" />
@@ -420,19 +425,24 @@
 		<content tag="Introduction" page="ExhibitContents/GrayFox/grayFoxIntro.html" />
 		<content tag="Carson" page="ExhibitContents/GrayFox/grayFoxCarson.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GrayFox/grayFoxFunFacts.html" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Carson" comment="" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Carson" comment="" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Carson" comment="Gray Fox - Carson" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Carson" comment="Gray Fox - Carson" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-3.jpg" comment="Carson" comment="Gray Fox - Carson with his Easter egg (Easter 2012)." />
 	</exhibit>
 	<exhibit name="Bobcats" xpos="-1" ypos="-1" previous="Gray Fox" next="Ground Squirrel">
 		<content tag="Introduction" page="ExhibitContents/Bobcats/bobcatsIntro.html" />
 		<content tag="Shoshoni" page="ExhibitContents/Bobcats/bobcatsShoshoni.html" />
 		<content tag="Rufus" page="ExhibitContents/Bobcats/bobcatsRufus.html" />
-		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-1.jpg" />
-		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-2.jpg" />
-		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-3.jpg" />
-		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-1.jpg" />
-		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-2.jpg" />
-		<photo page="ExhibitContents/Bobcats/Bobcats-1.jpg" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-1.jpg" comment="Bobcat - Rufus" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-2.jpg" comment="Bobcat - Rufus" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-3.jpg" comment="Bobcat - Rufus with his Easter basket (Easter 2012)." />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-4.jpg" comment="Bobcat - Rufus with his Easter basket (Easter 2012)." />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-5.jpg" comment="Bobcat - Rufus with an Easter egg (Easter 2012)." />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Rufus-6.jpg" comment="Bobcat - Rufus" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-1.jpg" comment="Bobcat - Shoshoni" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-2.jpg" comment="Bobcat - Shoshoni" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-3.jpg" comment="Bobcat - Shoshoni" />
+		<photo page="ExhibitContents/Bobcats/Bobcats-Shoshoni-4.jpg" comment="Bobcat - Shoshoni (March Snow 2012)." />
 	</exhibit>
 	<exhibit name="Ground Squirrel" xpos="-1" ypos="-1" previous="Bobcats"
 		next="Coatis">
@@ -442,8 +452,10 @@
 			page="ExhibitContents/GroundSquirrel/groundSquirrelCheerio.html" />
 		<content tag="Arrival"
 			page="ExhibitContents/GroundSquirrel/groundSquirrelArrival.html" />
-		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-1.jpg" />
-		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-2.jpg" />
+		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-1.jpg" comment="Ground Squirrel - Cheerio" />
+		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-2.jpg" comment="Ground Squirrel - Cheerio with her Easter basket (Easter 2012)." />
+		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-3.jpg" comment="Ground Squirrel - Cheerio with her Easter basket (Easter 2012)." />
+		<photo page="ExhibitContents/GroundSquirrel/GroundSquirell-Cheerio-4.jpg" comment="Ground Squirrel - Cheerio" />
 		<alias name="Squirrel" xpos="39" ypos="25" />
 	</exhibit>
 	<exhibit name="Coatis" xpos="48" ypos="19" previous="Ground Squirrel">
@@ -451,7 +463,10 @@
 		<content tag="Baby and Bentley"
 			page="ExhibitContents/Coatis/coatisBabyAndBentley.html" />
 		<content tag="Diet" page="ExhibitContents/Coatis/coatisDiet.html" />
-		<photo page="ExhibitContents/Coatis/Coatis-Bentley-1.jpg" />
+		<photo page="ExhibitContents/Coatis/Coatis-Bentley-1.jpg" comment="Coatis - Bentley" />
+		<photo page="ExhibitContents/Coatis/Coatis-Bentley-2.jpg" comment="Coatis - Bentley" />
+		<photo page="ExhibitContents/Coatis/Coatis-1.jpg" comment="Coatis' with their Easter eggs (Easter 2012)." />
+		<photo page="ExhibitContents/Coatis/Coatis-2.jpg" comment="Coatis' with their Easter eggs (Easter 2012)." />
 	</exhibit>
 	<group name="Avians" xpos="-1" ypos="-1">
 		<member exhibit="Peregrine Falcon" />
@@ -487,7 +502,7 @@
 		<member exhibit="Hybrid Wolves" />
 		<member exhibit="River Otter" />
 		<member exhibit="Raccoon" />
-		<member exhibit="Mink" />
+		<member exhibit="American Mink" />
 		<member exhibit="Bobcats" />
 	</group>
 	<group name="Facilities">
