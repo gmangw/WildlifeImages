@@ -2,40 +2,84 @@
 <events_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../EventsSchema.xsd">
 	<event>
-		<title>Earth Day, Go Green Day</title>
-		<startdate>2012-02-27</startdate>
-		<enddate>2012-04-22</enddate>
-		<description>Wear Green and Admission is half price. Children can enter the color completion to win a free pass on the Expedition Transport for the rest of 2012! Reservations are required.</description>
-	</event>
-	<event>
-		<title>"Color Eggs for the Critters" an Eggs-Travaganza!</title>
-		<startdate>2012-02-27</startdate>
-		<enddate>2012-05-27</enddate>
-		<description>Children from 2 to 15 can come and help our animal care staff color eggs for the critters. Animal Keepers will place the colored eggs throughout the habitats during the following Easter weekend so that the animals have to forage for their food, and of course crack open the colorful shells. The animals love it! Free Event!</description>
-	</event>
-	<event>
-		<title>"Estate Planning 101" Estate Planning Workshops</title>
-		<startdate>2012-03-06</startdate>
-		<enddate>2012-03-06</enddate>
-		<description>A FREE workshop on basic estate planning principles (to include charitable giving) and how to have an estate plan that works. Workshop will be held in the Evergreen Room at Taprock NW Bar and Grill in Grants Pass. Participants will receive a free tour ticket of Wildlife Images. Light appetizer and refreshments provided.</description>
-	</event>
-	<event>
-		<title>Mother's Day Brunch</title>
-		<startdate>2012-05-13</startdate>
-		<enddate>2012-05-27</enddate>
-		<description>A unique Mother’s Day Brunch at Wildlife Images with a touch of chocolate. Enjoy a catered brunch by Silver Ridge Outfitters while in the company of some amazing critters. As our guest you will have full access to our facility with many photo opportunities. And the ladies will receive special gifts of chocolate and a flower. $35.00 for the general public and $25.00 for Wildlife Images members. Purchase your tickets today or give us a call for more details.</description>
-	</event>
-	<event>
 		<title>Early Bird Gets the Worm!</title>
-		<startdate>2012-06-13</startdate>
-		<enddate>2012-06-13</enddate>
+		<startdate>2012-05-19</startdate>
+		<enddate>2012-05-19</enddate>
 		<description>We will be opening the gates early at 8am and kids from 8am to 9am receive FREE entry, bring your camera for photo with an animal ambassador. Reservations are required.</description>
-		<image>Events/Denise-Pictures-018.jpg</image>
 	</event>
 	<event>
-		<title>Spring into Wildlife a Fundraiser at Chet’s Garden Center and Nursery</title>
-		<startdate>2012-06-27</startdate>
-		<enddate>2012-06-27</enddate>
-		<description>25% of all proceeds go directly benefit Wildlife Images Rehabilitation and Education Center. Wildlife is blooming this time of year at Chet’s Nursery. Spring is upon us. It’s time to get planting! Come in for in store specials including 10% off of everything in stock. Choose from a huge selection of plants, fertilizer, gardening supplies, tools and garden art.</description>
+		<title>Expedition Transport "Your ride to the Wildside"</title>
+		<startdate>2012-06-01</startdate>
+		<enddate>2012-09-09</enddate>
+		<description>This is a three hour guided excursion that provides a ride out to Wildlife Images Rehabilitation and Education Center on the Expedition Transport and an exciting and educational tour of our facility. The Transport departs from several locations in downtown Grants Pass.</description>
+		<image>Events/2012-9-9-ExpeditionTransport.jpg</image>
+	</event>
+	<event>
+		<title>Camp EEK!</title>
+		<startdate>2012-06-18</startdate>
+		<enddate>2012-07-20</enddate>
+		<description>In 2012, Wildlife Images will be hosting its 7th annual summer camp- Camp EEK! Designed for children between the ages of 7 and 11, this year’s curriculum will focus on nocturnal animals, marine life, ecosystems, and interdependence. Participants will not only enjoy a variety of engaging lessons, creative crafts, and exciting games, but they will also have the opportunity to get up-close and personal with a number of our wild animal residents- including several new furry additions! Join us this summer for a memorable and educational wildlife adventure!</description>
+	</event>
+	<event>
+		<title>Southern Oregon Experience II: Wine Maker’s Dinner at Troon Vineyard and Brunch by Taprock at Wildlife Images</title>
+		<startdate>2012-06-23</startdate>
+		<enddate>2012-06-24</enddate>
+		<description>Wine Maker’s Dinner at Troon Vineyard ~ June 23rd: 6pm to 9:30pm and Brunch by Taprock at Wildlife Images June ~ 24th: 10am to 2pm. Tickets $100.00 for both days. This year we are having a unique and spectacular winemakers’ dinner where all of our guest will not only enjoy the culinary pleasures of Chef Tim they will also enjoying the meal in the company of some of the Wildlife Images Animal Ambassadors. Day two, we will once more enjoy the culinary talents of Taprock at the place we all love "Wildlife Images."</description>
+	</event>
+	<event>
+		<title>Great Garage Sale</title>
+		<startdate>2012-06-29</startdate>
+		<enddate>2012-06-30</enddate>
+		<description>June 29th and 30th 8:00am to 2:00pm The Great Garage Sale at Wildlife Images. Find that unique treasure at The Great Garage Sale. All income goes to Wildlife Images.</description>
+	</event>
+	<event>
+		<title>Fire Awareness Days</title>
+		<startdate>2012-06-29</startdate>
+		<enddate>2012-06-30</enddate>
+		<description>June 29th and 30th 10:00am to 2:00pm Fire Awareness Days at Wildlife Images Presentations given by local Rural/Metro Fire Department. Meet your local heroes, listen to presentations and learn how to be fire safe. Free Event!</description>
+	</event>
+	<event>
+		<title>Junior Volunteer Program (JVP)</title>
+		<startdate>2012-07-30</startdate>
+		<enddate>2012-08-17</enddate>
+		<description>The Wildlife Images Rehabilitation and Education Center JVP is an opportunity for young teenagers interested in working with wildlife. Find out what it means to actually care for these animals every day, and learn what it feels like to help critters in need. Along the way, you’ll gain new knowledge and skills, and create experiences you’ll remember for the rest of your life. The Junior Volunteer Program is designed for 13-15 year old young adults. It’s a week-long program, Monday through Friday, from 8:00 am – 12:00 pm each day.</description>
+	</event>
+	<event>
+		<title>Family Gone Wild Camp Out!</title>
+		<startdate>2012-08-18</startdate>
+		<enddate>2012-08-19</enddate>
+		<description>August 18th and August 25th Family Gone Wild Camp Out! Camp out on the lawn. Get a special visit from some of our Animal Ambassadors. You also get to experience some behind-the-scenes areas. Make an enrichment treat for your selected animal. Includes dinner, snacks and campfire with stories. Awaken with the animals and to a continental breakfast. A special morning tour wraps up this memorable event. All Ages Welcome!</description>
+		<image>Events/2012-8-25-FamilyGoneWild.jpg</image>
+	</event>
+	<event>
+		<title>Family Gone Wild Camp Out!</title>
+		<startdate>2012-08-25</startdate>
+		<enddate>2012-08-26</enddate>
+		<description>August 18th and August 25th Family Gone Wild Camp Out! Camp out on the lawn. Get a special visit from some of our Animal Ambassadors. You also get to experience some behind-the-scenes areas. Make an enrichment treat for your selected animal. Includes dinner, snacks and campfire with stories. Awaken with the animals and to a continental breakfast. A special morning tour wraps up this memorable event. All Ages Welcome!</description>
+		<image>Events/2012-8-25-FamilyGoneWild.jpg</image>
+	</event>
+	<event>
+		<title>Seniors Going Wild!</title>
+		<startdate>2012-09-08</startdate>
+		<enddate>2012-09-08</enddate>
+		<description>Celebrating Grandparents Day Seniors are invited to explore Wildlife Images with a weekend of free admission. Must be over 65, if you look over 20 you will be carded! Reservations are required.</description>
+	</event>
+	<event>
+		<title>Veteran's Weekend</title>
+		<startdate>2012-11-10</startdate>
+		<enddate>2012-11-11</enddate>
+		<description>Honoring Those who Have Served Our Country Veterans are invited to explore Wildlife Images with a weekend of free admission. Reservations are required.</description>
+	</event>
+	<event>
+		<title>Holiday Open House</title>
+		<startdate>2012-11-23</startdate>
+		<enddate>2012-11-24</enddate>
+		<description>Wildlife Images fourth annual Holiday Open House The event will feature ½ price tours of the sanctuary, refreshments, and a unique selection of Holiday gifts for every wildlife lover. You can ‘adopt’ one of our animals and enter the raffle to win a life-sized stuffed toy bear. And the best part, all proceeds go directly towards keeping our resident birds and animals warm, fed, and healthy.</description>
+	</event>
+	<event>
+		<title>Family and Friends Days</title>
+		<startdate>2012-12-14</startdate>
+		<enddate>2012-12-24</enddate>
+		<description>Save 30% on everything in the Wildlife Images Gift Shop and enter to win a $50.00 Wildlife Images Rehabilitation and Education Gift Certificate. And the best part, all proceeds go directly towards keeping our resident birds and animals warm, fed, and healthy.</description>
 	</event>
 </events_list>
