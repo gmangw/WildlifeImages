@@ -308,8 +308,8 @@
 			page="ExhibitContents/CommonRaven/commonRavenOnyx.html" />
 		<content tag="Speech"
 			page="ExhibitContents/CommonRaven/commonRavenSpeech.html" />
-		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-1.jpg" />
-		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-2.jpg" />
+		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-1.jpg" comment="Common Raven - Onyx" />
+		<photo page="ExhibitContents/CommonRaven/CommonRaven-Onyx-2.jpg" comment="Common Raven - Onyx" />
 		<alias name="Raven" xpos="46" ypos="14" />
 	</exhibit>
 	<exhibit name="American Crow" xpos="-1" ypos="-1" previous="Common Raven"
@@ -320,7 +320,7 @@
 			page="ExhibitContents/AmericanCrow/americanCrowSid.html" />
 		<content tag="Crowby"
 			page="ExhibitContents/AmericanCrow/americanCrowCrowby.html" />
-		<photo page="ExhibitContents/AmericanCrow/AmericanCrow-Sid-1.jpg" />
+		<photo page="ExhibitContents/AmericanCrow/AmericanCrow-Sid-1.jpg" comment="American Crow - Sid" />
 	</exhibit>
 	<exhibit name="Eurasian Eagle Owl" xpos="-1" ypos="-1"
 		previous="American Crow" next="Ferruginous Hawk">
@@ -330,9 +330,9 @@
 			page="ExhibitContents/EurasianEagleOwl/eurasianEagleOwlKokoro.html" />
 		<content tag="Ears"
 			page="ExhibitContents/EurasianEagleOwl/eurasianEagleOwlEars.html" />
-		<photo
-			page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-1.jpg" />
-		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-1.jpg" />
+		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-1.jpg" comment="Eurasian Eagle Owl - Kokoro" />
+		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-2.jpg" comment="Eurasian Eagle Owl - Kokoro" />
+		<photo page="ExhibitContents/EurasianEagleOwl/EurasianEagleOwl-Kokoro-3.jpg" comment="Eurasian Eagle Owl - Kokoro" />
 	</exhibit>
 	<exhibit name="Ferruginous Hawk" xpos="-1" ypos="-1"
 		previous="Eurasian Eagle Owl" next="Black Vulture">
@@ -342,11 +342,10 @@
 			page="ExhibitContents/FerruginousHawk/ferruginousHawkSage.html" />
 		<content tag="Fun Facts"
 			page="ExhibitContents/FerruginousHawk/ferruginousHawkFunFacts.html" />
-		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-1.jpg" />
-		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-2.jpg" />
-		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-3.jpg" />
-		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-4.jpg" />
-		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-5.jpg" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-1.jpg" comment="Ferruginous Hawk - Sage" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-2.jpg" comment="Ferruginous Hawk - Sage" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-3.jpg" comment="Ferruginous Hawk - Sage" />
+		<photo page="ExhibitContents/FerruginousHawk/FerruginousHawk-Sage-4.jpg" comment="Ferruginous Hawk - Sage" />
 	</exhibit>
 	<exhibit name="Black Vulture" xpos="-1" ypos="-1" previous="Ferruginous Hawk"
 		next="Harlan Hawk">
@@ -362,8 +361,7 @@
 			page="ExhibitContents/BlackVulture/blackVultureSocial.html" />
 		<content tag="Senses"
 			page="ExhibitContents/BlackVulture/blackVultureSenses.html" />
-		<photo page="ExhibitContents/BlackVulture/BlackVulture-1.jpg" />
-		<photo page="ExhibitContents/BlackVulture/BlackVulture-2.jpg" />
+		<photo page="ExhibitContents/BlackVulture/BlackVulture-1.jpg" comment="Black Vulture - Solomon" />
 	</exhibit>
 	<exhibit name="Harlan Hawk" xpos="-1" ypos="-1" previous="Black Vulture"
 		next="Harris Hawk">
@@ -372,7 +370,8 @@
 			page="ExhibitContents/HarlanHawk/harlanHawkBeauty.html" />
 		<content tag="Beauty's Arrival"
 			page="ExhibitContents/HarlanHawk/harlanHawkBeautyArrival.html" />
-		<photo page="ExhibitContents/HarlanHawk/HarlanHawk-Beauty-1.jpg" />
+		<photo page="ExhibitContents/HarlanHawk/HarlanHawk-Beauty-1.jpg" comment="Harlan Hawk - Beauty" />
+		<photo page="ExhibitContents/HarlanHawk/HarlanHawk-Beauty-2.jpg" comment="Harlan Hawk - Beauty" />
 	</exhibit>
 	<exhibit name="Harris Hawk" xpos="-1" ypos="-1" previous="Harlan Hawk"
 		next="Raccoon">
@@ -381,15 +380,15 @@
 			page="ExhibitContents/HarrisHawk/harrisHawkWizard.html" />
 		<content tag="Characteristics"
 			page="ExhibitContents/HarrisHawk/harrisHawkCharacteristics.html" />
-		<photo page="ExhibitContents/HarrisHawk/HarrisHawk-Wizard-1.jpg" />
+		<photo page="ExhibitContents/HarrisHawk/HarrisHawk-Wizard-1.jpg" comment="Harris Hawk - Wizard" />
 	</exhibit>
-	<exhibit name="Raccoon" xpos="55" ypos="21" previous="Harris Hawk"
-		next="Mink">
+	<exhibit name="Raccoon" xpos="55" ypos="21" previous="Harris Hawk" next="Mink">
 		<content tag="Introduction" page="ExhibitContents/Raccoon/raccoonIntro.html" />
 		<content tag="Ruby" page="ExhibitContents/Raccoon/raccoonRuby.html" />
 		<content tag="Diet" page="ExhibitContents/Raccoon/raccoonDiet.html" />
-		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" />
-		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" />
+		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-1.jpg" comment="Raccoon - Ruby" />
+		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-2.jpg" comment="Raccoon - Ruby" />
+		<photo page="ExhibitContents/Raccoon/Raccoon-Ruby-3.jpg" comment="Raccoon - Ruby" />
 	</exhibit>
 	<exhibit name="Mink" xpos="41" ypos="21" previous="Raccoon"
 		next="Hedgehogs">
@@ -404,22 +403,25 @@
 			page="ExhibitContents/AmericanMink/americanMinkDiet.html" />
 		<content tag="Raising"
 			page="ExhibitContents/AmericanMink/americanMinkRaising.html" />
-		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-1.jpg" />
+		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-1.jpg" comment="American Mink - Jasmine" />
+		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-2.jpg" comment="American Mink - Jasmine with her Easter egg (Easter 2012)." />
+		<photo page="ExhibitContents/AmericanMink/AmericanMink-Jasmine-3.jpg" comment="American Mink - Jasmine with her Easter egg (Easter 2012)." />
 	</exhibit>
 	<exhibit name="Hedgehogs" xpos="-1" ypos="-1" previous="Mink" next="Gray Fox">
 		<content tag="Introduction" page="ExhibitContents/HedgeHogs/hedgeHogIntro.html" />
 		<content tag="Sugar and Spice" page="ExhibitContents/HedgeHogs/hedgeHogSugarAndSpice.html" />
 		<content tag="Fun Facts" page="ExhibitContents/HedgeHogs/hedgeHogFunFacts.html" />
-		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Sugar-1.jpg" />
-		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-1.jpg" />
-		<photo page="ExhibitContents/HedgeHogs/HedgeHog-1.jpg" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-1.jpg" comment="Hedgehogs - Spice" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-2.jpg" comment="Hedgehogs - Spice" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Spice-3.jpg" comment="Hedgehogs - Spice" />
+		<photo page="ExhibitContents/HedgeHogs/HedgeHog-Sugar-1.jpg" comment="Hedgehogs - Sugar" />
 	</exhibit>
 	<exhibit name="Gray Fox" xpos="-1" ypos="-1" previous="Hedgehogs" next="Bobcats">
 		<content tag="Introduction" page="ExhibitContents/GrayFox/grayFoxIntro.html" />
 		<content tag="Carson" page="ExhibitContents/GrayFox/grayFoxCarson.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GrayFox/grayFoxFunFacts.html" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Carson" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Carson" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Carson" comment="" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Carson" comment="" />
 	</exhibit>
 	<exhibit name="Bobcats" xpos="-1" ypos="-1" previous="Gray Fox" next="Ground Squirrel">
 		<content tag="Introduction" page="ExhibitContents/Bobcats/bobcatsIntro.html" />
