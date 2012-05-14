@@ -20,7 +20,7 @@
         android:theme="@style/WireTheme" >
         <activity
             android:name=".IntroActivity"
-            android:label="@string/empty_string"
+            android:label="@string/app_name"
             android:logo="@drawable/action_logo_1" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
