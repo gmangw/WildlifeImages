@@ -293,7 +293,7 @@ public class MapView extends ImageView {
 	public void onDraw(Canvas canvas){
 		super.onDraw(canvas);
 
-		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/28.0f * scale));
+		p.setTextSize(Math.min(MAX_FONT_SIZE, mapHeight/32.0f * scale));
 
 		for(int i=0; i<points.length/2; i++){
 			rectFUnion.setEmpty();

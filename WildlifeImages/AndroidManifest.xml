@@ -16,36 +16,47 @@
     <application
         android:icon="@drawable/wildlifeimages_logo"
         android:label="@string/app_name"
+        android:logo="@drawable/ic_menu_home"
         android:theme="@style/WireTheme" >
-        <activity android:name=".IntroActivity" >
+        <activity
+            android:name=".IntroActivity"
+            android:logo="@drawable/wildlifeimages_logo" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="MapActivity" >
+        <activity
+            android:name="MapActivity"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="ExhibitActivity" android:label="@string/empty_string">
+        <activity
+            android:name="ExhibitActivity"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="ExhibitListActivity" >
+        <activity
+            android:name="ExhibitListActivity"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="AudioActivity" >
+        <activity
+            android:name="AudioActivity"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -54,7 +65,8 @@
         </activity>
         <activity
             android:name="UpdateActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -63,6 +75,7 @@
         </activity>
         <activity
             android:name="VideoActivity"
+            android:label="@string/empty_string"
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -70,21 +83,27 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="PhotosActivity" >
+        <activity
+            android:name="PhotosActivity"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="EventsActivity" >
+        <activity
+            android:name="EventsActivity"
+            android:label="@string/empty_string" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="LoadingActivity" >
+        <activity
+            android:name="LoadingActivity"
+            android:logo="@drawable/wildlifeimages_logo" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
