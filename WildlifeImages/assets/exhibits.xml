@@ -535,6 +535,6 @@
 	<group name="Fox/Bobcats" xpos="46" ypos="28">
 		<member exhibit="Gray Fox" />
 		<member exhibit="Bobcats" />
-		<member exhibit="Hedgehogs" />
+		<!--<member exhibit="Hedgehogs" />-->
 	</group>
 </exhibit_list>
