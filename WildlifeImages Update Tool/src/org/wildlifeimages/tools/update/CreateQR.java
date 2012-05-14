@@ -15,7 +15,7 @@ public class CreateQR {
 	private static final String prefix = "market://details?id=org.wildlifeimages.android.wildlifeimages&extra=Wildlife_Images_Exhibit_";
 
 	public static void writeExhibitQR(String exhibitName, File outputFile){
-		writeQR(prefix + exhibitName, outputFile);
+		writeQR(prefix + exhibitName.replaceAll(" ", "_"), outputFile);
 	}
 
 	public static void writeQR(String text, File outputFile){

@@ -73,7 +73,7 @@ public class Common {
 		String prefix = context.loadString(R.string.qr_prefix);
 
 		if(contents.length() > prefix.length() && contents.substring(0, prefix.length()).equals(prefix)){
-			potentialKey = contents.substring(prefix.length());
+			potentialKey = contents.substring(prefix.length()).replaceAll("_", " ");
 		}
 
 		if (potentialKey != null){
