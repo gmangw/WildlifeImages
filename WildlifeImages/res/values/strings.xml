@@ -22,7 +22,7 @@
     <string name="intent_scan_extra_result_format">SCAN_RESULT_FORMAT</string>
     <string name="intent_result_qr">QR_CODE</string>
     <string name="intent_qr_mode">QR_CODE_MODE</string>
-    <string name="qr_prefix">market://search?q=pname:org.wildlifeimages.android.wildlifeimages&amp;extra=Wildlife_Images_Exhibit_</string>
+    <string name="qr_prefix">market://details?id=org.wildlifeimages.android.wildlifeimages&amp;extra=Wildlife_Images_Exhibit_</string>
     <string name="exit_question">Are you sure you want to exit?</string>
     <string name="exit_option_yes">Yes</string>
     <string name="exit_option_no">No</string>

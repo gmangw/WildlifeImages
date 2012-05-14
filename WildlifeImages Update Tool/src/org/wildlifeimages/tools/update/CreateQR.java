@@ -12,7 +12,7 @@ import com.google.zxing.common.*;
 public class CreateQR {
 	private static final int WIDTH = 408;
 	private static final int HEIGHT = 408;
-	private static final String prefix = "market://search?q=pname:org.wildlifeimages.android.wildlifeimages&extra=Wildlife_Images_Exhibit_";
+	private static final String prefix = "market://details?id=org.wildlifeimages.android.wildlifeimages&extra=Wildlife_Images_Exhibit_";
 
 	public static void writeExhibitQR(String exhibitName, File outputFile){
 		writeQR(prefix + exhibitName, outputFile);
