@@ -52,7 +52,7 @@ public class IntroActivity extends WireActivity{
 		if (savedState == null) { /* Start from scratch if there is no previous state */
 			if (isTaskRoot()){
 				LoadingActivity.start(this);
-				new UpdateChecker().execute(this);
+				//TODO new UpdateChecker().execute(this);
 				new SVGLoader().execute(getResources());
 				SharedPreferences preferences = getSharedPreferences(loadString(R.string.update_preferences), Context.MODE_PRIVATE);
 				long time = getBuildTime();
