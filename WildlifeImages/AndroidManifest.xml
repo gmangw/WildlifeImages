@@ -3,8 +3,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.wildlifeimages.android.wildlifeimages"
-    android:versionCode="3"
-    android:versionName="Expo" >
+    android:versionCode="4"
+    android:versionName="ExpoB" >
 
     <uses-sdk
         android:minSdkVersion="7"
