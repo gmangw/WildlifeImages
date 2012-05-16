@@ -425,9 +425,9 @@
 		<content tag="Introduction" page="ExhibitContents/GrayFox/grayFoxIntro.html" />
 		<content tag="Carson" page="ExhibitContents/GrayFox/grayFoxCarson.html" />
 		<content tag="Fun Facts" page="ExhibitContents/GrayFox/grayFoxFunFacts.html" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Carson" comment="Gray Fox - Carson" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Carson" comment="Gray Fox - Carson" />
-		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-3.jpg" comment="Carson" comment="Gray Fox - Carson with his Easter egg (Easter 2012)." />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-1.jpg" comment="Gray Fox - Carson" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-2.jpg" comment="Gray Fox - Carson" />
+		<photo page="ExhibitContents/GrayFox/GrayFox-Carson-3.jpg" comment="Gray Fox - Carson with his Easter egg (Easter 2012)." />
 	</exhibit>
 	<exhibit name="Bobcats" xpos="-1" ypos="-1" previous="Gray Fox" next="Ground Squirrel">
 		<content tag="Introduction" page="ExhibitContents/Bobcats/bobcatsIntro.html" />
@@ -498,12 +498,13 @@
 		<member exhibit="Lynx" />
 		<member exhibit="Cougar" />
 		<member exhibit="Badger" />
-		<member exhibit="Wolves" />
+		<member exhibit="Gray Wolves" />
 		<member exhibit="Hybrid Wolves" />
 		<member exhibit="River Otter" />
 		<member exhibit="Raccoon" />
 		<member exhibit="American Mink" />
 		<member exhibit="Bobcats" />
+		<member exhibit="Gray Fox" />
 	</group>
 	<group name="Facilities">
 		<member exhibit="Wildlife Images" />

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -48,6 +49,8 @@ public class EventsActivity extends WireActivity{
 	private int eventWidth = 300;
 	private int screenHeight = 300;
 	private int eventHeight = 300;
+
+	private Event activeEvent = null;
 
 	public static final int PHOTO_DIALOG = WireActivity.SCAN_DIALOG + 1;
 
@@ -97,6 +100,7 @@ public class EventsActivity extends WireActivity{
 				seekBar.setProgress(index);
 				TextView date = (TextView)findViewById(R.id.events_date);
 				Event e = (Event)adapterView.getSelectedItem();
+				activeEvent = e;
 				Calendar start = Calendar.getInstance();
 				start.setTime(e.getStartDay());
 				if (e.getStartDay().compareTo(e.getEndDay()) == 0){
@@ -131,11 +135,13 @@ public class EventsActivity extends WireActivity{
 	protected void onPrepareDialog(int id, Dialog dialog){
 		super.onPrepareDialog(id, dialog);
 
-		ImageView i = new ImageView(this);
-		Gallery gallery = (Gallery)findViewById(R.id.events_view);
-		Event e = (Event)gallery.getSelectedItem();
-		i.setImageBitmap(ContentManager.getBitmap(e.getImage(), getAssets()));
-		((AlertDialog)dialog).setView(i);
+		if (id == PHOTO_DIALOG){
+			ImageView i = new ImageView(this);
+			Gallery gallery = (Gallery)findViewById(R.id.events_view);
+			Event e = (Event)gallery.getSelectedItem();
+			i.setImageBitmap(ContentManager.getBitmap(e.getImage(), getAssets()));
+			((AlertDialog)dialog).setContentView(i);
+		}
 	}
 
 	@Override
@@ -160,9 +166,11 @@ public class EventsActivity extends WireActivity{
 
 	public void showEventImage(View v){
 		Gallery gallery = (Gallery)findViewById(R.id.events_view);
-		Event e = (Event)gallery.getSelectedItem();
-		if (e.getImage().length() > 0){
-			showDialog(PHOTO_DIALOG);
+		if (gallery.getPositionForView(v) == gallery.getSelectedItemPosition()){
+			Event e = (Event)gallery.getSelectedItem();
+			if (e.getImage().length() > 0){
+				showDialog(PHOTO_DIALOG);
+			}
 		}
 	}
 

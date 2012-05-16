@@ -2,6 +2,7 @@ package org.wildlifeimages.android.wildlifeimages;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,10 @@ public class ExhibitListAdapter extends BaseAdapter{
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_item_layout, null);
+		}
+		if (entry == null){
+			Log.e(this.getClass().getName(), "Empty exhibit retrieved.");
+			return convertView;
 		}
 
 		if (entry.getPhotos().length > 0){
