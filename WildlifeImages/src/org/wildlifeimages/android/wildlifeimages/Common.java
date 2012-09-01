@@ -35,7 +35,6 @@ import android.widget.Toast;
  * @author Graham Wilkinson
  * @author Shady Glenn
  * @author Naveen Nanja
- * 	
  */	
 public class Common {
 	private static final Pattern zipNameExpression = Pattern.compile("http://.*?/update_\\d{12}\\.zip");
@@ -68,6 +67,14 @@ public class Common {
 		}
 	}/* CommonInstrumentationTest */
 
+	
+	/**
+	 * This will take the information returned from the barcode scan, check
+	 *  if it is one of the exhibits, and if it is will navigate to that page.
+	 * 
+	 * @param context The application's environment.
+	 * @param contents A string containing the barcode scan information.
+	 */
 	static void processBarcodeContents(WireActivity context, String contents){
 		String potentialKey = null;
 		String prefix = context.loadString(R.string.qr_prefix);
@@ -130,30 +137,70 @@ public class Common {
 		return imageExtensionExpression.matcher(lower).matches();
 	}/* CommonInstrumentationTest */
 
+	/**
+	 * This function will take 2 float points and return the distance between them.
+	 * 
+	 * @param x1 The x component of point x.
+	 * @param y1 The y component of point x
+	 * @param x2 The x component of point y.
+	 * @param y2 The y component of point y.
+	 * 
+	 * @return The distance between two float points.  
+	 */
 	public static float distance(float x1, float y1, float x2, float y2){
+		//Not using a power here, since there is no FloatMath pow function, so this is easiest.
 		return (FloatMath.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)));
 	}/* CommonInstrumentationTest */
 
+	/**
+	 * Restricts the values allowed, so if value is outside of min and max
+	 *  it will be rounded to min or max.
+	 *  
+	 * @param value The value to clamp.
+	 * @param min The min value to clamp things to if they go over.
+	 * @param max The max value to clamp things to if they go over.
+	 * 
+	 * @return The clamped value.
+	 */
 	public static float clamp(float value, float min, float max){
-		if (max < min){
+		if (max < min) {
 			float temp = min;
 			min = max;
 			max = temp;
 		}
-		if (value < min){
+		if (value < min) {
 			value = min;
-		}else if (value > max){
+		} else if (value > max){
 			value = max;
 		}
 		return value;
 	}/* CommonInstrumentationTest */
 
-	//http://en.wikipedia.org/wiki/Smoothstep
+	/**
+	 * This will take a value (x) between edge0 and edge1 and will cause movement around
+	 *  the value to be faster and movement around the edges to be slower.  It is still a
+	 *  step, so it will either return edge0 or edge1, but will smooth out the movement. 
+	 * Used for smoothing out movements and stopping movements slowly.
+	 * This implementation was created from: http://en.wikipedia.org/wiki/Smoothstep
+	 * 
+	 * @param edge0 The lower edge that things cannot be lower than.
+	 * @param edge1 The higher edge that things cannot be higher than.
+	 * @param x The step or value between edges.
+	 * 
+	 * @return  Will return the appropriate amplitude for the given step between edges.
+	 */
 	public static float smoothStep(float edge0, float edge1, float x){
+		//http://en.wikipedia.org/wiki/Smoothstep
 		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
 		return x*x*x*(x*(x*6 - 15) + 10);
 	}/* CommonInstrumentationTest */
 
+	/**
+	 * This function will recursively remove every file and folder from the file or
+	 *  directory given to it.
+	 *  
+	 * @param f The file or directory.
+	 */
 	public static void recursiveRemove(File f){
 		if (f.isDirectory()){
 			File[] list = f.listFiles();
@@ -168,19 +215,36 @@ public class Common {
 		}
 	}/* CommonInstrumentationTest */
 
+	/**
+	 * This function will create any missing folders in a file path if they do not exits.
+	 * For example, if you are saving C:\stuff\test.txt and stuff does not exist, this will create it.
+	 * 
+	 * @param file The file to make the directories for. 
+	 * 
+	 * @throws IOException Exception if subdirectory creation failed.
+	 */
 	public static void mkdirForFile(File file) throws IOException{
 		if (file.getParentFile().exists()){
 			return;
-		}else{
+		} else {
 			mkdirForFile(file.getParentFile());
 			if (true == file.getParentFile().mkdir()){ 
 				return;
 			}else{
-				throw(new IOException("Cache subdirectory creation failed: " + file.getParentFile()));
+				throw(new IOException("Subdirectory creation failed: " + file.getParentFile()));
 			}
 		}
 	}/* CommonInstrumentationTest */
 
+	/**
+	 * Opens a file and will write the data stored in bytes to a file.
+	 * May be used during picture operations.
+	 * 
+	 * @param content The bytes to be written to a file.
+	 * @param f The file to write the bytes to.
+	 * 
+	 * @throws IOException Error if there was an issue writing the bytes.
+	 */
 	public static void writeBytesToFile(byte[] content, File f) throws IOException{
 		FileOutputStream fOut = new FileOutputStream(f);
 		fOut.write(content);
