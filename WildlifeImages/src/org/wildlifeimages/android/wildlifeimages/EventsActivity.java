@@ -280,7 +280,6 @@ public class EventsActivity extends WireActivity{
 	}
 
 	private void addEventToCalendar(Event event) {
-
 		if (Common.isAtLeastICS() == true){
 			Intent intent = new Intent(Intent.ACTION_INSERT);
 			intent.setType("vnd.android.cursor.item/event");
