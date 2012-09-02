@@ -54,10 +54,10 @@ public class Common {
 	 *         responded to, false otherwise.
 	 */
 	public static boolean isIntentAvailable(Context context, String action) {
-		if (context == null){
+		if (context == null) {
 			Log.e(Common.class.getName(), "Context given to isIntentAvailable() was null.");
 			return false;
-		}else{
+		} else {
 			final PackageManager packageManager = context.getPackageManager();
 			final Intent intent = new Intent(action);
 			List<ResolveInfo> list =
@@ -75,20 +75,20 @@ public class Common {
 	 * @param context The application's environment.
 	 * @param contents A string containing the barcode scan information.
 	 */
-	static void processBarcodeContents(WireActivity context, String contents){
+	static void processBarcodeContents(WireActivity context, String contents) {
 		String potentialKey = null;
 		String prefix = context.loadString(R.string.qr_prefix);
 
-		if(contents.length() > prefix.length() && contents.substring(0, prefix.length()).equals(prefix)){
+		if(contents.length() > prefix.length() && contents.substring(0, prefix.length()).equals(prefix)) {
 			potentialKey = contents.substring(prefix.length()).replaceAll("_", " ");
 		}
 
-		if (potentialKey != null){
+		if (potentialKey != null) {
 			ExhibitList exhibitList = ContentManager.getExhibitList();
-			if (true == exhibitList.containsKey(potentialKey)){
+			if (true == exhibitList.containsKey(potentialKey)) {
 				ExhibitActivity.start(context, potentialKey);
 			}
-		}else{
+		} else {
 			Toast.makeText(context.getApplicationContext(), context.loadString(R.string.qr_unknown), Toast.LENGTH_SHORT).show();
 			Log.w(Common.class.getName(), "Unrecognized QR code " + contents);
 		}
@@ -99,15 +99,15 @@ public class Common {
 	 * 
 	 * @param context The activity to serve as the parent of the new activity
 	 */
-	public static void startScan(WireActivity context){
+	public static void startScan(WireActivity context) {
 		boolean scanAvailable = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan));
 		boolean scan2Available = Common.isIntentAvailable(context, context.loadString(R.string.intent_action_scan_2));
 
-		if (scanAvailable){
+		if (scanAvailable) {
 			Intent intent = new Intent(context.loadString(R.string.intent_action_scan));
 			intent.putExtra(context.loadString(R.string.intent_extra_scan_mode), context.loadString(R.string.intent_qr_mode));
 			context.startActivityForResult(intent, context.loadInt(R.integer.CODE_SCAN_ACTIVITY_REQUEST));
-		}else if (scan2Available){
+		}else if (scan2Available) {
 			Intent intent = new Intent(context.loadString(R.string.intent_action_scan_2));
 			context.startActivityForResult(intent, context.loadInt(R.integer.CODE_SCAN_2_ACTIVITY_REQUEST));
 		}else {
@@ -121,7 +121,7 @@ public class Common {
 	 * @param an Activity context that has the information about the current activity.
 	 * @param a URI imageUri that contains the location of where the image will be stored. 
 	 */
-	public static void startCamera(Activity context){
+	public static void startCamera(Activity context) {
 		Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
 		context.startActivity(intent);
 	}/* CommonUnitTest */
@@ -132,7 +132,7 @@ public class Common {
 	 * @param a String url containing the URL of the supposed image.
 	 * @param a String[] extensionlist that is an array of the acceptable extensions.
 	 */
-	public static boolean isImageUrl(String url){
+	public static boolean isImageUrl(String url) {
 		String lower = url.toLowerCase();
 		return imageExtensionExpression.matcher(lower).matches();
 	}/* CommonInstrumentationTest */
@@ -147,7 +147,7 @@ public class Common {
 	 * 
 	 * @return The distance between two float points.  
 	 */
-	public static float distance(float x1, float y1, float x2, float y2){
+	public static float distance(float x1, float y1, float x2, float y2) {
 		//Not using a power here, since there is no FloatMath pow function, so this is easiest.
 		return (FloatMath.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)));
 	}/* CommonInstrumentationTest */
@@ -162,7 +162,7 @@ public class Common {
 	 * 
 	 * @return The clamped value.
 	 */
-	public static float clamp(float value, float min, float max){
+	public static float clamp(float value, float min, float max) {
 		if (max < min) {
 			float temp = min;
 			min = max;
@@ -170,7 +170,7 @@ public class Common {
 		}
 		if (value < min) {
 			value = min;
-		} else if (value > max){
+		} else if (value > max) {
 			value = max;
 		}
 		return value;
@@ -189,7 +189,7 @@ public class Common {
 	 * 
 	 * @return  Will return the appropriate amplitude for the given step between edges.
 	 */
-	public static float smoothStep(float edge0, float edge1, float x){
+	public static float smoothStep(float edge0, float edge1, float x) {
 		//http://en.wikipedia.org/wiki/Smoothstep
 		x = clamp((x - edge0)/(edge1 - edge0), 0, 1);
 		return x*x*x*(x*(x*6 - 15) + 10);
@@ -201,16 +201,16 @@ public class Common {
 	 *  
 	 * @param f The file or directory.
 	 */
-	public static void recursiveRemove(File f){
-		if (f.isDirectory()){
+	public static void recursiveRemove(File f) {
+		if (f.isDirectory()) {
 			File[] list = f.listFiles();
-			for(int i=0; i<list.length; i++){
+			for(int i=0; i<list.length; i++) {
 				recursiveRemove(list[i]);
-				if (list[i].isDirectory()){
+				if (list[i].isDirectory()) {
 					list[i].delete();
 				}
 			}
-		}else{
+		} else {
 			f.delete();
 		}
 	}/* CommonInstrumentationTest */
@@ -223,14 +223,14 @@ public class Common {
 	 * 
 	 * @throws IOException Exception if subdirectory creation failed.
 	 */
-	public static void mkdirForFile(File file) throws IOException{
-		if (file.getParentFile().exists()){
+	public static void mkdirForFile(File file) throws IOException {
+		if (file.getParentFile().exists()) {
 			return;
 		} else {
 			mkdirForFile(file.getParentFile());
-			if (true == file.getParentFile().mkdir()){ 
+			if (true == file.getParentFile().mkdir()) { 
 				return;
-			}else{
+			} else {
 				throw(new IOException("Subdirectory creation failed: " + file.getParentFile()));
 			}
 		}
@@ -245,14 +245,21 @@ public class Common {
 	 * 
 	 * @throws IOException Error if there was an issue writing the bytes.
 	 */
-	public static void writeBytesToFile(byte[] content, File f) throws IOException{
+	public static void writeBytesToFile(byte[] content, File f) throws IOException {
 		FileOutputStream fOut = new FileOutputStream(f);
 		fOut.write(content);
 		fOut.close();
 	}/* CommonInstrumentationTest */
 
-	public static String getZipUrl(String page){
-		try{
+	/**
+	 * Goes to the HTML page that contains the link to the update zip file, grabs that URL and returns it.
+	 * 
+	 * @param page The page containing the zip file URL.
+	 * 
+	 * @return A String containing the URL to the zip file.
+	 */
+	public static String getZipUrl(String page) {
+		try {
 			URL url = new URL(page);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			InputStream webStream = conn.getInputStream();
@@ -263,49 +270,83 @@ public class Common {
 			String fileContents = chars.rewind().toString();
 
 			Matcher m = zipNameExpression.matcher(fileContents);
-			if (m.find() == true){
+			if (m.find() == true) {
 				return m.group();
-			}else{
+			} else {
 				return null;
 			}
-		} catch(MalformedURLException e){
+		} catch(MalformedURLException e) {
 			return null;
 		} catch (IOException e) {
 			return null;
 		}
 	}/* CommonInstrumentationTest */
 	
-	public static boolean isAtLeastHoneycomb(){
+	/**
+	 * This function will check to see if the device's OS version is >= HoneyComb.
+	 * 
+	 * @return True if the device's OS version number is >= Honeycomb's version #, else returns false.
+	 */
+	public static boolean isAtLeastHoneycomb() {
 		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	}/* CommonInstrumentationTest */
-	
-	public static boolean isAtLeastICS(){
+
+	/**
+	 * This function will check to see if the device's OS version is >= Ice Cream Sandwich.
+	 * 
+	 * @return True if the device's OS version number is >= ICS's version #, else returns false.
+	 */
+	public static boolean isAtLeastICS() {
 		return android.os.Build.VERSION.SDK_INT >= 14;
 	}
 
-	public static boolean isNetworkConnected(Context context){
+	/**
+	 * Will check if the device currently has a wireless connection, 3G, 4G, Wi-Fi, etc.
+	 * 
+	 * @param context The application's environment.
+	 * 
+	 * @return True if connected to some network, else, return false.
+	 */
+	public static boolean isNetworkConnected(Context context) {
 		ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netData = manager.getActiveNetworkInfo();
-		if (netData != null && netData.isConnectedOrConnecting() == true){
+		if (netData != null && netData.isConnectedOrConnecting() == true) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}/* CommonInstrumentationTest */
 
+	/**
+	 * Go to the camera if the camera button is pressed, go back to WildlifeImages if back is pressed at camera.
+	 * Gives info on what key pressed and whether it was pressed or released. 
+	 * 
+	 * @param context The application's environment.
+	 * @param keyCode The button that was pushed.
+	 * @param event Not used.
+	 * 
+	 * @return True if the camera or back buttons were pressed, else false.
+	 */
 	public static boolean onKeyDown(Activity context, int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_CAMERA){
+		if (keyCode == KeyEvent.KEYCODE_CAMERA) {
 			Common.startCamera(context);
 			return true;
-		}else if (keyCode == KeyEvent.KEYCODE_BACK){
+		} else if (keyCode == KeyEvent.KEYCODE_BACK) {
 			context.onBackPressed();
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}/* CommonUnitTest */
 	
-	public static Date getUpdateTime(String url){
+	/**
+	 * This function will get the date from the update Zip file and will return that in a Date format.
+	 * 
+	 * @param url The update zip file URL.
+	 * 
+	 * @return The date of the update content's release.
+	 */
+	public static Date getUpdateTime(String url) {
 		//update_201204041839.zip
 		SimpleDateFormat fmt = new SimpleDateFormat();
 		fmt.applyPattern("yyyyMMddHHmm");
